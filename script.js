@@ -127,6 +127,7 @@ let selectedRange = [];
 const audioNote1 = (new AudioNote(audioEngine));
 
 const graph = new Graph();
+console.warn('graph', graph)
 // await sleep(500)
 const app = document.querySelector('#app');
 const appBody = app.querySelector('#app-body');
@@ -212,6 +213,7 @@ const pageScrolling = {
   }
 }
 
+console.warn('graph.width', graph.width)
 svgCanvas.setViewBox({
   x: -0.5,
   y: -0.5,
@@ -219,7 +221,8 @@ svgCanvas.setViewBox({
   height: graph.height + 1,
 });
 
-svgCanvas.setCanvasDimensions();
+// svgCanvas.setCanvasDimensions()
+svgCanvas.setCanvasDimensions({ width: window.innerWidth, height: window.innerHeight });
 
 const pointerup$ = fromEvent(svgCanvas, 'pointerup');
 
@@ -252,6 +255,14 @@ let isMoving = false;
 let isSelectingLinkTile = false;
 
 setTimeout(() => {
+  
+  // const centerNode = graph.getSpiral()
+  // console.warn('graph', graph)
+  // console.warn('centerNode', centerNode)
+  // let tile = svgCanvas.querySelector(`.tile[data-x="${centerNode.x}"][data-y="${centerNode.y}"]`);
+  // tile.dataset.active = true
+  
+  console.warn('tileLayer', tileLayer)
   lastX = +tileLayer.lastElementChild.dataset.x;
   lastY = +tileLayer.lastElementChild.dataset.y;
   
@@ -263,11 +274,6 @@ setTimeout(() => {
   svgCanvas.surface.setAttribute('width', lastX + 1)
   svgCanvas.surface.setAttribute('height', lastY + 1)
   
-  const centerNode = graph.getSpiral()
-  console.warn('graph', graph)
-  console.warn('centerNode', centerNode)
-  let tile = svgCanvas.querySelector(`.tile[data-x="${centerNode.x}"][data-y="${centerNode.y}"]`);
-  tile.dataset.active = true
 }, 900)
 
 
