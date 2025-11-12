@@ -131,7 +131,6 @@ const graph = new Graph();
 const app = document.querySelector('#app');
 const appBody = app.querySelector('#app-body');
 const canvasEl = document.querySelector('#canvas');
-
 const svgCanvas = new SVGCanvas(canvasEl);
 
 const scene = svgCanvas.dom.querySelector('#scene');
