@@ -1,6 +1,6 @@
 import { EventEmitter } from 'https://hamilsauce.github.io/hamhelper/event-emitter.js';
-import { TransformList } from '../canvas/TransformList.js';
-import { SVGCanvas } from '../canvas/SVGCanvas.js';
+import { TransformList } from './TransformList.js';
+import { SVGCanvas } from './SVGCanvas.js';
 
 export const DefaultCanvasObjectOptions = {
   id: '',

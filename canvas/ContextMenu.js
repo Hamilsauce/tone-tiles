@@ -1,4 +1,4 @@
-import { CanvasObject, DefaultCanvasObjectOptions } from '../canvas/CanvasObject.js';
+import { CanvasObject, DefaultCanvasObjectOptions } from  './CanvasObject.js';
 
 const contextMenuTransforms = [
 {

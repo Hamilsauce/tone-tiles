@@ -1,6 +1,6 @@
 import ham from 'https://hamilsauce.github.io/hamhelper/hamhelper1.0.0.js';
 import { createCustomEvent } from '../lib/create-event.js';
-import { CanvasObject, DefaultCanvasObjectOptions } from '../canvas/CanvasObject.js';
+import { CanvasObject, DefaultCanvasObjectOptions } from  './CanvasObject.js';
 import { getPanZoom } from '../lib/gpt-pan-zoom.js';
 
 const { addPanAction, template, utils, download, TwoWayMap } = ham;

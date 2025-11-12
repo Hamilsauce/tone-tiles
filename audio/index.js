@@ -1,3 +1,3 @@
-export { audioEngine } from '../audio/audio-engine.js';
-export { AudioNote } from '../audio/AudioNote.js';
-export { scheduleOscillator } from '../audio/oscillator-scheduler.js';
+export { audioEngine } from './audio-engine.js';
+export { AudioNote } from './AudioNote.js';
+export { scheduleOscillator } from './oscillator-scheduler.js';
