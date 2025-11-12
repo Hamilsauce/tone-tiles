@@ -1,9 +1,8 @@
 import ham from 'https://hamilsauce.github.io/hamhelper/hamhelper1.0.0.js';
 import { createCustomEvent } from '../lib/create-event.js';
-import { CanvasObject, DefaultCanvasObjectOptions } from  './CanvasObject.js';
-import { getPanZoom } from '../lib/gpt-pan-zoom.js';
+import { CanvasObject, DefaultCanvasObjectOptions } from './CanvasObject.js';
 
-const { addPanAction, template, utils, download, TwoWayMap } = ham;
+const { getPanZoom, addPanAction, template, utils, download, TwoWayMap } = ham;
 
 const { forkJoin, Observable, iif, BehaviorSubject, AsyncSubject, Subject, interval, of, fromEvent, merge, empty, delay, from } = rxjs;
 const { flatMap, reduce, groupBy, toArray, mergeMap, switchMap, scan, map, tap, filter } = rxjs.operators;
@@ -19,13 +18,10 @@ export class SVGCanvas extends EventTarget {
     this.#self = svg;
     
     this.surfaceLayer = this.dom.querySelector('#surface-layer');
+    this.#surface = this.surfaceLayer.querySelector('#surface');
     
     this.viewport = this.dom.querySelector('#viewport');
-    // console.warn('  this.viewport ',   this.viewport.transform )
     this.minimap = this.dom.querySelector('#minimap');
-    this.minimapViewport = this.dom.querySelector('#minimap-viewport');
-    
-    this.#surface = this.surfaceLayer.querySelector('#surface');
     
     this.layers = {
       surface: this.dom.querySelector('#surface-layer'),
@@ -48,6 +44,10 @@ export class SVGCanvas extends EventTarget {
     
     getPanZoom(this.dom);
     
+    const { width: mmWidth, height: mmHeight } = this.minimap.getBoundingClientRect()
+    
+    // this.minimap.setAttribute('transform', `translate(${this.bounds.right - 0}, ${this.bounds.bottom - 1})`)
+    
     this.clickDOM$ = fromEvent(this.#self, 'click').pipe(
       tap(e => {
         e.preventDefault();
@@ -60,14 +60,12 @@ export class SVGCanvas extends EventTarget {
       const matrix = vpTransform.getItem(0).matrix;
       const transformFromMatrix = vpTransform.createSVGTransformFromMatrix(matrix)
       
-      const minimapVPTransform = this.minimapViewport.transform.baseVal
+      // const minimapVPTransform = this.minimapViewport.transform.baseVal
       
-      const mmvpMatrix = minimapVPTransform.getItem(0).matrix;
-      const transformFromMMVPMatrix = vpTransform.createSVGTransformFromMatrix(mmvpMatrix)
+      // const mmvpMatrix = minimapVPTransform.getItem(0).matrix;
+      // const transformFromMMVPMatrix = vpTransform.createSVGTransformFromMatrix(mmvpMatrix)
       
       const minimapBB = this.minimap.getBoundingClientRect();
-      const minimapViewportBB = this.minimapViewport.getBoundingClientRect();
-      // console.table('minimapBB', 'minimapViewportBB', minimapBB, minimapViewportBB)
       const mmBB = {
         left: minimapBB.x,
         top: minimapBB.y,
@@ -77,31 +75,31 @@ export class SVGCanvas extends EventTarget {
         bottom: minimapBB.y + minimapBB.height,
       }
       
-      const mmvpBB = {
-        left: minimapViewportBB.x,
-        top: minimapViewportBB.y,
-        // width: minimapViewportBB.width,
-        // height: minimapViewportBB.height,
-        right: minimapViewportBB.x + minimapViewportBB.width,
-        bottom: minimapViewportBB.y + minimapViewportBB.height,
-        
-      }
+      // const mmvpBB = {
+      //   left: minimapViewportBB.x,
+      //   top: minimapViewportBB.y,
+      //   // width: minimapViewportBB.width,
+      //   // height: minimapViewportBB.height,
+      //   right: minimapViewportBB.x + minimapViewportBB.width,
+      //   bottom: minimapViewportBB.y + minimapViewportBB.height,
+      
+      // }
       
       // console.table({ mmBB, mmvpBB })
       
-      const isVPRectInMinimap =
-        mmvpBB.left >= mmBB.left &&
-        mmvpBB.top >= mmBB.top &&
-        mmvpBB.right <= mmBB.right &&
-        mmvpBB.bottom <= mmBB.bottom;
+      // const isVPRectInMinimap =
+      //   mmvpBB.left >= mmBB.left &&
+      //   mmvpBB.top >= mmBB.top &&
+      //   mmvpBB.right <= mmBB.right &&
+      //   mmvpBB.bottom <= mmBB.bottom;
       
       
-      if (isVPRectInMinimap) {
-        minimapVPTransform.initialize(transformFromMatrix)
-      }
-      else {
-        minimapVPTransform.initialize(transformFromMatrix); // transformFromMMVPMatrix)
-      }
+      // if (isVPRectInMinimap) {
+      //   minimapVPTransform.initialize(transformFromMatrix)
+      // }
+      // else {
+      //   minimapVPTransform.initialize(transformFromMatrix); // transformFromMMVPMatrix)
+      // }
     }), );
     this.pointerMove$.subscribe()
     
@@ -129,6 +127,19 @@ export class SVGCanvas extends EventTarget {
   }
   
   get dom() { return this.#self }
+  
+  get boundingClientRect() { return this.dom.getBoundingClientRect() }
+  
+  get bounds() {
+    const { x, y, width, height } = this.boundingClientRect;
+    
+    return {
+      top: y,
+      right: x + width,
+      bottom: y + height,
+      left: x,
+    }
+  }
   
   get isContextMenuActive() { return this.#isContextMenuActive }
   
@@ -236,9 +247,9 @@ export class SVGCanvas extends EventTarget {
     return this;
   }
   
-  panViewport({ x, y }) {
-    Object.assign(this.viewBox, { x, y });
-  }
+  // panViewport({ x, y }) {
+  //   Object.assign(this.viewBox, { x, y });
+  // }
   
   setViewBox({ x = 0, y = 0, width = 100, height = 100 }) {
     Object.assign(this.viewBox, { x, y, width, height, });

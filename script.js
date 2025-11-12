@@ -406,10 +406,10 @@ svgCanvas.addEventListener('click', async ({ detail }) => {
         actorTrans = activeActor === actor1 ? actor1TransformList : actor2TransformList
         actorTrans.translateTo(curr.x, curr.y)
         
-        svgCanvas.panViewport({
-          x: (curr.x - (svgCanvas.viewBox.width / 2)) * 0.025,
-          y: (curr.y - (svgCanvas.viewBox.height / 2)) * 0.025,
-        });
+        // svgCanvas.panViewport({
+        //   x: (curr.x - (svgCanvas.viewBox.width / 2)) * 0.025,
+        //   y: (curr.y - (svgCanvas.viewBox.height / 2)) * 0.025,
+        // });
         
         if (el === startNodeEl) {
           startNodeEl.dataset.current = false;
