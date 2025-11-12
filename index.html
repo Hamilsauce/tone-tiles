@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <title>Shortest Path</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/rxjs/7.3.0/rxjs.umd.min.js" integrity="sha512-y3JTS47nnpKORJX8Jn1Rlm+QgRIIZHtu3hWxal0e81avPrqUH48yk+aCi+gprT0RMAcpYa0WCkapxe+bpBHD6g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <link rel="stylesheet" href="./css/main.css" />
+  <link rel="stylesheet" href="./css/minimap.css" />
+  <link rel="stylesheet" href="./css/app.css" />
+  <link rel="stylesheet" href="./css/tile.css" />
+  <link rel="stylesheet" href="./css/actor.css" />
+  <link rel="stylesheet" href="./css/toolbar.css" />
+  <link rel="stylesheet" href="./css/drawer.css" />
+  
+  <link rel="stylesheet" href="./css/app-footer.css" />
+</head>
+
+<body>
+  <div id="app-host"></div>
+  <script type="importmap">
+    {
+    "imports": {
+      "vue": "https://unpkg.com/vue@3/dist/vue.esm-browser.js"
+    }
+  }
+</script>
+  
+  <script src="https://www.gstatic.com/firebasejs/12.0.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore-compat.js"></script>
+  
+  <script type="text/javascript" charset="utf-8">
+    const SVG_NS = 'http://www.w3.org/2000/svg';
+  </script>
+  <script src="./main.js" type="module"></script>
+  <script src="./script.js" type="module"></script>
+  
+  <template data-component="app">
+    <div id="app">
+      <app-header @footertoggle="handleFooterChange"></app-header>
+      <!-- <app-header></app-header> -->
+      <app-body></app-body>
+      <app-footer :show-toolbar="showToolbar"></app-footer>
+      <!-- <app-footer></app-footer> -->
+    </div>
+  </template>
+  
+  <template data-component="app-header">
+    <header id="app-header">
+      <div id="app-header-left"></div>
+      <div id="app-header-center">
+        <h2>Shortest Path King</h2>
+        <div id="app-header-center-bottom">
+          <button @click="handleFooterToggle" id="footer-toggle" type="button">Toggle {{ footerState }}</button>
+        </div>
+      </div>
+      <div id="app-header-right">
+        <div id="app-state-display"></div>
+      </div>
+      <div id="app-footer-top">
+        <label for="map-input">Pick Map</label>
+        <select name="map-input" id="map-input">
+          <option value="MAP_9X15_1">MAP_9X15_1</option>
+          <option value="BLANK_MAP_9X15_1">BLANK_MAP_9X15_1</option>
+          <option value="suk">suk</option>
+          <option value="BIG_ASS_MAP">BIG_ASS_MAP</option>
+        </select>
+        <div class="container">
+          <button id="new-map" class="file-button" type="button">New</button>
+          <button id="save-map" class="file-button" type="button">Save</button>
+        </div>
+      </div>
+    </header>
+  </template>
+  
+  <template data-component="app-body">
+    <section id="app-body">
+      
+      <svg id="canvas" class="gradient" width="412" _height="681" viewBox="-0 -0 9 15" preserveAspectRatio="xMidYMid meet" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="edge-line-arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="black" />
+          </marker>
+          
+          <g data-template="context-menu" id="context-menu" data-show-actions="false" data-show="false" transform="translate(0,0) rotate(0) scale(0.05)">
+            <foreignObject x="0" y="0" width="60" height="120" transform="translate(0,0) rotate(0) scale(1)">
+              <div class="context-menu-container">
+                <ul class="context-menu-list primary">
+                  <li data-value="barrier" data-type="tile-type">barrier</li>
+                  <li data-value="empty" data-type="tile-type">empty</li>
+                  <li data-value="start" data-type="tile-type">start</li>
+                  <li data-value="teleport" data-type="tile-type">teleport</li>
+                </ul>
+                <ul class="context-menu-list secondary">
+                  <li data-value="link-teleport" data-type="tile-action">Link to...</li>
+                </ul>
+              </div>
+            </foreignObject>
+          </g>
+          
+          <g data-template="actor" id="" data-x="0" data-y="0" data-teleporting="false" class="actor" transform="translate(0,0) rotate(0) scale(1)">
+            <circle cx="0.5" cy="0.5" r="0.4" transform="translate(0,0) rotate(0) scale(1)" />
+          </g>
+          
+          <g data-template="edge-line" class="edge-line" id="" data-x="0" data-y="0" transform="translate(0,0) rotate(0) scale(1)">
+            <line x1="0" y1="0" x2="1" y2="1" marker-end="url(#edge-line-arrow)" transform="translate(0,0) rotate(0) scale(1)" />
+          </g>
+          
+        </defs>
+        <g id="viewport" transform="matrix(1 0 0 1 0 0)">
+          
+          <g id="scene" transform="translate(0,0) rotate(0) scale(1)">
+            <g id="surface-layer" transform="translate(-0,-0) rotate(0) scale(1)">
+              <rect id="surface" class="gradient" x="0" y="0" rx="0" ry="0" width="10" height="15"></rect>
+            </g>
+            
+            <g id="tile-layer" transform="translate(-0,-0) rotate(0) scale(1)"></g>
+            
+            <g id="object-layer" transform="translate(0.5,0.5) rotate(0) scale(1)"></g>
+          </g>
+        </g>
+        <g id="minimap" data-x="0" data-y="0" transform="translate(13, 17) rotate(0) scale(0.3)">
+          <rect id="minimap-surface" x="0" y="0" rx="0" ry="0" width="19" height="22"></rect>
+          <use href="#scene"></use>
+          <rect id="minimap-viewport" x="0" y="0" rx="0" ry="0" width="19" height="22" transform="translate(1,1) rotate(0) scale(1)"></rect>
+        </g>
+        
+      </svg>
+    </section>
+  </template>
+  <template data-component="app-footer">
+  
+    <footer id="app-footer">
+      
+      <div v-if="showToolbar" id="app-footer-top">
+        <div class="scroll-fader"></div>
+        <div id="controls" data-controls="tile-brushes" class="container">
+          <button class="app-button tile-selector" data-active="true" data-tile-type="barrier">Barrier</button>
+          <button class="app-button tile-selector" data-tile-type="ground">Ground</button>
+          <button class="app-button tile-selector" data-tile-type="empty">Empty</button>
+          <button class="app-button tile-selector" data-tile-type="exit">Exit</button>
+          <button class="app-button tile-selector" data-tile-type="start">Start</button>
+          <button class="app-button tile-selector" data-tile-type="delete">DELETE</button>
+        </div>
+      </div>
+      <div v-if="showToolbar" id="app-footer-bottom">
+        
+        <div id="tool-labels">
+          <div class="tool-label" data-active="false" data-tool-group="favorites" id="favorites-label">
+            <svg _class="app-button heart" width="20" height="20" viewBox="0 0 122 107" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+              <path fill="#CDCDCD" d="M60.83,17.19C68.84,8.84,74.45,1.62,86.79,0.21c23.17-2.66,44.48,21.06,32.78,44.41 c-3.33,6.65-10.11,14.56-17.61,22.32c-8.23,8.52-17.34,16.87-23.72,23.2l-17.4,17.26L46.46,93.56C29.16,76.9,0.95,55.93,0.02,29.95 C-0.63,11.75,13.73,0.09,30.25,0.3C45.01,0.5,51.22,7.84,60.83,17.19L60.83,17.19L60.83,17.19z" />
+            </svg>
+          </div>
+          <div class="tool-label" data-active="true" data-tool-group="tile" id="tile-brush-label">Tiles</div>
+          <div class="tool-label" data-active="false" data-tool-group="select" _id="label">Select</div>
+          <div class="tool-label" data-active="false" data-tool-group="actor" _id="label">Actors</div>
+          <div class="tool-label" data-active="false" data-tool-group="layer" _id="label">Layers</div>
+          <div class="tool-label" data-active="false" data-tool-group="color" _id="label">Colors</div>
+          <div class="tool-label" data-active="false" data-tool-group="other" _id="label">Other</div>
+        </div>
+      </div>
+      
+    </footer>
+  </template>
+  <!-- <template data-component="app-footer">
+    <footer id="app-footer">
+      
+      <div id="app-footer-top">
+        <label for="map-input">Pick Map</label>
+        <select name="map-input" id="map-input">
+          <option value="MAP_9X15_1">MAP_9X15_1</option>
+          <option value="BLANK_MAP_9X15_1">BLANK_MAP_9X15_1</option>
+          <option value="suk">suk</option>
+          <option value="BIG_ASS_MAP">BIG_ASS_MAP</option>
+        </select>
+        <div class="container">
+          
+          <button class="file-button" type="submit">Load</button>
+          <button id="save-map" class="file-button" type="submit">Save</button>
+        </div>
+      </div>
+      <div class="scroll-fader"></div>
+      
+      <app-toolbar></app-toolbar>
+    </footer>
+  </template> -->
+  
+  <template data-component="app-toolbar">
+    <div id="toolbar">
+      <div class="scroll-fader"></div>
+      
+      <div id="toolbar-top">
+        <div class="scroll-fader"></div>
+        <div id="controls" data-controls="tile-brushes" class="container">
+          <button class="app-button tile-selector" data-active="true" data-tile-type="barrier">Barrier</button>
+          <button class="app-button tile-selector" data-tile-type="ground">Ground</button>
+          <button class="app-button tile-selector" data-tile-type="empty">Empty</button>
+          <button class="app-button tile-selector" data-tile-type="exit">Exit</button>
+          <button class="app-button tile-selector" data-tile-type="start">Start</button>
+          <button class="app-button tile-selector" data-tile-type="delete">DELETE</button>
+        </div>
+      </div>
+      <div id="toolbar-bottom">
+        <div id="tool-labels">
+          <div class="tool-label" data-active="false" data-tool-group="favorites" id="favorites-label">
+            <svg width="20" height="20" viewBox="0 0 122 107" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+              <path fill="#CDCDCD" d="M60.83,17.19C68.84,8.84,74.45,1.62,86.79,0.21c23.17-2.66,44.48,21.06,32.78,44.41 c-3.33,6.65-10.11,14.56-17.61,22.32c-8.23,8.52-17.34,16.87-23.72,23.2l-17.4,17.26L46.46,93.56C29.16,76.9,0.95,55.93,0.02,29.95 C-0.63,11.75,13.73,0.09,30.25,0.3C45.01,0.5,51.22,7.84,60.83,17.19L60.83,17.19L60.83,17.19z" />
+            </svg>
+          </div>
+          <div class="tool-label" data-active="true" data-tool-group="tile" id="tile-brush-label">Tiles</div>
+          <div class="tool-label" data-active="false" data-tool-group="select" _id="label">Select</div>
+          <div class="tool-label" data-active="false" data-tool-group="actor" _id="label">Actors</div>
+          <div class="tool-label" data-active="false" data-tool-group="layer" _id="label">Layers</div>
+          <div class="tool-label" data-active="false" data-tool-group="color" _id="label">Colors</div>
+          <div class="tool-label" data-active="false" data-tool-group="other" _id="label">Other</div>
+        </div>
+      </div>
+    </div>
+  </template>
+  
+  <template data-component="toolbar-footer">
+    <footer id="app-footer">
+      <div class="container">
+        <label for="map-input">Pick Map</label>
+        <select name="map-input" id="map-input">
+          <option value="MAP_9X15_1">MAP_9X15_1</option>
+          <option value="BLANK_MAP_9X15_1">BLANK_MAP_9X15_1</option>
+          <option value="suk">suk</option>
+          <option value="BIG_ASS_MAP">BIG_ASS_MAP</option>
+        </select>
+      </div>
+      <div class="container">
+        <button class="file-button" type="submit">Load</button>
+        <button id="save-map" class="file-button" type="submit">Save</button>
+      </div>
+    </footer>
+  </template>
+  
+  <template data-template="drawer">
+    <div class="drawer" id="drawer">
+      <div class="drawer-handle" data-expanded="false" id="drawer-handle">
+        <svg height="24px" width="24px" viewBox="0 0 20 20" fill="#FFFFFF" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0 0h24v24H0z" fill="none" />
+          <path d="M20 9H4v2h16V9zM4 15h16v-2H4v2z" />
+        </svg>
+      </div>
+      <div class="option-container">
+        <div class="drawer-option" data-value="App 1">App</div>
+        <div class="drawer-option" data-value="App 2">App</div>
+        <div class="drawer-option" data-value="App 3">App</div>
+        <div class="drawer-option" data-value="App 4">App</div>
+        <div class="drawer-option" data-value="App 5">App</div>
+        <div class="drawer-option" data-value="App 6">App</div>
+        <div class="drawer-option" data-value="App 7">App</div>
+        <div class="drawer-option" data-value="App 8">App</div>
+        <div class="drawer-option" data-value="App 9">App</div>
+        <div class="drawer-option" data-value="App 10">App</div>
+        <div class="drawer-option" data-value="App 11">App</div>
+        <div class="drawer-option" data-value="App 12">App</div>
+        <div class="drawer-option" data-value="App 13">App</div>
+        <div class="drawer-option" data-value="App 14">App</div>
+        <div class="drawer-option" data-value="App 15">App</div>
+        <div class="drawer-option" data-value="App 16">App</div>
+        <div class="drawer-option" data-value="App 17">App</div>
+      </div>
+    </div>
+  </template>
+  
+</body>
+
+</html>

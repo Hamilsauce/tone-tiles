@@ -1,0 +1,15 @@
+#minimap {}
+
+#minimap-surface {
+  fill: #E8E8E8;
+  stroke: #000000;
+  filter: drop-shadow(0 0px 1px #2F2F2F65);
+  
+}
+
+#minimap-viewport {
+  fill: transparent;
+  stroke: #C63697;
+  filter: drop-shadow(0 0px 1px #2F2F2F65);
+  
+}

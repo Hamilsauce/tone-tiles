@@ -1,0 +1,75 @@
+.selection {
+  display: contents;
+}
+
+.app-button {
+  background: #3A3B42;
+  border: 1px solid #5F5F5F;
+  height: 100%;
+  border-radius: 3px;
+  color: #EFEFEF;
+  font-size: 18px;
+  padding: 4px 8px;
+  transition: 0.2s ease;
+}
+
+.app-button[data-active=true] {
+  filter: brightness(160%);
+  z-index: 1000;
+}
+
+.scroll-fader {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 999;
+  background-image: linear-gradient(to right, var(--background-main), #FFFFFF00 3.5%, #FFFFFF00 96.5%, var(--background-main) 100%);
+}
+
+
+#app-footer-bottom {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+  overflow-x: scroll;
+  padding: 0 4px;
+}
+
+#tool-labels {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
+  column-gap: 1px;
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+  overflow-x: scroll;
+  background: #5355607D;
+  
+}
+
+.tool-label {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  gap: 0px;
+  width: 100%;
+  height: 100%;
+  padding: 4px 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #EFEFEF90;
+  background: #191A208F;
+  border-bottom: 2px solid transparent;
+  transition: 0.2s ease;
+}
+.tool-label[data-active=true]{
+  border-bottom: 2px solid var(--color-white0);
+  color: #EFEFEF;
+}

@@ -1,0 +1,129 @@
+.tile rect {
+  fill: #ECECECD1;
+  stroke: #7F7F7FE8;
+  stroke-width: 0.025px;
+}
+
+.tile text {
+  fill: var(--tiletext-dark);
+  filter: opacity(0.5);
+  font-weight: 600;
+}
+
+.tile[data-tile-type=barrier] rect {
+  fill: #4F5057;
+}
+
+.tile[data-tile-type=barrier] text {
+  fill: var(--tiletext-light);
+}
+
+.tile[data-is-path-node=true] rect {
+  /* fill: #FFF2B382; */
+  animation: yellowToOriginal 5s forwards;
+  
+}
+
+.tile[data-is-path-node=true] text {
+  fill: #373736;
+  font-weight: 900;
+}
+
+.tile[data-tile-type=start] rect {
+  fill: #9B2B2B;
+}
+
+.tile[data-tile-type=start] text {
+  fill: var(--tiletext-light);
+}
+
+.tile[data-active=true] rect {
+  fill: #288ED0;
+  fill: #F2CA69;
+  stroke: #14CC3A;
+}
+
+.tile[data-current=true] rect {
+  fill: #288ED0;
+  stroke: #C214CC;
+}
+
+.tile[data-active=true][data-is-path-node=false] text {
+  fill: #288ED0;
+  fill: #F2CA69;
+  fill: var(--tiletext-light);
+}
+
+.tile[data-highlight=true] rect {
+  fill: #FFEE9F;
+}
+
+.tile[data-highlight=true][data-is-path-node=false][data-tile-type=empty] text {
+  fill: #FFEE9F;
+  fill: var(--tiletext-light);
+}
+
+.tile[data-target=true] rect {
+  fill: #D07728;
+}
+
+.tile[data-target=true] rect {
+  fill: #D07728;
+}
+
+.tile[data-tile-type=goal] rect {
+  fill: #329B2B;
+}
+
+.tile[data-tile-type=goal] text {
+  fill: var(--tiletext-light);
+}
+
+.tile[data-tile-type=teleport] rect {
+  fill: #12B582;
+}
+
+.tile[data-selected=true]>rect {
+  stroke: #59595963;
+  /* stroke-width: 0.5px; */
+  /* fill: #16EC1A; */
+  fill: #EEEEEE50;
+  /* fill: transparent; */
+  filter: hue-rotate(167deg);
+}
+
+@keyframes yellowToOriginal {
+  0% {
+    /* filter: blur(20px); */
+  }
+  
+  8% {
+    fill: #46C2F4BF;
+    filter: hue-rotate(0deg);
+    /* filter: hue-rotate(-240deg); */
+  }
+  
+  15% {
+    /* fill: #46C6F4BF; */
+    fill: #46C2F43D;
+    
+    filter: hue-rotate(0deg);
+    /* example: rotates back to blue */
+    filter: hue-rotate(-240deg);
+    /* example: rotates back to blue */
+  }
+  
+  35% {
+    filter: hue-rotate(0deg);
+    /* example: rotates back to blue */
+    
+    /* fill: yellow; */
+    /* filter: hue-rotate(0deg); */
+    /* example: rotates back to blue */
+  }
+  40% {}
+}
+
+.rect-animate {
+  animation: yellowToOriginal 1.5s forwards;
+}
