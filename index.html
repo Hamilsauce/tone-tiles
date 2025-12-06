@@ -82,7 +82,7 @@
       <div id="app-header-center">
         <h2>tone tiles</h2>
         <div id="app-header-center-bottom">
-          <button @click="handleFooterToggle" id="footer-toggle" type="button">Toggle {{ footerState }}</button>
+          <!-- <button @click="handleFooterToggle" id="footer-toggle" type="button">Toggle {{ footerState }}</button> -->
         </div>
       </div>
       <div id="app-header-right">
@@ -140,13 +140,13 @@
           </g>
           
         </defs>
+      
         <g id="viewport" transform="matrix(1 0 0 1 0 0)">
           
           <g id="scene" transform="translate(0,0) rotate(0) scale(1)">
             <g id="surface-layer" transform="translate(-0,-0) rotate(0) scale(1)">
               <rect id="surface" class="gradient" x="0" y="0" rx="0" ry="0" width="10" height="15"></rect>
             </g>
-            
             
             <g id="tile-layer" transform="translate(-0,-0) rotate(0) scale(1)"></g>
             
@@ -165,7 +165,6 @@
   <template data-component="app-footer">
     <footer id="app-footer">
       <div v-if="showToolbar" id="app-footer-top">
-        <div class="scroll-fader"></div>
         <div id="controls" data-controls="tile-brushes" class="container">
           <button class="app-button tile-selector" data-active="true" data-tile-type="barrier">Barrier</button>
           <button class="app-button tile-selector" data-tile-type="ground">Ground</button>
@@ -174,7 +173,9 @@
           <button class="app-button tile-selector" data-tile-type="start">Start</button>
           <button class="app-button tile-selector" data-tile-type="delete">DELETE</button>
         </div>
+        
       </div>
+      
       <div v-if="showToolbar" id="app-footer-bottom">
         
         <div id="tool-labels">
@@ -190,6 +191,8 @@
           <div class="tool-label" data-active="false" data-tool-group="color" _id="label">Colors</div>
           <div class="tool-label" data-active="false" data-tool-group="other" _id="label">Other</div>
         </div>
+        <div class="scroll-fader"></div>
+        
       </div>
       
     </footer>
@@ -200,7 +203,6 @@
       <div class="scroll-fader"></div>
       
       <div id="toolbar-top">
-        <div class="scroll-fader"></div>
         <div id="controls" data-controls="tile-brushes" class="container">
           <button class="app-button tile-selector" data-active="true" data-tile-type="barrier">Barrier</button>
           <button class="app-button tile-selector" data-tile-type="ground">Ground</button>
@@ -209,6 +211,8 @@
           <button class="app-button tile-selector" data-tile-type="start">Start</button>
           <button class="app-button tile-selector" data-tile-type="delete">DELETE</button>
         </div>
+        <div class="scroll-fader"></div>
+        
       </div>
       <div id="toolbar-bottom">
         <div id="tool-labels">

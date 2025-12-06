@@ -9,17 +9,30 @@ const { flatMap, reduce, groupBy, toArray, mergeMap, switchMap, scan, map, tap, 
 import ham from 'https://hamilsauce.github.io/hamhelper/hamhelper1.0.0.js';
 const { sleep, template, utils, download, TwoWayMap } = ham;
 
+let hasInitViewBox = false;
+
 const renderMap = (mapData, svgCanvas, graph, actor1) => {
   graph.fromMap(mapData);
   
-  svgCanvas.setViewBox({
+  if (!hasInitViewBox) {
+    svgCanvas.setViewBox({
+      x: 0,
+      y: 0,
+      width: graph.width,
+      height: graph.height
+    });
+    
+    hasInitViewBox = true;
+  }
+  
+  svgCanvas.layers.tile.innerHTML = '';
+  
+  Object.assign(svgCanvas.surface.style, {
     x: 0,
     y: 0,
     width: graph.width,
     height: graph.height
   });
-  
-  svgCanvas.layers.tile.innerHTML = '';
   
   graph.nodes.forEach(({ x, y, tileType }, rowNumber) => {
     if (tileType === 'start') {

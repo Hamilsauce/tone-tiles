@@ -159,6 +159,7 @@ const contextMenuTransformList = new TransformList(svgCanvas, contextMenu,
     values: [0.05, 0.05],
     position: 2,
   }, ]
+  
 });
 const actor1 = useTemplate('actor', {
   dataset: { moving: false, teleporting: false },
@@ -221,7 +222,6 @@ svgCanvas.setViewBox({
   height: graph.height + 1,
 });
 
-// svgCanvas.setCanvasDimensions()
 svgCanvas.setCanvasDimensions({ width: window.innerWidth, height: window.innerHeight });
 
 const pointerup$ = fromEvent(svgCanvas, 'pointerup');
@@ -230,24 +230,6 @@ pointerup$.pipe(
   tap(x => pageScrolling.enable()),
 ).subscribe();
 
-// graph.nodes.forEach(({ x, y, tileType }, rowNumber) => {
-//   tileLayer.append(
-//     svgCanvas.createRect({
-//       width: 1,
-//       height: 1,
-//       classList: ['tile', 'gradient'],
-//       dataset: {
-//         tileType,
-//         x: x,
-//         y: y,
-//         current: false,
-//         active: false,
-//         isPathNode: false,
-//         fillEffect: 'gradient'
-//       },
-//     }))
-// });
-
 let lastX
 let lastY
 let goalTile
@@ -255,13 +237,6 @@ let isMoving = false;
 let isSelectingLinkTile = false;
 
 setTimeout(() => {
-  
-  // const centerNode = graph.getSpiral()
-  // console.warn('graph', graph)
-  // console.warn('centerNode', centerNode)
-  // let tile = svgCanvas.querySelector(`.tile[data-x="${centerNode.x}"][data-y="${centerNode.y}"]`);
-  // tile.dataset.active = true
-  
   lastX = +tileLayer.lastElementChild.dataset.x;
   lastY = +tileLayer.lastElementChild.dataset.y;
   
@@ -270,16 +245,9 @@ setTimeout(() => {
   
   goalTile = tileLayer.querySelector('[data-tile-type="goal"]');
   
-  svgCanvas.surface.setAttribute('width', lastX + 1)
-  svgCanvas.surface.setAttribute('height', lastY + 1)
-  
-}, 900)
-
-
-// const oppositeDirMap = new TwoWayMap([
-//   ['up', 'down'],
-//   ['left', 'right'],
-// ]);
+  svgCanvas.surface.setAttribute('width', lastX + 1);
+  svgCanvas.surface.setAttribute('height', lastY + 1);
+}, 900);
 
 svgCanvas.addEventListener('click', async ({ detail }) => {
   if (isMoving) return;
@@ -473,7 +441,6 @@ svgCanvas.addEventListener('click', async ({ detail }) => {
 });
 
 svgCanvas.layers.tile.addEventListener('contextmenu', e => {
-  console.log(e.constructor.name)
   e.preventDefault();
   e.stopPropagation();
   e.stopImmediatePropagation();
@@ -504,7 +471,6 @@ svgCanvas.layers.tile.addEventListener('contextmenu', e => {
     const svgListContainer = contextMenu.firstElementChild;
     const htmlHeight = htmlListContainer.getBoundingClientRect().height
     htmlListContainer.style.height = '100%'
-    // svgListContainer.setAttribute('height', isNaN(htmlHeight) ? 0 : htmlHeight)
   } else {}
   
   targ.dataset.selected = true;
@@ -520,9 +486,9 @@ svgCanvas.layers.tile.addEventListener('contextmenu', e => {
     e.stopImmediatePropagation();
     pageScrolling.enable();
     
-    // console.log(pageScrolling.isEnabled);
     
     const edgeLines = [...objectLayer.querySelectorAll('.edge-line')];
+
     edgeLines.forEach(el => {
       el.remove();
     })
