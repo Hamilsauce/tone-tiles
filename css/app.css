@@ -85,7 +85,7 @@ body {
   justify-content: flex-start;
   align-items: flex-start;
   gap: 0px;
-  overflow-y: hidden;
+  overflow: auto;
   /* height: 100%; */
   /* display: none; */
 }
