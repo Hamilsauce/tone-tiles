@@ -61,24 +61,16 @@ const renderMap = (mapData, svgCanvas, graph, actor1) => {
 
 
 export const initMapControls = async (graph, svgCanvas, actor1) => {
-  // setTimeout(async () => {
   const app = document.querySelector('#app');
   const appBody = document.querySelector('#app-body')
   const containers = document.querySelectorAll('.container')
   const mapInput = document.querySelector('#map-input');
   
-  
   const mapInput$ = fromEvent(mapInput, 'change')
   
   const saveButton = document.querySelector('#save-map')
   const newButton = document.querySelector('#new-map')
-  
-  // const storedMaps = (await loadMaps())
   const mapNames = await loadMapNames();
-  
-  // await clearMaps();
-  // const newlyStoredMapIds = await Promise.all(storeMaps())
-  // console.warn('newlyStoredMapIds', newlyStoredMapIds);
   
   [...mapInput.options].forEach((e) => {
     e.remove();
@@ -106,25 +98,21 @@ export const initMapControls = async (graph, svgCanvas, actor1) => {
     
     if (!!graphOut.id) {
       mapId = await updateMap(graphOut)
-    }
-    
-    else {
+    } else {
       delete graphOut.id
       
       mapId = await storeMap(graphOut)
     }
     
     copyTextToClipboard(graphOut)
-    console.warn('toStorageFormat graphOut\n\n', graphOut)
   });
   
   newButton.addEventListener('click', async (e) => {
-    e.preventDefault()
-    e.stopPropagation()
-    e.stopImmediatePropagation()
+    e.preventDefault();
+    e.stopPropagation();~
+    e.stopImmediatePropagation();
     
-    renderMap(BLANK_MAP_16X16, svgCanvas, graph, actor1)
-    
+    renderMap(BLANK_MAP_16X16, svgCanvas, graph, actor1);
   });
   
   

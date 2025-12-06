@@ -1,0 +1,32 @@
+#app-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2px;
+  padding: 0 6px;
+  background: #D3D3D3;
+}
+
+#app-header-center {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 0 6px;
+  background: #D3D3D3;
+  text-align: left;
+}
+
+.app-header-center-bottom {
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 0px;
+}
+
+/* #app-state-display {
+  padding: 4px;
+  font-size: 12px;
+} */

@@ -19,12 +19,13 @@ import { getTileSelector } from './selection-box/SelectionBox.js';
 import { initMapControls } from './ui/map-selection.js';
 import { scheduleOscillator, AudioNote, audioEngine } from './audio/index.js';
 import { TransformList } from './canvas/TransformList.js';
+// import { addDragAction } from '../modules/drag-stream.js';
 
 
 import ham from 'https://hamilsauce.github.io/hamhelper/hamhelper1.0.0.js';
 
 
-const { sleep, template, utils, download, TwoWayMap } = ham;
+const { addDragAction, sleep, template, utils, download, TwoWayMap } = ham;
 const { fromEvent } = rxjs;
 const { tap } = rxjs.operators;
 
@@ -131,6 +132,7 @@ console.warn('graph', graph)
 // await sleep(500)
 const app = document.querySelector('#app');
 const appBody = app.querySelector('#app-body');
+const floatingMenu = app.querySelector('#app-floating-menu');
 const canvasEl = document.querySelector('#canvas');
 const svgCanvas = new SVGCanvas(canvasEl);
 
@@ -161,10 +163,12 @@ const contextMenuTransformList = new TransformList(svgCanvas, contextMenu,
   }, ]
   
 });
+
 const actor1 = useTemplate('actor', {
   dataset: { moving: false, teleporting: false },
   id: 'actor1',
 });
+
 const actor1TransformList = new TransformList(svgCanvas, actor1)
 
 const actor2 = useTemplate('actor', {
@@ -172,8 +176,12 @@ const actor2 = useTemplate('actor', {
   fill: '#C1723B',
   id: 'actor2',
 });
+
 const actor2TransformList = new TransformList(svgCanvas, actor2)
 
+// addDragAction(floatingMenu, (e) => {
+//   console.warn({...e})
+// })
 initMapControls(graph, svgCanvas, actor1);
 
 actor2.setAttribute('transform', 'translate(12,21) rotate(0) scale(1)');
@@ -488,7 +496,7 @@ svgCanvas.layers.tile.addEventListener('contextmenu', e => {
     
     
     const edgeLines = [...objectLayer.querySelectorAll('.edge-line')];
-
+    
     edgeLines.forEach(el => {
       el.remove();
     })
