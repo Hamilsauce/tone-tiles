@@ -1,4 +1,6 @@
 import { EventEmitter } from 'https://hamilsauce.github.io/hamhelper/event-emitter.js';
+import { dispatchPointerEvent } from '../lib/utils.js';
+
 import ham from 'https://hamilsauce.github.io/hamhelper/hamhelper1.0.0.js';
 const { template, utils } = ham;
 
@@ -38,6 +40,7 @@ export class TileSelector extends EventEmitter {
     this.#self = document.createElementNS(SVG_NS, 'g');
     this.#self.classList.add('tile-selector');
     this.#selectionBox = document.createElementNS(SVG_NS, 'rect');
+    this.#selectionBox.classList.add('selection-box')
     
     this.#handles = {
       start: this.createSelectionHandle('start'),
@@ -119,7 +122,10 @@ export class TileSelector extends EventEmitter {
   init() {
     this.#selectionBox.setAttribute('stroke-width', 0.07);
     this.#selectionBox.setAttribute('stroke', 'green');
-    this.#selectionBox.setAttribute('fill', 'none');
+    // this.#selectionBox.setAttribute('classList', 'green');
+    this.#selectionBox.classList.add('selection-box')
+    this.#selectionBox.setAttribute('fill', '#24D1783B');
+    this.#selectionBox.style.fill = '#24D1783B'
     
     this.#self.append(this.#selectionBox);
     
@@ -153,8 +159,10 @@ export class TileSelector extends EventEmitter {
     });
     
     this.updateSelection();
-    
+    this.#handles.end.focus()
     this.emitRange();
+    
+    dispatchPointerEvent(this.#handles.end, 'pointerdown')
   }
   
   remove() {
@@ -176,8 +184,6 @@ export class TileSelector extends EventEmitter {
     if (!this.endPoint || this.endPoint.x === null) {
       this.setEndPoint({ x: x + this.#unitSize, y: y + this.#unitSize });
     }
-    
-    // this.emitRange()
     
     return this;
   }
@@ -249,34 +255,21 @@ export class TileSelector extends EventEmitter {
       return
     }
     
-    if (handle.dataset.handle === 'start') {
-      if (
-        (pt.x - this.endPoint.x) < 0 &&
-        (pt.y - this.endPoint.y) < 0 &&
-        this.getDistance(this.endPoint, pt) >= this.#unitSize
-      ) {
-        this.setStartPoint(pt);
-      }
-      else if ((pt.x - this.startPoint.x) > 0 && (pt.y - this.startPoint.y) > 0) {
-        this.setDragTarget()
-        this.setDragTarget(this.#handles.end)
-        
-        this.setStartPoint(pt);
-      }
+    if (
+      handle.dataset.handle === 'start' &&
+      (pt.x - this.endPoint.x) < 0 &&
+      (pt.y - this.endPoint.y) < 0 &&
+      this.getDistance(this.endPoint, pt) >= this.#unitSize
+    ) {
+      this.setStartPoint(pt);
     }
-    else if (handle.dataset.handle === 'end') {
-      // if pt is greater than start
-      if ((pt.x - this.startPoint.x) > 0 && (pt.y - this.startPoint.y) > 0) {
-        this.setEndPoint(pt);
-      }
-      
-      // if pt is less than start
-      else if ((pt.x - this.startPoint.x) < 0 && (pt.y - this.startPoint.y) < 0) {
-        this.setDragTarget()
-        this.setDragTarget(this.#handles.start)
-        
-        this.setStartPoint(pt);
-      }
+    
+    else if (
+      handle.dataset.handle === 'end' &&
+      (pt.x - this.startPoint.x) > 0 &&
+      (pt.y - this.startPoint.y) > 0
+    ) {
+      this.setEndPoint(pt);
     }
     
     this.updateSelection();
@@ -298,34 +291,6 @@ export class TileSelector extends EventEmitter {
     }
     
     this.emitRange();
-  }
-  
-  
-  setDragTarget(handleEl) {
-    if (handleEl) {
-      this.#dragTargetHandle = handleEl;
-      handleEl.dataset.isDragging = true;
-      
-      this.parent.addEventListener('pointermove', this.dragHandler);
-      this.parent.addEventListener('pointerup', this.dragEndHandler);
-    }
-    
-    else {
-      this.parent.removeEventListener('pointermove', this.dragHandler);
-      this.parent.removeEventListener('pointerup', this.dragEndHandler);
-      
-      if (this.#dragTargetHandle) {
-        this.#dragTargetHandle.dataset.isDragging = false;
-        this.#dragTargetHandle = null;
-      }
-    }
-  }
-  
-  resetDragTarget() {
-    this.parent.removeEventListener('pointermove', this.dragHandler);
-    this.parent.removeEventListener('pointerup', this.dragEndHandler);
-    this.#dragTargetHandle.dataset.isDragging = false;
-    this.#dragTargetHandle = null;
   }
   
   emitRange() {
