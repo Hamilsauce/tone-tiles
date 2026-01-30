@@ -15,7 +15,7 @@
 
 <body>
   <div id="app">
-    <div id="stats-display">
+    <!-- <div id="stats-display">
       <div id="stats-top-row">
         <div class="stat-output" id="handle-label">
           <div id="stat-label">handle:</div>
@@ -44,29 +44,230 @@
           <div id="stat-value">0.22, 3</div>
         </div>
       </div>
-    </div>
+    </div> -->
     
-    <svg data-type="canvas" id="svg" width="412" height="782" viewBox="-5 -10 10 20" preserveAspectRatio="xMidYMin meet" x="0" y="0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
-      <g id="scene" class="layer1">
-        
-        <rect id="surface" x="0" y="0"></rect>
-        
-        <g id="tile-container"></g>
-        
+    <svg data-type="canvas" id="svg" width="412" height="782" viewBox="-5 -10 10 20" transform="translate(0,0)"  preserveAspectRatio="xMidYMin meet" x="0" y="0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+      <g id="scene" class="layer1" transform="translate(-5 -10)">
+        <rect id="surface" x="0" y="0" width="10" height="20"></rect>
+        <g id="tile-container">
+          <rect class="tile" fill="#FFFFFF" data-x="0" data-y="0" data-selected="false" width="1" height="1" transform="translate(0 0)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="1" data-y="0" data-selected="false" width="1" height="1" transform="translate(1 0)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="2" data-y="0" data-selected="false" width="1" height="1" transform="translate(2 0)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="3" data-y="0" data-selected="false" width="1" height="1" transform="translate(3 0)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="4" data-y="0" data-selected="false" width="1" height="1" transform="translate(4 0)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="5" data-y="0" data-selected="false" width="1" height="1" transform="translate(5 0)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="6" data-y="0" data-selected="false" width="1" height="1" transform="translate(6 0)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="7" data-y="0" data-selected="false" width="1" height="1" transform="translate(7 0)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="8" data-y="0" data-selected="false" width="1" height="1" transform="translate(8 0)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="9" data-y="0" data-selected="false" width="1" height="1" transform="translate(9 0)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="0" data-y="1" data-selected="false" width="1" height="1" transform="translate(0 1)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="1" data-y="1" data-selected="false" width="1" height="1" transform="translate(1 1)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="2" data-y="1" data-selected="false" width="1" height="1" transform="translate(2 1)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="3" data-y="1" data-selected="false" width="1" height="1" transform="translate(3 1)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="4" data-y="1" data-selected="false" width="1" height="1" transform="translate(4 1)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="5" data-y="1" data-selected="false" width="1" height="1" transform="translate(5 1)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="6" data-y="1" data-selected="false" width="1" height="1" transform="translate(6 1)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="7" data-y="1" data-selected="false" width="1" height="1" transform="translate(7 1)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="8" data-y="1" data-selected="false" width="1" height="1" transform="translate(8 1)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="9" data-y="1" data-selected="false" width="1" height="1" transform="translate(9 1)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="0" data-y="2" data-selected="false" width="1" height="1" transform="translate(0 2)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="1" data-y="2" data-selected="false" width="1" height="1" transform="translate(1 2)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="2" data-y="2" data-selected="false" width="1" height="1" transform="translate(2 2)" data-focused="true"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="3" data-y="2" data-selected="false" width="1" height="1" transform="translate(3 2)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="4" data-y="2" data-selected="false" width="1" height="1" transform="translate(4 2)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="5" data-y="2" data-selected="false" width="1" height="1" transform="translate(5 2)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="6" data-y="2" data-selected="false" width="1" height="1" transform="translate(6 2)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="7" data-y="2" data-selected="false" width="1" height="1" transform="translate(7 2)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="8" data-y="2" data-selected="false" width="1" height="1" transform="translate(8 2)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="9" data-y="2" data-selected="false" width="1" height="1" transform="translate(9 2)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="0" data-y="3" data-selected="false" width="1" height="1" transform="translate(0 3)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="1" data-y="3" data-selected="false" width="1" height="1" transform="translate(1 3)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="2" data-y="3" data-selected="false" width="1" height="1" transform="translate(2 3)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="3" data-y="3" data-selected="false" width="1" height="1" transform="translate(3 3)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="4" data-y="3" data-selected="false" width="1" height="1" transform="translate(4 3)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="5" data-y="3" data-selected="false" width="1" height="1" transform="translate(5 3)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="6" data-y="3" data-selected="false" width="1" height="1" transform="translate(6 3)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="7" data-y="3" data-selected="false" width="1" height="1" transform="translate(7 3)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="8" data-y="3" data-selected="false" width="1" height="1" transform="translate(8 3)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="9" data-y="3" data-selected="false" width="1" height="1" transform="translate(9 3)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="0" data-y="4" data-selected="false" width="1" height="1" transform="translate(0 4)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="1" data-y="4" data-selected="false" width="1" height="1" transform="translate(1 4)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="2" data-y="4" data-selected="false" width="1" height="1" transform="translate(2 4)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="3" data-y="4" data-selected="false" width="1" height="1" transform="translate(3 4)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="4" data-y="4" data-selected="false" width="1" height="1" transform="translate(4 4)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="5" data-y="4" data-selected="false" width="1" height="1" transform="translate(5 4)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="6" data-y="4" data-selected="false" width="1" height="1" transform="translate(6 4)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="7" data-y="4" data-selected="false" width="1" height="1" transform="translate(7 4)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="8" data-y="4" data-selected="false" width="1" height="1" transform="translate(8 4)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="9" data-y="4" data-selected="false" width="1" height="1" transform="translate(9 4)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="0" data-y="5" data-selected="false" width="1" height="1" transform="translate(0 5)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="1" data-y="5" data-selected="false" width="1" height="1" transform="translate(1 5)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="2" data-y="5" data-selected="false" width="1" height="1" transform="translate(2 5)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="3" data-y="5" data-selected="false" width="1" height="1" transform="translate(3 5)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="4" data-y="5" data-selected="false" width="1" height="1" transform="translate(4 5)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="5" data-y="5" data-selected="false" width="1" height="1" transform="translate(5 5)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="6" data-y="5" data-selected="false" width="1" height="1" transform="translate(6 5)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="7" data-y="5" data-selected="false" width="1" height="1" transform="translate(7 5)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="8" data-y="5" data-selected="false" width="1" height="1" transform="translate(8 5)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="9" data-y="5" data-selected="false" width="1" height="1" transform="translate(9 5)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="0" data-y="6" data-selected="false" width="1" height="1" transform="translate(0 6)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="1" data-y="6" data-selected="false" width="1" height="1" transform="translate(1 6)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="2" data-y="6" data-selected="false" width="1" height="1" transform="translate(2 6)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="3" data-y="6" data-selected="false" width="1" height="1" transform="translate(3 6)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="4" data-y="6" data-selected="false" width="1" height="1" transform="translate(4 6)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="5" data-y="6" data-selected="false" width="1" height="1" transform="translate(5 6)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="6" data-y="6" data-selected="false" width="1" height="1" transform="translate(6 6)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="7" data-y="6" data-selected="false" width="1" height="1" transform="translate(7 6)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="8" data-y="6" data-selected="false" width="1" height="1" transform="translate(8 6)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="9" data-y="6" data-selected="false" width="1" height="1" transform="translate(9 6)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="0" data-y="7" data-selected="false" width="1" height="1" transform="translate(0 7)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="1" data-y="7" data-selected="false" width="1" height="1" transform="translate(1 7)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="2" data-y="7" data-selected="false" width="1" height="1" transform="translate(2 7)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="3" data-y="7" data-selected="false" width="1" height="1" transform="translate(3 7)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="4" data-y="7" data-selected="false" width="1" height="1" transform="translate(4 7)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="5" data-y="7" data-selected="false" width="1" height="1" transform="translate(5 7)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="6" data-y="7" data-selected="false" width="1" height="1" transform="translate(6 7)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="7" data-y="7" data-selected="false" width="1" height="1" transform="translate(7 7)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="8" data-y="7" data-selected="false" width="1" height="1" transform="translate(8 7)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="9" data-y="7" data-selected="false" width="1" height="1" transform="translate(9 7)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="0" data-y="8" data-selected="false" width="1" height="1" transform="translate(0 8)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="1" data-y="8" data-selected="false" width="1" height="1" transform="translate(1 8)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="2" data-y="8" data-selected="false" width="1" height="1" transform="translate(2 8)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="3" data-y="8" data-selected="false" width="1" height="1" transform="translate(3 8)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="4" data-y="8" data-selected="false" width="1" height="1" transform="translate(4 8)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="5" data-y="8" data-selected="false" width="1" height="1" transform="translate(5 8)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="6" data-y="8" data-selected="false" width="1" height="1" transform="translate(6 8)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="7" data-y="8" data-selected="false" width="1" height="1" transform="translate(7 8)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="8" data-y="8" data-selected="false" width="1" height="1" transform="translate(8 8)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="9" data-y="8" data-selected="false" width="1" height="1" transform="translate(9 8)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="0" data-y="9" data-selected="false" width="1" height="1" transform="translate(0 9)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="1" data-y="9" data-selected="false" width="1" height="1" transform="translate(1 9)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="2" data-y="9" data-selected="false" width="1" height="1" transform="translate(2 9)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="3" data-y="9" data-selected="false" width="1" height="1" transform="translate(3 9)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="4" data-y="9" data-selected="false" width="1" height="1" transform="translate(4 9)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="5" data-y="9" data-selected="false" width="1" height="1" transform="translate(5 9)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="6" data-y="9" data-selected="false" width="1" height="1" transform="translate(6 9)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="7" data-y="9" data-selected="false" width="1" height="1" transform="translate(7 9)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="8" data-y="9" data-selected="false" width="1" height="1" transform="translate(8 9)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="9" data-y="9" data-selected="false" width="1" height="1" transform="translate(9 9)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="0" data-y="10" data-selected="false" width="1" height="1" transform="translate(0 10)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="1" data-y="10" data-selected="false" width="1" height="1" transform="translate(1 10)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="2" data-y="10" data-selected="false" width="1" height="1" transform="translate(2 10)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="3" data-y="10" data-selected="false" width="1" height="1" transform="translate(3 10)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="4" data-y="10" data-selected="false" width="1" height="1" transform="translate(4 10)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="5" data-y="10" data-selected="false" width="1" height="1" transform="translate(5 10)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="6" data-y="10" data-selected="false" width="1" height="1" transform="translate(6 10)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="7" data-y="10" data-selected="false" width="1" height="1" transform="translate(7 10)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="8" data-y="10" data-selected="false" width="1" height="1" transform="translate(8 10)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="9" data-y="10" data-selected="false" width="1" height="1" transform="translate(9 10)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="0" data-y="11" data-selected="false" width="1" height="1" transform="translate(0 11)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="1" data-y="11" data-selected="false" width="1" height="1" transform="translate(1 11)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="2" data-y="11" data-selected="false" width="1" height="1" transform="translate(2 11)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="3" data-y="11" data-selected="false" width="1" height="1" transform="translate(3 11)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="4" data-y="11" data-selected="false" width="1" height="1" transform="translate(4 11)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="5" data-y="11" data-selected="false" width="1" height="1" transform="translate(5 11)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="6" data-y="11" data-selected="false" width="1" height="1" transform="translate(6 11)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="7" data-y="11" data-selected="false" width="1" height="1" transform="translate(7 11)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="8" data-y="11" data-selected="false" width="1" height="1" transform="translate(8 11)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="9" data-y="11" data-selected="false" width="1" height="1" transform="translate(9 11)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="0" data-y="12" data-selected="false" width="1" height="1" transform="translate(0 12)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="1" data-y="12" data-selected="false" width="1" height="1" transform="translate(1 12)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="2" data-y="12" data-selected="false" width="1" height="1" transform="translate(2 12)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="3" data-y="12" data-selected="false" width="1" height="1" transform="translate(3 12)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="4" data-y="12" data-selected="false" width="1" height="1" transform="translate(4 12)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="5" data-y="12" data-selected="false" width="1" height="1" transform="translate(5 12)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="6" data-y="12" data-selected="false" width="1" height="1" transform="translate(6 12)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="7" data-y="12" data-selected="false" width="1" height="1" transform="translate(7 12)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="8" data-y="12" data-selected="false" width="1" height="1" transform="translate(8 12)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="9" data-y="12" data-selected="false" width="1" height="1" transform="translate(9 12)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="0" data-y="13" data-selected="false" width="1" height="1" transform="translate(0 13)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="1" data-y="13" data-selected="false" width="1" height="1" transform="translate(1 13)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="2" data-y="13" data-selected="false" width="1" height="1" transform="translate(2 13)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="3" data-y="13" data-selected="false" width="1" height="1" transform="translate(3 13)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="4" data-y="13" data-selected="false" width="1" height="1" transform="translate(4 13)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="5" data-y="13" data-selected="false" width="1" height="1" transform="translate(5 13)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="6" data-y="13" data-selected="false" width="1" height="1" transform="translate(6 13)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="7" data-y="13" data-selected="false" width="1" height="1" transform="translate(7 13)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="8" data-y="13" data-selected="false" width="1" height="1" transform="translate(8 13)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="9" data-y="13" data-selected="false" width="1" height="1" transform="translate(9 13)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="0" data-y="14" data-selected="false" width="1" height="1" transform="translate(0 14)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="1" data-y="14" data-selected="false" width="1" height="1" transform="translate(1 14)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="2" data-y="14" data-selected="false" width="1" height="1" transform="translate(2 14)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="3" data-y="14" data-selected="false" width="1" height="1" transform="translate(3 14)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="4" data-y="14" data-selected="false" width="1" height="1" transform="translate(4 14)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="5" data-y="14" data-selected="false" width="1" height="1" transform="translate(5 14)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="6" data-y="14" data-selected="false" width="1" height="1" transform="translate(6 14)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="7" data-y="14" data-selected="false" width="1" height="1" transform="translate(7 14)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="8" data-y="14" data-selected="false" width="1" height="1" transform="translate(8 14)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="9" data-y="14" data-selected="false" width="1" height="1" transform="translate(9 14)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="0" data-y="15" data-selected="false" width="1" height="1" transform="translate(0 15)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="1" data-y="15" data-selected="false" width="1" height="1" transform="translate(1 15)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="2" data-y="15" data-selected="false" width="1" height="1" transform="translate(2 15)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="3" data-y="15" data-selected="false" width="1" height="1" transform="translate(3 15)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="4" data-y="15" data-selected="false" width="1" height="1" transform="translate(4 15)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="5" data-y="15" data-selected="false" width="1" height="1" transform="translate(5 15)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="6" data-y="15" data-selected="false" width="1" height="1" transform="translate(6 15)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="7" data-y="15" data-selected="false" width="1" height="1" transform="translate(7 15)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="8" data-y="15" data-selected="false" width="1" height="1" transform="translate(8 15)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="9" data-y="15" data-selected="false" width="1" height="1" transform="translate(9 15)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="0" data-y="16" data-selected="false" width="1" height="1" transform="translate(0 16)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="1" data-y="16" data-selected="false" width="1" height="1" transform="translate(1 16)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="2" data-y="16" data-selected="false" width="1" height="1" transform="translate(2 16)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="3" data-y="16" data-selected="false" width="1" height="1" transform="translate(3 16)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="4" data-y="16" data-selected="false" width="1" height="1" transform="translate(4 16)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="5" data-y="16" data-selected="false" width="1" height="1" transform="translate(5 16)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="6" data-y="16" data-selected="false" width="1" height="1" transform="translate(6 16)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="7" data-y="16" data-selected="false" width="1" height="1" transform="translate(7 16)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="8" data-y="16" data-selected="false" width="1" height="1" transform="translate(8 16)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="9" data-y="16" data-selected="false" width="1" height="1" transform="translate(9 16)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="0" data-y="17" data-selected="false" width="1" height="1" transform="translate(0 17)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="1" data-y="17" data-selected="false" width="1" height="1" transform="translate(1 17)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="2" data-y="17" data-selected="false" width="1" height="1" transform="translate(2 17)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="3" data-y="17" data-selected="false" width="1" height="1" transform="translate(3 17)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="4" data-y="17" data-selected="false" width="1" height="1" transform="translate(4 17)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="5" data-y="17" data-selected="false" width="1" height="1" transform="translate(5 17)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="6" data-y="17" data-selected="false" width="1" height="1" transform="translate(6 17)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="7" data-y="17" data-selected="false" width="1" height="1" transform="translate(7 17)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="8" data-y="17" data-selected="false" width="1" height="1" transform="translate(8 17)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="9" data-y="17" data-selected="false" width="1" height="1" transform="translate(9 17)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="0" data-y="18" data-selected="false" width="1" height="1" transform="translate(0 18)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="1" data-y="18" data-selected="false" width="1" height="1" transform="translate(1 18)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="2" data-y="18" data-selected="false" width="1" height="1" transform="translate(2 18)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="3" data-y="18" data-selected="false" width="1" height="1" transform="translate(3 18)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="4" data-y="18" data-selected="false" width="1" height="1" transform="translate(4 18)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="5" data-y="18" data-selected="false" width="1" height="1" transform="translate(5 18)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="6" data-y="18" data-selected="false" width="1" height="1" transform="translate(6 18)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="7" data-y="18" data-selected="false" width="1" height="1" transform="translate(7 18)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="8" data-y="18" data-selected="false" width="1" height="1" transform="translate(8 18)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="9" data-y="18" data-selected="false" width="1" height="1" transform="translate(9 18)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="0" data-y="19" data-selected="false" width="1" height="1" transform="translate(0 19)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="1" data-y="19" data-selected="false" width="1" height="1" transform="translate(1 19)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="2" data-y="19" data-selected="false" width="1" height="1" transform="translate(2 19)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="3" data-y="19" data-selected="false" width="1" height="1" transform="translate(3 19)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="4" data-y="19" data-selected="false" width="1" height="1" transform="translate(4 19)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="5" data-y="19" data-selected="false" width="1" height="1" transform="translate(5 19)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="6" data-y="19" data-selected="false" width="1" height="1" transform="translate(6 19)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="7" data-y="19" data-selected="false" width="1" height="1" transform="translate(7 19)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="8" data-y="19" data-selected="false" width="1" height="1" transform="translate(8 19)"></rect>
+          <rect class="tile" fill="#FFFFFF" data-x="9" data-y="19" data-selected="false" width="1" height="1" transform="translate(9 19)"></rect>
+        </g>
         <g id="objects">
           <circle fill="#00000080" id="center" cx="0" cy="0" r="0.25"></circle>
         </g>
+        <g class="tile-selector" data-is-dragging="false" transform="translate(0.5,0.5)">
+          <rect class="selection-box" stroke-width="0.07" stroke="green" fill="none" width="1" height="1" x="2" y="2" transform="translate(-0.5,-0.5)"></rect>
+          <circle class="selection-handle" data-handle="a" id="a-handle" r="0.33" _fill="white" stroke-width="0.07" stroke="green" cx="2" cy="2" transform="translate(0.0,0.0)"></circle>
+          <circle class="selection-handle" data-handle="b" id="b-handle" r="0.33" _fill="white" stroke-width="0.07" stroke="green" cx="2" cy="2" transform="translate(0,0)" data-is-dragging="false"></circle>
+        </g>
       </g>
-      
       <circle fill="#00000080" id="center" cx="0" cy="0" r="0.25"></circle>
-      
     </svg>
   </div>
   <script type="text/javascript" charset="utf-8">
     const SVG_NS = 'http://www.w3.org/2000/svg';
   </script>
-  <!-- <script src="./draw.js" type="module"></script> -->
-  <script src="./select-area.js" type="module"></script>
+  <script src="./SelectionBoxBest.js" type="module"></script>
+  <!-- <script src="./select-area.js" type="module"></script> -->
 </body>
 
 </html>

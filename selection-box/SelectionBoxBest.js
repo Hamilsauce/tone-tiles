@@ -1,3 +1,6 @@
+import ham from 'https://hamilsauce.github.io/hamhelper/hamhelper1.0.0.js';
+const { template, utils, sleep } = ham;
+
 const app = document.querySelector('#app');
 const svg = document.querySelector('#svg');
 const scene = document.querySelector('#scene');
@@ -31,13 +34,22 @@ const handles = {
     return [this.a, this.b].includes(el)
   },
   
-  setFocus(label) {
+  setFocus(label = null) {
+    if (!label && this.focus) {
+      this.focus.dataset.role = undefined
+      this.anchor.dataset.role = undefined
+      this.focus = null;
+      this.anchor = null;
+      return;
+    }
+    
     this.focus = label ? this[label] : null;
     this.anchor = label ? this.focus === this.a ? this.b : this.a : null;
+    
+    this.focus.dataset.role = 'focus'
+    this.anchor.dataset.role = 'anchor'
   },
-  swap() {
-    return [this.a, this.b].includes(el)
-  },
+  
   anchor: null,
   focus: null,
 }
@@ -51,8 +63,8 @@ const points = {
     this.anchor = label ? this.focus === this.a ? this.b : this.a : null;
   },
   
-  get x() { return Math.min(this.anchor.x, this.focus.x); },
-  get y() { return Math.min(this.anchor.y, this.focus.y); },
+  get x() { return Math.min(this.anchor?.x, this.focus?.x); },
+  get y() { return Math.min(this.anchor?.y, this.focus?.y); },
   get width() { return (Math.max(this.a.x, this.b.x) - this.x) <= 0 ? 1 : (Math.max(this.a.x, this.b.x) - this.x) + 1 },
   get height() { return (Math.max(this.a.y, this.b.y) - this.y) <= 0 ? 1 : (Math.max(this.a.y, this.b.y) - this.y) + 1 },
   anchor: null,
@@ -80,11 +92,12 @@ const render = (pt) => {
   
   selectBox.setAttribute('width', points.width) // - points.x)
   selectBox.setAttribute('height', points.height) // - points.y)
+  if (handles.focus) {
+    
+    handles.focus.setAttribute('cx', points.focus.x)
+    handles.focus.setAttribute('cy', points.focus.y)
+  }
   
-  handles.focus.setAttribute('cx', points.focus.x)
-  handles.focus.setAttribute('cy', points.focus.y)
-  handles.anchor.setAttribute('cx', points.anchor.x)
-  handles.anchor.setAttribute('cy', points.anchor.y)
 }
 
 svg.addEventListener('click', ({ target, currentTarget, clientX, clientY }) => {
@@ -99,6 +112,7 @@ svg.addEventListener('click', ({ target, currentTarget, clientX, clientY }) => {
 
 selector.addEventListener('pointerdown', ({ target, currentTarget, clientX, clientY }) => {
   const isTargetHandle = handles.isHandle(target)
+  if (!isTargetHandle) return
   const handleLabel = isTargetHandle ? target.dataset.handle : null;
   
   const pt = domPoint(clientX, clientY, 'floor');
@@ -110,10 +124,11 @@ selector.addEventListener('pointerdown', ({ target, currentTarget, clientX, clie
 })
 
 selector.addEventListener('pointermove', ({ target, currentTarget, clientX, clientY }) => {
-  const targ = handles.focus
   const focusPoint = points.focus
-  
-  if (!targ || !focusPoint) return;
+  if (!handles.focus || target != handles.focus) {
+    return
+  }
+  if (!focusPoint) return;
   
   const pt = domPoint(clientX, clientY)
   focusPoint.x = pt.x
@@ -122,11 +137,11 @@ selector.addEventListener('pointermove', ({ target, currentTarget, clientX, clie
   render();
 });
 
-selector.addEventListener('pointerup', ({ target, currentTarget, clientX, clientY }) => {
-  const targ = handles.focus
+selector.addEventListener('pointerup', async ({ target, currentTarget, clientX, clientY }) => {
   const focusPoint = points.focus
+  const focusHandle = handles.focus
   
-  if (!targ || !focusPoint) return
+  if (!focusPoint || !focusPoint) return
   
   const pt = domPoint(clientX, clientY, 'floor')
   
@@ -134,4 +149,6 @@ selector.addEventListener('pointerup', ({ target, currentTarget, clientX, client
   focusPoint.y = pt.y
   
   render();
+  await sleep(1000)
+  // handles.setFocus(null)
 });

@@ -31,10 +31,22 @@ const handles = {
     return [this.a, this.b].includes(el)
   },
   
-  setFocus(label) {
+  setFocus(label = null) {
+    if (!label && this.focus) {
+      this.focus.dataset.role = undefined
+      this.anchor.dataset.role = undefined
+      this.focus = null;
+      this.anchor = null;
+      return;
+    }
+    
     this.focus = label ? this[label] : null;
     this.anchor = label ? this.focus === this.a ? this.b : this.a : null;
+    
+    this.focus.dataset.role = 'focus'
+    this.anchor.dataset.role = 'anchor'
   },
+  
   anchor: null,
   focus: null,
 }
@@ -127,4 +139,6 @@ selector.addEventListener('pointerup', ({ target, currentTarget, clientX, client
   focusPoint.y = pt.y
   
   render();
+  
+  handles.setFocus(null)
 });

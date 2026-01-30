@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <title>Grid Selection</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/rxjs/7.3.0/rxjs.umd.min.js" integrity="sha512-y3JTS47nnpKORJX8Jn1Rlm+QgRIIZHtu3hWxal0e81avPrqUH48yk+aCi+gprT0RMAcpYa0WCkapxe+bpBHD6g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <link rel="stylesheet" href="./draw.css" />
+</head>
+
+<body>
+  <div id="app">
+    <div id="stats-display">
+      <div id="stats-top-row">
+        <div class="stat-output" id="handle-label">
+          <div id="stat-label">handle:</div>
+          <div id="stat-value">start</div>
+        </div>
+        <div class="stat-output" id="handle-inverted">
+          <div id="stat-label">inverted:</div>
+          <div id="stat-value">true</div>
+        </div>
+      </div>
+      <div id="stats-bottom-row">
+        <div class="stat-output" id="start-point">
+          <div id="stat-label">start:</div>
+          <div id="stat-value">0.22, 3</div>
+        </div>
+        <div class="stat-output" id="xy-point">
+          <div id="stat-label">xy:</div>
+          <div id="stat-value">0.22, 3</div>
+        </div>
+        <div class="stat-output" id="end-point">
+          <div id="stat-label">end:</div>
+          <div id="stat-value">0.22, 3</div>
+        </div>
+        <div class="stat-output" id="width-height-point">
+          <div id="stat-label">start:</div>
+          <div id="stat-value">0.22, 3</div>
+        </div>
+      </div>
+    </div>
+    
+    <svg data-type="canvas" id="svg" width="412" height="782" viewBox="-5 -10 10 20" preserveAspectRatio="xMidYMin meet" x="0" y="0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+      <g id="scene" class="layer1">
+        
+        <rect id="surface" x="0" y="0"></rect>
+        
+        <g id="tile-container"></g>
+        
+        <g id="objects">
+          <circle fill="#00000080" id="center" cx="0" cy="0" r="0.25"></circle>
+        </g>
+      </g>
+      
+      <circle fill="#00000080" id="center" cx="0" cy="0" r="0.25"></circle>
+      
+    </svg>
+  </div>
+  <script type="text/javascript" charset="utf-8">
+    const SVG_NS = 'http://www.w3.org/2000/svg';
+  </script>
+  <!-- <script src="./draw.js" type="module"></script> -->
+  <script src="./select-area.js" type="module"></script>
+</body>
+
+</html>
