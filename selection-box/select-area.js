@@ -4,6 +4,7 @@ const { DOM, date, array, utils, text } = ham;
 // import { getTileSelector } from '../selection-box/BACKUP/SelectionBoxEdges.js';
 // import { getTileSelector } from '../selection-box/BACKUP/SelectionBoxAnchor.js';
 import { getTileSelector } from '../selection-box/SelectionBox.js';
+// import { getTileSelector } from '../selection-box/SelectionBoxBest.js';
 import { DetailPanel } from './view/detail-panel.view.js';
 
 let currentPanel;
