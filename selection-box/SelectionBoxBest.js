@@ -1,4 +1,6 @@
+import { EventEmitter } from 'https://hamilsauce.github.io/hamhelper/event-emitter.js';
 import ham from 'https://hamilsauce.github.io/hamhelper/hamhelper1.0.0.js';
+
 const { template, utils, sleep } = ham;
 
 const app = document.querySelector('#app');
@@ -13,6 +15,13 @@ const selector = document.querySelector('.tile-selector');
 const selectBox = document.querySelector('.selection-box');
 const handleA = document.querySelector('#a-handle');
 const handleB = document.querySelector('#b-handle');
+// await navigator.clipboard.writeText(selector.outerHTML)
+// await navigator.clipboard.writeText(selector.innerHTML)
+
+const SELECTOR_TEMPLATE = `
+  <rect class="selection-box" stroke-width="0.07" stroke="green" fill="none" width="1" height="1" x="2" y="2" transform="translate(-0.5,-0.5)"></rect>
+  <circle class="selection-handle" data-handle="a" id="a-handle" r="0.33" _fill="white" stroke-width="0.07" stroke="green" cx="0" cy="0" transform="translate(0,0)"></circle>
+  <circle class="selection-handle" data-handle="b" id="b-handle" r="0.33" _fill="white" stroke-width="0.07" stroke="green" cx="0" cy="0" transform="translate(0,0)" data-is-dragging="false"></circle>`;
 
 
 const domPoint = (x, y, clamp = false) => {
@@ -24,6 +33,28 @@ const domPoint = (x, y, clamp = false) => {
     x: clamp === 'floor' ? Math.floor(p.x) : Math.ceil(p.x),
     y: clamp === 'floor' ? Math.floor(p.y) : Math.ceil(p.y)
   };
+}
+
+export class TileSelector extends EventEmitter {
+  #self;
+  #handles = { a: null, b: null }
+  #points = { a: domPoint(0, 0), b: domPoint(0, 0) }
+  
+  constructor(svgContext, unitSize = 1) {
+    super();
+    this.#self = document.createElementNS(SVG_NS, 'g');
+    this.#self.classList.add('tile-selector');
+    this.#self.setAttribute('transform', 'translate(0.5,0.5)');
+    this.#self.innerHTML = SELECTOR_TEMPLATE;
+    
+    this.dragStartHandler = this.onDragStart.bind(this);
+    this.dragHandler = this.onDragHandle.bind(this);
+    this.dragEndHandler = this.onDragEnd.bind(this);
+    
+  };
+  
+  get prop() { return this._prop };
+  set prop(newValue) { this._prop = newValue };
 }
 
 
@@ -46,8 +77,10 @@ const handles = {
     this.focus = label ? this[label] : null;
     this.anchor = label ? this.focus === this.a ? this.b : this.a : null;
     
-    this.focus.dataset.role = 'focus'
-    this.anchor.dataset.role = 'anchor'
+    if (this.focus) {
+      this.focus.dataset.role = 'focus'
+      this.anchor.dataset.role = 'anchor'
+    }
   },
   
   anchor: null,
@@ -71,7 +104,7 @@ const points = {
   focus: null,
 }
 
-const render = (pt) => {
+const render = async (pt) => {
   if (pt) {
     selectBox.setAttribute('x', pt.x)
     selectBox.setAttribute('y', pt.y)
@@ -92,12 +125,11 @@ const render = (pt) => {
   
   selectBox.setAttribute('width', points.width) // - points.x)
   selectBox.setAttribute('height', points.height) // - points.y)
+  
   if (handles.focus) {
-    
     handles.focus.setAttribute('cx', points.focus.x)
     handles.focus.setAttribute('cy', points.focus.y)
   }
-  
 }
 
 svg.addEventListener('click', ({ target, currentTarget, clientX, clientY }) => {
@@ -110,9 +142,25 @@ svg.addEventListener('click', ({ target, currentTarget, clientX, clientY }) => {
   render(pt)
 });
 
-selector.addEventListener('pointerdown', ({ target, currentTarget, clientX, clientY }) => {
+const handleDrag = ({ target, currentTarget, clientX, clientY }) => {
+  const focusPoint = points.focus;
+  
+  if (!handles.focus || target != handles.focus) return;
+  
+  if (!focusPoint) return;
+  
+  const pt = domPoint(clientX, clientY)
+  focusPoint.x = pt.x
+  focusPoint.y = pt.y
+  
+  render();
+};
+
+const handleDragStart = ({ target, currentTarget, clientX, clientY }) => {
   const isTargetHandle = handles.isHandle(target)
+
   if (!isTargetHandle) return
+
   const handleLabel = isTargetHandle ? target.dataset.handle : null;
   
   const pt = domPoint(clientX, clientY, 'floor');
@@ -121,34 +169,26 @@ selector.addEventListener('pointerdown', ({ target, currentTarget, clientX, clie
   points.setFocus(handleLabel);
   
   render();
-})
+}
 
-selector.addEventListener('pointermove', ({ target, currentTarget, clientX, clientY }) => {
-  const focusPoint = points.focus
-  if (!handles.focus || target != handles.focus) {
-    return
-  }
-  if (!focusPoint) return;
-  
-  const pt = domPoint(clientX, clientY)
-  focusPoint.x = pt.x
-  focusPoint.y = pt.y
-  
-  render();
-});
 
-selector.addEventListener('pointerup', async ({ target, currentTarget, clientX, clientY }) => {
+const handleDragEnd = async ({ target, currentTarget, clientX, clientY }) => {
   const focusPoint = points.focus
   const focusHandle = handles.focus
   
-  if (!focusPoint || !focusPoint) return
+  if (!focusHandle || !focusPoint) return
   
   const pt = domPoint(clientX, clientY, 'floor')
   
   focusPoint.x = pt.x
   focusPoint.y = pt.y
   
-  render();
-  await sleep(1000)
-  // handles.setFocus(null)
-});
+  await render();
+  handles.setFocus(null)
+}
+
+
+selector.addEventListener('pointerdown', handleDragStart);
+
+selector.addEventListener('pointermove', handleDrag);
+selector.addEventListener('pointerup', await handleDragEnd);
