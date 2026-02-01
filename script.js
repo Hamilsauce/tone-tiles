@@ -1,7 +1,7 @@
 import { Graph, TILE_TYPE_INDEX } from './lib/store.js';
 import { SVGCanvas } from './canvas/SVGCanvas.js';
 import { maps } from './maps.js';
-import { getTileSelector } from './selection-box/SelectionBox.js';
+import { getTileSelector } from './selection-box/index.js';
 import { initMapControls } from './ui/map-selection.js';
 import { scheduleOscillator, AudioNote, audioEngine } from './audio/index.js';
 import { TransformList } from './canvas/TransformList.js';
@@ -173,9 +173,8 @@ objectLayer.append(actor1, actor2, contextMenu);
 
 selectionBox.on('selection', range => {
   selectedRange = getRange(range);
-  
-  const { startPoint, endPoint } = selectionBox;
-  contextMenuTransformList.translateTo(endPoint.x + 1.5, endPoint.y - 5)
+  const { start, end } = range;
+  contextMenuTransformList.translateTo(end.x + 1.5, end.y - 5)
   
   graph.getRange(range, (tile) => tile.selected = true);
 });
@@ -437,7 +436,7 @@ svgCanvas.layers.tile.addEventListener('contextmenu', e => {
   } else {}
   
   targ.dataset.selected = true;
-  selectionBox.insertAt(targ);
+  selectionBox.insertAt({ x: +targ.dataset.x, y: +targ.dataset.y });
   
   contextMenu.parentElement.append(contextMenu);
   contextMenuTransformList.translateTo(+targ.dataset.x + 1.5, +targ.dataset.y - 2)

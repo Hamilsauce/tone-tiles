@@ -1,10 +1,7 @@
 import ham from 'https://hamilsauce.github.io/hamhelper/hamhelper1.0.0.js';
 const { DOM, date, array, utils, text } = ham;
-// import { getTileSelector } from './SelectionBoxNew2.js';
-// import { getTileSelector } from '../selection-box/BACKUP/SelectionBoxEdges.js';
-// import { getTileSelector } from '../selection-box/BACKUP/SelectionBoxAnchor.js';
 import { getTileSelector } from '../selection-box/SelectionBox.js';
-// import { getTileSelector } from '../selection-box/SelectionBoxBest.js';
+import { TileSelector } from '../selection-box/SelectionBoxBest.js';
 import { DetailPanel } from './view/detail-panel.view.js';
 
 let currentPanel;
@@ -201,7 +198,7 @@ const handleTileClick = (e) => {
     });
     
     tile.dataset.focused = true;
-    selectionBox.insertAt(tile);
+    selectionBox.insertAt({ x: +tile.dataset.x, y: +tile.dataset.y });
   }
 };
 
@@ -229,10 +226,11 @@ const surface = scene.querySelector('#surface');
 const viewBox = canvas.viewBox;
 
 
-const selectionBox = getTileSelector(scene);
+// const selectionBox = getTileSelector(scene);
+const selectionBox = new TileSelector(scene);
 
 selectionBox.on('selection', range => {
-  // console.warn('SELECTION: ', range)
+  console.warn('SELECTION: ', range)
   
   // State.selection = getRange(range);
   // State.isSelecting = true;
@@ -261,10 +259,11 @@ canvas.addEventListener('click', (e = new PointerEvent('pointerdown')) => {
   if (e.metaKey) {
     console.log('metaKey NEWBS');
   }
-  
-  e.stopPropagation();
-  e.preventDefault();
-  
+  console.warn('current t', { x: +e.target.dataset.x, y: +e.target.dataset.y })
+  // e.stopPropagation();
+  // e.preventDefault();
+  selectionBox.insertAt({ x: +e.target.dataset.x, y: +e.target.dataset.y });
+
   if (!State.isSelecting) {
     handleTileClick(e);
   }

@@ -86,7 +86,7 @@ svg {
 .board-tile {}
 
 .board-tile[data-selected=true] .tile-face {
-  /* fill: #626262; */
+  fill: #626262;
 }
 
 .tile {
@@ -110,12 +110,6 @@ svg {
   fill: #EDE690 !important;
 } */
 
-.tile[data-focused=true] {
-  fill: #D644C4 !important;
-  stroke: #88F4FF;
-  stroke-width: 0.075;
-  /* z-index: 500; */
-}
 
 .selection {
   filter: invert(100%);
@@ -244,4 +238,12 @@ svg {
 .selection-handle[data-role=anchor]{
   fill: #FFFFFF !important;
   stroke: green;
+}
+
+
+.tile[data-focused=true] {
+  fill: #D644C4 !important;
+  stroke: #88F4FF;
+  stroke-width: 0.075;
+  /* z-index: 500; */
 }
