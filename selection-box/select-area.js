@@ -11,15 +11,21 @@ const State = {
   tileContainer: document.querySelector('#tile-container'),
   _selection: null,
   isSelecting: false,
-  get selection() { return this._selection; },
+  // get selection() { return this._selection; },
+  get selection() { return [...document.querySelectorAll('.tile[data-selected="true"]')]; },
   set selection(v) {
-    if (Array.isArray(v) && Array.isArray(this._selection)) {
-      const deselected = this._selection.filter(t => !v.includes(t));
+    if (Array.isArray(v) && Array.isArray(this.selection)) {
+      const deselected = this.selection.filter(t => !v.includes(t));
       
+      // this.selection.forEach((t, i) => {
       deselected.forEach((t, i) => {
         t.dataset.selected = false;
       });
     }
+    
+    v.forEach((t, i) => {
+      t.dataset.selected = true;
+    });
     
     this._selection = v;
   }
@@ -76,7 +82,7 @@ const drawRect = (p, s = 1, fill = 'black', className = 'tile', dataset) => {
   rect.width.baseVal.value = s;
   rect.height.baseVal.value = s;
   
-  rect.setAttribute('fill', fill)
+  // rect.setAttribute('fill', fill)
   rect.dataset.x = p.x;
   rect.dataset.y = p.y;
   rect.dataset.selected = false;
@@ -89,21 +95,25 @@ const drawRect = (p, s = 1, fill = 'black', className = 'tile', dataset) => {
   return rect;
 };
 
+
+const append = (...tiles) => {
+  tileContainer.append(...tiles);
+};
+
 const renderTiles = (container, w = 5, h = 20) => {
+  container.innerHTML = '';
+  
   const tiles = [];
+  
   for (let i = 0; i < h; i++) {
     for (let j = 0; j < w; j++) {
-      const tile = drawRect({ x: j, y: i + 0.0 }, 1, '#FFFFFF');
+      const tile = drawRect({ x: j, y: i + 0.0 }, 1);
       
       tiles.push(tile);
     }
   }
   
   append(...tiles);
-};
-
-const append = (...tiles) => {
-  tileContainer.append(...tiles);
 };
 
 const getPointOnBoard = (contextEl = scene, e) => {
@@ -231,8 +241,11 @@ const selectionBox = new TileSelector(scene);
 
 selectionBox.on('selection', range => {
   console.warn('SELECTION: ', range)
+  const tileRange = getRange(range);
   
-  // State.selection = getRange(range);
+  // console.warn('tileRange: ', tileRange)
+  
+  State.selection = tileRange
   // State.isSelecting = true;
 });
 
@@ -263,7 +276,7 @@ canvas.addEventListener('click', (e = new PointerEvent('pointerdown')) => {
   // e.stopPropagation();
   // e.preventDefault();
   selectionBox.insertAt({ x: +e.target.dataset.x, y: +e.target.dataset.y });
-
+  
   if (!State.isSelecting) {
     handleTileClick(e);
   }

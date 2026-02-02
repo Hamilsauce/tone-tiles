@@ -48,7 +48,7 @@ svg {
   }
   
   rect {
-    fill: #A8A8A880;
+    /* fill: #A8A8A880; */
   }
 }
 
@@ -102,9 +102,6 @@ svg {
 }
 
 
-.tile[data-selected=true] {
-  fill: #D3D3D3 !important;
-}
 
 /* #scene[data-is-drawing=false] .tile[data-selected=true] {
   fill: #EDE690 !important;
@@ -246,4 +243,8 @@ svg {
   stroke: #88F4FF;
   stroke-width: 0.075;
   /* z-index: 500; */
+}
+
+.tile[data-selected=true] {
+  fill: #E1E1E1 !important;
 }

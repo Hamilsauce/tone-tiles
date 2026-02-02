@@ -78,8 +78,15 @@ export class TileSelector extends EventEmitter {
     
     get x() { return Math.min(this.anchor?.x, this.focus?.x); },
     get y() { return Math.min(this.anchor?.y, this.focus?.y); },
-    get width() { return (Math.max(this.a.x, this.b.x) - this.x) <= 0 ? 1 : (Math.max(this.a.x, this.b.x) - this.x) + 1 },
-    get height() { return (Math.max(this.a.y, this.b.y) - this.y) <= 0 ? 1 : (Math.max(this.a.y, this.b.y) - this.y) + 1 },
+    get x2() { return Math.max(this.anchor?.x, this.focus?.x); },
+    get y2() { return Math.max(this.anchor?.y, this.focus?.y); },
+    get x3() { return (Math.max(this.anchor.x, this.focus.x)) <= 0 ? 1 : (Math.max(this.anchor.x, this.focus.x)) + 0 },
+    get y3() { return (Math.max(this.anchor.y, this.focus.y)) <= 0 ? 1 : (Math.max(this.anchor.y, this.focus.y)) + 0 },
+    get width() { return (this.x3 - this.x) + 1 },
+    get height() { return (this.y3 - this.y) + 1 },
+    // get height() { return (Math.max(this.a.y, this.b.y) - this.y) <= 0 ? 1 : (Math.max(this.a.y, this.b.y) - this.y) + 0 },
+    // get width() { return (Math.max(this.anchor.x, this.b.x) - this.x) <= 0 ? 1 : (Math.max(this.a.x, this.b.x) - this.x) + 0 },
+    // get height() { return (Math.max(this.a.y, this.b.y) - this.y) <= 0 ? 1 : (Math.max(this.a.y, this.b.y) - this.y) + 0 },
     
     setFocus(label) {
       const anchorLabel = this.pointKeys.filter(_ => _ !== label)[0]
@@ -201,7 +208,7 @@ export class TileSelector extends EventEmitter {
     e.stopPropagation();
     // e.preventDefault();
     
-    const pt = domPoint(clientX, clientY, 'ceil');
+    const pt = this.domPoint(clientX, clientY);
     focusPoint.x = pt.x;
     focusPoint.y = pt.y;
     
@@ -218,7 +225,7 @@ export class TileSelector extends EventEmitter {
     // e.stopPropagation();
     // e.preventDefault();
     
-    const pt = domPoint(clientX, clientY, 'floor')
+    const pt = this.domPoint(clientX, clientY, 'floor')
     
     focusPoint.x = pt.x
     focusPoint.y = pt.y
@@ -227,7 +234,11 @@ export class TileSelector extends EventEmitter {
     document.removeEventListener('pointerup', this.dragEndHandler);
     
     await this.render();
-    this.#handles.setFocus(null);
+    // this.#handles.setFocus(null);
+    console.warn({ x: this.x })
+    
+    this.emitRange();
+    
   }
   
   async #render(pt) {
@@ -253,6 +264,8 @@ export class TileSelector extends EventEmitter {
     this.selectBox.setAttribute('x', this.#points.x);
     this.selectBox.setAttribute('y', this.#points.y);
     
+    // this.selectBox.setAttribute('width', this.#points.x2);
+    // this.selectBox.setAttribute('height', this.#points.x3);
     this.selectBox.setAttribute('width', this.#points.width);
     this.selectBox.setAttribute('height', this.#points.height);
     
@@ -260,23 +273,32 @@ export class TileSelector extends EventEmitter {
       this.#handles.focus.setAttribute('cx', this.#points.focus.x);
       this.#handles.focus.setAttribute('cy', this.#points.focus.y);
     }
-    
-    this.emitRange();
   }
   
   
   #emitRange() {
-    const aSum = this.#points.a.x + this.#points.a.x
-    const bSum = this.#points.b.x + this.#points.b.x
+    // const { a, b } = this.#points;
+    // const isAGreaterX = a.x > b.x
+    // const bSum = this.#points.b.x + this.#points.b.x
+    // const payload = {
+    //   start: aSum > bSum ? this.#points.b : this.#points.a,
+    //   end: aSum > bSum ? this.#points.a : this.#points.b,
+    // }
+    
     const payload = {
-      start: aSum > bSum ? this.#points.b : this.#points.a,
-      end: aSum > bSum ? this.#points.a : this.#points.b,
+      start: { x: this.#points.x, y: this.#points.y },
+      // end: { x: this.#points.width + this.#points.x, y: this.#points.width + this.#points.y },
+      end: { x: this.#points.x3+1, y: this.#points.y3+1 },
+      // a: this.#points.a,
+      // b: this.#points.b,
+      // focus: this.#points.focus,
+      // anchor: this.#points.anchor,
     }
-    this.emit('selection', payload)  //{ start: this.#points.a, end: this.#points.b });
+    
+    console.table(payload)
+    this.emit('selection', payload);
   }
 }
-
-
 
 let SelectorInstance = null;
 
@@ -288,152 +310,3 @@ export const getTileSelector = (ctx = document.querySelector('#scene')) => {
   SelectorInstance = new TileSelector(ctx);
   return SelectorInstance;
 };
-
-
-// const tileSelector = new TileSelector(svg)
-
-// const handles = {
-//   handleKeys: ['a', 'b'],
-//   a: handleA,
-//   b: handleB,
-//   anchor: null,
-//   focus: null,
-
-//   isHandle(el) {
-//     return [this.a, this.b].includes(el)
-//   },
-
-//   setFocus(label = null) {
-//     if (!label && this.focus) {
-//       this.focus.dataset.role = undefined
-//       this.anchor.dataset.role = undefined
-//       this.focus = null;
-//       this.anchor = null;
-//       return;
-//     }
-
-//     const anchorLabel = this.handleKeys.filter(_ => _ !== label)[0]
-
-//     this.focus = this[label] ?? null;
-//     this.anchor = this[anchorLabel] ?? null;
-
-//     if (this.focus) {
-//       this.focus.dataset.role = 'focus'
-//       this.anchor.dataset.role = 'anchor'
-//     }
-//   },
-// }
-
-// const points = {
-//   pointKeys: ['a', 'b'],
-//   a: domPoint(2, 2),
-//   b: domPoint(2, 2),
-//   anchor: null,
-//   focus: null,
-
-//   get x() { return Math.min(this.anchor?.x, this.focus?.x); },
-//   get y() { return Math.min(this.anchor?.y, this.focus?.y); },
-//   get width() { return (Math.max(this.a.x, this.b.x) - this.x) <= 0 ? 1 : (Math.max(this.a.x, this.b.x) - this.x) + 1 },
-//   get height() { return (Math.max(this.a.y, this.b.y) - this.y) <= 0 ? 1 : (Math.max(this.a.y, this.b.y) - this.y) + 1 },
-
-//   setFocus(label) {
-//     const anchorLabel = this.pointKeys.filter(_ => _ !== label)[0]
-//     if (!label || !anchorLabel) return;
-
-//     this.focus = this[label] ?? null;
-//     this.anchor = this[anchorLabel] ?? null;
-//   },
-
-// }
-
-// const render = async (pt) => {
-//   if (pt) {
-//     selectBox.setAttribute('x', pt.x)
-//     selectBox.setAttribute('y', pt.y)
-
-//     selectBox.setAttribute('width', 1);
-//     selectBox.setAttribute('height', 1);
-
-//     handles.a.setAttribute('cx', pt.x)
-//     handles.a.setAttribute('cy', pt.y)
-//     handles.b.setAttribute('cx', pt.x)
-//     handles.b.setAttribute('cy', pt.y)
-
-//     return
-//   }
-
-//   selectBox.setAttribute('x', points.x)
-//   selectBox.setAttribute('y', points.y)
-
-//   selectBox.setAttribute('width', points.width) // - points.x)
-//   selectBox.setAttribute('height', points.height) // - points.y)
-
-//   if (handles.focus) {
-//     handles.focus.setAttribute('cx', points.focus.x)
-//     handles.focus.setAttribute('cy', points.focus.y)
-//   }
-// }
-
-// svg.addEventListener('click', ({ target, currentTarget, clientX, clientY }) => {
-//   /*
-//   const pt = domPoint(clientX, clientY, 'floor')
-//     points.a.x = pt.x
-//     points.a.y = pt.y
-//     points.b.x = pt.x
-//     points.b.y = pt.y
-
-//     render(pt)
-
-//     */
-//   // tileSelector.insertAt(clientX, clientY)
-// });
-
-// const handleDrag = ({ target, currentTarget, clientX, clientY }) => {
-//   const focusPoint = points.focus;
-
-//   if (!handles.focus || target != handles.focus) return;
-
-//   if (!focusPoint) return;
-
-//   const pt = domPoint(clientX, clientY)
-//   focusPoint.x = pt.x
-//   focusPoint.y = pt.y
-
-//   render();
-// };
-
-// const handleDragStart = ({ target, currentTarget, clientX, clientY }) => {
-//   const isTargetHandle = handles.isHandle(target)
-
-//   if (!isTargetHandle) return
-
-//   const handleLabel = isTargetHandle ? target.dataset.handle : null;
-
-//   const pt = domPoint(clientX, clientY, 'floor');
-
-//   handles.setFocus(handleLabel);
-//   points.setFocus(handleLabel);
-
-//   render();
-// }
-
-
-// const handleDragEnd = async ({ target, currentTarget, clientX, clientY }) => {
-//   const focusPoint = points.focus
-//   const focusHandle = handles.focus
-
-//   if (!focusHandle || !focusPoint) return
-
-//   const pt = domPoint(clientX, clientY, 'floor')
-
-//   focusPoint.x = pt.x
-//   focusPoint.y = pt.y
-
-//   await render();
-//   handles.setFocus(null)
-// }
-
-
-// // selector.addEventListener('pointerdown', handleDragStart);
-// // selector.addEventListener('pointermove', handleDrag);
-// // selector.addEventListener('pointerup', await handleDragEnd);
