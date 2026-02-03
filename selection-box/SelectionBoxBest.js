@@ -50,8 +50,8 @@ export class TileSelector extends EventEmitter {
     
     setFocus(label = null) {
       if (!label && this.focus) {
-        this.focus.dataset.role = undefined
-        this.anchor.dataset.role = undefined
+        delete this.focus.dataset.role
+        delete this.anchor.dataset.role
         this.focus = null;
         this.anchor = null;
         return;
@@ -185,8 +185,6 @@ export class TileSelector extends EventEmitter {
       
       this.#handles.setFocus(handleLabel);
       this.#points.setFocus(handleLabel);
-      
-      this.isDragging = true;
     }
     
     else if (isSelBox) {
@@ -197,6 +195,8 @@ export class TileSelector extends EventEmitter {
       this.#points.translation.x = 0
       this.#points.translation.y = 0
     }
+    
+    this.isDragging = true;
     
     this.render();
     
@@ -210,20 +210,18 @@ export class TileSelector extends EventEmitter {
     const focusPoint = this.#points.focus;
     const isSelBox = this.selectBox === target
     const pt = this.domPoint(clientX, clientY);
+    
     e.stopPropagation();
     
     if (this.dragMode === 'translation') {
-      console.warn('his.#points.translation', this.#points.translation)
       this.#points.translation.x = pt.x - this.pointerStart.x
       this.#points.translation.y = pt.y - this.pointerStart.y
       
-      
       this.render();
       return
-    } // For dragging box in future
+    }
     
     if (!focusPoint) return;
-    
     
     focusPoint.x = pt.x;
     focusPoint.y = pt.y;
@@ -237,19 +235,15 @@ export class TileSelector extends EventEmitter {
     const focusPoint = this.#points.focus;
     const focusHandle = this.#handles.focus;
     
-    
-    
     if (this.dragMode === 'translation') {
       const dx = Math.floor(this.#points.translation.x)
       const dy = Math.floor(this.#points.translation.y)
       
-      // commit translation to model
       this.#points.a.x += dx
       this.#points.a.y += dy
       this.#points.b.x += dx
       this.#points.b.y += dy
       
-      // reset preview state
       this.#points.translation.x = 0
       this.#points.translation.y = 0
       this.pointerStart = null
@@ -263,7 +257,8 @@ export class TileSelector extends EventEmitter {
       focusPoint.x = pt.x;
       focusPoint.y = pt.y;
     }
-    this.#handles.setFocus(null)
+    
+    this.#handles.setFocus(null);
     document.removeEventListener('pointermove', this.dragHandler);
     document.removeEventListener('pointerup', this.dragEndHandler);
     this.isDragging = false;
@@ -276,21 +271,21 @@ export class TileSelector extends EventEmitter {
   
   async #render(pt) {
     if (!this.isRendered) {
-      this.svgContext.append(this.#self)
+      this.svgContext.append(this.#self);
     }
     
     if (this.dragMode === 'translation') {
-      const x = this.#points.translation.x
-      const y = this.#points.translation.y
-      this.#self.setAttribute('transform', `translate(${x+0.5},${y+0.5})`)
+      const x = this.#points.translation.x;
+      const y = this.#points.translation.y;
+      this.#self.setAttribute('transform', `translate(${x+0.5},${y+0.5})`);
       return;
     }
     else {
-      this.#self.setAttribute('transform', `translate(${0.5},${0.5})`)
+      this.#self.setAttribute('transform', `translate(${0.5},${0.5})`);
     }
     if (pt) {
-      this.selectBox.setAttribute('x', pt.x)
-      this.selectBox.setAttribute('y', pt.y)
+      this.selectBox.setAttribute('x', pt.x);
+      this.selectBox.setAttribute('y', pt.y);
       
       this.selectBox.setAttribute('width', 1);
       this.selectBox.setAttribute('height', 1);
@@ -318,7 +313,6 @@ export class TileSelector extends EventEmitter {
       this.#handles.a.setAttribute('cy', this.#points.a.y);
       this.#handles.b.setAttribute('cx', this.#points.b.x);
       this.#handles.b.setAttribute('cy', this.#points.b.y);
-      
     }
   }
   

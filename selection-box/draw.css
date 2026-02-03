@@ -246,7 +246,7 @@ svg {
 
 .tile[data-focused=true] {
   fill: #D644C4 !important;
-  stroke: #88F4FF;
+  /* stroke: #88F4FF; */
   stroke-width: 0.075;
   /* z-index: 500; */
 }

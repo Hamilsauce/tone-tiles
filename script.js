@@ -432,7 +432,6 @@ svgCanvas.layers.tile.addEventListener('contextmenu', e => {
     const htmlListContainer = contextMenu.querySelector('.context-menu-container');
     const svgListContainer = contextMenu.firstElementChild;
     const htmlHeight = htmlListContainer.getBoundingClientRect().height
-    // htmlListContainer.style.height = '100%'
   } else {}
   
   targ.dataset.selected = true;
@@ -464,16 +463,8 @@ svgCanvas.layers.tile.addEventListener('contextmenu', e => {
       contextMenuTransformList.rotateTo(0, 0);
       svgCanvas.removeEventListener('click', blurContextMenu);
     }
-    
-    svgCanvas.addEventListener('click', e => {
-      svgCanvas.dispatchEvent(new CustomEvent('blurContextMenu'));
-    })
-    
-    contextMenu.addEventListener('click', e => {
-      svgCanvas.dispatchEvent(new CustomEvent('blurContextMenu'));
-    })
-    svgCanvas.dispatchEvent(new CustomEvent('blurContextMenu'));
   };
+  
   svgCanvas.addEventListener('click', blurContextMenu);
 });
 
@@ -554,10 +545,4 @@ contextMenu.addEventListener('click', e => {
       tile.dataset.tileType = selectedTileTypeName;
     });
   }
-  
-  deselectRange();
-  
-  selectionBox.remove();
-  
-  contextMenu.dataset.show = false;
 });

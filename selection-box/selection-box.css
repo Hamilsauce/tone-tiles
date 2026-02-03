@@ -10,22 +10,23 @@
   }
 }
 
-.tile-selector[data-is-dragging=true] {
+/* .tile-selector[data-is-dragging=true] {
   .selection-handle {
     opacity: 0.5;
   }
-}
+} */
 
 .tile-selector * {
   /* transition: 0.1s; */
 }
 
 .selection-box {
-  fill: #78787800 !important;
+  fill: #134E4426 !important;
   /* filter: opacity(0.25) !important; */
 }
 
 .selection-handle {
+  fill: #F9671F;
   transition: stroke-width 0.075s;
 }
 
@@ -209,6 +210,8 @@
   /* z-index: 500; */
 }
 
-.tile[data-selected=true] {
-  fill: #E1E1E1 !important;
+.tile-selector[data-is-dragging=true] {
+  .selection-handle {
+    opacity: 0.0  ;
+  }
 }
