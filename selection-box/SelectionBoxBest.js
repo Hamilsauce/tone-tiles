@@ -21,6 +21,7 @@ const SELECTOR_TEMPLATE = `
   <circle class="selection-handle" data-handle="b" id="b-handle" r="0.33" _fill="white" stroke-width="0.07" stroke="green" cx="0" cy="0" transform="translate(0,0)" data-is-dragging="false"></circle>`;
 
 
+
 const domPoint = (x, y, clamp = false) => {
   const p = new DOMPoint(x, y).matrixTransform(
     scene.getScreenCTM().inverse()
@@ -31,6 +32,13 @@ const domPoint = (x, y, clamp = false) => {
     y: clamp === 'floor' ? Math.floor(p.y) : Math.ceil(p.y)
   };
 }
+
+const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
+
+const clampPoint = (pt, bounds, upperTrim = 1) => ({
+  x: clamp(pt.x, bounds.minX, bounds.maxX - upperTrim),
+  y: clamp(pt.y, bounds.minY, bounds.maxY - upperTrim),
+});
 
 const ROLES = ['a', 'b']
 
@@ -124,6 +132,13 @@ export class TileSelector extends EventEmitter {
       e.preventDefault();
     });
     
+    this.bounds = {
+      minX: null,
+      minY: null,
+      maxX: null,
+      maxY: null,
+    }
+    
     this.render = this.#render.bind(this);
     this.emitRange = this.#emitRange.bind(this);
     this.dragMode = 'handle'
@@ -143,6 +158,26 @@ export class TileSelector extends EventEmitter {
     return this.#points.translation.x + this.#points.translation.y > 0;
   }
   
+  setBounds(bounds = { minX: null, minY: null, maxX: null, maxY: null }) {
+    Object.assign(this.bounds, bounds);
+    return this;
+  }
+  
+  isInBounds(pt = new DOMPoint()) {
+    const { minX, minY, maxX, maxY } = this.bounds;
+    
+    if ([minX, minY, maxX, maxY].includes(null)) return true;
+    
+    return pt.x >= minX && pt.x <= maxX &&
+      pt.y >= minY && pt.y <= maxY;
+  }
+  
+  clampToBounds(pt = new DOMPoint()) {
+    const { minX, minY, maxX, maxY } = this.bounds;
+    if ([minX, minY, maxX, maxY].includes(null)) return true;
+    
+    return clampPoint(pt, this.bounds)
+  }
   
   domPoint(x, y, clamp = false) {
     const p = new DOMPoint(x, y).matrixTransform(
@@ -210,21 +245,24 @@ export class TileSelector extends EventEmitter {
     const focusPoint = this.#points.focus;
     const isSelBox = this.selectBox === target
     const pt = this.domPoint(clientX, clientY);
+    const pointerClamp = this.clampToBounds(this.pointerStart)
+    const pt2 = this.clampToBounds(pt)
     
     e.stopPropagation();
     
     if (this.dragMode === 'translation') {
-      this.#points.translation.x = pt.x - this.pointerStart.x
-      this.#points.translation.y = pt.y - this.pointerStart.y
+      // this.#points.translation = this.clampToBounds(this.#points.translation)
+      this.#points.translation.x = pt2.x - this.pointerStart.x
+      this.#points.translation.y = pt2.y - this.pointerStart.y
       
       this.render();
       return
     }
     
     if (!focusPoint) return;
-    
-    focusPoint.x = pt.x;
-    focusPoint.y = pt.y;
+    const clamped = this.clampToBounds(pt)
+    focusPoint.x = clamped.x;
+    focusPoint.y = clamped.y;
     
     this.render();
   };
@@ -239,10 +277,24 @@ export class TileSelector extends EventEmitter {
       const dx = Math.floor(this.#points.translation.x)
       const dy = Math.floor(this.#points.translation.y)
       
-      this.#points.a.x += dx
-      this.#points.a.y += dy
-      this.#points.b.x += dx
-      this.#points.b.y += dy
+      const dANoClamp = {
+        x: this.#points.a.x + dx,
+        y: this.#points.a.y + dy,
+      }
+
+      const aPoint = this.clampToBounds({
+        x: this.#points.a.x + dx,
+        y: this.#points.a.y + dy,
+      })
+      const bPoint = this.clampToBounds({
+        x: this.#points.b.x + dx,
+        y: this.#points.b.y + dy,
+      })
+      
+      this.#points.a.x = aPoint.x
+      this.#points.a.y = aPoint.y
+      this.#points.b.x = bPoint.x
+      this.#points.b.y = bPoint.y
       
       this.#points.translation.x = 0
       this.#points.translation.y = 0
@@ -250,15 +302,17 @@ export class TileSelector extends EventEmitter {
       this.dragMode = 'handle'
     }
     else {
-      if (!focusHandle || !focusPoint) return;
-      
       const pt = this.domPoint(clientX, clientY, 'floor');
       
-      focusPoint.x = pt.x;
-      focusPoint.y = pt.y;
+      if (!focusHandle || !focusPoint) return;
+      
+      const clamped = this.clampToBounds(pt)
+      
+      focusPoint.x = clamped.x;
+      focusPoint.y = clamped.y;
     }
-    
     this.#handles.setFocus(null);
+
     document.removeEventListener('pointermove', this.dragHandler);
     document.removeEventListener('pointerup', this.dragEndHandler);
     this.isDragging = false;
@@ -267,6 +321,7 @@ export class TileSelector extends EventEmitter {
     
     
     this.emitRange();
+
   }
   
   async #render(pt) {

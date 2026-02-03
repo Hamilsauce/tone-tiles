@@ -263,6 +263,13 @@ Object.assign(viewBox.baseVal, {
   height: (20),
 });
 
+selectionBox.setBounds({
+  minX: 0,
+  minY: 0,
+  maxX: 5,
+  maxY: 10,
+})
+
 pixelScale = canvasBBox.width / viewBox.baseVal.width;
 const unitBbox = new UnitBoundingBox(scene);
 

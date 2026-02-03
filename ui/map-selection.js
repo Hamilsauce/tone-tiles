@@ -11,7 +11,7 @@ const { sleep, template, utils, download, TwoWayMap } = ham;
 
 let hasInitViewBox = false;
 
-const renderMap = (mapData, svgCanvas, graph, actor1) => {
+const renderMap = (mapData, svgCanvas, graph, actor1, selectionBox) => {
   graph.fromMap(mapData);
   
   if (!hasInitViewBox) {
@@ -21,6 +21,13 @@ const renderMap = (mapData, svgCanvas, graph, actor1) => {
       width: graph.width,
       height: graph.height
     });
+    
+    selectionBox.setBounds({
+      minX: 0,
+      minY: 0,
+      maxX: graph.width,
+      maxY: graph.height
+    })
     
     hasInitViewBox = true;
   }
@@ -60,7 +67,7 @@ const renderMap = (mapData, svgCanvas, graph, actor1) => {
 }
 
 
-export const initMapControls = async (graph, svgCanvas, actor1) => {
+export const initMapControls = async (graph, svgCanvas, actor1, selectionBox) => {
   const app = document.querySelector('#app');
   const appBody = document.querySelector('#app-body')
   const containers = document.querySelectorAll('.container')
@@ -109,10 +116,10 @@ export const initMapControls = async (graph, svgCanvas, actor1) => {
   
   newButton.addEventListener('click', async (e) => {
     e.preventDefault();
-    e.stopPropagation();~
+    e.stopPropagation();
     e.stopImmediatePropagation();
     
-    renderMap(BLANK_MAP_16X16, svgCanvas, graph, actor1);
+    renderMap(BLANK_MAP_16X16, svgCanvas, graph, actor1, selectionBox);
   });
   
   
@@ -121,7 +128,7 @@ export const initMapControls = async (graph, svgCanvas, actor1) => {
       const sel = target.selectedOptions[0].value;
       
       const selectedMap = await loadMap(sel)
-      renderMap(selectedMap, svgCanvas, graph, actor1)
+      renderMap(selectedMap, svgCanvas, graph, actor1, selectionBox)
     }),
   ).subscribe()
   

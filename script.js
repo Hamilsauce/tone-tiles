@@ -164,7 +164,7 @@ const actor2 = useTemplate('actor', {
 
 const actor2TransformList = new TransformList(svgCanvas, actor2)
 
-initMapControls(graph, svgCanvas, actor1);
+initMapControls(graph, svgCanvas, actor1, selectionBox);
 
 actor2.setAttribute('transform', 'translate(12,21) rotate(0) scale(1)');
 
@@ -173,6 +173,7 @@ objectLayer.append(actor1, actor2, contextMenu);
 
 selectionBox.on('selection', range => {
   selectedRange = getRange(range);
+  console.warn(selectedRange)
   const { start, end } = range;
   contextMenuTransformList.translateTo(end.x + 1.5, end.y - 5)
   
