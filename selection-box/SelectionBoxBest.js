@@ -16,8 +16,8 @@ const handleB = document.querySelector('#b-handle');
 
 const SELECTOR_TEMPLATE = `
   <rect class="selection-box" stroke-width="0.07" stroke="green" width="1" height="1" x="2" y="2" transform="translate(-0.5,-0.5)"></rect>
-  <circle class="selection-handle" data-handle="a" id="a-handle" r="0.33" _fill="white" stroke-width="0.07" stroke="green" cx="0" cy="0" transform="translate(0,0)"></circle>
-  <circle class="selection-handle" data-handle="b" id="b-handle" r="0.33" _fill="white" stroke-width="0.07" stroke="green" cx="0" cy="0" transform="translate(0,0)" data-is-dragging="false"></circle>`;
+  <circle class="selection-handle" data-handle="a" id="a-handle" r="0.4" _fill="white" stroke-width="0.07" stroke="green" cx="0" cy="0" transform="translate(0,0)"></circle>
+  <circle class="selection-handle" data-handle="b" id="b-handle" r="0.4" _fill="white" stroke-width="0.07" stroke="green" cx="0" cy="0" transform="translate(0,0)" data-is-dragging="false"></circle>`;
 
 
 
@@ -35,6 +35,11 @@ const domPoint = (x, y, clamp = false) => {
 const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
 
 const clampPoint = (pt, bounds, upperTrim = 1) => ({
+  x: clamp(pt.x, bounds.minX, bounds.maxX - upperTrim),
+  y: clamp(pt.y, bounds.minY, bounds.maxY - upperTrim),
+});
+
+const clampPointWithBounds = (bounds) => (pt, upperTrim = 1) => ({
   x: clamp(pt.x, bounds.minX, bounds.maxX - upperTrim),
   y: clamp(pt.y, bounds.minY, bounds.maxY - upperTrim),
 });
@@ -81,13 +86,13 @@ export class TileSelector extends EventEmitter {
     a: domPoint(2, 2),
     b: domPoint(2, 2),
     translation: domPoint(0, 0),
-    anchor: null,
-    focus: null,
+    anchor: this.a,
+    focus: this.b,
     
     get x() { return Math.min(this.anchor?.x, this.focus?.x); },
     get y() { return Math.min(this.anchor?.y, this.focus?.y); },
-    get x2() { return (Math.max(this.anchor.x, this.focus.x)) <= 0 ? 1 : (Math.max(this.anchor.x, this.focus.x)) + 0 },
-    get y2() { return (Math.max(this.anchor.y, this.focus.y)) <= 0 ? 1 : (Math.max(this.anchor.y, this.focus.y)) + 0 },
+    get x2() { return (Math.max(this.anchor?.x, this.focus?.x)) <= 0 ? 1 : (Math.max(this.anchor.x, this.focus.x)) + 0 },
+    get y2() { return (Math.max(this.anchor?.y, this.focus?.y)) <= 0 ? 1 : (Math.max(this.anchor.y, this.focus.y)) + 0 },
     get width() { return (this.x2 - this.x) + 1 },
     get height() { return (this.y2 - this.y) + 1 },
     
@@ -153,10 +158,6 @@ export class TileSelector extends EventEmitter {
   
   set isDragging(v) { return this.#self.dataset.isDragging = v; }
   
-  get isTranslating() {
-    return this.#points.translation.x + this.#points.translation.y > 0;
-  }
-  
   setBounds(bounds = { minX: null, minY: null, maxX: null, maxY: null }) {
     Object.assign(this.bounds, bounds);
     return this;
@@ -202,8 +203,10 @@ export class TileSelector extends EventEmitter {
     
     Object.assign(this.#points.a, pt)
     Object.assign(this.#points.b, pt)
-    
+    this.#points.setFocus('a')
+
     this.render(pt);
+    this.emitRange();
   }
   
   onDragStart(e) {
@@ -233,7 +236,7 @@ export class TileSelector extends EventEmitter {
     this.isDragging = true;
     
     this.render();
-    
+
     document.addEventListener('pointermove', this.dragHandler);
     document.addEventListener('pointerup', this.dragEndHandler);
   }
@@ -316,9 +319,7 @@ export class TileSelector extends EventEmitter {
     
     await this.render();
     
-    
     this.emitRange();
-    
   }
   
   async #render(pt) {

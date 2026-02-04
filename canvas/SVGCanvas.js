@@ -34,7 +34,7 @@ export class SVGCanvas extends EventTarget {
       console.warn('this.isContextMenuActive ', this.isContextMenuActive);
       
       this.dom.addEventListener('click', this.toggleScroll);
-      document.querySelector('#context-menu').addEventListener('click', this.toggleScroll);
+      document.querySelector('#context-menu-container').addEventListener('click', this.toggleScroll);
     });
     
     this.addEventListener('blurContextMenu', (e) => {

@@ -175,7 +175,7 @@ objectLayer.append(actor1, actor2, contextMenu);
 selectionBox.on('selection', range => {
   selectedRange = getRange(range);
   const { start, end } = range;
-  contextMenuTransformList.translateTo(end.x + 1.5, end.y - 5)
+  contextMenuTransformList.translateTo(start.x - 2.5, start.y - 2.5)
   
   graph.getRange(range, (tile) => tile.selected = true);
 });
@@ -403,6 +403,14 @@ svgCanvas.addEventListener('click', async ({ detail }) => {
   }
 });
 
+contextMenu .addEventListener('pointermove', e =>{
+ console.warn('dragger')
+  e.preventDefault();
+  e.stopPropagation();
+  e.stopImmediatePropagation();
+ 
+})
+
 svgCanvas.layers.tile.addEventListener('contextmenu', e => {
   e.preventDefault();
   e.stopPropagation();
@@ -412,10 +420,12 @@ svgCanvas.layers.tile.addEventListener('contextmenu', e => {
   const tileType = targ.dataset.tileType;
   const shouldShowSecondaryList = tileType === 'teleport'
   
-  const listEl = contextMenu.querySelector('.context-menu-list.primary');
-  const listEl2 = contextMenu.querySelector('.context-menu-list.secondary');
-  listEl2.style.display = shouldShowSecondaryList ? null : 'none'
-  
+  const menuForeignObject = contextMenu.querySelector('.context-menu-foreignobject');
+  const listEl = contextMenu.querySelector('.context-menu-list');
+  // const listEl2 = contextMenu.querySelector('.context-menu-list.secondary');
+  // listEl2.style.display = shouldShowSecondaryList ? null : 'none'
+  const menuContainer = contextMenu.querySelector('.context-menu');
+
   if (tileType === 'teleport') {
     const selectedNode = graph.getNodeAtPoint({
       x: +targ.dataset.x,
@@ -426,20 +436,22 @@ svgCanvas.layers.tile.addEventListener('contextmenu', e => {
       const line = createEdgeLine(selectedNode, selectedNode.target)
       objectLayer.append(line)
     }
-    
+
     contextMenu.dataset.show = true;
-    contextMenu.dataset.showActions = true;
+    menuContainer.dataset.showActions = true;
     
-    const htmlListContainer = contextMenu.querySelector('.context-menu-container');
     const svgListContainer = contextMenu.firstElementChild;
-    const htmlHeight = htmlListContainer.getBoundingClientRect().height
-  } else {}
+    
+  } else {
+    menuContainer.dataset.showActions = false;
+
+  }
   
   targ.dataset.selected = true;
   selectionBox.insertAt({ x: +targ.dataset.x, y: +targ.dataset.y });
   
   contextMenu.parentElement.append(contextMenu);
-  contextMenuTransformList.translateTo(+targ.dataset.x + 1.5, +targ.dataset.y - 2)
+  // contextMenuTransformList.translateTo(+targ.dataset.x + 1.5, +targ.dataset.y - 2)
   contextMenu.dataset.show = true;
   
   const blurContextMenu = (e) => {
@@ -460,8 +472,8 @@ svgCanvas.layers.tile.addEventListener('contextmenu', e => {
       contextMenu.dataset.show = false;
       contextMenu.dataset.showActions = false;
       
-      contextMenuTransformList.translateTo(0, 0);
-      contextMenuTransformList.rotateTo(0, 0);
+      // contextMenuTransformList.translateTo(0, 5);
+      // contextMenuTransformList.rotateTo(0, 0);
       svgCanvas.removeEventListener('click', blurContextMenu);
     }
   };

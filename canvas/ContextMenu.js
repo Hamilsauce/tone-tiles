@@ -52,7 +52,7 @@ const defaultContextMenuItems = [
   type: 'tile-action',
   value: 'link-teleport',
   textContent: 'Link to...',
-  list: 'secondary',
+  list: 'primary',
 }, ];
 
 export class ContextMenu extends CanvasObject {
@@ -70,26 +70,23 @@ export class ContextMenu extends CanvasObject {
   constructor(ctx, menuItems = defaultContextMenuItems) {
     super(ctx, 'context-menu', contextMenuTransforms);
     
-    this.#menuLists = {
-      primary: this.getEl('.context-menu-list.primary'),
-      secondary: this.getEl('.context-menu-list.secondary'),
-    };
-    
-    this.#menuItems = menuItems.reduce((items, {
-      type,
-      value,
-      textContent,
-      list,
-    }, i) => {
-      const el = document.createElement('li');
+    this.#menuList = this.getEl('.context-menu-list.primary')
+    console.warn('this.#menuList', this.#menuList)
+    // this.#menuItems = menuItems.reduce((items, {
+    //   type,
+    //   value,
+    //   textContent,
+    //   list,
+    // }, i) => {
+    //   const el = document.createElement('li');
       
-      el.dataset.value = value;
-      el.dataset.type = type;
-      el.textContent = textContent;
-      items[list].append(el);
+    //   el.dataset.value = value;
+    //   el.dataset.type = type;
+    //   el.textContent = textContent;
+    //   items[list].append(el);
       
-      return items;
-    }, this.#menuItems);
+    //   return items;
+    // }, this.#menuItems);
 
     menuItems.forEach(({
       type,
@@ -105,13 +102,13 @@ export class ContextMenu extends CanvasObject {
       el.dataset.value = value;
       el.dataset.type = type;
       el.textContent = textContent;
-      this.#menuLists[list].append(el);
+      this.#menuLists.append(el);
     });
   };
   
   onMenuClick(e) {
     const value = e.target.dataset.value;
-    this.dispatchEvent('');
+    // this.dispatchEvent('');
   }
   
   toggleSecondaryMenu() {}
