@@ -418,13 +418,13 @@ svgCanvas.addEventListener('click', async ({ detail }) => {
 contextMenu.addEventListener('pointerdown', e => {
   // console.warn('dragger')
   // e.preventDefault();
-  // e.stopPropagation();
+  e.stopPropagation();
   // e.stopImmediatePropagation();
   
 })
 contextMenu.addEventListener('pointermove', e => {
   // e.preventDefault();
-  // e.stopPropagation();
+  e.stopPropagation();
   // e.stopImmediatePropagation();
   
 })
