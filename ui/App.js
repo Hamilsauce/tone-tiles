@@ -14,7 +14,7 @@ export const App = defineComponent(
     const footerDisplayState = ref('toolbar');
     
     const footerDisplay = computed(() => footerDisplayState.value);
-
+    
     const handleFooterChange = (e) => {
       footerDisplayState.value = e
     };

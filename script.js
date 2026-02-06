@@ -6,14 +6,12 @@ import { getTileSelector } from './selection-box/index.js';
 import { initMapControls } from './ui/map-selection.js';
 import { scheduleOscillator, AudioNote, audioEngine } from './audio/index.js';
 import { TransformList } from './canvas/TransformList.js';
-
 import ham from 'https://hamilsauce.github.io/hamhelper/hamhelper1.0.0.js';
 import { useAppState } from './store/app.store.js';
 
 const { isRunning, setRunning } = useAppState();
 
-
-const { addDragAction, sleep, template, utils, download, TwoWayMap } = ham;
+const {addDragAction, sleep, template, utils, download, TwoWayMap } = ham;
 const { fromEvent } = rxjs;
 const { tap } = rxjs.operators;
 
@@ -112,8 +110,9 @@ const getRange = ({ start, end }) => {
 
 const ANIM_RATE = 75;
 let selectedRange = [];
-
 const audioNote1 = (new AudioNote(audioEngine));
+
+await sleep(1000)
 
 const graph = new Graph();
 

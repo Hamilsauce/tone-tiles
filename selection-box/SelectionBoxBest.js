@@ -19,8 +19,6 @@ const SELECTOR_TEMPLATE = `
   <circle class="selection-handle" data-handle="a" id="a-handle" r="0.4" _fill="white" stroke-width="0.07" stroke="green" cx="0" cy="0" transform="translate(0,0)"></circle>
   <circle class="selection-handle" data-handle="b" id="b-handle" r="0.4" _fill="white" stroke-width="0.07" stroke="green" cx="0" cy="0" transform="translate(0,0)" data-is-dragging="false"></circle>`;
 
-
-
 const domPoint = (x, y, clamp = false) => {
   const p = new DOMPoint(x, y).matrixTransform(
     scene.getScreenCTM().inverse()
@@ -39,10 +37,7 @@ const clampPoint = (pt, bounds, upperTrim = 1) => ({
   y: clamp(pt.y, bounds.minY, bounds.maxY - upperTrim),
 });
 
-const clampPointWithBounds = (bounds) => (pt, upperTrim = 1) => ({
-  x: clamp(pt.x, bounds.minX, bounds.maxX - upperTrim),
-  y: clamp(pt.y, bounds.minY, bounds.maxY - upperTrim),
-});
+const clampPointWithBounds = (bounds) => (pt, upperTrim = 1) => clampPoint(pt, bounds, upperTrim = 1)
 
 const ROLES = ['a', 'b']
 
@@ -142,7 +137,7 @@ export class TileSelector extends EventEmitter {
       maxX: null,
       maxY: null,
     }
-    
+    this.clampToBounds = clampPointWithBounds(this.bounds)
     this.render = this.#render.bind(this);
     this.emitRange = this.#emitRange.bind(this);
     this.dragMode = 'handle'
@@ -172,13 +167,6 @@ export class TileSelector extends EventEmitter {
       pt.y >= minY && pt.y <= maxY;
   }
   
-  clampToBounds(pt = new DOMPoint()) {
-    const { minX, minY, maxX, maxY } = this.bounds;
-    if ([minX, minY, maxX, maxY].includes(null)) return true;
-    
-    return clampPoint(pt, this.bounds)
-  }
-  
   domPoint(x, y, clamp = false) {
     const p = new DOMPoint(x, y).matrixTransform(
       this.svgContext.getScreenCTM().inverse()
@@ -204,7 +192,7 @@ export class TileSelector extends EventEmitter {
     Object.assign(this.#points.a, pt)
     Object.assign(this.#points.b, pt)
     this.#points.setFocus('a')
-
+    
     this.render(pt);
     this.emitRange();
   }
@@ -236,7 +224,7 @@ export class TileSelector extends EventEmitter {
     this.isDragging = true;
     
     this.render();
-
+    
     document.addEventListener('pointermove', this.dragHandler);
     document.addEventListener('pointerup', this.dragEndHandler);
   }
