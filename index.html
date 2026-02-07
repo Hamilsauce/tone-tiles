@@ -20,6 +20,7 @@
   <link rel="stylesheet" href="./selection-box/selection-box.css" />
   <link rel="stylesheet" href="./css/app-footer.css" />
   <link rel="stylesheet" href="./css/app-header.css" />
+  <link rel="stylesheet" href="./css/app-map-creation.css" />
 </head>
 
 <body>
@@ -109,7 +110,7 @@
           </select>
         </div>
         <div class="container">
-          <button id="new-map" class="file-button" type="button">New</button>
+          <button id="new-map" @click="handleNewMap" class="file-button" type="button">New</button>
           <button id="save-map" class="file-button" type="button">Save</button>
         </div>
       </div>
@@ -118,7 +119,7 @@
   
   <template data-component="svg-canvas-host">
     <div id="svg-canvas-host" pointer-events="auto">
-      <svg @click="handleClick" id="canvas" class="gradient" width="412" _height="681" viewBox="-0 -0 9 15" preserveAspectRatio="xMidYMid meet" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+      <svg _@click="handleClick" id="canvas" class="gradient" width="412" _height="681" viewBox="-0 -0 9 15" preserveAspectRatio="xMidYMid meet" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <marker id="edge-line-arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
             <path d="M 0 0 L 10 5 L 0 10 z" fill="black" />
@@ -160,7 +161,7 @@
           
         </defs>
         
-        <g id="viewport" transform="matrix(1 0 0 1 0 0)">
+        <g id="viewport" ref="canvasViewportRef" transform="matrix(1 0 0 1 0 0)">
           
           <g id="scene" transform="translate(0,0) rotate(0) scale(1)">
             <g id="surface-layer" transform="translate(-0,-0) rotate(0) scale(1)">
@@ -180,6 +181,186 @@
       </svg>
     </div>
   </template>
+  
+  <!-- <template data-component="app-map-creation">
+    <section id="app-map-creation">
+      
+    </section>
+  </template> -->
+  
+  <template data-component="app-map-creation">
+    <section id="app-map-creation" class="map-create">
+      <!-- Header -->
+      <header class="map-create__header">
+        <div class="map-create__titlewrap">
+          <h2 class="map-create__title">New map</h2>
+          <p class="map-create__subtitle">Set the basics. You can resize later in Map Settings.</p>
+        </div>
+        
+        <div class="map-create__actions">
+          <button type="button" class="btn btn--ghost" data-action="cancel">Cancel</button>
+          <button type="submit" class="btn btn--primary" form="map-create-form" data-action="create">
+            Create map
+          </button>
+        </div>
+      </header>
+      
+      <!-- Body -->
+      <div class="map-create__body">
+        <form id="map-create-form" class="map-create__form" autocomplete="off" novalidate>
+          <!-- Name -->
+          <div class="field">
+            <label class="field__label" for="map-name">Name</label>
+            <input id="map-name" name="name" type="text" class="field__input" placeholder="e.g. Cat Town – West Gate" maxlength="80" required data-bind="name" />
+            <div class="field__hint">Optional. If blank, we’ll generate one.</div>
+          </div>
+          
+          <!-- Presets -->
+          <fieldset class="fieldset">
+            <legend class="fieldset__legend">Preset</legend>
+            <div class="preset-row" role="group" aria-label="Map size presets">
+              <button type="button" class="chip" data-preset="small">Small</button>
+              <button type="button" class="chip" data-preset="medium">Medium</button>
+              <button type="button" class="chip" data-preset="large">Large</button>
+              <button type="button" class="chip chip--ghost" data-preset="custom" aria-pressed="true">
+                Custom
+              </button>
+            </div>
+            <div class="fieldset__hint">Presets set width/height and tile size. You can fine-tune below.</div>
+          </fieldset>
+          
+          <!-- Dimensions -->
+          <fieldset class="fieldset">
+            <legend class="fieldset__legend">Dimensions</legend>
+            
+            <div class="grid-2">
+              <div class="field">
+                <label class="field__label" for="map-width">Width (tiles)</label>
+                <input id="map-width" name="width" type="number" class="field__input" inputmode="numeric" min="4" max="256" step="1" value="32" required data-bind="width" />
+              </div>
+              
+              <div class="field">
+                <label class="field__label" for="map-height">Height (tiles)</label>
+                <input id="map-height" name="height" type="number" class="field__input" inputmode="numeric" min="4" max="256" step="1" value="32" required data-bind="height" />
+              </div>
+            </div>
+            
+            <div class="field">
+              <label class="field__label" for="map-tilesize">Tile size</label>
+              <div class="range">
+                <input id="map-tilesize" name="tileSize" type="range" class="range__input" min="8" max="64" step="1" value="24" data-bind="tileSize" />
+                <output class="range__value" for="map-tilesize" data-out="tileSize">24</output>
+                <span class="range__unit">px</span>
+              </div>
+              <div class="field__hint">Visual scale. (If you treat tile size as logical resolution later, move this to Map Settings.)</div>
+            </div>
+          </fieldset>
+          
+          <!-- Initialize -->
+          <fieldset class="fieldset">
+            <legend class="fieldset__legend">Initialize</legend>
+            
+            <div class="grid-2">
+              <label class="radio">
+                <input type="radio" name="initFill" value="empty" checked data-bind="initFill" />
+                <span class="radio__label">Empty</span>
+                <span class="radio__hint">All tiles start empty.</span>
+              </label>
+              
+              <label class="radio">
+                <input type="radio" name="initFill" value="barrier" data-bind="initFill" />
+                <span class="radio__label">Barrier border</span>
+                <span class="radio__hint">Border walls, empty interior.</span>
+              </label>
+            </div>
+            
+            <div class="divider"></div>
+            
+            <div class="grid-2">
+              <div class="field">
+                <label class="field__label" for="map-start">Start</label>
+                <select id="map-start" name="startPlacement" class="field__select" data-bind="startPlacement">
+                  <option value="bottom-left" selected>Bottom-left</option>
+                  <option value="top-left">Top-left</option>
+                  <option value="bottom-right">Bottom-right</option>
+                  <option value="top-right">Top-right</option>
+                  <option value="none">None</option>
+                </select>
+              </div>
+              
+              <div class="field">
+                <label class="field__label" for="map-exit">Exit</label>
+                <select id="map-exit" name="exitPlacement" class="field__select" data-bind="exitPlacement">
+                  <option value="bottom-right" selected>Bottom-right</option>
+                  <option value="top-right">Top-right</option>
+                  <option value="bottom-left">Bottom-left</option>
+                  <option value="top-left">Top-left</option>
+                  <option value="none">None</option>
+                </select>
+              </div>
+            </div>
+            
+            <label class="check">
+              <input type="checkbox" name="openInEditor" checked data-bind="openInEditor" />
+              <span class="check__label">Open in editor after creation</span>
+            </label>
+          </fieldset>
+          
+          <!-- Mobile sticky submit (optional, if your app uses bottom bars) -->
+          <div class="map-create__footer">
+            <button type="submit" class="btn btn--primary btn--full" data-action="create">
+              Create map
+            </button>
+            <button type="button" class="btn btn--ghost btn--full" data-action="cancel">
+              Cancel
+            </button>
+          </div>
+        </form>
+        
+        <!-- Preview card -->
+        <aside class="map-create__preview" aria-label="Map summary preview">
+          <div class="card">
+            <div class="card__header">
+              <h3 class="card__title">Summary</h3>
+            </div>
+            <div class="card__content">
+              <dl class="kv">
+                <div class="kv__row">
+                  <dt>Name</dt>
+                  <dd data-preview="name">—</dd>
+                </div>
+                <div class="kv__row">
+                  <dt>Grid</dt>
+                  <dd><span data-preview="width">32</span> × <span data-preview="height">32</span></dd>
+                </div>
+                <div class="kv__row">
+                  <dt>Tile size</dt>
+                  <dd><span data-preview="tileSize">24</span>px</dd>
+                </div>
+                <div class="kv__row">
+                  <dt>Init</dt>
+                  <dd data-preview="initFill">Empty</dd>
+                </div>
+                <div class="kv__row">
+                  <dt>Start / Exit</dt>
+                  <dd>
+                    <span data-preview="startPlacement">Bottom-left</span>
+                    <span class="kv__sep">→</span>
+                    <span data-preview="exitPlacement">Bottom-right</span>
+                  </dd>
+                </div>
+              </dl>
+              
+              <div class="note">
+                Tip: resizing later should prompt an anchor (expand right/down/center) to avoid surprises.
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+  </template>
+  
   
   <template data-component="app-body">
     <section id="app-body">

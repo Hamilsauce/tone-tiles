@@ -114,13 +114,13 @@ export const initMapControls = async (graph, svgCanvas, actor1, selectionBox) =>
     copyTextToClipboard(graphOut)
   });
   
-  newButton.addEventListener('click', async (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    e.stopImmediatePropagation();
+  // newButton.addEventListener('click', async (e) => {
+  //   e.preventDefault();
+  //   e.stopPropagation();
+  //   e.stopImmediatePropagation();
     
-    renderMap(BLANK_MAP_16X16, svgCanvas, graph, actor1, selectionBox);
-  });
+  //   renderMap(BLANK_MAP_16X16, svgCanvas, graph, actor1, selectionBox);
+  // });
   
   
   mapInput$.pipe(

@@ -454,7 +454,7 @@ svgCanvas.layers.tile.addEventListener('contextmenu', e => {
       objectLayer.append(line)
     }
     
-    menuForeignObject.setAttribute('width', 250)
+    // menuForeignObject.setAttribute('width', 250)
     contextMenu.dataset.show = true;
     menuContainer.dataset.showActions = true;
   } else {

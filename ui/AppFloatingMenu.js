@@ -1,5 +1,7 @@
 import { reactive, computed, ref, watch, onMounted } from 'vue'
 import { defineComponent, getTemplate } from '../lib/vue-helpers.js';
+// import ham from 'https://hamilsauce.github.io/hamhelper/hamhelper1.0.0.js';
+// con)st { getPanZoom, template, utils, download, TwoWayMap } = ham;
 
 
 const DisplayState = {
@@ -14,6 +16,7 @@ export const AppFloatingMenu = defineComponent(
     let stopDrag
     
     const floatingMenuRef = ref(null);
+    const canvasViewportRef = ref(null);
     
     const currentPoint = ref({ x: 0, y: 0 });
     const pointerStart = ref({ x: 0, y: 0 });
@@ -88,11 +91,16 @@ export const AppFloatingMenu = defineComponent(
       } else {
         displayState.value = newState;
       }
+      
+      if (newState === 'expanded') {
+        // getPanZoom(canvasViewportRef.value.parentElement);
+
+      }
     };
     
     onMounted(() => {
       floatingMenuRef.value.addEventListener('click', (e) => handleDisplayChange(null));
-      
+
       stopDrag = attachDrag();
     });
     

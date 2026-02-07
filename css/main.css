@@ -63,8 +63,7 @@ body {
   width: 100%;
   * {
     /* pointer-events: none !important; */
-    touch-action: none;
-    
+    /* touch-action: none; */
   }
 }
 
@@ -73,7 +72,7 @@ body {
   y: 0;
   /* width: 200; */
   height: 30;
-  touch-action: none;
+  /* touch-action: none; */
   pointer-events: auto;
   
 }
@@ -85,7 +84,9 @@ body {
 #context-menu-container[data-show=true] {
   display: initial;
   filter: drop-shadow(0 3px 6px #2A2A2AC2);
-  /* overflow-y: hidden; */
+  overflow-y: hidden;
+  overflow-x: auto;
+
   pointer-events: auto;
   
 }
@@ -103,10 +104,11 @@ body {
   height: 100%;
   display: flex;
   align-items: center;
-  /* overflow-x: scroll; */
+  overflow-x: scroll;
   pointer-events: auto;
   width: 100px;
   width: 100%;
+  overflow-x: auto;
 
 }
 

@@ -4,7 +4,6 @@
   margin: 0;
   z-index: 0;
   user-select: none;
-  touch-action: none;
 }
 
 html {
@@ -31,7 +30,7 @@ body {
   width: 100%;
   height: 100%;
   background: #3F3F3F;
-  overflow: auto;
+  overflow: hidden;
 }
 
 #app-floating-menu {
