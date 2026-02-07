@@ -264,8 +264,8 @@ Object.assign(viewBox.baseVal, {
 selectionBox.setBounds({
   minX: 0,
   minY: 0,
-  maxX: 5,
-  maxY: 10,
+  maxX: 10,
+  maxY: 20,
 })
 
 pixelScale = canvasBBox.width / viewBox.baseVal.width;

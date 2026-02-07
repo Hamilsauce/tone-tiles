@@ -92,7 +92,7 @@ export class TileSelector extends EventEmitter {
     get height() { return (this.y2 - this.y) + 1 },
     
     setFocus(label) {
-      const anchorLabel = this.pointKeys.filter(_ => _ !== label)[0]
+      const anchorLabel = this.pointKeys.find(_ => _ !== label)
       if (!label || !anchorLabel) return;
       
       this.focus = this[label] ?? null;
@@ -102,6 +102,7 @@ export class TileSelector extends EventEmitter {
   
   constructor(svgContext, unitSize = 1) {
     super();
+    
     this.svgContext = svgContext
     this.#self = document.createElementNS(SVG_NS, 'g');
     this.#self.classList.add('tile-selector');
@@ -137,6 +138,7 @@ export class TileSelector extends EventEmitter {
       maxX: null,
       maxY: null,
     }
+    
     this.clampToBounds = clampPointWithBounds(this.bounds)
     this.render = this.#render.bind(this);
     this.emitRange = this.#emitRange.bind(this);
@@ -158,15 +160,6 @@ export class TileSelector extends EventEmitter {
     return this;
   }
   
-  isInBounds(pt = new DOMPoint()) {
-    const { minX, minY, maxX, maxY } = this.bounds;
-    
-    if ([minX, minY, maxX, maxY].includes(null)) return true;
-    
-    return pt.x >= minX && pt.x <= maxX &&
-      pt.y >= minY && pt.y <= maxY;
-  }
-  
   domPoint(x, y, clamp = false) {
     const p = new DOMPoint(x, y).matrixTransform(
       this.svgContext.getScreenCTM().inverse()
@@ -183,6 +176,7 @@ export class TileSelector extends EventEmitter {
     return this;
   }
   
+  // intended as only public method
   insertAt(x, y) {
     const pt = {
       x: x.x !== undefined ? +x.x : +x,
@@ -193,7 +187,7 @@ export class TileSelector extends EventEmitter {
     Object.assign(this.#points.b, pt)
     this.#points.setFocus('a')
     
-    this.render(pt);
+    this.render();
     this.emitRange();
   }
   
@@ -262,34 +256,29 @@ export class TileSelector extends EventEmitter {
     const focusHandle = this.#handles.focus;
     
     if (this.dragMode === 'translation') {
-      const dx = Math.floor(this.#points.translation.x)
-      const dy = Math.floor(this.#points.translation.y)
-      
-      const dANoClamp = {
-        x: this.#points.a.x + dx,
-        y: this.#points.a.y + dy,
-      }
+      const dx = Math.floor(this.#points.translation.x);
+      const dy = Math.floor(this.#points.translation.y);
       
       const aPoint = this.clampToBounds({
         x: this.#points.a.x + dx,
         y: this.#points.a.y + dy,
-      })
+      });
+      
       const bPoint = this.clampToBounds({
         x: this.#points.b.x + dx,
         y: this.#points.b.y + dy,
-      })
+      });
       
-      this.#points.a.x = aPoint.x
-      this.#points.a.y = aPoint.y
-      this.#points.b.x = bPoint.x
-      this.#points.b.y = bPoint.y
+      this.#points.a.x = aPoint.x;
+      this.#points.a.y = aPoint.y;
+      this.#points.b.x = bPoint.x;
+      this.#points.b.y = bPoint.y;
       
-      this.#points.translation.x = 0
-      this.#points.translation.y = 0
-      this.pointerStart = null
-      this.dragMode = 'handle'
-    }
-    else {
+      this.#points.translation.x = 0;
+      this.#points.translation.y = 0;
+      this.pointerStart = null;
+      this.dragMode = 'handle';
+    } else {
       const pt = this.domPoint(clientX, clientY, 'floor');
       
       if (!focusHandle || !focusPoint) return;
@@ -299,6 +288,7 @@ export class TileSelector extends EventEmitter {
       focusPoint.x = clamped.x;
       focusPoint.y = clamped.y;
     }
+    
     this.#handles.setFocus(null);
     
     document.removeEventListener('pointermove', this.dragHandler);
@@ -310,7 +300,7 @@ export class TileSelector extends EventEmitter {
     this.emitRange();
   }
   
-  async #render(pt) {
+  async #render() {
     if (!this.isRendered) {
       this.svgContext.append(this.#self);
     }
@@ -323,20 +313,6 @@ export class TileSelector extends EventEmitter {
     }
     else {
       this.#self.setAttribute('transform', `translate(${0.5},${0.5})`);
-    }
-    if (pt) {
-      this.selectBox.setAttribute('x', pt.x);
-      this.selectBox.setAttribute('y', pt.y);
-      
-      this.selectBox.setAttribute('width', 1);
-      this.selectBox.setAttribute('height', 1);
-      
-      this.#handles.a.setAttribute('cx', pt.x);
-      this.#handles.a.setAttribute('cy', pt.y);
-      this.#handles.b.setAttribute('cx', pt.x);
-      this.#handles.b.setAttribute('cy', pt.y);
-      
-      return;
     }
     
     this.selectBox.setAttribute('x', this.#points.x);

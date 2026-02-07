@@ -123,11 +123,10 @@ export class TransformList {
   scaleTo(x = 1, y = 1) {
     const scale = this.getItem(TransformIndexMap.scale);
     if (y) {
-     scale.setScale(x, y); 
+      scale.setScale(x, y);
     } else {
-     scale.setScale(x); 
+      scale.setScale(x);
     }
-    
     
     return this;
   }
@@ -159,27 +158,18 @@ export class TransformList {
   get translation() {
     const { e, f } = this.getMatrixAt(TransformIndexMap.translate)
     
-    return {
-      x: roundTwo(e),
-      y: roundTwo(f),
-    }
+    return { x: roundTwo(e), y: roundTwo(f) }
   }
   
   get rotation() {
     const { b, c } = this.getMatrixAt(TransformIndexMap.rotate)
     
-    return {
-      x: roundTwo(b),
-      y: roundTwo(c),
-    }
+    return { x: roundTwo(b), y: roundTwo(c) }
   }
   
   get scale() {
     const { a, d } = this.getMatrixAt(TransformIndexMap.scale)
     
-    return {
-      x: roundTwo(a),
-      y: roundTwo(d),
-    }
+    return { x: roundTwo(a), y: roundTwo(d) }
   }
 }
