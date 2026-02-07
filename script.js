@@ -495,6 +495,8 @@ svgCanvas.layers.tile.addEventListener('contextmenu', e => {
   };
   
   svgCanvas.addEventListener('click', blurContextMenu);
+  
+  // navigator.clipboard.writeText(document.body.innerHTML)
 });
 
 contextMenu.addEventListener('click', e => {
@@ -566,7 +568,7 @@ contextMenu.addEventListener('click', e => {
       });
       
       nodeModel.setType(selectedTileTypeName);
-
+      
       if (selectedTileTypeName === 'teleport') {
         nodeModel.target = { x: 1, y: 1 };
       }

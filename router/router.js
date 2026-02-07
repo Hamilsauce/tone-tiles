@@ -8,7 +8,14 @@ export const RouteName = {
 };
 
 const routes = [
-  { path: '/', component: AppBody , name: RouteName.home},
+  {
+    path: '/',
+    components: {
+      default: AppBody,
+      panel: AppCreateMapView,
+    },
+    name: RouteName.home
+  },
   { path: '/create', component: AppCreateMapView, name: RouteName.createMap },
 ];
 

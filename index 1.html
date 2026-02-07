@@ -1,0 +1,1789 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <title>Tone Tiles</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/rxjs/7.3.0/rxjs.umd.min.js" integrity="sha512-y3JTS47nnpKORJX8Jn1Rlm+QgRIIZHtu3hWxal0e81avPrqUH48yk+aCi+gprT0RMAcpYa0WCkapxe+bpBHD6g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <link rel="stylesheet" href="./css/main.css" />
+  <link rel="stylesheet" href="./css/minimap.css" />
+  <link rel="stylesheet" href="./css/app.css" />
+  <link rel="stylesheet" href="./css/tile.css" />
+  <link rel="stylesheet" href="./css/actor.css" />
+  <link rel="stylesheet" href="./css/toolbar.css" />
+  
+  <link rel="stylesheet" href="./selection-box/selection-box.css" />
+  <link rel="stylesheet" href="./css/app-footer.css" />
+  <link rel="stylesheet" href="./css/app-header.css" />
+  <link rel="stylesheet" href="./css/app-map-creation.css" />
+</head>
+
+<body>
+  
+  <div id="app-host" data-v-app="">
+    <div id="app">
+      <header id="app-header">
+        <div id="app-header-left"></div>
+        <div id="app-header-center">
+          <h2>tone tiles</h2>
+          <div id="app-header-center-bottom"></div>
+        </div>
+        <div id="app-header-right">
+          <div id="app-state-display"></div>
+        </div>
+        <div id="app-header-top">
+          <div class="container"><label for="map-input">Pick Map</label> <select name="map-input" id="map-input">
+              <option value="zYCxQlIXijeHjuwqCK7A">suk</option>
+              <option value="AV1lKxUDArOcODrZAgaQ">SPIRAL1</option>
+              <option value="GijGXx13yedhOXZq694U">Baby Map 4x6</option>
+              <option value="I8hahrSpL3j8FdMCzp94">Baby Map 4x6</option>
+              <option value="PhbgBZBKSM4TQCALpORE">Untitled_1770451690832</option>
+              <option value="VSMgQcxUcd7j1anw4hmF">Untitled_1763501765721</option>
+              <option value="WzV0CcaKCs8gZbGGjVE4">Maze Map 9x15 1</option>
+              <option value="ksaaobFav35eX3BvVXAR">Big Ass Map</option>
+              <option value="nov7SIQARK8xoowIeDDN">Blank Map 9x15</option>
+              <option value="zYCxQlIXijeHjuwqCK7A">suk</option>
+            </select></div>
+          <div class="container"><button id="new-map" class="file-button" type="button">New</button> <button id="save-map" class="file-button" type="button">Save</button></div>
+        </div>
+      </header>
+      <section id="app-body">
+        <div id="svg-canvas-host" pointer-events="auto"><svg _@click="handleClick" id="canvas" class="gradient" width="411" _height="681" viewBox="0 0 19 22" preserveAspectRatio="xMidYMid meet" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" height="780">
+            <defs>
+              <marker id="edge-line-arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="black"></path>
+              </marker><!-- <foreignObject data-template="context-menu" id="context-menu-container" class="context-menu-foreignobject" pointer-events="auto" x="0" y="0" width="200" height="30" _transform="translate(0,0) rotate(0) scale(1)">
+            <div xmlns="http://www.w3.org/1999/xhtml" class="context-menu" data-show-actions="false">
+              <ul class="context-menu-list">
+                <li data-value="barrier" data-type="tile-type">barrier</li>
+                <li data-value="empty" data-type="tile-type">empty</li>
+                <li data-value="start" data-type="tile-type">start</li>
+                <li data-value="teleport" data-type="tile-type">teleport</li>
+                <li data-value="link-teleport" data-type="tile-action">Link to...</li>
+              </ul>
+            </div>
+          </foreignObject> -->
+              <g data-template="context-menu" id="context-menu-container" pointer-events="auto" data-show-actions="false" data-show="false" transform="translate(0,0) rotate(0) scale(0.05)">
+                <foreignObject class="context-menu-foreignobject" pointer-events="auto" x="0" y="0" width="200" height="30" _transform="translate(0,0) rotate(0) scale(1)">
+                  <div xmlns="http://www.w3.org/1999/xhtml" class="context-menu" data-show-actions="false">
+                    <ul class="context-menu-list">
+                      <li data-value="barrier" data-type="tile-type">barrier</li>
+                      <li data-value="empty" data-type="tile-type">empty</li>
+                      <li data-value="start" data-type="tile-type">start</li>
+                      <li data-value="teleport" data-type="tile-type">teleport</li>
+                      <li data-value="link-teleport" data-type="tile-action">Link to...</li>
+                    </ul>
+                  </div>
+                </foreignObject>
+              </g>
+              <g data-template="actor" id="" data-x="0" data-y="0" data-teleporting="false" class="actor" transform="translate(0,0) rotate(0) scale(1)">
+                <circle cx="0.5" cy="0.5" r="0.4" transform="translate(0,0) rotate(0) scale(1)"></circle>
+              </g>
+              <g data-template="edge-line" class="edge-line" id="" data-x="0" data-y="0" transform="translate(0,0) rotate(0) scale(1)">
+                <line x1="0" y1="0" x2="1" y2="1" marker-end="url(#edge-line-arrow)" transform="translate(0,0) rotate(0) scale(1)"></line>
+              </g>
+            </defs>
+            <g id="viewport" transform="matrix(1 0 0 1 -1.616318702697754 -5.172222137451172)">
+              <g id="scene" transform="translate(0,0) rotate(0) scale(1)">
+                <g id="surface-layer" transform="translate(-0,-0) rotate(0) scale(1)">
+                  <rect id="surface" class="gradient" x="0" y="0" rx="0" ry="0" width="19" height="22" style="x: 0px; y: 0px; width: 19px; height: 22px;"></rect>
+                </g>
+                <g id="tile-layer" transform="translate(-0,-0) rotate(0) scale(1)" data-width="18" data-height="21">
+                  <g data-tile-type="start" data-x="0" data-y="0" data-current="false" data-active="false" data-is-path-node="true" transform="translate(0,0)" class="tile" id="rectwbcwzn5l17ycmnon7lu">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="1" data-y="0" data-current="false" data-active="false" data-is-path-node="false" transform="translate(1,0)" class="tile" id="rectminwy45cazbhumc9cll">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="2" data-y="0" data-current="false" data-active="false" data-is-path-node="false" transform="translate(2,0)" class="tile" id="rectnh5wnbcsf2i2aac8lymb">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="3" data-y="0" data-current="false" data-active="false" data-is-path-node="false" transform="translate(3,0)" class="tile" id="rectj1mr7lin6nlf5c7clbw">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="4" data-y="0" data-current="false" data-active="false" data-is-path-node="false" transform="translate(4,0)" class="tile" id="rectwcl15bwmocrw2bmnt6s">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="5" data-y="0" data-current="false" data-active="false" data-is-path-node="false" transform="translate(5,0)" class="tile" id="rectrtim6wmvccnxu5bbl84">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="6" data-y="0" data-current="false" data-active="false" data-is-path-node="false" transform="translate(6,0)" class="tile" id="rectbcwlz4icmbn9qwsmn5p">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="7" data-y="0" data-current="false" data-active="false" data-is-path-node="false" transform="translate(7,0)" class="tile" id="rectzccbmlwoiwavpz9qm5w">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="8" data-y="0" data-current="false" data-active="false" data-is-path-node="false" transform="translate(8,0)" class="tile" id="rectconsblctdwcmzqu5wny">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="9" data-y="0" data-current="false" data-active="false" data-is-path-node="false" transform="translate(9,0)" class="tile" id="rectymlc7wo25c6ozfbwcsb">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="10" data-y="0" data-current="false" data-active="false" data-is-path-node="false" transform="translate(10,0)" class="tile" id="rectlw4cv43lvmfoqw65cbc">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="11" data-y="0" data-current="false" data-active="false" data-is-path-node="false" transform="translate(11,0)" class="tile" id="rectbc0lci7wtmsq5mdd9o8">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="teleport" data-x="12" data-y="0" data-current="false" data-active="false" data-is-path-node="true" transform="translate(12,0)" class="tile" id="rectcwtd7i5b3imc9ilco9">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="13" data-y="0" data-current="false" data-active="false" data-is-path-node="false" transform="translate(13,0)" class="tile" id="rectb44v6wqmpcploccd3j5">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="14" data-y="0" data-current="false" data-active="false" data-is-path-node="false" transform="translate(14,0)" class="tile" id="rectchpzmcbwl4to5i6necv">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="15" data-y="0" data-current="false" data-active="false" data-is-path-node="false" transform="translate(15,0)" class="tile" id="rects5lbceowfqoc85ft5nm">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="16" data-y="0" data-current="false" data-active="false" data-is-path-node="false" transform="translate(16,0)" class="tile" id="rect5mlaacog2d8kw9lvbcm">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="17" data-y="0" data-current="false" data-active="false" data-is-path-node="false" transform="translate(17,0)" class="tile" id="rect95k6mipwwcejcb483l2">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="18" data-y="0" data-current="false" data-active="false" data-is-path-node="false" transform="translate(18,0)" class="tile" id="rectwq85pcc0fbmv20z3lknm">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="0" data-y="1" data-current="false" data-active="false" data-is-path-node="true" transform="translate(0,1)" class="tile" id="rect7wl053cnwqeasmbp6ck">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="1" data-y="1" data-current="false" data-active="false" data-is-path-node="false" transform="translate(1,1)" class="tile" id="rectcyncleob5mw4pyle20">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="2" data-y="1" data-current="false" data-active="false" data-is-path-node="false" transform="translate(2,1)" class="tile" id="rectjlclrwmw7eotcqb5ps3">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="3" data-y="1" data-current="false" data-active="false" data-is-path-node="false" transform="translate(3,1)" class="tile" id="rectjbpwccli455sbzm85l">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="4" data-y="1" data-current="false" data-active="false" data-is-path-node="false" transform="translate(4,1)" class="tile" id="rectc5g5xt956mhpwblbcxc">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="5" data-y="1" data-current="false" data-active="false" data-is-path-node="false" transform="translate(5,1)" class="tile" id="rectcbwf5clcwmjmeynjpu3">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="6" data-y="1" data-current="false" data-active="false" data-is-path-node="false" transform="translate(6,1)" class="tile" id="rectcmk81acp5flfbw45d2m">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="7" data-y="1" data-current="false" data-active="false" data-is-path-node="false" transform="translate(7,1)" class="tile" id="rectqrvtccy3l1mbnr5p7w">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="8" data-y="1" data-current="false" data-active="false" data-is-path-node="false" transform="translate(8,1)" class="tile" id="recto5mlp3qebmhccwvkai">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="9" data-y="1" data-current="false" data-active="false" data-is-path-node="false" transform="translate(9,1)" class="tile" id="rectdalntumwt1m25cbxcpz">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="10" data-y="1" data-current="false" data-active="false" data-is-path-node="false" transform="translate(10,1)" class="tile" id="rectbpcc5txwlfcxb5mckqi">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="11" data-y="1" data-current="false" data-active="false" data-is-path-node="false" transform="translate(11,1)" class="tile" id="rectmrcwc2lpco5kfb6dutw">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="12" data-y="1" data-current="false" data-active="false" data-is-path-node="true" transform="translate(12,1)" class="tile" id="rectcoclqlmw855ebpalzc7">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="13" data-y="1" data-current="false" data-active="false" data-is-path-node="false" transform="translate(13,1)" class="tile" id="rect5lcufqcbsum98lhmjw2">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="14" data-y="1" data-current="false" data-active="false" data-is-path-node="false" transform="translate(14,1)" class="tile" id="rectmlcafsb5qzmcfljwwc0">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="15" data-y="1" data-current="false" data-active="false" data-is-path-node="false" transform="translate(15,1)" class="tile" id="rectlxqbzswqjf6bc8cnp5m">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="16" data-y="1" data-current="false" data-active="false" data-is-path-node="false" transform="translate(16,1)" class="tile" id="rectwbp5k6c8wi1m2lezvqc">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="17" data-y="1" data-current="false" data-active="false" data-is-path-node="false" transform="translate(17,1)" class="tile" id="rectj3cqqm5mvvuqbwtzlc">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="18" data-y="1" data-current="false" data-active="false" data-is-path-node="false" transform="translate(18,1)" class="tile" id="rect5cdd37q2yhbulmwrjce">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="teleport" data-x="0" data-y="2" data-current="false" data-active="false" data-is-path-node="true" transform="translate(0,2)" class="tile" id="rect95twcqglwcrnc8c2bim">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="1" data-y="2" data-current="false" data-active="false" data-is-path-node="false" transform="translate(1,2)" class="tile" id="rectx0lmcuwo9bqsc6pk50g">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="2" data-y="2" data-current="false" data-active="false" data-is-path-node="false" transform="translate(2,2)" class="tile" id="rectmmwby8wncicccwlqrn5">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="3" data-y="2" data-current="false" data-active="false" data-is-path-node="false" transform="translate(3,2)" class="tile" id="rectwm4cibmgcfquep7ljj5">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="4" data-y="2" data-current="false" data-active="false" data-is-path-node="false" transform="translate(4,2)" class="tile" id="rectcbrl0m5q5muh4uucnw2">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="5" data-y="2" data-current="false" data-active="false" data-is-path-node="false" transform="translate(5,2)" class="tile" id="rectcznt5bmtix3nlsxgwcq">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="6" data-y="2" data-current="false" data-active="false" data-is-path-node="false" transform="translate(6,2)" class="tile" id="rectfxlgwmy45cnhqbddc0h">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="7" data-y="2" data-current="false" data-active="false" data-is-path-node="false" transform="translate(7,2)" class="tile" id="rectbldoqzewmw8qc3wc7l5">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="8" data-y="2" data-current="false" data-active="false" data-is-path-node="false" transform="translate(8,2)" class="tile" id="rectc27dleocq5md9xmbwg7">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="9" data-y="2" data-current="false" data-active="false" data-is-path-node="false" transform="translate(9,2)" class="tile" id="rectlmjcbecek5mcqb6cjw">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="teleport" data-x="10" data-y="2" data-current="false" data-active="false" data-is-path-node="false" transform="translate(10,2)" class="tile" id="rectlcfdpqmb5wjka5wcowb">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="11" data-y="2" data-current="false" data-active="false" data-is-path-node="false" transform="translate(11,2)" class="tile" id="rectc7umkadc27wqv4rlb5m">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="12" data-y="2" data-current="false" data-active="false" data-is-path-node="true" transform="translate(12,2)" class="tile" id="rectmrr5sc5cllbgcw9r9zr">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="13" data-y="2" data-current="false" data-active="false" data-is-path-node="false" transform="translate(13,2)" class="tile" id="rect3wwccb6pq9mr4w5tolh">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="14" data-y="2" data-current="false" data-active="false" data-is-path-node="false" transform="translate(14,2)" class="tile" id="rect6krimc5gimwqtcbwlz">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="15" data-y="2" data-current="false" data-active="false" data-is-path-node="false" transform="translate(15,2)" class="tile" id="rectu5o6lw0mcb5ac35tr56">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="16" data-y="2" data-current="false" data-active="false" data-is-path-node="false" transform="translate(16,2)" class="tile" id="rectcscrbm5zlij0lbmwb8">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="17" data-y="2" data-current="false" data-active="false" data-is-path-node="false" transform="translate(17,2)" class="tile" id="rectb7r6z6ew1hm4jclc5xu">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="18" data-y="2" data-current="false" data-active="false" data-is-path-node="false" transform="translate(18,2)" class="tile" id="rectwykjlm58xcccrsbe8ji">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="0" data-y="3" data-current="false" data-active="false" data-is-path-node="false" transform="translate(0,3)" class="tile" id="rectgy8mwlbrdv8zcu4cp5w">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="1" data-y="3" data-current="false" data-active="false" data-is-path-node="false" transform="translate(1,3)" class="tile" id="rectr1lmdusycuscgbuwr5g">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="2" data-y="3" data-current="false" data-active="false" data-is-path-node="false" transform="translate(2,3)" class="tile" id="rectry5fvlkbalvmicfdcaw">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="3" data-y="3" data-current="false" data-active="false" data-is-path-node="false" transform="translate(3,3)" class="tile" id="rectpo5iwcmrica638kxlb">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="4" data-y="3" data-current="false" data-active="false" data-is-path-node="false" transform="translate(4,3)" class="tile" id="rectl13qrwvbrcwcm8tbt5">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="5" data-y="3" data-current="false" data-active="false" data-is-path-node="false" transform="translate(5,3)" class="tile" id="rect9pbdmaklxd8c635wsc">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="6" data-y="3" data-current="false" data-active="false" data-is-path-node="false" transform="translate(6,3)" class="tile" id="rectc82omy3f5lcblwwasf">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="7" data-y="3" data-current="false" data-active="false" data-is-path-node="false" transform="translate(7,3)" class="tile" id="rect1til2wzbv15scseqtcm">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="8" data-y="3" data-current="false" data-active="false" data-is-path-node="false" transform="translate(8,3)" class="tile" id="rectwlm9kchwbocpl5tlbrs">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="9" data-y="3" data-current="false" data-active="false" data-is-path-node="false" transform="translate(9,3)" class="tile" id="rectcbmayqs1sc56lgswuh7">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="10" data-y="3" data-current="false" data-active="false" data-is-path-node="false" transform="translate(10,3)" class="tile" id="rect5cvw5rm8lbg7s431cey">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="11" data-y="3" data-current="false" data-active="false" data-is-path-node="false" transform="translate(11,3)" class="tile" id="rects5ltw5c5m7l72hbwqc">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="12" data-y="3" data-current="false" data-active="false" data-is-path-node="true" transform="translate(12,3)" class="tile" id="rect1veclwxamsc0c9lb5w">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="13" data-y="3" data-current="false" data-active="false" data-is-path-node="false" transform="translate(13,3)" class="tile" id="rectscnxmlmlj481wozb85c">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="14" data-y="3" data-current="false" data-active="false" data-is-path-node="false" transform="translate(14,3)" class="tile" id="rectstclg9jcpmcxsjwb5ha">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="15" data-y="3" data-current="false" data-active="false" data-is-path-node="false" transform="translate(15,3)" class="tile" id="rect4wwscq51fcqfmfcwbln">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="16" data-y="3" data-current="false" data-active="false" data-is-path-node="false" transform="translate(16,3)" class="tile" id="rectsvw45ca3p9cqc2lmfbm">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="17" data-y="3" data-current="false" data-active="false" data-is-path-node="false" transform="translate(17,3)" class="tile" id="rectj5nwswgm45ltaibpcdc">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="18" data-y="3" data-current="false" data-active="false" data-is-path-node="false" transform="translate(18,3)" class="tile" id="rectlmp8isioic5c4qd6cwb">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="0" data-y="4" data-current="false" data-active="false" data-is-path-node="false" transform="translate(0,4)" class="tile" id="rectb5egvlst0mkd7xcrgwc">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="1" data-y="4" data-current="false" data-active="false" data-is-path-node="false" transform="translate(1,4)" class="tile" id="rect9itcb5bumelxbwcgzu9">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="2" data-y="4" data-current="false" data-active="false" data-is-path-node="false" transform="translate(2,4)" class="tile" id="rectcbepuhlwcchpmz5gxt4">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="3" data-y="4" data-current="false" data-active="false" data-is-path-node="false" transform="translate(3,4)" class="tile" id="rectwhvcmdwhltrz59mocbb">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="goal" data-x="4" data-y="4" data-current="false" data-active="false" data-is-path-node="false" transform="translate(4,4)" class="tile" id="rect45tyc2ww1mbcl2cmwa">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="5" data-y="4" data-current="false" data-active="false" data-is-path-node="false" transform="translate(5,4)" class="tile" id="rectpbclpbccbs5pznwtmwm">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="6" data-y="4" data-current="false" data-active="false" data-is-path-node="false" transform="translate(6,4)" class="tile" id="rectbdht56cmlibcnvw2lg">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="7" data-y="4" data-current="false" data-active="false" data-is-path-node="false" transform="translate(7,4)" class="tile" id="rectm02bcpbldtclpcmtw45">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="8" data-y="4" data-current="false" data-active="false" data-is-path-node="false" transform="translate(8,4)" class="tile" id="recth4tsq2b5qwxf8cl5cml" data-highlight="true">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="9" data-y="4" data-current="false" data-active="false" data-is-path-node="false" transform="translate(9,4)" class="tile" id="rectwmwtgtgua5ci87lcbc9">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="10" data-y="4" data-current="false" data-active="false" data-is-path-node="false" transform="translate(10,4)" class="tile" id="rectc1ct75c5gbeww2mlmw">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="11" data-y="4" data-current="false" data-active="false" data-is-path-node="false" transform="translate(11,4)" class="tile" id="rectpfbxq54ltcfwlh5avmc">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="12" data-y="4" data-current="false" data-active="false" data-is-path-node="true" transform="translate(12,4)" class="tile" id="rect5ca5ikcl4twmpbbecqu">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="13" data-y="4" data-current="false" data-active="false" data-is-path-node="false" transform="translate(13,4)" class="tile" id="rectx0htmlwbk0oolcqca56">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="14" data-y="4" data-current="false" data-active="false" data-is-path-node="false" transform="translate(14,4)" class="tile" id="rectltpljcp5b5wdcu4mgtg">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="15" data-y="4" data-current="false" data-active="false" data-is-path-node="false" transform="translate(15,4)" class="tile" id="rectpnfbt9mlrw75t0lcalc">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="16" data-y="4" data-current="false" data-active="false" data-is-path-node="false" transform="translate(16,4)" class="tile" id="rectjegm8l9mc84y3bwc5tp">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="17" data-y="4" data-current="false" data-active="false" data-is-path-node="false" transform="translate(17,4)" class="tile" id="rectcasqhlhtncprw57mhsb">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="18" data-y="4" data-current="false" data-active="false" data-is-path-node="false" transform="translate(18,4)" class="tile" id="rectl5scbslm6cm0x5pmtw">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="0" data-y="5" data-current="false" data-active="false" data-is-path-node="false" transform="translate(0,5)" class="tile" id="recttp45383wcm6clbxov5m">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="1" data-y="5" data-current="false" data-active="false" data-is-path-node="false" transform="translate(1,5)" class="tile" id="rectclcr59qwlwbmdxft16">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="2" data-y="5" data-current="false" data-active="false" data-is-path-node="false" transform="translate(2,5)" class="tile" id="rectcnf3qnbw5czotvmaf9l">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="3" data-y="5" data-current="false" data-active="false" data-is-path-node="false" transform="translate(3,5)" class="tile" id="rectus0c9wc40bb4lby5qm">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="4" data-y="5" data-current="false" data-active="false" data-is-path-node="false" transform="translate(4,5)" class="tile" id="rectwqefq5cctwubxm1l3t">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="5" data-y="5" data-current="false" data-active="false" data-is-path-node="false" transform="translate(5,5)" class="tile" id="rectxcmljb0e5yuwcmfkkxq">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="6" data-y="5" data-current="false" data-active="false" data-is-path-node="false" transform="translate(6,5)" class="tile" id="rectu3j7oglwhbfcm53csks">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="7" data-y="5" data-current="false" data-active="false" data-is-path-node="false" transform="translate(7,5)" class="tile" id="rectw1mslcztp5bqcgwu2y" data-highlight="true">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="8" data-y="5" data-current="true" data-active="true" data-is-path-node="true" transform="translate(8,5)" class="tile" id="rectrdcrd5wfbmov6utlx4c">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="9" data-y="5" data-current="false" data-active="false" data-is-path-node="true" transform="translate(9,5)" class="tile" id="rectzuucq6meccw5m5bshld" data-highlight="true">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="10" data-y="5" data-current="false" data-active="false" data-is-path-node="true" transform="translate(10,5)" class="tile" id="rectwrprll5mbcla8u19hc">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="11" data-y="5" data-current="false" data-active="false" data-is-path-node="true" transform="translate(11,5)" class="tile" id="rectcwl1lrz1wemcmu5bvw0">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="12" data-y="5" data-current="false" data-active="false" data-is-path-node="true" transform="translate(12,5)" class="tile" id="rectmlndoawuovc75p2bc8a">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="13" data-y="5" data-current="false" data-active="false" data-is-path-node="false" transform="translate(13,5)" class="tile" id="rectcutmfpeclebe9z05ws">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="14" data-y="5" data-current="false" data-active="false" data-is-path-node="false" transform="translate(14,5)" class="tile" id="rectup41ljbo9sdcmwo8c5">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="15" data-y="5" data-current="false" data-active="false" data-is-path-node="false" transform="translate(15,5)" class="tile" id="rectafuw5wu89rbccwjmbl">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="16" data-y="5" data-current="false" data-active="false" data-is-path-node="false" transform="translate(16,5)" class="tile" id="rectullsbccm08w5wm5j83">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="17" data-y="5" data-current="false" data-active="false" data-is-path-node="false" transform="translate(17,5)" class="tile" id="rectbm05cwcpuspfax8f2yl">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="18" data-y="5" data-current="false" data-active="false" data-is-path-node="false" transform="translate(18,5)" class="tile" id="rectd5wlyvb2cuf7tznmcca">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="0" data-y="6" data-current="false" data-active="false" data-is-path-node="false" transform="translate(0,6)" class="tile" id="rect1mi65gceboml01xwukc">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="1" data-y="6" data-current="false" data-active="false" data-is-path-node="false" transform="translate(1,6)" class="tile" id="recttlwxlcf6mbr06nuc5d">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="2" data-y="6" data-current="false" data-active="false" data-is-path-node="false" transform="translate(2,6)" class="tile" id="rectuca58mwucfvqdblrmzv">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="3" data-y="6" data-current="false" data-active="false" data-is-path-node="false" transform="translate(3,6)" class="tile" id="rectbx0c5y5mcbwwjlujawi">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="4" data-y="6" data-current="false" data-active="false" data-is-path-node="false" transform="translate(4,6)" class="tile" id="rectmcbt489lk350w00mcub">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="5" data-y="6" data-current="false" data-active="false" data-is-path-node="false" transform="translate(5,6)" class="tile" id="rectw5mt43qaccw0b7cvllv">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="teleport" data-x="6" data-y="6" data-current="false" data-active="false" data-is-path-node="false" transform="translate(6,6)" class="tile" id="rectvbr5ulrbfckrcxwmc8b">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="7" data-y="6" data-current="false" data-active="false" data-is-path-node="false" transform="translate(7,6)" class="tile" id="rect1vb5ccxcqtl9cmrqwr">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="8" data-y="6" data-current="false" data-active="false" data-is-path-node="false" transform="translate(8,6)" class="tile" id="rectc2euwlu05mbwcv5lctb" data-highlight="true">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="9" data-y="6" data-current="false" data-active="false" data-is-path-node="false" transform="translate(9,6)" class="tile" id="rectb58c2ncflc1vm3wfudw">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="10" data-y="6" data-current="false" data-active="false" data-is-path-node="false" transform="translate(10,6)" class="tile" id="recttuwcl5vvem009wcsb8c">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="11" data-y="6" data-current="false" data-active="false" data-is-path-node="false" transform="translate(11,6)" class="tile" id="rectnwtbsklccc15xdlmv1m">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="12" data-y="6" data-current="false" data-active="false" data-is-path-node="false" transform="translate(12,6)" class="tile" id="rectcu5nvbpbml23ccf15w">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="teleport" data-x="13" data-y="6" data-current="false" data-active="false" data-is-path-node="false" transform="translate(13,6)" class="tile" id="rectcwlbl5wbmeyvs8ci6w">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="14" data-y="6" data-current="false" data-active="false" data-is-path-node="false" transform="translate(14,6)" class="tile" id="rectchvkk8ymmcyb5w0ljq">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="15" data-y="6" data-current="false" data-active="false" data-is-path-node="false" transform="translate(15,6)" class="tile" id="rectoomthelvxcnu5xhcqwb">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="16" data-y="6" data-current="false" data-active="false" data-is-path-node="false" transform="translate(16,6)" class="tile" id="rectgcwc65brim1cmveblwi">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="17" data-y="6" data-current="false" data-active="false" data-is-path-node="false" transform="translate(17,6)" class="tile" id="rectzlmcwbr5wkjcniclhyv">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="18" data-y="6" data-current="false" data-active="false" data-is-path-node="false" transform="translate(18,6)" class="tile" id="rectczy7u5vvvvmbj5wc9l">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="0" data-y="7" data-current="false" data-active="false" data-is-path-node="false" transform="translate(0,7)" class="tile" id="rectcvbl5c6j3mylwb5w5f">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="1" data-y="7" data-current="false" data-active="false" data-is-path-node="false" transform="translate(1,7)" class="tile" id="rect5wub3512vlrlmpocced">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="2" data-y="7" data-current="false" data-active="false" data-is-path-node="false" transform="translate(2,7)" class="tile" id="rect5avc0lmlyaxhcgcbw3">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="3" data-y="7" data-current="false" data-active="false" data-is-path-node="false" transform="translate(3,7)" class="tile" id="rectuwbwpcmll5bctxk8dv2">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="4" data-y="7" data-current="false" data-active="false" data-is-path-node="false" transform="translate(4,7)" class="tile" id="rect5lcvulbt5lkukwcm6c">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="5" data-y="7" data-current="false" data-active="false" data-is-path-node="false" transform="translate(5,7)" class="tile" id="rectbej6wsisv5zk5mlc1cc">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="6" data-y="7" data-current="false" data-active="false" data-is-path-node="false" transform="translate(6,7)" class="tile" id="rect3wlfdmccj2qvwxcw5bh">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="7" data-y="7" data-current="false" data-active="false" data-is-path-node="false" transform="translate(7,7)" class="tile" id="rectclggb3wvmzrmbp0oc55">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="8" data-y="7" data-current="false" data-active="false" data-is-path-node="false" transform="translate(8,7)" class="tile" id="rectw4gyrcrm5ho0clvbe9f">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="9" data-y="7" data-current="false" data-active="false" data-is-path-node="false" transform="translate(9,7)" class="tile" id="rectrwxmtb5b0clkjcehasw">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="10" data-y="7" data-current="false" data-active="false" data-is-path-node="false" transform="translate(10,7)" class="tile" id="rectmkbchxngkfzaw5lw0c2">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="11" data-y="7" data-current="false" data-active="false" data-is-path-node="false" transform="translate(11,7)" class="tile" id="rectbqlm05acwxcckoojbww">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="12" data-y="7" data-current="false" data-active="false" data-is-path-node="false" transform="translate(12,7)" class="tile" id="rectbwdm5wh67990efcbcle">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="13" data-y="7" data-current="false" data-active="false" data-is-path-node="false" transform="translate(13,7)" class="tile" id="recth3c5wp3wcg6wl8bmuo8">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="14" data-y="7" data-current="false" data-active="false" data-is-path-node="false" transform="translate(14,7)" class="tile" id="rectw5cflcw8nqgzmj5bx5m">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="15" data-y="7" data-current="false" data-active="false" data-is-path-node="false" transform="translate(15,7)" class="tile" id="recthi8s5dws7xc6bcawml">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="16" data-y="7" data-current="false" data-active="false" data-is-path-node="false" transform="translate(16,7)" class="tile" id="rectmvw0wno2lcvb5cwwhbm">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="17" data-y="7" data-current="false" data-active="false" data-is-path-node="false" transform="translate(17,7)" class="tile" id="rect75mqc4wc5flohbwa92m">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="18" data-y="7" data-current="false" data-active="false" data-is-path-node="false" transform="translate(18,7)" class="tile" id="rect5bvlcboc9w5wbcmshhs">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="0" data-y="8" data-current="false" data-active="false" data-is-path-node="false" transform="translate(0,8)" class="tile" id="rectja5vlwwf5cmcczmkx5b">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="1" data-y="8" data-current="false" data-active="false" data-is-path-node="false" transform="translate(1,8)" class="tile" id="rect3ftpwb5lczcuimcfwwj">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="2" data-y="8" data-current="false" data-active="false" data-is-path-node="false" transform="translate(2,8)" class="tile" id="rectus4klvceepbwm5bw6uc">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="3" data-y="8" data-current="false" data-active="false" data-is-path-node="false" transform="translate(3,8)" class="tile" id="rect5c3lcwc9b2oww7mbwm">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="4" data-y="8" data-current="false" data-active="false" data-is-path-node="false" transform="translate(4,8)" class="tile" id="rect5wl7pmb2wd5cc8qcs3m">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="5" data-y="8" data-current="false" data-active="false" data-is-path-node="false" transform="translate(5,8)" class="tile" id="rectcc5ckyms3lwwburwkfm">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="6" data-y="8" data-current="false" data-active="false" data-is-path-node="false" transform="translate(6,8)" class="tile" id="rect5eomcbcq1cw9w9med8l">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="7" data-y="8" data-current="false" data-active="false" data-is-path-node="false" transform="translate(7,8)" class="tile" id="recttlwww53q8habc4ahvcm">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="teleport" data-x="8" data-y="8" data-current="false" data-active="false" data-is-path-node="false" transform="translate(8,8)" class="tile" id="recta9lkdjc4bi8cwwmd5w9">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="9" data-y="8" data-current="false" data-active="false" data-is-path-node="false" transform="translate(9,8)" class="tile" id="rectkpw3cipnmtpfgwlbp5c">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="10" data-y="8" data-current="false" data-active="false" data-is-path-node="false" transform="translate(10,8)" class="tile" id="rect2bnwjcpylww5m0jwl1c">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="11" data-y="8" data-current="false" data-active="false" data-is-path-node="false" transform="translate(11,8)" class="tile" id="rectldzc45wublsmw5mrcz">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="12" data-y="8" data-current="false" data-active="false" data-is-path-node="false" transform="translate(12,8)" class="tile" id="rectl5i8mbv7vwcxtbc6xe">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="13" data-y="8" data-current="false" data-active="false" data-is-path-node="false" transform="translate(13,8)" class="tile" id="rectmr0pyclj1b5z7wchxq">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="14" data-y="8" data-current="false" data-active="false" data-is-path-node="false" transform="translate(14,8)" class="tile" id="rect0ws2vcxc5j5xmlbmawj">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="teleport" data-x="15" data-y="8" data-current="false" data-active="false" data-is-path-node="false" transform="translate(15,8)" class="tile" id="rectjtbpclnblwmop5cxy9">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="16" data-y="8" data-current="false" data-active="false" data-is-path-node="false" transform="translate(16,8)" class="tile" id="rect6mcybt59lxtudctcowm">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="17" data-y="8" data-current="false" data-active="false" data-is-path-node="false" transform="translate(17,8)" class="tile" id="rectcl1lw2i5cepx4ymfsbe">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="18" data-y="8" data-current="false" data-active="false" data-is-path-node="false" transform="translate(18,8)" class="tile" id="rectky9cwm5bkwgxlccsbg">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="0" data-y="9" data-current="false" data-active="false" data-is-path-node="false" transform="translate(0,9)" class="tile" id="rectdgk7csckmwxz7ibxl5l">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="1" data-y="9" data-current="false" data-active="false" data-is-path-node="false" transform="translate(1,9)" class="tile" id="rectb6lckwgqymckx13u51">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="2" data-y="9" data-current="false" data-active="false" data-is-path-node="false" transform="translate(2,9)" class="tile" id="rectfw75cuv17clpd05xnmb">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="3" data-y="9" data-current="false" data-active="false" data-is-path-node="false" transform="translate(3,9)" class="tile" id="rectoljhzpbh6cw5c5xjphm">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="4" data-y="9" data-current="false" data-active="false" data-is-path-node="false" transform="translate(4,9)" class="tile" id="rect0ron6qxpcw2mln0bkc5">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="5" data-y="9" data-current="false" data-active="false" data-is-path-node="false" transform="translate(5,9)" class="tile" id="rect8lllcwgt5x9d3cwwmjb">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="6" data-y="9" data-current="false" data-active="false" data-is-path-node="false" transform="translate(6,9)" class="tile" id="rectbul5wy3ecxmgcmeiax6">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="7" data-y="9" data-current="false" data-active="false" data-is-path-node="false" transform="translate(7,9)" class="tile" id="rectbcw7c58furbmauloxc5">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="8" data-y="9" data-current="false" data-active="false" data-is-path-node="false" transform="translate(8,9)" class="tile" id="rectbc5lccucb24myx70w5i">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="9" data-y="9" data-current="false" data-active="false" data-is-path-node="false" transform="translate(9,9)" class="tile" id="rect2bymgwd64l6g5gc2c8x">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="10" data-y="9" data-current="false" data-active="false" data-is-path-node="false" transform="translate(10,9)" class="tile" id="rectlb4lhwcycbk5maqvfy3">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="11" data-y="9" data-current="false" data-active="false" data-is-path-node="false" transform="translate(11,9)" class="tile" id="rectw2nsm5p71ljcyclhb1v">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="12" data-y="9" data-current="false" data-active="false" data-is-path-node="false" transform="translate(12,9)" class="tile" id="rect8mvepyccsbr6g3lowe5">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="13" data-y="9" data-current="false" data-active="false" data-is-path-node="false" transform="translate(13,9)" class="tile" id="rect6ml2t3jcswvcnc5ybhl">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="14" data-y="9" data-current="false" data-active="false" data-is-path-node="false" transform="translate(14,9)" class="tile" id="rect0ycdzwyuou5mlbc5a8c">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="15" data-y="9" data-current="false" data-active="false" data-is-path-node="false" transform="translate(15,9)" class="tile" id="rectcfpbnc6nwmlvy85c67h">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="16" data-y="9" data-current="false" data-active="false" data-is-path-node="false" transform="translate(16,9)" class="tile" id="rectbmpyw95s8ces6cunlan">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="17" data-y="9" data-current="false" data-active="false" data-is-path-node="false" transform="translate(17,9)" class="tile" id="rectm8ccyul1n015pmx9bow">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="18" data-y="9" data-current="false" data-active="false" data-is-path-node="false" transform="translate(18,9)" class="tile" id="rectuccdlydmf5tbcmwik5a">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="0" data-y="10" data-current="false" data-active="false" data-is-path-node="false" transform="translate(0,10)" class="tile" id="rectby5c4w09292iclm9ez">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="1" data-y="10" data-current="false" data-active="false" data-is-path-node="false" transform="translate(1,10)" class="tile" id="rectf8nys7lrwgq45bc3mcq">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="2" data-y="10" data-current="false" data-active="false" data-is-path-node="false" transform="translate(2,10)" class="tile" id="rectwcm5auyrayqckmtbaal">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="3" data-y="10" data-current="false" data-active="false" data-is-path-node="false" transform="translate(3,10)" class="tile" id="rectw5pphlny8r7b8mccfm">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="4" data-y="10" data-current="false" data-active="false" data-is-path-node="false" transform="translate(4,10)" class="tile" id="rectynocvbp5cbwyo1bl1om">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="5" data-y="10" data-current="false" data-active="false" data-is-path-node="false" transform="translate(5,10)" class="tile" id="rectyx7cs5uclx4ewbwm60m">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="6" data-y="10" data-current="false" data-active="false" data-is-path-node="false" transform="translate(6,10)" class="tile" id="rectwzsvbglmcuyce05b3e">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="7" data-y="10" data-current="false" data-active="false" data-is-path-node="false" transform="translate(7,10)" class="tile" id="rectslm2cewacv35wccp7yb">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="8" data-y="10" data-current="false" data-active="false" data-is-path-node="false" transform="translate(8,10)" class="tile" id="rectccmglchb8thr4wwj59y">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="9" data-y="10" data-current="false" data-active="false" data-is-path-node="false" transform="translate(9,10)" class="tile" id="recty5dm77cklcxwkiugbe3">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="10" data-y="10" data-current="false" data-active="false" data-is-path-node="false" transform="translate(10,10)" class="tile" id="rect4ybk7jcgawgxdlmo5c9">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="11" data-y="10" data-current="false" data-active="false" data-is-path-node="false" transform="translate(11,10)" class="tile" id="rectchbgn4c1wuy5ilm9ylt">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="12" data-y="10" data-current="false" data-active="false" data-is-path-node="false" transform="translate(12,10)" class="tile" id="rect6cl5htjqmw3brlc3iz">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="13" data-y="10" data-current="false" data-active="false" data-is-path-node="false" transform="translate(13,10)" class="tile" id="rectbbm7zgjl7zhc5cjuwlc">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="14" data-y="10" data-current="false" data-active="false" data-is-path-node="false" transform="translate(14,10)" class="tile" id="rectb56rl6y5zacccwomo3w">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="15" data-y="10" data-current="false" data-active="false" data-is-path-node="false" transform="translate(15,10)" class="tile" id="rectbmwcm5swtsw9cs5ljz">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="16" data-y="10" data-current="false" data-active="false" data-is-path-node="false" transform="translate(16,10)" class="tile" id="rectzvcwj35zcjcolwbqk3m">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="17" data-y="10" data-current="false" data-active="false" data-is-path-node="false" transform="translate(17,10)" class="tile" id="recttwizbcb5pm13mlqcyc9">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="18" data-y="10" data-current="false" data-active="false" data-is-path-node="false" transform="translate(18,10)" class="tile" id="rectclylimwbcd3fer5c8z1">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="0" data-y="11" data-current="false" data-active="false" data-is-path-node="false" transform="translate(0,11)" class="tile" id="rectb6nxtbdmcz632wl5ccp">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="1" data-y="11" data-current="false" data-active="false" data-is-path-node="false" transform="translate(1,11)" class="tile" id="rect5jf4cxkb0ulr57wcmqz">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="2" data-y="11" data-current="false" data-active="false" data-is-path-node="false" transform="translate(2,11)" class="tile" id="rectcc0z5obownalzb8ems">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="3" data-y="11" data-current="false" data-active="false" data-is-path-node="false" transform="translate(3,11)" class="tile" id="rectqvfxycmzc3cwlb6s5">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="4" data-y="11" data-current="false" data-active="false" data-is-path-node="false" transform="translate(4,11)" class="tile" id="rectrcgkcllbwxlgh52zmhm">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="5" data-y="11" data-current="false" data-active="false" data-is-path-node="false" transform="translate(5,11)" class="tile" id="recti5czhe5mrcbbwykmlzc">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="6" data-y="11" data-current="false" data-active="false" data-is-path-node="false" transform="translate(6,11)" class="tile" id="rectm5pzmtfcbec2lclws3t">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="7" data-y="11" data-current="false" data-active="false" data-is-path-node="false" transform="translate(7,11)" class="tile" id="rectskucyxzbmtbgbl5wc6">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="8" data-y="11" data-current="false" data-active="false" data-is-path-node="false" transform="translate(8,11)" class="tile" id="recttcfmnckcj5gbzw1dwzl">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="9" data-y="11" data-current="false" data-active="false" data-is-path-node="false" transform="translate(9,11)" class="tile" id="rect9pzlgib5cc965mqwmwc">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="10" data-y="11" data-current="false" data-active="false" data-is-path-node="false" transform="translate(10,11)" class="tile" id="rectl1wmvfe3zal565pxbcc">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="11" data-y="11" data-current="false" data-active="false" data-is-path-node="false" transform="translate(11,11)" class="tile" id="rectzs8zl3liwce5m1mbwcy">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="12" data-y="11" data-current="false" data-active="false" data-is-path-node="false" transform="translate(12,11)" class="tile" id="rectm5lhclos4bzcduipcwa">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="13" data-y="11" data-current="false" data-active="false" data-is-path-node="false" transform="translate(13,11)" class="tile" id="rectstcjm5z03dwclhbt25">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="14" data-y="11" data-current="false" data-active="false" data-is-path-node="false" transform="translate(14,11)" class="tile" id="rectkzqablvmw5ch7cwh1">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="15" data-y="11" data-current="false" data-active="false" data-is-path-node="false" transform="translate(15,11)" class="tile" id="rect5z6cnblncnca22uvmkw">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="16" data-y="11" data-current="false" data-active="false" data-is-path-node="false" transform="translate(16,11)" class="tile" id="rectrwbh16w06ul3ybmgcvc">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="17" data-y="11" data-current="false" data-active="false" data-is-path-node="false" transform="translate(17,11)" class="tile" id="rect2me56wcw0ifsbdiclox">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="18" data-y="11" data-current="false" data-active="false" data-is-path-node="false" transform="translate(18,11)" class="tile" id="rect0z3cc6ncbgdtwm0rpld">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="0" data-y="12" data-current="false" data-active="false" data-is-path-node="false" transform="translate(0,12)" class="tile" id="rectc8ubpm0b4l4cwaf6df8">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="1" data-y="12" data-current="false" data-active="false" data-is-path-node="false" transform="translate(1,12)" class="tile" id="recth0mc6swfiu36bm9mcl6">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="2" data-y="12" data-current="false" data-active="false" data-is-path-node="false" transform="translate(2,12)" class="tile" id="rect6m3mcl0bxwcbtdzmdc">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="3" data-y="12" data-current="false" data-active="false" data-is-path-node="false" transform="translate(3,12)" class="tile" id="rectmccdwgpqb0labi6qdaw">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="4" data-y="12" data-current="false" data-active="false" data-is-path-node="false" transform="translate(4,12)" class="tile" id="rectlw3k0p2abcbwcewm0b6">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="5" data-y="12" data-current="false" data-active="false" data-is-path-node="false" transform="translate(5,12)" class="tile" id="rect6wlb5hc0nmi4bf6cor">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="6" data-y="12" data-current="false" data-active="false" data-is-path-node="false" transform="translate(6,12)" class="tile" id="rectcc07cfza6bms5mbplw">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="7" data-y="12" data-current="false" data-active="false" data-is-path-node="false" transform="translate(7,12)" class="tile" id="rectgmbacwb9nle06s6c9w">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="8" data-y="12" data-current="false" data-active="false" data-is-path-node="false" transform="translate(8,12)" class="tile" id="rectwccldambs5u161e60m">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="9" data-y="12" data-current="false" data-active="false" data-is-path-node="false" transform="translate(9,12)" class="tile" id="rectb9bwvck6c7x604ml3u">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="10" data-y="12" data-current="false" data-active="false" data-is-path-node="false" transform="translate(10,12)" class="tile" id="rectwpbe18ceecg60c33mlx">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="11" data-y="12" data-current="false" data-active="false" data-is-path-node="false" transform="translate(11,12)" class="tile" id="rectc6ww0c0mcaabl1ugf36">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="12" data-y="12" data-current="false" data-active="false" data-is-path-node="false" transform="translate(12,12)" class="tile" id="rect0mkonb8cccxvwl6rvfv">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="13" data-y="12" data-current="false" data-active="false" data-is-path-node="false" transform="translate(13,12)" class="tile" id="rectblcnbg05my0wcc5m6hoc">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="14" data-y="12" data-current="false" data-active="false" data-is-path-node="false" transform="translate(14,12)" class="tile" id="rectmbwl0ctx5cc3xn6b9p">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="15" data-y="12" data-current="false" data-active="false" data-is-path-node="false" transform="translate(15,12)" class="tile" id="rect0acwh68bo3mlrq05cs9">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="16" data-y="12" data-current="false" data-active="false" data-is-path-node="false" transform="translate(16,12)" class="tile" id="rect1c1g3ncmluw5b3f6z6">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="17" data-y="12" data-current="false" data-active="false" data-is-path-node="false" transform="translate(17,12)" class="tile" id="rectc8swcauol4r6mx9c31b">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="18" data-y="12" data-current="false" data-active="false" data-is-path-node="false" transform="translate(18,12)" class="tile" id="rectlmpwg2kcy651rt7ccbf">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="0" data-y="13" data-current="false" data-active="false" data-is-path-node="false" transform="translate(0,13)" class="tile" id="rectx4cfmb1mlacz64w6d4">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="1" data-y="13" data-current="false" data-active="false" data-is-path-node="false" transform="translate(1,13)" class="tile" id="rectcmgwbwcbck6hlbk1nw">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="2" data-y="13" data-current="false" data-active="false" data-is-path-node="false" transform="translate(2,13)" class="tile" id="rectmmcmbix1ccw9wj1q6la">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="3" data-y="13" data-current="false" data-active="false" data-is-path-node="false" transform="translate(3,13)" class="tile" id="rect9fi7ul1m6rxc6bwgcb">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="4" data-y="13" data-current="false" data-active="false" data-is-path-node="false" transform="translate(4,13)" class="tile" id="recttcxma61nbvwcxll0fx">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="5" data-y="13" data-current="false" data-active="false" data-is-path-node="false" transform="translate(5,13)" class="tile" id="rect5qfwbwezcg0c61mlul">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="6" data-y="13" data-current="false" data-active="false" data-is-path-node="false" transform="translate(6,13)" class="tile" id="rectkce44isj1wcmpl8lb6r">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="7" data-y="13" data-current="false" data-active="false" data-is-path-node="false" transform="translate(7,13)" class="tile" id="rectcw9l3g6k1cml5hgbbyd">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="8" data-y="13" data-current="false" data-active="false" data-is-path-node="false" transform="translate(8,13)" class="tile" id="rectll1cogw6wmrcmbbucll">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="9" data-y="13" data-current="false" data-active="false" data-is-path-node="false" transform="translate(9,13)" class="tile" id="rect2b9chvlb3wrgmrw6c61">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="10" data-y="13" data-current="false" data-active="false" data-is-path-node="false" transform="translate(10,13)" class="tile" id="rect26kcueclk51rrm2kowb">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="11" data-y="13" data-current="false" data-active="false" data-is-path-node="false" transform="translate(11,13)" class="tile" id="rectb449octmwu1lwcqb6le">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="12" data-y="13" data-current="false" data-active="false" data-is-path-node="false" transform="translate(12,13)" class="tile" id="rect5lcwc166boqaxzm7bh">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="13" data-y="13" data-current="false" data-active="false" data-is-path-node="false" transform="translate(13,13)" class="tile" id="rectu86b1mq1cld4wejmac">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="14" data-y="13" data-current="false" data-active="false" data-is-path-node="false" transform="translate(14,13)" class="tile" id="rectgx180ymladq8yc60bwc">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="15" data-y="13" data-current="false" data-active="false" data-is-path-node="false" transform="translate(15,13)" class="tile" id="rectcgmfbf2lbxvwczc6fk1">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="16" data-y="13" data-current="false" data-active="false" data-is-path-node="false" transform="translate(16,13)" class="tile" id="rectelgw1n65whaq7bmc2c">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="17" data-y="13" data-current="false" data-active="false" data-is-path-node="false" transform="translate(17,13)" class="tile" id="rect4nmd619hb0988ccl1wd">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="18" data-y="13" data-current="false" data-active="false" data-is-path-node="false" transform="translate(18,13)" class="tile" id="rectztow3bmlp86oa7oc1c6">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="0" data-y="14" data-current="false" data-active="false" data-is-path-node="false" transform="translate(0,14)" class="tile" id="rect2q0c0lnvbd12c6mow1d">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="1" data-y="14" data-current="false" data-active="false" data-is-path-node="false" transform="translate(1,14)" class="tile" id="rectflgfx2wck79tc62mmb7">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="2" data-y="14" data-current="false" data-active="false" data-is-path-node="false" transform="translate(2,14)" class="tile" id="rectml6cl4rcpnockgm2bew">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="3" data-y="14" data-current="false" data-active="false" data-is-path-node="false" transform="translate(3,14)" class="tile" id="rect6c24ckeuwz0vmqw4lb">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="4" data-y="14" data-current="false" data-active="false" data-is-path-node="false" transform="translate(4,14)" class="tile" id="rectlm2bwcoqybls5dcbd6v">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="5" data-y="14" data-current="false" data-active="false" data-is-path-node="false" transform="translate(5,14)" class="tile" id="rectw625mykhqbcl4yc1ev">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="6" data-y="14" data-current="false" data-active="false" data-is-path-node="false" transform="translate(6,14)" class="tile" id="rectnlu5hcmibx2c6awr78">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="7" data-y="14" data-current="false" data-active="false" data-is-path-node="false" transform="translate(7,14)" class="tile" id="rectbm0cgci32f66jwwl2xj">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="8" data-y="14" data-current="false" data-active="false" data-is-path-node="false" transform="translate(8,14)" class="tile" id="rectcj62fcrm93wmb2cjwml">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="9" data-y="14" data-current="false" data-active="false" data-is-path-node="false" transform="translate(9,14)" class="tile" id="rect12lx2o76bmfpcc8wzci">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="10" data-y="14" data-current="false" data-active="false" data-is-path-node="false" transform="translate(10,14)" class="tile" id="rectcdbkhc23uelge4m6wp7">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="11" data-y="14" data-current="false" data-active="false" data-is-path-node="false" transform="translate(11,14)" class="tile" id="rectc6blc2qowjea0ojclm">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="12" data-y="14" data-current="false" data-active="false" data-is-path-node="false" transform="translate(12,14)" class="tile" id="rectjl2iuhw36icmcvtoaab">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="13" data-y="14" data-current="false" data-active="false" data-is-path-node="false" transform="translate(13,14)" class="tile" id="rectdl56ctd26co4lxuimwb">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="14" data-y="14" data-current="false" data-active="false" data-is-path-node="false" transform="translate(14,14)" class="tile" id="rectbmlcuwnm2llcmlhp6mz">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="15" data-y="14" data-current="false" data-active="false" data-is-path-node="false" transform="translate(15,14)" class="tile" id="rectfcldwblm2h3cq4p0pe6">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="16" data-y="14" data-current="false" data-active="false" data-is-path-node="false" transform="translate(16,14)" class="tile" id="rect6cj2mlcabxm9oifkwcl">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="17" data-y="14" data-current="false" data-active="false" data-is-path-node="false" transform="translate(17,14)" class="tile" id="rect16mcc7ki96lnsm624bw">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="18" data-y="14" data-current="false" data-active="false" data-is-path-node="false" transform="translate(18,14)" class="tile" id="recthw1jcmr62cl90thr2b">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="0" data-y="15" data-current="false" data-active="false" data-is-path-node="false" transform="translate(0,15)" class="tile" id="rect1edm6wwvc0b2lhmb4c">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="1" data-y="15" data-current="false" data-active="false" data-is-path-node="false" transform="translate(1,15)" class="tile" id="rect68cbi2b7lcwnwgp5mcd">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="2" data-y="15" data-current="false" data-active="false" data-is-path-node="false" transform="translate(2,15)" class="tile" id="rectpg2cibdkzr3cdl6mw5h">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="3" data-y="15" data-current="false" data-active="false" data-is-path-node="false" transform="translate(3,15)" class="tile" id="rectxsbmx8c2fce6rs6lw7x">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="4" data-y="15" data-current="false" data-active="false" data-is-path-node="false" transform="translate(4,15)" class="tile" id="rectiqic08c4s3m7al6ab0w">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="5" data-y="15" data-current="false" data-active="false" data-is-path-node="false" transform="translate(5,15)" class="tile" id="recti9cmbw8m864cl745r9">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="6" data-y="15" data-current="false" data-active="false" data-is-path-node="false" transform="translate(6,15)" class="tile" id="rectgcw78jup24b6ycg1mol">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="7" data-y="15" data-current="false" data-active="false" data-is-path-node="false" transform="translate(7,15)" class="tile" id="recto6cmcwls6gxjmh14hjb">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="8" data-y="15" data-current="false" data-active="false" data-is-path-node="false" transform="translate(8,15)" class="tile" id="rectwheo4zhcbu7ks5ml6dc">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="9" data-y="15" data-current="false" data-active="false" data-is-path-node="false" transform="translate(9,15)" class="tile" id="rectcswb1ej6f6rt3mcl4y">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="10" data-y="15" data-current="false" data-active="false" data-is-path-node="false" transform="translate(10,15)" class="tile" id="rectw294ftb06icbecnlmbw6">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="11" data-y="15" data-current="false" data-active="false" data-is-path-node="false" transform="translate(11,15)" class="tile" id="rectwv6r5ch8z4mcqbf9slu">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="12" data-y="15" data-current="false" data-active="false" data-is-path-node="false" transform="translate(12,15)" class="tile" id="rectvwa2bt634aes4lmccq6">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="13" data-y="15" data-current="false" data-active="false" data-is-path-node="false" transform="translate(13,15)" class="tile" id="rectmcx6ud33854cwtbtlr">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="14" data-y="15" data-current="false" data-active="false" data-is-path-node="false" transform="translate(14,15)" class="tile" id="rect98ywhf6vbhc49cmd3ll">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="15" data-y="15" data-current="false" data-active="false" data-is-path-node="false" transform="translate(15,15)" class="tile" id="rectnnsqr4mhlbw8c41c6zq">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="16" data-y="15" data-current="false" data-active="false" data-is-path-node="false" transform="translate(16,15)" class="tile" id="rectcboxlmr5ia4wc65k52p">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="17" data-y="15" data-current="false" data-active="false" data-is-path-node="false" transform="translate(17,15)" class="tile" id="rect6yccghf0nm894lwbsll">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="18" data-y="15" data-current="false" data-active="false" data-is-path-node="false" transform="translate(18,15)" class="tile" id="rect4kb262014cl98cwvm4x">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="0" data-y="16" data-current="false" data-active="false" data-is-path-node="false" transform="translate(0,16)" class="tile" id="rect8twbkm6zybc6l5chq4m">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="1" data-y="16" data-current="false" data-active="false" data-is-path-node="false" transform="translate(1,16)" class="tile" id="rectdlr1nu1cm0wcb64ql6w">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="2" data-y="16" data-current="false" data-active="false" data-is-path-node="false" transform="translate(2,16)" class="tile" id="rect3c4bwd8larbctmp6alf">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="3" data-y="16" data-current="false" data-active="false" data-is-path-node="false" transform="translate(3,16)" class="tile" id="rectvwc2c4omvkesd66bfvl">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="4" data-y="16" data-current="false" data-active="false" data-is-path-node="false" transform="translate(4,16)" class="tile" id="rectcdtfwmwbn60chzol7n4">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="5" data-y="16" data-current="false" data-active="false" data-is-path-node="false" transform="translate(5,16)" class="tile" id="rectc4lcwlc64q0bx2mgdm">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="6" data-y="16" data-current="false" data-active="false" data-is-path-node="false" transform="translate(6,16)" class="tile" id="rect6mhwlbio04wcurm06c">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="7" data-y="16" data-current="false" data-active="false" data-is-path-node="false" transform="translate(7,16)" class="tile" id="rectl1zjgc57q8cm6b2twck">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="8" data-y="16" data-current="false" data-active="false" data-is-path-node="false" transform="translate(8,16)" class="tile" id="rect2lwzbvhc6z9l5o1cnmm">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="9" data-y="16" data-current="false" data-active="false" data-is-path-node="false" transform="translate(9,16)" class="tile" id="rectwbw6rc6t63lwscnulm5">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="10" data-y="16" data-current="false" data-active="false" data-is-path-node="false" transform="translate(10,16)" class="tile" id="rectvqbdclx5ch0rm0wc6a">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="11" data-y="16" data-current="false" data-active="false" data-is-path-node="false" transform="translate(11,16)" class="tile" id="rect75b8uxm1clwa6elsec1">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="12" data-y="16" data-current="false" data-active="false" data-is-path-node="false" transform="translate(12,16)" class="tile" id="recthif562vdcclpmbnlwm1">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="13" data-y="16" data-current="false" data-active="false" data-is-path-node="false" transform="translate(13,16)" class="tile" id="rectbcmbc1lwj6czz8kal5x">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="14" data-y="16" data-current="false" data-active="false" data-is-path-node="false" transform="translate(14,16)" class="tile" id="rectbl856nwbcyb4mttmcz">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="15" data-y="16" data-current="false" data-active="false" data-is-path-node="false" transform="translate(15,16)" class="tile" id="rectvbobzc65il5wzjm5cv">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="16" data-y="16" data-current="false" data-active="false" data-is-path-node="false" transform="translate(16,16)" class="tile" id="rectwcj6bc5mleg9malw2bs">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="17" data-y="16" data-current="false" data-active="false" data-is-path-node="false" transform="translate(17,16)" class="tile" id="rectbdbldbchnh6f5mewcwc">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="18" data-y="16" data-current="false" data-active="false" data-is-path-node="false" transform="translate(18,16)" class="tile" id="rectkw4tmabhcfplwgccy56">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="0" data-y="17" data-current="false" data-active="false" data-is-path-node="false" transform="translate(0,17)" class="tile" id="rectkv6pem5la1bcqwtvcl">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="1" data-y="17" data-current="false" data-active="false" data-is-path-node="false" transform="translate(1,17)" class="tile" id="rectbl929sach6gcuuw5tm">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="2" data-y="17" data-current="false" data-active="false" data-is-path-node="false" transform="translate(2,17)" class="tile" id="rect5lpmwkbcjlc4lqpm9z6">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="3" data-y="17" data-current="false" data-active="false" data-is-path-node="false" transform="translate(3,17)" class="tile" id="rectckwmq9lxhcl6c95qcb">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="4" data-y="17" data-current="false" data-active="false" data-is-path-node="false" transform="translate(4,17)" class="tile" id="rectmucln6j7e6bcn8c58w3">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="5" data-y="17" data-current="false" data-active="false" data-is-path-node="false" transform="translate(5,17)" class="tile" id="rectcw3nt6cd5leb5pjm0cb">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="6" data-y="17" data-current="false" data-active="false" data-is-path-node="false" transform="translate(6,17)" class="tile" id="rect0bqd5smhsxw6cvlg6cw9">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="7" data-y="17" data-current="false" data-active="false" data-is-path-node="false" transform="translate(7,17)" class="tile" id="recte61jtcw5llsmce5jlkb">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="8" data-y="17" data-current="false" data-active="false" data-is-path-node="false" transform="translate(8,17)" class="tile" id="rect6w5xcqmgcg8b55l10k">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="9" data-y="17" data-current="false" data-active="false" data-is-path-node="false" transform="translate(9,17)" class="tile" id="rect91w4ihmr6cb65c2b35l">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="10" data-y="17" data-current="false" data-active="false" data-is-path-node="false" transform="translate(10,17)" class="tile" id="rectqkqwclee6q5ob4dmch8">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="11" data-y="17" data-current="false" data-active="false" data-is-path-node="false" transform="translate(11,17)" class="tile" id="rect653m2fb8culft3wkhoc">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="12" data-y="17" data-current="false" data-active="false" data-is-path-node="false" transform="translate(12,17)" class="tile" id="rect6lm2jpcxnlbm5cw50d8">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="13" data-y="17" data-current="false" data-active="false" data-is-path-node="false" transform="translate(13,17)" class="tile" id="rect0ba0l6v553mw8ccbqzd">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="14" data-y="17" data-current="false" data-active="false" data-is-path-node="false" transform="translate(14,17)" class="tile" id="rectx5c8b1wqc67lmo6ty4">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="15" data-y="17" data-current="false" data-active="false" data-is-path-node="false" transform="translate(15,17)" class="tile" id="rect2s4yb1mtwic6l9ps46c">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="16" data-y="17" data-current="false" data-active="false" data-is-path-node="false" transform="translate(16,17)" class="tile" id="rectli64fbc66crjkmct0wi">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="17" data-y="17" data-current="false" data-active="false" data-is-path-node="false" transform="translate(17,17)" class="tile" id="rect6cwcjco5tgably0hms6">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="18" data-y="17" data-current="false" data-active="false" data-is-path-node="false" transform="translate(18,17)" class="tile" id="rect6aejpwyljwk83cmcb6b">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="0" data-y="18" data-current="false" data-active="false" data-is-path-node="false" transform="translate(0,18)" class="tile" id="rectrd62l6dxcjpchimwbkb">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="1" data-y="18" data-current="false" data-active="false" data-is-path-node="false" transform="translate(1,18)" class="tile" id="rectxcw6ha2mbh6p8lf8c1h">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="2" data-y="18" data-current="false" data-active="false" data-is-path-node="false" transform="translate(2,18)" class="tile" id="rectzyqgx1i2cczbgy6w6lm">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="3" data-y="18" data-current="false" data-active="false" data-is-path-node="false" transform="translate(3,18)" class="tile" id="rect0dlm62gw8ic0cu6bw6">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="4" data-y="18" data-current="false" data-active="false" data-is-path-node="false" transform="translate(4,18)" class="tile" id="rect3f6lcomlo2osw0c6paba">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="5" data-y="18" data-current="false" data-active="false" data-is-path-node="false" transform="translate(5,18)" class="tile" id="rectcc6nxb6mbwcv76lugc">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="6" data-y="18" data-current="false" data-active="false" data-is-path-node="false" transform="translate(6,18)" class="tile" id="rectubufntccux6mlcuw66">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="7" data-y="18" data-current="false" data-active="false" data-is-path-node="false" transform="translate(7,18)" class="tile" id="rectb4n5xlncnw6r96mvucz">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="8" data-y="18" data-current="false" data-active="false" data-is-path-node="false" transform="translate(8,18)" class="tile" id="recth4mch8660wlcb6muh5">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="9" data-y="18" data-current="false" data-active="false" data-is-path-node="false" transform="translate(9,18)" class="tile" id="rect7ce1rbzim0lcdyj6jw6">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="10" data-y="18" data-current="false" data-active="false" data-is-path-node="false" transform="translate(10,18)" class="tile" id="rectp66lfcd9ocbiercmpwu">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="11" data-y="18" data-current="false" data-active="false" data-is-path-node="false" transform="translate(11,18)" class="tile" id="rect4clcb7h86zmju6xlwz">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="12" data-y="18" data-current="false" data-active="false" data-is-path-node="false" transform="translate(12,18)" class="tile" id="rectcbuu3wyc6kpik6bmrli">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="barrier" data-x="13" data-y="18" data-current="false" data-active="false" data-is-path-node="false" transform="translate(13,18)" class="tile" id="rectalpbfmwc046s3bn06ac">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="14" data-y="18" data-current="false" data-active="false" data-is-path-node="false" transform="translate(14,18)" class="tile" id="rect6c8uqibwc8mvoq06ql5">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="15" data-y="18" data-current="false" data-active="false" data-is-path-node="false" transform="translate(15,18)" class="tile" id="rectk96pgctl6bmcwla7oc8">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="16" data-y="18" data-current="false" data-active="false" data-is-path-node="false" transform="translate(16,18)" class="tile" id="rectm6l6yc263rcb3w28nbo">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="17" data-y="18" data-current="false" data-active="false" data-is-path-node="false" transform="translate(17,18)" class="tile" id="rectmc65cxlmw2i60gnnibe">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="18" data-y="18" data-current="false" data-active="false" data-is-path-node="false" transform="translate(18,18)" class="tile" id="rectzzupc6ccpwblvm326m">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="0" data-y="19" data-current="false" data-active="false" data-is-path-node="false" transform="translate(0,19)" class="tile" id="rect6bydmmoclg6wc47alv7">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="1" data-y="19" data-current="false" data-active="false" data-is-path-node="false" transform="translate(1,19)" class="tile" id="rect6tmwyliccb6jmtfl4ak">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="2" data-y="19" data-current="false" data-active="false" data-is-path-node="false" transform="translate(2,19)" class="tile" id="rectlbhqw55nqvdv6m6bccu">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="3" data-y="19" data-current="false" data-active="false" data-is-path-node="false" transform="translate(3,19)" class="tile" id="rectlnb3w6mez8mw2cn36c2">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="4" data-y="19" data-current="false" data-active="false" data-is-path-node="false" transform="translate(4,19)" class="tile" id="rect69czummbazkk60clcwc">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="5" data-y="19" data-current="false" data-active="false" data-is-path-node="false" transform="translate(5,19)" class="tile" id="rectex7667mcx2wlcbvfngr">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="6" data-y="19" data-current="false" data-active="false" data-is-path-node="false" transform="translate(6,19)" class="tile" id="recthl62bticajca08c6mw8">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="7" data-y="19" data-current="false" data-active="false" data-is-path-node="false" transform="translate(7,19)" class="tile" id="recteiclcw067m6eblr9jlh">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="8" data-y="19" data-current="false" data-active="false" data-is-path-node="false" transform="translate(8,19)" class="tile" id="rect5hgu6k6mwckl6ubc7sc">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="9" data-y="19" data-current="false" data-active="false" data-is-path-node="false" transform="translate(9,19)" class="tile" id="recty4lwcnm3cw637e7bxcw">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="10" data-y="19" data-current="false" data-active="false" data-is-path-node="false" transform="translate(10,19)" class="tile" id="rectkm675xgclw4lbytcdcd">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="11" data-y="19" data-current="false" data-active="false" data-is-path-node="false" transform="translate(11,19)" class="tile" id="rectl1b6ym20l0cws7cmn7u">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="12" data-y="19" data-current="false" data-active="false" data-is-path-node="false" transform="translate(12,19)" class="tile" id="rectj7kmcwln6a7cccg8ib">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="13" data-y="19" data-current="false" data-active="false" data-is-path-node="false" transform="translate(13,19)" class="tile" id="rectublhwq07c26dbymcmae">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="14" data-y="19" data-current="false" data-active="false" data-is-path-node="false" transform="translate(14,19)" class="tile" id="rectuv7ccbcl6hxkp74s6mw">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="15" data-y="19" data-current="false" data-active="false" data-is-path-node="false" transform="translate(15,19)" class="tile" id="rectz7ch23mh9chfbvlmwd6">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="16" data-y="19" data-current="false" data-active="false" data-is-path-node="false" transform="translate(16,19)" class="tile" id="rectlwrck6jm05c7wwcb2h">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="17" data-y="19" data-current="false" data-active="false" data-is-path-node="false" transform="translate(17,19)" class="tile" id="recticj1m76bveybqwclxx7">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="18" data-y="19" data-current="false" data-active="false" data-is-path-node="false" transform="translate(18,19)" class="tile" id="rectciymv3hb06l64w3lcz7">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="0" data-y="20" data-current="false" data-active="false" data-is-path-node="false" transform="translate(0,20)" class="tile" id="rect6bwcg3l6ymvcji2c17">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="1" data-y="20" data-current="false" data-active="false" data-is-path-node="false" transform="translate(1,20)" class="tile" id="rectf7ilcb5gucwclby86sm">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="2" data-y="20" data-current="false" data-active="false" data-is-path-node="false" transform="translate(2,20)" class="tile" id="rectc09iwr6l7dmebzcala">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="3" data-y="20" data-current="false" data-active="false" data-is-path-node="false" transform="translate(3,20)" class="tile" id="rectb92wc7bglmgoilcc6b7">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="4" data-y="20" data-current="false" data-active="false" data-is-path-node="false" transform="translate(4,20)" class="tile" id="rect4c9mi8wbcsz68sv7hxl">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="5" data-y="20" data-current="false" data-active="false" data-is-path-node="false" transform="translate(5,20)" class="tile" id="rectdbwobs7xc2l66jmjdmc">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="6" data-y="20" data-current="false" data-active="false" data-is-path-node="false" transform="translate(6,20)" class="tile" id="rectcwjfnsl796bmlct8qvv">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="7" data-y="20" data-current="false" data-active="false" data-is-path-node="false" transform="translate(7,20)" class="tile" id="rectlrmmchnwx4bcl6yd7a">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="8" data-y="20" data-current="false" data-active="false" data-is-path-node="false" transform="translate(8,20)" class="tile" id="rectcag657cm3ck4dbw7l5v">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="9" data-y="20" data-current="false" data-active="false" data-is-path-node="false" transform="translate(9,20)" class="tile" id="rectmwc6ls7m7l9feeebc67">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="10" data-y="20" data-current="false" data-active="false" data-is-path-node="false" transform="translate(10,20)" class="tile" id="rectm2l6w7847c7scbcqw6f">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="11" data-y="20" data-current="false" data-active="false" data-is-path-node="false" transform="translate(11,20)" class="tile" id="rect5cilkllcmmf6b1cdl7w">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="12" data-y="20" data-current="false" data-active="false" data-is-path-node="false" transform="translate(12,20)" class="tile" id="rectwfwcu67cbyrkm6xu8l">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="13" data-y="20" data-current="false" data-active="false" data-is-path-node="false" transform="translate(13,20)" class="tile" id="rectckktcwl3mjf876bgzzp">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="14" data-y="20" data-current="false" data-active="false" data-is-path-node="false" transform="translate(14,20)" class="tile" id="rect6ibf4cv70blo2kuasmwc">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="15" data-y="20" data-current="false" data-active="false" data-is-path-node="false" transform="translate(15,20)" class="tile" id="rectqoowee76cmlfb8cw2c">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="16" data-y="20" data-current="false" data-active="false" data-is-path-node="false" transform="translate(16,20)" class="tile" id="rectcwl3mobelc2w3b68mf8">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="17" data-y="20" data-current="false" data-active="false" data-is-path-node="false" transform="translate(17,20)" class="tile" id="recttf8wc3mcb2mc6aclah6">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="18" data-y="20" data-current="false" data-active="false" data-is-path-node="false" transform="translate(18,20)" class="tile" id="rectj9ca36mwccoltkm7b8m">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="0" data-y="21" data-current="false" data-active="false" data-is-path-node="false" transform="translate(0,21)" class="tile" id="rectcbnhc96fmkelfl6cw8b">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="1" data-y="21" data-current="false" data-active="false" data-is-path-node="false" transform="translate(1,21)" class="tile" id="rect8ekrkfb9813tplcc6wm">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="2" data-y="21" data-current="false" data-active="false" data-is-path-node="false" transform="translate(2,21)" class="tile" id="recth68carcwtzmwplbeis">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="3" data-y="21" data-current="false" data-active="false" data-is-path-node="false" transform="translate(3,21)" class="tile" id="rectrim63ccclhe8gbtwwj9">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="4" data-y="21" data-current="false" data-active="false" data-is-path-node="false" transform="translate(4,21)" class="tile" id="rectlmgyrcw1b12ib8sc6p8">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="5" data-y="21" data-current="false" data-active="false" data-is-path-node="false" transform="translate(5,21)" class="tile" id="rectccm6sx8ltru0iwboky">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="6" data-y="21" data-current="false" data-active="false" data-is-path-node="false" transform="translate(6,21)" class="tile" id="rect6umclw4zbcvgo89dkta">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="7" data-y="21" data-current="false" data-active="false" data-is-path-node="false" transform="translate(7,21)" class="tile" id="recta5y86cimcwqbmlc7zc">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="8" data-y="21" data-current="false" data-active="false" data-is-path-node="false" transform="translate(8,21)" class="tile" id="rect8g6cmx14bc7t7lrwbo2" data-selected="true">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="9" data-y="21" data-current="false" data-active="false" data-is-path-node="false" transform="translate(9,21)" class="tile" id="rect1a8hmbosc6l62wpcud">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="10" data-y="21" data-current="false" data-active="false" data-is-path-node="false" transform="translate(10,21)" class="tile" id="rectij6plcbby1fc5wrpm8w">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="11" data-y="21" data-current="false" data-active="false" data-is-path-node="false" transform="translate(11,21)" class="tile" id="rectcndwymwmjtb86c6lae4">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="goal" data-x="12" data-y="21" data-current="false" data-active="false" data-is-path-node="false" transform="translate(12,21)" class="tile" id="rectdidaa6mw7j8cr0l7cbl">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="13" data-y="21" data-current="false" data-active="false" data-is-path-node="false" transform="translate(13,21)" class="tile" id="rect6icwr8zbmcylxlwaag">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="14" data-y="21" data-current="false" data-active="false" data-is-path-node="false" transform="translate(14,21)" class="tile" id="rectoi1wasccp618btcl7mp">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="15" data-y="21" data-current="false" data-active="false" data-is-path-node="false" transform="translate(15,21)" class="tile" id="rectmwc2afirk6clob918k">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="16" data-y="21" data-current="false" data-active="false" data-is-path-node="false" transform="translate(16,21)" class="tile" id="rectnmpgw5c4lbw6lz487cd">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="17" data-y="21" data-current="false" data-active="false" data-is-path-node="false" transform="translate(17,21)" class="tile" id="rect7cblswu8acsm31lor65">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                  <g data-tile-type="empty" data-x="18" data-y="21" data-current="false" data-active="false" data-is-path-node="false" transform="translate(18,21)" class="tile" id="rect6yclccb8z7nm16wl43p">
+                    <rect class="gradient" width="1" height="1"></rect>
+                  </g>
+                </g>
+                <g id="object-layer" transform="translate(0,0) rotate(0) scale(1)">
+                  <g id="actor1" data-x="8" data-y="5" data-teleporting="false" class="actor" transform="translate(8 5)" data-moving="false">
+                    <circle cx="0.5" cy="0.5" r="0.4" transform="translate(0,0) rotate(0) scale(1)"></circle>
+                  </g>
+                  <g id="actor2" data-x="0" data-y="0" data-teleporting="false" class="actor" transform="translate(12,21) rotate(0) scale(1)" data-moving="false" style="fill: rgb(193, 114, 59);">
+                    <circle cx="0.5" cy="0.5" r="0.4" transform="translate(0,0) rotate(0) scale(1)"></circle>
+                  </g>
+                  <g class="tile-selector" transform="translate(0.5,0.5)" style="touch-action: none;">
+                    <rect class="selection-box" stroke-width="0.07" stroke="green" width="1" height="1" x="8" y="21" transform="translate(-0.5,-0.5)"></rect>
+                    <circle class="selection-handle" data-handle="a" id="a-handle" r="0.4" _fill="white" stroke-width="0.07" stroke="green" cx="8" cy="21" transform="translate(0,0)"></circle>
+                    <circle class="selection-handle" data-handle="b" id="b-handle" r="0.4" _fill="white" stroke-width="0.07" stroke="green" cx="8" cy="21" transform="translate(0,0)" data-is-dragging="false"></circle>
+                  </g>
+                  <g id="context-menu-container" pointer-events="auto" data-show-actions="false" data-show="true" transform="translate(8 19) rotate(0) scale(0.05 0.05)">
+                    <foreignObject class="context-menu-foreignobject" pointer-events="auto" x="0" y="0" width="200" height="30" _transform="translate(0,0) rotate(0) scale(1)">
+                      <div xmlns="http://www.w3.org/1999/xhtml" class="context-menu" data-show-actions="false">
+                        <ul class="context-menu-list">
+                          <li data-value="barrier" data-type="tile-type">barrier</li>
+                          <li data-value="empty" data-type="tile-type">empty</li>
+                          <li data-value="start" data-type="tile-type">start</li>
+                          <li data-value="teleport" data-type="tile-type">teleport</li>
+                          <li data-value="link-teleport" data-type="tile-action">Link to...</li>
+                        </ul>
+                      </div>
+                    </foreignObject>
+                  </g>
+                </g>
+              </g>
+            </g>
+            <g id="minimap" data-x="0" data-y="0" transform="translate(13, 17) rotate(0) scale(0.3)">
+              <rect id="minimap-surface" x="0" y="0" rx="0" ry="0" width="19" height="22"></rect>
+              <use href="#scene" transform="translate(0,0) rotate(0) scale(1)"></use>
+            </g>
+          </svg></div>
+      </section>
+      <footer id="app-footer">
+        <div id="app-footer-top">
+          <div id="controls" data-controls="tile-brushes" class="container"><button class="app-button tile-selector" data-active="true" data-tile-type="barrier">Barrier</button> <button class="app-button tile-selector" data-tile-type="empty">Empty</button> <button class="app-button tile-selector" data-tile-type="teleporter">Teleporter</button> <button class="app-button tile-selector" data-tile-type="exit">Exit</button> <button class="app-button tile-selector" data-tile-type="start">Start</button> <button class="app-button tile-selector" data-tile-type="delete">DELETE</button></div>
+          <div class="scroll-fader"></div>
+        </div>
+        <div id="app-footer-bottom">
+          <div id="app-toolbar">
+            <div id="tools" class="deactivated">
+              <div id="app-run-toggle" class="tool-label" data-active="false" data-tool-group="run"><!-- USE V IF TO TOGGLE --><!--v-if--><svg class="tool-label-icon" id="pause-icon" width="24" height="24" viewBox="2 2 20 20" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                  <path fill="#FFFFFF" d="M 13,16V8H15V16H13M9,16V8H11V16H9M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4Z"></path>
+                </svg></div>
+              <div class="tool-label" data-active="true" data-tool-group="tile" id="tile-brush-label"> Tiles </div>
+              <div class="tool-label" data-active="false" data-tool-group="select" _id="label"> Select </div>
+              <div class="tool-label" data-active="false" data-tool-group="actor" _id="label"> Actors </div>
+              <div class="tool-label" data-active="false" data-tool-group="layer" _id="label"> Layers </div>
+              <div class="tool-label" data-active="false" data-tool-group="color" _id="label"> Colors </div>
+              <div class="tool-label" data-active="false" data-tool-group="other" _id="label"> Other </div>
+            </div>
+          </div>
+        </div>
+      </footer>
+      <div id="app-floating-menu" class="expanded" top="300px" left="200px"><!--v-if-->
+        <div id="app-floating-menu-expanded">
+          <section id="app-body">
+            <div id="svg-canvas-host" pointer-events="auto"><svg _@click="handleClick" id="canvas" class="gradient" width="412" _height="681" viewBox="-0 -0 9 15" preserveAspectRatio="xMidYMid meet" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <marker id="edge-line-arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="black"></path>
+                  </marker><!-- <foreignObject data-template="context-menu" id="context-menu-container" class="context-menu-foreignobject" pointer-events="auto" x="0" y="0" width="200" height="30" _transform="translate(0,0) rotate(0) scale(1)">
+            <div xmlns="http://www.w3.org/1999/xhtml" class="context-menu" data-show-actions="false">
+              <ul class="context-menu-list">
+                <li data-value="barrier" data-type="tile-type">barrier</li>
+                <li data-value="empty" data-type="tile-type">empty</li>
+                <li data-value="start" data-type="tile-type">start</li>
+                <li data-value="teleport" data-type="tile-type">teleport</li>
+                <li data-value="link-teleport" data-type="tile-action">Link to...</li>
+              </ul>
+            </div>
+          </foreignObject> -->
+                  <g data-template="context-menu" id="context-menu-container" pointer-events="auto" data-show-actions="false" data-show="false" transform="translate(0,0) rotate(0) scale(0.05)">
+                    <foreignObject class="context-menu-foreignobject" pointer-events="auto" x="0" y="0" width="200" height="30" _transform="translate(0,0) rotate(0) scale(1)">
+                      <div xmlns="http://www.w3.org/1999/xhtml" class="context-menu" data-show-actions="false">
+                        <ul class="context-menu-list">
+                          <li data-value="barrier" data-type="tile-type">barrier</li>
+                          <li data-value="empty" data-type="tile-type">empty</li>
+                          <li data-value="start" data-type="tile-type">start</li>
+                          <li data-value="teleport" data-type="tile-type">teleport</li>
+                          <li data-value="link-teleport" data-type="tile-action">Link to...</li>
+                        </ul>
+                      </div>
+                    </foreignObject>
+                  </g>
+                  <g data-template="actor" id="" data-x="0" data-y="0" data-teleporting="false" class="actor" transform="translate(0,0) rotate(0) scale(1)">
+                    <circle cx="0.5" cy="0.5" r="0.4" transform="translate(0,0) rotate(0) scale(1)"></circle>
+                  </g>
+                  <g data-template="edge-line" class="edge-line" id="" data-x="0" data-y="0" transform="translate(0,0) rotate(0) scale(1)">
+                    <line x1="0" y1="0" x2="1" y2="1" marker-end="url(#edge-line-arrow)" transform="translate(0,0) rotate(0) scale(1)"></line>
+                  </g>
+                </defs>
+                <g id="viewport" transform="matrix(1 0 0 1 0 0)">
+                  <g id="scene" transform="translate(0,0) rotate(0) scale(1)">
+                    <g id="surface-layer" transform="translate(-0,-0) rotate(0) scale(1)">
+                      <rect id="surface" class="gradient" x="0" y="0" rx="0" ry="0" width="10" height="15"></rect>
+                    </g>
+                    <g id="tile-layer" transform="translate(-0,-0) rotate(0) scale(1)"></g>
+                    <g id="object-layer" transform="translate(0.5,0.5) rotate(0) scale(1)"></g>
+                  </g>
+                </g>
+                <g id="minimap" data-x="0" data-y="0" transform="translate(13, 17) rotate(0) scale(0.3)">
+                  <rect id="minimap-surface" x="0" y="0" rx="0" ry="0" width="19" height="22"></rect>
+                  <use href="#scene" transform="translate(0,0) rotate(0) scale(1)"></use>
+                </g>
+              </svg></div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script type="importmap">
+    {
+  "imports": {
+    "vue": "https://unpkg.com/vue@3.4.21/dist/vue.esm-browser.js",
+    "vue-router": "https://unpkg.com/vue-router@4.3.0/dist/vue-router.esm-browser.js",
+    "@vue/devtools-api": "data:text/javascript,export function setupDevtoolsPlugin(){};export function getDevtoolsGlobalHook(){ return undefined; };"
+  }
+}
+</script><!-- <script type="importmap">
+    {
+    "imports": {
+      "vue": "https://unpkg.com/vue@3.4.21/dist/vue.esm-browser.js",
+  "vue-router": "https://unpkg.com/vue-router@4.3.0/dist/vue-router.esm-browser.js",
+  "@vue/devtools-api": "https://unpkg.com/@vue/devtools-api@6.6.1/dist/devtools-api.esm-browser.js"
+    }
+  }
+  </script> --> <!-- <script type="importmap">
+  {
+  "imports": {
+    "vue": "https://unpkg.com/vue@3/dist/vue.esm-browser.js",
+    "vue-router": "https://unpkg.com/vue-router@4/dist/vue-router.esm-browser.js",
+    "@vue/devtools-api": "https://unpkg.com/@vue/devtools-api@6/dist/devtools-api.esm-browser.js",
+    
+  }
+  }
+  </script> -->
+  <script src="https://www.gstatic.com/firebasejs/12.0.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore-compat.js"></script>
+  <script type="text/javascript" charset="utf-8">
+    const SVG_NS = 'http://www.w3.org/2000/svg';
+  </script>
+  <script src="./main.js" type="module"></script>
+  <script src="./script.js" type="module"></script><!-- <script src="./script-dynamic-bfs.js" type="module"></script> -->
+  <template data-component="app-floating-menu">
+    <div id="app-floating-menu" ref="floatingMenuRef" :class="{ expanded: displayState === 'expanded' }" top="300px" left="200px">
+      <div v-if="displayState === 'collapsed'" @click.stop="handleDisplayChange('expanded')" id="app-floating-menu-collapsed">
+        <svg id="menu-icon" width="50" height="50" viewBox="-2.5 -2.5 30 30" preserveAspectRatio="xMidYMid meet" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+          <path fill="#FFFFFF" d="M 11.7 20H11.3L10.9 17.4C9.7 17.2 8.7 16.5 7.9 15.6L5.5 16.6L4.7 15.3L6.8 13.7C6.4 12.5 6.4 11.3 6.8 10.1L4.7 8.7L5.5 7.4L7.9 8.4C8.7 7.5 9.7 6.9 10.9 6.6L11.2 4H12.7L13.1 6.6C14.3 6.8 15.4 7.5 16.1 8.4L18.5 7.4L19.3 8.7L17.2 10.2C17.4 10.8 17.5 11.4 17.5 12H18C18.5 12 19 12.1 19.5 12.2V12L19.4 11L21.5 9.4C21.7 9.2 21.7 9 21.6 8.8L19.6 5.3C19.5 5 19.3 5 19 5L16.5 6C16 5.6 15.4 5.3 14.8 5L14.4 2.3C14.5 2.2 14.2 2 14 2H10C9.8 2 9.5 2.2 9.5 2.4L9.1 5.1C8.5 5.3 8 5.7 7.4 6L5 5C4.7 5 4.5 5 4.3 5.3L2.3 8.8C2.2 9 2.3 9.2 2.5 9.4L4.6 11L4.5 12L4.6 13L2.5 14.7C2.3 14.9 2.3 15.1 2.4 15.3L4.4 18.8C4.5 19 4.7 19 5 19L7.5 18C8 18.4 8.6 18.7 9.2 19L9.6 21.7C9.6 21.9 9.8 22.1 10.1 22.1H12.6C12.1 21.4 11.9 20.7 11.7 20M16 12.3V12C16 9.8 14.2 8 12 8S8 9.8 8 12C8 14.2 9.8 16 12 16C12.7 14.3 14.2 12.9 16 12.3M10 12C10 10.9 10.9 10 12 10S14 10.9 14 12 13.1 14 12 14 10 13.1 10 12M18 14.5V13L15.8 15.2L18 17.4V16C19.4 16 20.5 17.1 20.5 18.5C20.5 18.9 20.4 19.3 20.2 19.6L21.3 20.7C22.5 18.9 22 16.4 20.2 15.2C19.6 14.7 18.8 14.5 18 14.5M18 21C16.6 21 15.5 19.9 15.5 18.5C15.5 18.1 15.6 17.7 15.8 17.4L14.7 16.3C13.5 18.1 14 20.6 15.8 21.8C16.5 22.2 17.2 22.5 18 22.5V24L20.2 21.8L18 19.5V21Z"></path>
+        </svg>
+      </div>
+      <div v-if="displayState === 'expanded'" @click.stop="handleDisplayChange('collapsed')" id="app-floating-menu-expanded">
+        <router-view></router-view>
+      </div>
+    </div>
+  </template>
+  <template data-component="app">
+    <div id="app">
+      <app-header @footertoggle="handleFooterChange"></app-header> <router-view></router-view> <app-footer></app-footer> <app-floating-menu></app-floating-menu>
+    </div>
+  </template>
+  <template data-component="app-header">
+    <header id="app-header">
+      <div id="app-header-left"></div>
+      <div id="app-header-center">
+        <h2>tone tiles</h2>
+        <div id="app-header-center-bottom"></div>
+      </div>
+      <div id="app-header-right">
+        <div id="app-state-display"></div>
+      </div>
+      <div id="app-header-top">
+        <div class="container">
+          <label for="map-input">Pick Map</label> <select name="map-input" id="map-input">
+            <option value="MAP_9X15_1">MAP_9X15_1</option>
+            <option value="BLANK_MAP_9X15_1">BLANK_MAP_9X15_1</option>
+            <option value="suk">suk</option>
+            <option value="BIG_ASS_MAP">BIG_ASS_MAP</option>
+          </select>
+        </div>
+        <div class="container">
+          <button id="new-map" @click="handleNewMap" class="file-button" type="button">New</button> <button id="save-map" class="file-button" type="button">Save</button>
+        </div>
+      </div>
+    </header>
+  </template>
+  <template data-component="svg-canvas-host">
+    <div id="svg-canvas-host" pointer-events="auto">
+      <svg _@click="handleClick" id="canvas" class="gradient" width="412" _height="681" viewBox="-0 -0 9 15" preserveAspectRatio="xMidYMid meet" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="edge-line-arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="black"></path>
+          </marker> <!-- <foreignObject data-template="context-menu" id="context-menu-container" class="context-menu-foreignobject" pointer-events="auto" x="0" y="0" width="200" height="30" _transform="translate(0,0) rotate(0) scale(1)">
+            <div xmlns="http://www.w3.org/1999/xhtml" class="context-menu" data-show-actions="false">
+              <ul class="context-menu-list">
+                <li data-value="barrier" data-type="tile-type">barrier</li>
+                <li data-value="empty" data-type="tile-type">empty</li>
+                <li data-value="start" data-type="tile-type">start</li>
+                <li data-value="teleport" data-type="tile-type">teleport</li>
+                <li data-value="link-teleport" data-type="tile-action">Link to...</li>
+              </ul>
+            </div>
+          </foreignObject> -->
+          <g data-template="context-menu" id="context-menu-container" pointer-events="auto" data-show-actions="false" data-show="false" transform="translate(0,0) rotate(0) scale(0.05)">
+            <foreignObject class="context-menu-foreignobject" pointer-events="auto" x="0" y="0" width="200" height="30" _transform="translate(0,0) rotate(0) scale(1)">
+              <div xmlns="http://www.w3.org/1999/xhtml" class="context-menu" data-show-actions="false">
+                <ul class="context-menu-list">
+                  <li data-value="barrier" data-type="tile-type">barrier</li>
+                  <li data-value="empty" data-type="tile-type">empty</li>
+                  <li data-value="start" data-type="tile-type">start</li>
+                  <li data-value="teleport" data-type="tile-type">teleport</li>
+                  <li data-value="link-teleport" data-type="tile-action">Link to...</li>
+                </ul>
+              </div>
+            </foreignObject>
+          </g>
+          <g data-template="actor" id="" data-x="0" data-y="0" data-teleporting="false" class="actor" transform="translate(0,0) rotate(0) scale(1)">
+            <circle cx="0.5" cy="0.5" r="0.4" transform="translate(0,0) rotate(0) scale(1)"></circle>
+          </g>
+          <g data-template="edge-line" class="edge-line" id="" data-x="0" data-y="0" transform="translate(0,0) rotate(0) scale(1)">
+            <line x1="0" y1="0" x2="1" y2="1" marker-end="url(#edge-line-arrow)" transform="translate(0,0) rotate(0) scale(1)"></line>
+          </g>
+        </defs>
+        <g id="viewport" ref="canvasViewportRef" transform="matrix(1 0 0 1 0 0)">
+          <g id="scene" transform="translate(0,0) rotate(0) scale(1)">
+            <g id="surface-layer" transform="translate(-0,-0) rotate(0) scale(1)">
+              <rect id="surface" class="gradient" x="0" y="0" rx="0" ry="0" width="10" height="15"></rect>
+            </g>
+            <g id="tile-layer" transform="translate(-0,-0) rotate(0) scale(1)"></g>
+            <g id="object-layer" transform="translate(0.5,0.5) rotate(0) scale(1)"></g>
+          </g>
+        </g>
+        <g id="minimap" data-x="0" data-y="0" transform="translate(13, 17) rotate(0) scale(0.3)">
+          <rect id="minimap-surface" x="0" y="0" rx="0" ry="0" width="19" height="22"></rect>
+          <use href="#scene" transform="translate(0,0) rotate(0) scale(1)"></use>
+        </g>
+      </svg>
+    </div>
+  </template><!-- <template data-component="app-map-creation">
+    <section id="app-map-creation">
+      
+    </section>
+  </template> -->
+  <template data-component="app-map-creation">
+    <section id="app-map-creation" class="map-create">
+      <!-- Header -->
+      <header class="map-create__header">
+        <div class="map-create__titlewrap">
+          <h2 class="map-create__title">New map</h2>
+          <p class="map-create__subtitle">Set the basics. You can resize later in Map Settings.</p>
+        </div>
+        <div class="map-create__actions">
+          <button type="button" class="btn btn--ghost" data-action="cancel">Cancel</button> <button type="submit" class="btn btn--primary" form="map-create-form" data-action="create"> Create map </button>
+        </div>
+      </header><!-- Body -->
+      <div class="map-create__body">
+        <form id="map-create-form" class="map-create__form" autocomplete="off" novalidate="">
+          <!-- Name -->
+          <div class="field">
+            <label class="field__label" for="map-name">Name</label> <input id="map-name" name="name" type="text" class="field__input" placeholder="e.g. Cat Town – West Gate" maxlength="80" required="" data-bind="name">
+            <div class="field__hint">
+              Optional. If blank, we’ll generate one.
+            </div>
+          </div><!-- Presets -->
+          <fieldset class="fieldset">
+            <legend class="fieldset__legend">Preset</legend>
+            <div class="preset-row" role="group" aria-label="Map size presets">
+              <button type="button" class="chip" data-preset="small">Small</button> <button type="button" class="chip" data-preset="medium">Medium</button> <button type="button" class="chip" data-preset="large">Large</button> <button type="button" class="chip chip--ghost" data-preset="custom" aria-pressed="true"> Custom </button>
+            </div>
+            <div class="fieldset__hint">
+              Presets set width/height and tile size. You can fine-tune below.
+            </div>
+          </fieldset><!-- Dimensions -->
+          <fieldset class="fieldset">
+            <legend class="fieldset__legend">Dimensions</legend>
+            <div class="grid-2">
+              <div class="field">
+                <label class="field__label" for="map-width">Width (tiles)</label> <input id="map-width" name="width" type="number" class="field__input" inputmode="numeric" min="4" max="256" step="1" value="32" required="" data-bind="width">
+              </div>
+              <div class="field">
+                <label class="field__label" for="map-height">Height (tiles)</label> <input id="map-height" name="height" type="number" class="field__input" inputmode="numeric" min="4" max="256" step="1" value="32" required="" data-bind="height">
+              </div>
+            </div>
+            <div class="field">
+              <label class="field__label" for="map-tilesize">Tile size</label>
+              <div class="range">
+                <input id="map-tilesize" name="tileSize" type="range" class="range__input" min="8" max="64" step="1" value="24" data-bind="tileSize"> <output class="range__value" for="map-tilesize" data-out="tileSize">24</output> <span class="range__unit">px</span>
+              </div>
+              <div class="field__hint">
+                Visual scale. (If you treat tile size as logical resolution later, move this to Map Settings.)
+              </div>
+            </div>
+          </fieldset><!-- Initialize -->
+          <fieldset class="fieldset">
+            <legend class="fieldset__legend">Initialize</legend>
+            <div class="grid-2">
+              <label class="radio"> <input type="radio" name="initFill" value="empty" checked="" data-bind="initFill"> <span class="radio__label">Empty</span> <span class="radio__hint">All tiles start empty.</span> </label> <label class="radio"> <input type="radio" name="initFill" value="barrier" data-bind="initFill"> <span class="radio__label">Barrier border</span> <span class="radio__hint">Border walls, empty interior.</span> </label>
+            </div>
+            <div class="divider"></div>
+            <div class="grid-2">
+              <div class="field">
+                <label class="field__label" for="map-start">Start</label> <select id="map-start" name="startPlacement" class="field__select" data-bind="startPlacement">
+                  <option value="bottom-left" selected="">Bottom-left</option>
+                  <option value="top-left">Top-left</option>
+                  <option value="bottom-right">Bottom-right</option>
+                  <option value="top-right">Top-right</option>
+                  <option value="none">None</option>
+                </select>
+              </div>
+              <div class="field">
+                <label class="field__label" for="map-exit">Exit</label> <select id="map-exit" name="exitPlacement" class="field__select" data-bind="exitPlacement">
+                  <option value="bottom-right" selected="">Bottom-right</option>
+                  <option value="top-right">Top-right</option>
+                  <option value="bottom-left">Bottom-left</option>
+                  <option value="top-left">Top-left</option>
+                  <option value="none">None</option>
+                </select>
+              </div>
+            </div><label class="check"> <input type="checkbox" name="openInEditor" checked="" data-bind="openInEditor"> <span class="check__label">Open in editor after creation</span> </label>
+          </fieldset><!-- Mobile sticky submit (optional, if your app uses bottom bars) -->
+          <div class="map-create__footer">
+            <button type="submit" class="btn btn--primary btn--full" data-action="create"> Create map </button> <button type="button" class="btn btn--ghost btn--full" data-action="cancel"> Cancel </button>
+          </div>
+        </form><!-- Preview card -->
+        <aside class="map-create__preview" aria-label="Map summary preview">
+          <div class="card">
+            <div class="card__header">
+              <h3 class="card__title">Summary</h3>
+            </div>
+            <div class="card__content">
+              <dl class="kv">
+                <div class="kv__row">
+                  <dt>
+                    Name
+                  </dt>
+                  <dd data-preview="name">
+                    —
+                  </dd>
+                </div>
+                <div class="kv__row">
+                  <dt>
+                    Grid
+                  </dt>
+                  <dd>
+                    <span data-preview="width">32</span> × <span data-preview="height">32</span>
+                  </dd>
+                </div>
+                <div class="kv__row">
+                  <dt>
+                    Tile size
+                  </dt>
+                  <dd>
+                    <span data-preview="tileSize">24</span>px
+                  </dd>
+                </div>
+                <div class="kv__row">
+                  <dt>
+                    Init
+                  </dt>
+                  <dd data-preview="initFill">
+                    Empty
+                  </dd>
+                </div>
+                <div class="kv__row">
+                  <dt>
+                    Start / Exit
+                  </dt>
+                  <dd>
+                    <span data-preview="startPlacement">Bottom-left</span> <span class="kv__sep">→</span> <span data-preview="exitPlacement">Bottom-right</span>
+                  </dd>
+                </div>
+              </dl>
+              <div class="note">
+                Tip: resizing later should prompt an anchor (expand right/down/center) to avoid surprises.
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+  </template>
+  <template data-component="app-body">
+    <section id="app-body">
+      <svg-canvas-host></svg-canvas-host>
+    </section>
+  </template>
+  <template data-component="app-footer">
+    <footer id="app-footer">
+      <div id="app-footer-top">
+        <div id="controls" data-controls="tile-brushes" class="container">
+          <button class="app-button tile-selector" data-active="true" data-tile-type="barrier">Barrier</button> <button class="app-button tile-selector" data-tile-type="empty">Empty</button> <button class="app-button tile-selector" data-tile-type="teleporter">Teleporter</button> <button class="app-button tile-selector" data-tile-type="exit">Exit</button> <button class="app-button tile-selector" data-tile-type="start">Start</button> <button class="app-button tile-selector" data-tile-type="delete">DELETE</button>
+        </div>
+        <div class="scroll-fader"></div>
+      </div>
+      <div id="app-footer-bottom">
+        <app-toolbar></app-toolbar>
+      </div>
+    </footer>
+  </template>
+  <template data-component="app-toolbar">
+    <div id="app-toolbar">
+      <div id="tools" :class="{ deactivated: isRunning }">
+        <div id="app-run-toggle" :class="{ activated: !isRunning }" @click="handleClick" class="tool-label" data-active="false" data-tool-group="run">
+          <!-- USE V IF TO TOGGLE -->
+          <svg v-if="!isRunning" class="tool-label-icon" id="play-icon" width="24" height="24" viewBox="2 2 20 20" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+            <path fill="#FFFFFF" d="M 10,16.5V7.5L16,12M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"></path>
+          </svg>
+          <svg v-if="isRunning" class="tool-label-icon" id="pause-icon" width="24" height="24" viewBox="2 2 20 20" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+            <path fill="#FFFFFF" d="M 13,16V8H15V16H13M9,16V8H11V16H9M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4Z"></path>
+          </svg>
+        </div>
+        <div class="tool-label" data-active="true" data-tool-group="tile" id="tile-brush-label">
+          Tiles
+        </div>
+        <div class="tool-label" data-active="false" data-tool-group="select" _id="label">
+          Select
+        </div>
+        <div class="tool-label" data-active="false" data-tool-group="actor" _id="label">
+          Actors
+        </div>
+        <div class="tool-label" data-active="false" data-tool-group="layer" _id="label">
+          Layers
+        </div>
+        <div class="tool-label" data-active="false" data-tool-group="color" _id="label">
+          Colors
+        </div>
+        <div class="tool-label" data-active="false" data-tool-group="other" _id="label">
+          Other
+        </div>
+      </div>
+    </div>
+  </template>
+  
+  
+</body>
+
+</html>

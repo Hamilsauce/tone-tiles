@@ -74,7 +74,7 @@
         </svg>
       </div>
       <div v-if="displayState === 'expanded'" @click.stop="handleDisplayChange('collapsed')" id="app-floating-menu-expanded">
-        <router-view></router-view>
+        <router-view name="panel"></router-view>
       </div>
     </div>
   </template>
@@ -82,7 +82,7 @@
   <template data-component="app">
     <div id="app">
       <app-header @footertoggle="handleFooterChange"></app-header>
-      <router-view></router-view>
+       <router-view></router-view>
       
       <app-footer></app-footer>
       <app-floating-menu></app-floating-menu>
@@ -198,7 +198,7 @@
         </div>
         
         <div class="map-create__actions">
-          <button type="button" class="btn btn--ghost" data-action="cancel">Cancel</button>
+          <button @click="handleCancel" type="button" class="btn btn--ghost" data-action="cancel">Cancel</button>
           <button type="submit" class="btn btn--primary" form="map-create-form" data-action="create">
             Create map
           </button>
@@ -311,7 +311,7 @@
             <button type="submit" class="btn btn--primary btn--full" data-action="create">
               Create map
             </button>
-            <button type="button" class="btn btn--ghost btn--full" data-action="cancel">
+            <button @click="handleCancel" type="button" class="btn btn--ghost btn--full" data-action="cancel">
               Cancel
             </button>
           </div>
