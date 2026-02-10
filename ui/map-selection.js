@@ -21,16 +21,16 @@ const renderMap = (mapData, svgCanvas, graph, actor1, selectionBox) => {
       width: graph.width,
       height: graph.height
     });
-    
-    selectionBox.setBounds({
-      minX: 0,
-      minY: 0,
-      maxX: graph.width,
-      maxY: graph.height
-    })
-    
-    hasInitViewBox = true;
   }
+  
+  selectionBox.setBounds({
+    minX: 0,
+    minY: 0,
+    maxX: graph.width,
+    maxY: graph.height
+  })
+  
+  hasInitViewBox = true;
   
   svgCanvas.layers.tile.innerHTML = '';
   
@@ -68,6 +68,8 @@ const renderMap = (mapData, svgCanvas, graph, actor1, selectionBox) => {
 
 
 export const initMapControls = async (graph, svgCanvas, actor1, selectionBox) => {
+  hasInitViewBox = false;
+  
   const app = document.querySelector('#app');
   const appBody = document.querySelector('#app-body')
   const containers = document.querySelectorAll('.container')
@@ -118,7 +120,7 @@ export const initMapControls = async (graph, svgCanvas, actor1, selectionBox) =>
   //   e.preventDefault();
   //   e.stopPropagation();
   //   e.stopImmediatePropagation();
-    
+  
   //   renderMap(BLANK_MAP_16X16, svgCanvas, graph, actor1, selectionBox);
   // });
   

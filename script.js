@@ -9,6 +9,8 @@ import { TransformList } from './canvas/TransformList.js';
 import ham from 'https://hamilsauce.github.io/hamhelper/hamhelper1.0.0.js';
 import { useAppState } from './store/app.store.js';
 
+
+
 const { isRunning, setRunning } = useAppState();
 
 const { addDragAction, sleep, template, utils, download, TwoWayMap } = ham;
@@ -41,7 +43,7 @@ const getAspectRatio = (svgCanvas) => {
   return width / height;
 };
 
-let getSelectedRange = () => [...tileLayer.querySelectorAll('.tile[data-selected="true"]')];
+let getSelectedRange = (tileLayer = document.querySelector('#tile-layer')) => [...tileLayer.querySelectorAll('.tile[data-selected="true"]')];
 
 const tileAt = (x, y) => tileLayer.querySelector(`.tile[data-y="${y}"][data-x="${x}"]`);
 
@@ -111,8 +113,6 @@ const getRange = ({ start, end }) => {
 const ANIM_RATE = 75;
 let selectedRange = [];
 const audioNote1 = (new AudioNote(audioEngine));
-
-await sleep(1000)
 
 const graph = new Graph();
 

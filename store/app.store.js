@@ -4,7 +4,6 @@ const isRunningState = ref(true);
 
 
 export const useAppState = () => {
-  
   const setRunning = (value) => {
     if (typeof value !== 'boolean') {
       console.error(`setRunning called invalid value: ${value}`)

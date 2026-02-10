@@ -2,6 +2,7 @@ import { ref, computed, watch, onMounted } from 'vue'
 import { defineComponent, getTemplate } from '../lib/vue-helpers.js';
 // import { AppToolbar } from '../AppToolbar.js';
 import { useAppState } from '../store/app.store.js';
+import { runCanvas } from '../script_refactor.js';
 
 export const SVGCanvasHost = defineComponent(
   getTemplate('svg-canvas-host'),
@@ -32,7 +33,9 @@ export const SVGCanvasHost = defineComponent(
       scene = canvasEl.querySelector('#scene');
       tileLayer = scene.querySelector('#tile-layer');
       objectLayer = scene.querySelector('#object-layer');
-    })
+      
+      runCanvas();
+    });
     
     return {}
   }, {

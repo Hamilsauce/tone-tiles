@@ -41,7 +41,7 @@ const clampPointWithBounds = (bounds) => (pt, upperTrim = 1) => clampPoint(pt, b
 
 const ROLES = ['a', 'b']
 
-const _handles = {
+const getHandles = () => ({
   handleKeys: ROLES,
   a: handleA,
   b: handleB,
@@ -71,12 +71,13 @@ const _handles = {
       this.anchor.dataset.role = 'anchor'
     }
   },
-}
-const _points = {
+});
+
+const getPoints = () => ({
   pointKeys: ROLES,
-  a: domPoint(2, 2),
-  b: domPoint(2, 2),
-  translation: domPoint(0, 0),
+  a: new DOMPoint(), // domPoint(2, 2),
+  b: new DOMPoint(), // domPoint(2, 2),
+  translation: new DOMPoint(), //domPoint(0, 0),
   anchor: null,
   focus: null,
   
@@ -94,17 +95,17 @@ const _points = {
     this.focus = this[label] ?? null;
     this.anchor = this[anchorLabel] ?? null;
   },
-}
+})
 const SELECTOR_DEFAULTS = {
-  handles: _handles,
-  points: _points,
+  handles: getHandles,
+  points: getPoints,
   unitSize: 1,
 }
 
 export class TileSelector extends EventEmitter {
   #self;
-  #handles = _handles;
-  #points = _points;
+  #handles = getHandles();
+  #points = getPoints();
   
   constructor(svgContext, options = SELECTOR_DEFAULTS) {
     super();
@@ -114,13 +115,13 @@ export class TileSelector extends EventEmitter {
     this.#self = document.createElementNS(SVG_NS, 'g');
     this.#self.classList.add('tile-selector');
     this.#self.setAttribute('transform', 'translate(0.5,0.5)');
-  
+    
     this.#self.innerHTML = SELECTOR_TEMPLATE;
-  
+    
     this.#handles.a = this.#self.querySelector('[data-handle="a"]');
     this.#handles.b = this.#self.querySelector('[data-handle="b"]');
     
-    
+    console.warn('SELECTOR CONSRUCTOR: ')
     this.dragStartHandler = this.onDragStart.bind(this);
     this.dragHandler = this.onDragHandle.bind(this);
     this.dragEndHandler = this.onDragEnd.bind(this);
@@ -354,10 +355,17 @@ export class TileSelector extends EventEmitter {
 let SelectorInstance = null;
 
 export const getTileSelector = (ctx = document.querySelector('#scene')) => {
+  console.warn('getTileSelector, SelectorInstance: ',)
+  
+  return new TileSelector(ctx);
+ 
+ 
   if (SelectorInstance !== null) {
     return SelectorInstance;
   }
   
   SelectorInstance = new TileSelector(ctx);
   return SelectorInstance;
+  
+  
 };
