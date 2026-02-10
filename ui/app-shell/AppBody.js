@@ -1,6 +1,6 @@
 import { ref, computed, onMounted } from 'vue'
 import { defineComponent, getTemplate } from '../../lib/vue-helpers.js';
-// import { runCanvas }z from '../../script_refactor.js';
+// import { runCanvas }z from '../../run-canvas.js';
 import { SVGCanvasHost } from '../SVGCanvasHost.js';
 
 export const AppBody = defineComponent(

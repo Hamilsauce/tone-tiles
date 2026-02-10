@@ -2,7 +2,7 @@ import { ref, computed, watch, onMounted } from 'vue'
 import { defineComponent, getTemplate } from '../lib/vue-helpers.js';
 // import { AppToolbar } from '../AppToolbar.js';
 import { useAppState } from '../store/app.store.js';
-import { runCanvas } from '../script_refactor.js';
+import { runCanvas } from '../run-canvas.js';
 
 export const SVGCanvasHost = defineComponent(
   getTemplate('svg-canvas-host'),
