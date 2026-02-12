@@ -1,4 +1,4 @@
-import { Graph, TILE_TYPE_INDEX } from './lib/store.js';
+import { Graph, TILE_TYPE_INDEX } from './lib/graph.model.js';
 import { SVGCanvas } from './canvas/SVGCanvas.js';
 import { maps } from './maps.js';
 import { getTileSelector } from './selection-box/index.js';
@@ -371,12 +371,43 @@ export const runCanvas = async () => {
     }
   }
   
+  const blurContextMenu = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    e.stopImmediatePropagation();
+    
+    const edgeLines = [...objectLayer.querySelectorAll('.edge-line')];
+    
+    edgeLines.forEach(el => {
+      el.remove();
+    })
+    
+    if (contextMenu.dataset.show === 'true') {
+      deselectRange();
+      selectionBox.remove();
+      
+      contextMenu.dataset.show = false;
+      contextMenu.dataset.showActions = false;
+      
+      svgCanvas.removeEventListener('click', blurContextMenu);
+    }
+  };
+  
+  
   const handleEditTileClick = async (e) => {
     e.preventDefault();
     e.stopPropagation();
     e.stopImmediatePropagation();
     
-    const targ = e.detail.target.closest('.tile');
+    // TODO: this normalizes custom events coming from SVGCanvas vs DOM
+    // TODO: So need to standardize events
+    const targ = (e.detail.target ?? e.target).closest('.tile');
+    
+    if (!targ) {
+      blurContextMenu(e);
+      return;
+    }
+    
     const tileType = targ.dataset.tileType;
     const shouldShowSecondaryList = tileType === 'teleport'
     
@@ -411,30 +442,9 @@ export const runCanvas = async () => {
       const [firstItem, lastItem] = [listEl.firstElementChild, listEl.lastElementChild];
       lastItem.scrollIntoView();
       contextMenu.dataset.show = true;
-      firstItem.scrollIntoView({ behavior: 'smooth' });
+      setTimeout(() => { firstItem.scrollIntoView({ behavior: 'smooth' }); }, 500)
+      
     }
-    
-    const blurContextMenu = (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      e.stopImmediatePropagation();
-      
-      const edgeLines = [...objectLayer.querySelectorAll('.edge-line')];
-      
-      edgeLines.forEach(el => {
-        el.remove();
-      })
-      
-      if (contextMenu.dataset.show === 'true') {
-        deselectRange();
-        selectionBox.remove();
-        
-        contextMenu.dataset.show = false;
-        contextMenu.dataset.showActions = false;
-        
-        svgCanvas.removeEventListener('click', blurContextMenu);
-      }
-    };
     
     svgCanvas.addEventListener('click', blurContextMenu);
   }
@@ -486,70 +496,7 @@ export const runCanvas = async () => {
     e.stopPropagation();
   });
   
-  svgCanvas.layers.tile.addEventListener('contextmenu', e => {
-    e.preventDefault();
-    e.stopPropagation();
-    e.stopImmediatePropagation();
-    
-    const targ = e.target.closest('.tile');
-    const tileType = targ.dataset.tileType;
-    const shouldShowSecondaryList = tileType === 'teleport';
-    
-    const menuForeignObject = contextMenu.querySelector('.context-menu-foreignobject');
-    const listEl = contextMenu.querySelector('.context-menu-list');
-    const menuContainer = contextMenu.querySelector('.context-menu');
-    
-    if (tileType === 'teleport') {
-      const selectedNode = graph.getNodeAtPoint({
-        x: +targ.dataset.x,
-        y: +targ.dataset.y,
-      });
-      
-      if (selectedNode.target) {
-        const line = createEdgeLine(selectedNode, selectedNode.target);
-        objectLayer.append(line);
-      }
-      
-      contextMenu.dataset.show = true;
-      menuContainer.dataset.showActions = true;
-    } else {
-      menuForeignObject.setAttribute('width', 200)
-      menuContainer.dataset.showActions = false;
-    }
-    
-    targ.dataset.selected = true;
-    selectionBox.insertAt({ x: +targ.dataset.x, y: +targ.dataset.y });
-    
-    contextMenu.parentElement.append(contextMenu);
-    const [firstItem, lastItem] = [listEl.firstElementChild, listEl.lastElementChild];
-    lastItem.scrollIntoView();
-    contextMenu.dataset.show = true;
-    firstItem.scrollIntoView({ behavior: 'smooth' });
-    
-    const blurContextMenu = (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      e.stopImmediatePropagation();
-      
-      const edgeLines = [...objectLayer.querySelectorAll('.edge-line')];
-      
-      edgeLines.forEach(el => {
-        el.remove();
-      })
-      
-      if (contextMenu.dataset.show === 'true') {
-        deselectRange();
-        selectionBox.remove();
-        
-        contextMenu.dataset.show = false;
-        contextMenu.dataset.showActions = false;
-        
-        svgCanvas.removeEventListener('click', blurContextMenu);
-      }
-    };
-    
-    svgCanvas.addEventListener('click', blurContextMenu);
-  });
+  svgCanvas.layers.tile.addEventListener('contextmenu', handleEditTileClick);
   
   contextMenu.addEventListener('click', e => {
     e.preventDefault();

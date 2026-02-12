@@ -1,5 +1,5 @@
 import { BLANK_MAP_16X16, mapStorageFormatter } from '../maps.js';
-import { storeMaps, storeMap, updateMap, loadMap, loadMaps, clearMaps, loadMapNames } from '../map.service.js';
+import { storeMaps, storeMap, updateMap, loadMap, loadMaps, clearMaps, loadMapMeta } from '../map.service.js';
 
 import { copyTextToClipboard } from '../lib/utils.js';
 
@@ -79,7 +79,7 @@ export const initMapControls = async (graph, svgCanvas, actor1, selectionBox) =>
   
   const saveButton = document.querySelector('#save-map')
   const newButton = document.querySelector('#new-map')
-  const mapNames = await loadMapNames();
+  const mapNames = await loadMapMeta();
   
   [...mapInput.options].forEach((e) => {
     e.remove();

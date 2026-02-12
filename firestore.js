@@ -47,7 +47,7 @@ export const dbAdd = async (collectionPath, data) => {
 export const dbUpdate = async (collectionPath, docId, updates) => {
   const ref = doc(db, collectionPath, docId);
   await updateDoc(ref, updates);
-};
+}
 
 export const dbDelete = async (collectionPath, docId) => {
   const ref = doc(db, collectionPath, docId);
@@ -74,6 +74,22 @@ export const getFieldOnly = async (coll, fieldName) => {
     id: doc.id,
     [fieldName]: doc.get(fieldName),
   }));
+};
+
+export const getFields = async (coll, fieldNames = []) => {
+  const q = query(collection(db, coll));
+  const snapshot = await getDocs(q);
+  
+  return snapshot.docs.map((docRef) => {
+    return fieldNames.reduce((acc, fieldName) => {
+      return { ...acc, [fieldName]: docRef.get(fieldName) }
+    }, { id: docRef.id });
+    
+    // return {
+    //   id: docRef.id,
+    //   [fieldName]: docRef.get(fieldName),
+    // }
+  });
 };
 // export const dbQuery = async (collectionPath, conditions = [], selectedFields = null) => {
 //   let q = collection(db, collectionPath);

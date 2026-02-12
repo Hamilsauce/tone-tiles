@@ -117,6 +117,12 @@
     </header>
   </template>
   
+  <template data-component="app-map-list-view">
+    <div id="app-map-list-view">
+      
+    </div>
+  </template>
+  
   <template data-component="svg-canvas-host">
     <div id="svg-canvas-host" pointer-events="auto">
       <svg @_dblclick="centerViewport" id="canvas" class="gradient" width="412" _height="681" viewBox="0 0 19 22" preserveAspectRatio="xMinYMid meet" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
@@ -167,13 +173,10 @@
             <line class="axis-line" x1="-100" y1="0" x2="100" y2="0" _marker-end="url(#edge-line-arrow)" transform="translate(0,0) rotate(0) scale(1)" />
             <line class="axis-line" x1="0" y1="-100" x2="0" y2="100" _marker-end="url(#edge-line-arrow)" transform="translate(0,0) rotate(0) scale(1)" />
             <circle class="origin" cx="0" cy="0" r="0.4" transform="translate(0,0) rotate(0) scale(1)" />
-            
           </g>
           
           <g id="scene" transform="translate(0,0) rotate(0) scale(1)">
-            
             <g id="tile-layer" transform="translate(-0,-0) rotate(0) scale(1)"></g>
-            
             <g id="object-layer" transform="translate(0.5,0.5) rotate(0) scale(1)"></g>
           </g>
         </g>
@@ -186,11 +189,53 @@
     </div>
   </template>
   
-  <!-- <template data-component="app-map-creation">
-    <section id="app-map-creation">
-      
+  <template data-component="app-body">
+    <section id="app-body">
+      <svg-canvas-host></svg-canvas-host>
     </section>
-  </template> -->
+  </template>
+  
+  <template data-component="app-footer">
+    <footer id="app-footer" v-if="shouldDisplay">
+      <div id="app-footer-top">
+        <div id="controls" data-controls="tile-brushes" class="container">
+          <button class="app-button tile-selector" data-active="true" data-tile-type="barrier">Barrier</button>
+          <button class="app-button tile-selector" data-tile-type="empty">Empty</button>
+          <button class="app-button tile-selector" data-tile-type="teleporter">Teleporter</button>
+          <button class="app-button tile-selector" data-tile-type="exit">Exit</button>
+          <button class="app-button tile-selector" data-tile-type="start">Start</button>
+          <button class="app-button tile-selector" data-tile-type="delete">DELETE</button>
+        </div>
+        <div class="scroll-fader"></div>
+      </div>
+      
+      <div id="app-footer-bottom">
+        <app-toolbar></app-toolbar>
+      </div>
+    </footer>
+  </template>
+  
+  <template data-component="app-toolbar">
+    <div id="app-toolbar">
+      <div id="tools" :class="{ deactivated: isRunning }">
+        <div id="app-run-toggle" :class="{ activated: !isRunning }" @click="handleClick" class="tool-label" data-active="false" data-tool-group="run">
+          <!-- USE V IF TO TOGGLE -->
+          <svg v-if="!isRunning" class="tool-label-icon" id="play-icon" width="24" height="24" viewBox="2 2 20 20" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+            <path fill="#FFFFFF" d="M 10,16.5V7.5L16,12M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"></path>
+          </svg>
+          <svg v-if="isRunning" class="tool-label-icon" id="pause-icon" width="24" height="24" viewBox="2 2 20 20" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+            <path fill="#FFFFFF" d="M 13,16V8H15V16H13M9,16V8H11V16H9M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4Z"></path>
+          </svg>
+        </div>
+        <div class="tool-label" data-active="true" data-tool-group="tile" id="tile-brush-label">Tiles</div>
+        <div class="tool-label" data-active="false" data-tool-group="select" _id="label">Select</div>
+        <div class="tool-label" data-active="false" data-tool-group="actor" _id="label">Actors</div>
+        <div class="tool-label" data-active="false" data-tool-group="layer" _id="label">Layers</div>
+        <div class="tool-label" data-active="false" data-tool-group="color" _id="label">Colors</div>
+        <div class="tool-label" data-active="false" data-tool-group="other" _id="label">Other</div>
+      </div>
+    </div>
+  </template>
   
   <template data-component="app-map-creation">
     <section id="app-map-creation" class="map-create">
@@ -347,7 +392,6 @@
               Cancel
             </button>
           </div>
-          
         </form>
         
         <!-- Preview -->
@@ -386,59 +430,10 @@
             </div>
           </div>
         </aside>
-        
       </div>
     </section>
   </template>
   
-  
-  <template data-component="app-body">
-    <section id="app-body">
-      <svg-canvas-host></svg-canvas-host>
-    </section>
-  </template>
-  
-  <template data-component="app-footer">
-    <footer id="app-footer" v-if="shouldDisplay">
-      <div id="app-footer-top">
-        <div id="controls" data-controls="tile-brushes" class="container">
-          <button class="app-button tile-selector" data-active="true" data-tile-type="barrier">Barrier</button>
-          <button class="app-button tile-selector" data-tile-type="empty">Empty</button>
-          <button class="app-button tile-selector" data-tile-type="teleporter">Teleporter</button>
-          <button class="app-button tile-selector" data-tile-type="exit">Exit</button>
-          <button class="app-button tile-selector" data-tile-type="start">Start</button>
-          <button class="app-button tile-selector" data-tile-type="delete">DELETE</button>
-        </div>
-        <div class="scroll-fader"></div>
-      </div>
-      
-      <div id="app-footer-bottom">
-        <app-toolbar></app-toolbar>
-      </div>
-    </footer>
-  </template>
-  
-  <template data-component="app-toolbar">
-    <div id="app-toolbar">
-      <div id="tools" :class="{ deactivated: isRunning }">
-        <div id="app-run-toggle" :class="{ activated: !isRunning }" @click="handleClick" class="tool-label" data-active="false" data-tool-group="run">
-          <!-- USE V IF TO TOGGLE -->
-          <svg v-if="!isRunning" class="tool-label-icon" id="play-icon" width="24" height="24" viewBox="2 2 20 20" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-            <path fill="#FFFFFF" d="M 10,16.5V7.5L16,12M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"></path>
-          </svg>
-          <svg v-if="isRunning" class="tool-label-icon" id="pause-icon" width="24" height="24" viewBox="2 2 20 20" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-            <path fill="#FFFFFF" d="M 13,16V8H15V16H13M9,16V8H11V16H9M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4Z"></path>
-          </svg>
-        </div>
-        <div class="tool-label" data-active="true" data-tool-group="tile" id="tile-brush-label">Tiles</div>
-        <div class="tool-label" data-active="false" data-tool-group="select" _id="label">Select</div>
-        <div class="tool-label" data-active="false" data-tool-group="actor" _id="label">Actors</div>
-        <div class="tool-label" data-active="false" data-tool-group="layer" _id="label">Layers</div>
-        <div class="tool-label" data-active="false" data-tool-group="color" _id="label">Colors</div>
-        <div class="tool-label" data-active="false" data-tool-group="other" _id="label">Other</div>
-      </div>
-    </div>
-  </template>
 </body>
 
 </html>
