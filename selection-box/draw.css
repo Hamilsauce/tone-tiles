@@ -54,7 +54,7 @@ svg {
 
 .tile-selector[data-is-dragging=true] {
   .selection-handle {
-    opacity: 0.5;
+    opacity: 0.0;
   }
 }
 
@@ -62,10 +62,13 @@ svg {
   /* transition: 0.1s; */
 }
 
-.selection-box {
-  fill: #78787800 !important;
-  /* filter: opacity(0.25) !important; */
-}
+/* .selection-box {
+  fill: transparent;
+  stroke: #6E9D0D;
+  
+
+  filter: contrast(1.2) drop-shadow(0 0 0.05px #23242875);
+} */
 
 .selection-handle {
   transition: stroke-width 0.075s;
@@ -85,9 +88,9 @@ svg {
   }
 }
 
-.selection-handle[data-handle=start] {
+/* .selection-handle[data-handle=start] {
   fill: orange;
-}
+} */
 
 .board-tile {}
 
@@ -235,7 +238,7 @@ svg {
 }
 
 .selection-handle[data-role=focus] {
-  fill: #DB1414 !important;
+  /* fill: #DB1414 !important; */
 }
 
 .selection-handle[data-role=anchor] {

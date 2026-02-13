@@ -75,16 +75,44 @@ export const runCanvas = async () => {
   
   const createEdgeLine = (pt1, pt2) => {
     const line = useTemplate('edge-line');
-    
+    const lineEl = line.querySelector('line')
+    const lineHandle = line.querySelector('circle')
     const [endX, endY] = computeArrowEndpoint(
       [pt1.x + 0.5, pt1.y + 0.5],
       [pt2.x + 0.5, pt2.y + 0.5]
     );
     
-    line.firstElementChild.setAttribute('x1', pt1.x + 0.5);
-    line.firstElementChild.setAttribute('y1', pt1.y + 0.5);
-    line.firstElementChild.setAttribute('x2', endX);
-    line.firstElementChild.setAttribute('y2', endY);
+    lineEl.setAttribute('x1', pt1.x + 0.5);
+    lineEl.setAttribute('y1', pt1.y + 0.5);
+    lineEl.setAttribute('x2', endX);
+    lineEl.setAttribute('y2', endY);
+    lineHandle.setAttribute('cx', endX);
+    lineHandle.setAttribute('cy', endY);
+    // console.warn({ line })
+    
+    // svgCanvas.dom.addEventListener('pointermove', e => {
+    //   e.stopPropagation();
+    //   e.preventDefault();
+    //   const targ = e.target
+    //   // console.warn({ line })
+    
+    
+    //   if (targ.classList.contains('edge-line-arrow')) {
+    //     const newPoint = domPoint(e.clientX, e.clientY)
+    //     const [newEndX, newEndY] = computeArrowEndpoint(
+    //       [pt1.x + 0.5, pt1.y + 0.5],
+    //       [newPoint.x + 0.5, newPoint.y + 0.5]
+    //     );
+    
+    
+    //     line.firstElementChild.setAttribute('x2', newEndX);
+    //     line.firstElementChild.setAttribute('y2', newEndY);
+    
+    
+    //   }
+    
+    // });
+    
     
     return line;
   };
@@ -491,6 +519,31 @@ export const runCanvas = async () => {
   contextMenu.addEventListener('pointerdown', e => {
     e.stopPropagation();
   });
+  
+  // FOR DRAGGING LINES
+  // svgCanvas.dom.addEventListener('pointerdown', e => {
+  //   const arrow = e.target.closest('.edge-line')
+    
+    
+  //   // console.warn('drag', arrow)
+  //   if (!arrow) return;
+  //   e.stopPropagation();
+  //   e.stopImmediatePropagation();
+    
+  //   const handle = arrow.querySelector('circle')
+  //   const line = arrow.querySelector('line')
+    
+  //   if (!handle) return;
+    
+  //   const newPt = domPoint(scene, e.clientX, e.clientY)
+  //   console.warn(newPt.x, newPt.y)
+    
+  //   line.setAttribute('x2', Math.floor(newPt.x));
+  //   line.setAttribute('y2', Math.floor(newPt.y));
+  //   handle.setAttribute('cx', Math.floor(newPt.x));
+  //   handle.setAttribute('cy', Math.floor(newPt.y));
+    
+  // });
   
   contextMenu.addEventListener('pointermove', e => {
     e.stopPropagation();

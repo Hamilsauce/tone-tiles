@@ -12,6 +12,7 @@ export const updateMap = async (mapToStore) => {
 
 export const storeMap = async (mapToStore) => {
   const formatted = mapStorageFormatter(mapToStore);
+  console.warn({formatted})
   const id = await dbAdd('maps', formatted);
   
   return id;
@@ -34,8 +35,8 @@ export const loadMapMeta = async () => {
 
 export const loadMap = async (id) => {
   const fetched = await dbGet('maps', id);
-  console.warn('loadMapMeta', fetched);
-
+  console.warn('loadMap', fetched);
+  
   fetched.id = id;
   return fetched;
 }

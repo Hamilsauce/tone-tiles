@@ -222,9 +222,10 @@ export class TileSelector extends EventEmitter {
       
       this.#points.translation.x = 0
       this.#points.translation.y = 0
+      this.isDragging = true;
+
     }
     
-    this.isDragging = true;
     
     this.render();
     

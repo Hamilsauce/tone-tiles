@@ -1,6 +1,7 @@
 import { ref, computed, watch } from 'vue'
 import { defineComponent, getTemplate } from '../../lib/vue-helpers.js'
 import { router, RouteName } from '../../router/router.js'
+import { useMapStore } from '../../store/map.store.js';
 
 // TODO: replace with your actual Firestore service
 // import { createMapDoc } from '../../services/maps.js'
@@ -8,6 +9,8 @@ import { router, RouteName } from '../../router/router.js'
 export const AppCreateMapView = defineComponent(
   getTemplate('app-map-creation'),
   (props) => {
+    const mapStore = useMapStore();
+    
     const name = ref('');
     const width = ref(32);
     const height = ref(32);
@@ -76,25 +79,25 @@ export const AppCreateMapView = defineComponent(
         name: name.value?.trim() || `Untitled ${new Date().toLocaleDateString()}`,
         width: width.value,
         height: height.value,
-        tileSize: tileSize.value,
-        initFill: initFill.value,
-        startPlacement: startPlacement.value,
-        exitPlacement: exitPlacement.value,
+        // tileSize: tileSize.value,
+        // initFill: initFill.value,
+        // startPlacement: startPlacement.value,
+        // exitPlacement: exitPlacement.value,
         createdAt: Date.now(),
         updatedAt: Date.now()
       }
-      
+      mapStore.setCurrentMap(mapDoc)
       try {
         console.warn(
           'create: ', mapDoc
         )
         // const id = await createMapDoc(mapDoc)
-        
+        router.push({
+          name: RouteName.home,
+          query: { mapID: 'fuk' } //mapStore.currentMap.value.id || 'no-id' }
+        })   
         if (openInEditor.value) {
-          // router.push({
-          //   name: RouteName.MAP_EDIT,
-          //   params: { id }
-          // })
+          
         } else {
           // router.push({ name: RouteName.MAPS })
         }

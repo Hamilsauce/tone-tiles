@@ -1,7 +1,10 @@
+import { ref, computed, watch } from 'vue'
+
 import { BLANK_MAP_16X16, mapStorageFormatter } from '../maps.js';
 import { storeMaps, storeMap, updateMap, loadMap, loadMaps, clearMaps, loadMapMeta } from '../map.service.js';
 
 import { copyTextToClipboard } from '../lib/utils.js';
+import { useMapStore } from '../store/map.store.js';
 
 const { forkJoin, Observable, iif, BehaviorSubject, AsyncSubject, Subject, interval, of, fromEvent, merge, empty, delay, from } = rxjs;
 const { flatMap, reduce, groupBy, toArray, mergeMap, switchMap, scan, map, tap, filter } = rxjs.operators;
@@ -10,6 +13,7 @@ import ham from 'https://hamilsauce.github.io/hamhelper/hamhelper1.0.0.js';
 const { sleep, template, utils, download, TwoWayMap } = ham;
 
 let hasInitViewBox = false;
+const mapStore = useMapStore();
 
 const renderMap = (mapData, svgCanvas, graph, actor1, selectionBox) => {
   graph.fromMap(mapData);
@@ -104,12 +108,14 @@ export const initMapControls = async (graph, svgCanvas, actor1, selectionBox) =>
     const mapSelection = e
     let mapId
     const graphOut = graph.toStorageFormat();
-    
+    console.warn(graphOut)
+    if (!mapStore.isMapSaved.value) {
+      delete graphOut.id
+      
+    }
     if (!!graphOut.id) {
       mapId = await updateMap(graphOut)
     } else {
-      delete graphOut.id
-      
       mapId = await storeMap(graphOut)
     }
     
@@ -124,20 +130,34 @@ export const initMapControls = async (graph, svgCanvas, actor1, selectionBox) =>
   //   renderMap(BLANK_MAP_16X16, svgCanvas, graph, actor1, selectionBox);
   // });
   
+  watch(mapStore.currentMap, (newMap, oldMap) => {
+    if (newMap && oldMap && newMap.id === oldMap.id) return;
+    console.log('MAP SELECTION CURR MAP CHANGE', newMap);
+    
+    renderMap(newMap, svgCanvas, graph, actor1, selectionBox);
+  })
+  
+  
   
   mapInput$.pipe(
     tap(async ({ target }) => {
       const sel = target.selectedOptions[0].value;
       
-      const selectedMap = await loadMap(sel)
-      renderMap(selectedMap, svgCanvas, graph, actor1, selectionBox)
+      const loadedMap = await loadMap(sel)
+      
+      // const loadedMap = await mapStore.loadMap(sel)
+      
+      
+      mapStore.setCurrentMap(loadedMap)
+      
+      // renderMap(selectedMap, svgCanvas, graph, actor1, selectionBox)
     }),
   ).subscribe()
   
   setTimeout(() => {
-    console.log(' ', );
-    mapInput.dispatchEvent(new Event('change'))
-    
+    console.log('MAP SELECTION SET MAP', );
+    // mapInput.dispatchEvent(new Event('change'))
+    mapStore.setCurrentMap(BLANK_MAP_16X16)
   }, 500)
   // }, 1000)
   

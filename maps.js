@@ -1,16 +1,28 @@
+export const MAP_DOC_TEMPLATE = {
+  name: 'Untitled_' + Date.now(),
+  meta: {
+    author: '',
+    created: Date.now(),
+    updated: Date.now(),
+  },
+  width: 16,
+  height: 16,
+  tileData: {},
+}
+
 export const mapStorageFormatter = ({ name, tiles, tileData, meta, width, height }) => {
-  const isGrid = Array.isArray(tiles[0])
+  // const isGrid = Array.isArray(tiles[0])
   height = height ?? tiles.length;
   width = width ?? tiles[0].length;
   
-  tiles = !isGrid ? tiles : tiles.reduce((flattened, row, i) => {
-    return [...flattened, ...row]
-  }, []);
+  // tiles = !isGrid ? tiles : tiles.reduce((flattened, row, i) => {
+  //   return [...flattened, ...row]
+  // }, []);
   
   return {
     name,
     tileData,
-    tiles,
+    // tiles,
     width,
     height,
     meta,
