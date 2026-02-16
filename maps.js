@@ -1,3 +1,4 @@
+import { previewGrid } from './lib/procedural-gen.js'
 export const MAP_DOC_TEMPLATE = {
   name: 'Untitled_' + Date.now(),
   meta: {
@@ -65,6 +66,8 @@ export const SPIRAL1 = {
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3]
   ],
 }
+
+// previewGrid(SPIRAL1.tiles)
 
 export const BABY_MAP_6X6 = {
   id: '',

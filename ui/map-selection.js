@@ -134,7 +134,6 @@ export const initMapControls = async (graph, svgCanvas, actor1, selectionBox) =>
   
   watch(mapStore.currentMap, (newMap, oldMap) => {
     if (newMap && oldMap && newMap.id === oldMap.id) return;
-    console.log('MAP SELECTION CURR MAP CHANGE', newMap);
     
     renderMap(newMap, svgCanvas, graph, actor1, selectionBox);
   })
@@ -157,7 +156,6 @@ export const initMapControls = async (graph, svgCanvas, actor1, selectionBox) =>
   ).subscribe()
   
   setTimeout(() => {
-    console.log('MAP SELECTION SET MAP', );
     // mapInput.dispatchEvent(new Event('change'))
     mapStore.setCurrentMap(BLANK_MAP_16X16)
   }, 500)
