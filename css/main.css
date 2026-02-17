@@ -41,7 +41,7 @@ body {
 #svg-canvas-host {
   width: 100%;
   height: 100%;
-  
+
 }
 
 #canvas {
@@ -55,6 +55,10 @@ body {
   stroke: #FFFFFF80;
   stroke-width: 0.2;
   filter: drop-shadow(0 0px 1.5px #2F2F2F65);
+}
+
+#tile-layer {
+  /* pointer-events: auto !important; */
 }
 
 #stars {
@@ -97,7 +101,7 @@ body {
   height: 30;
   /* touch-action: none; */
   pointer-events: auto;
-  
+
 }
 
 #context-menu-container[data-show=false] {
@@ -109,9 +113,9 @@ body {
   filter: drop-shadow(0 3px 6px #2A2A2AC2);
   overflow-y: hidden;
   overflow-x: auto;
-  
+
   pointer-events: auto;
-  
+
 }
 
 /* .context-menu {
@@ -132,7 +136,7 @@ body {
   width: 100px;
   width: 100%;
   overflow-x: auto;
-  
+
 }
 
 .menu-scroll {
@@ -144,7 +148,7 @@ body {
   scrollbar-width: thin;
   /* Firefox */
   overflow-x: scroll;
-  
+
 }
 
 .context-menu-list {
@@ -166,16 +170,16 @@ body {
   /* width: 200px; */
   width: 100px;
   width: 100%;
-  
+
   display: flex;
   flex-direction: row;
-  
+
   gap: 2px;
   overflow-x: scroll;
   overflow-y: hidden;
   /* white-space: nowrap; */
   pointer-events: auto !important;
-  
+
   /* scrollbar-width: thin; */
 }
 
@@ -187,7 +191,7 @@ body {
   gap: 0px;
   /* width: 100%; */
   /* width: 200px; */
-  
+
   width: fit-content;
   padding: 4px;
   background: #FFFFFF;
@@ -230,5 +234,5 @@ body {
   background-color: #f0f0f0;
   word-wrap: nowrap;
   white-space: nowrap;
-  
+
 }

@@ -23,7 +23,7 @@ const domPoint = (x, y, clamp = false) => {
   const p = new DOMPoint(x, y).matrixTransform(
     scene.getScreenCTM().inverse()
   );
-  
+
   return !clamp ? p : {
     x: clamp === 'floor' ? Math.floor(p.x) : Math.ceil(p.x),
     y: clamp === 'floor' ? Math.floor(p.y) : Math.ceil(p.y)
@@ -47,11 +47,11 @@ const getHandles = () => ({
   b: handleB,
   anchor: null,
   focus: null,
-  
+
   isHandle(el) {
     return this.handleKeys.some(k => this[k] === el)
   },
-  
+
   setFocus(label = null) {
     if (!label && this.focus) {
       delete this.focus.dataset.role
@@ -60,12 +60,12 @@ const getHandles = () => ({
       this.anchor = null;
       return;
     }
-    
+
     const anchorLabel = this.handleKeys.filter(_ => _ !== label)[0]
-    
+
     this.focus = this[label] ?? null;
     this.anchor = this[anchorLabel] ?? null;
-    
+
     if (this.focus) {
       this.focus.dataset.role = 'focus'
       this.anchor.dataset.role = 'anchor'
@@ -80,18 +80,18 @@ const getPoints = () => ({
   translation: new DOMPoint(), //domPoint(0, 0),
   anchor: null,
   focus: null,
-  
+
   get x() { return Math.min(this.anchor?.x, this.focus?.x); },
   get y() { return Math.min(this.anchor?.y, this.focus?.y); },
   get x2() { return (Math.max(this.anchor?.x, this.focus?.x)) <= 0 ? 1 : (Math.max(this.anchor.x, this.focus.x)) + 0 },
   get y2() { return (Math.max(this.anchor?.y, this.focus?.y)) <= 0 ? 1 : (Math.max(this.anchor.y, this.focus.y)) + 0 },
   get width() { return (this.x2 - this.x) + 1 },
   get height() { return (this.y2 - this.y) + 1 },
-  
+
   setFocus(label) {
     const anchorLabel = this.pointKeys.find(_ => _ !== label)
     if (!label || !anchorLabel) return;
-    
+
     this.focus = this[label] ?? null;
     this.anchor = this[anchorLabel] ?? null;
   },
@@ -106,215 +106,223 @@ export class TileSelector extends EventEmitter {
   #self;
   #handles = getHandles();
   #points = getPoints();
-  
+
   constructor(svgContext, options = SELECTOR_DEFAULTS) {
     super();
     const { handles, points, unitSize } = options;
-    
+
     this.svgContext = svgContext
     this.#self = document.createElementNS(SVG_NS, 'g');
     this.#self.classList.add('tile-selector');
     this.#self.setAttribute('transform', 'translate(0.5,0.5)');
-    
+
     this.#self.innerHTML = SELECTOR_TEMPLATE;
-    
+
     this.#handles.a = this.#self.querySelector('[data-handle="a"]');
     this.#handles.b = this.#self.querySelector('[data-handle="b"]');
-    
+
     console.warn('SELECTOR CONSRUCTOR: ')
     this.dragStartHandler = this.onDragStart.bind(this);
     this.dragHandler = this.onDragHandle.bind(this);
     this.dragEndHandler = this.onDragEnd.bind(this);
-    
+
     this.#self.style.touchAction = 'none';
-    
+
     this.#self.addEventListener('pointerdown', this.dragStartHandler);
-    
+
+    this.#self.addEventListener('click', (e) => {
+      console.warn('TILE SELECTOR CLICK')
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+      e.preventDefault();
+    });
+
     this.#handles.a.addEventListener('click', (e) => {
       e.stopPropagation();
       e.stopImmediatePropagation();
       e.preventDefault();
     });
-    
+
     this.#handles.b.addEventListener('click', (e) => {
       e.stopPropagation();
+      e.stopImmediatePropagation();
       e.preventDefault();
     });
-    
+
     this.bounds = {
       minX: null,
       minY: null,
       maxX: null,
       maxY: null,
     }
-    
+
     this.clampToBounds = clampPointWithBounds(this.bounds)
     this.render = this.#render.bind(this);
     this.emitRange = this.#emitRange.bind(this);
     this.dragMode = 'handle'
   };
-  
+
   get parent() { return this.#self.parentElement };
-  
+
   get selectBox() { return this.#self.querySelector('.selection-box') }
-  
+
   get isRendered() { return !!this.parent; };
-  
+
   get isDragging() { return this.#self.dataset.isDragging === 'true' ? true : false; };
-  
+
   set isDragging(v) { return this.#self.dataset.isDragging = v; }
-  
+
   setBounds(bounds = { minX: null, minY: null, maxX: null, maxY: null }) {
     Object.assign(this.bounds, bounds);
     return this;
   }
-  
+
   domPoint(x, y, clamp = false) {
     const p = new DOMPoint(x, y).matrixTransform(
       this.svgContext.getScreenCTM().inverse()
     );
-    
+
     return !clamp ? p : {
       x: clamp === 'floor' ? Math.floor(p.x) : Math.ceil(p.x),
       y: clamp === 'floor' ? Math.floor(p.y) : Math.ceil(p.y)
     };
   }
-  
+
   remove() {
     if (this.isRendered) { this.#self.remove(); }
     return this;
   }
-  
+
   // intended as only public method
   insertAt(x, y) {
     const pt = {
       x: x.x !== undefined ? +x.x : +x,
       y: x.y !== undefined ? +x.y : +y,
     };
-    
+
     Object.assign(this.#points.a, pt)
     Object.assign(this.#points.b, pt)
     this.#points.setFocus('a')
-    
+
     this.render();
     this.emitRange();
   }
-  
+
   onDragStart(e) {
     const { target, currentTarget, clientX, clientY } = e;
     const isTargetHandle = this.#handles.isHandle(target);
     const isSelBox = this.selectBox === target;
     e.stopPropagation();
-    
+
     if (isTargetHandle) {
       this.dragMode = 'handle'
-      
+
       const handleLabel = isTargetHandle ? target.dataset.handle : null;
-      
+
       this.#handles.setFocus(handleLabel);
       this.#points.setFocus(handleLabel);
     }
-    
+
     else if (isSelBox) {
       const pt = this.domPoint(clientX, clientY);
       this.dragMode = 'translation'
       this.pointerStart = pt
-      
+
       this.#points.translation.x = 0
       this.#points.translation.y = 0
       this.isDragging = true;
 
     }
-    
-    
+
+
     this.render();
-    
+
     document.addEventListener('pointermove', this.dragHandler);
     document.addEventListener('pointerup', this.dragEndHandler);
   }
-  
+
   onDragHandle(e) {
     const { target, currentTarget, clientX, clientY } = e;
-    
+
     const focusPoint = this.#points.focus;
     const isSelBox = this.selectBox === target
     const pt = this.domPoint(clientX, clientY);
-    
+
     e.stopPropagation();
-    
+
     if (this.dragMode === 'translation') {
       // this.#points.translation = this.clampToBounds(this.#points.translation)
       this.#points.translation.x = pt.x - this.pointerStart.x
       this.#points.translation.y = pt.y - this.pointerStart.y
-      
+
       this.render();
       return
     }
-    
+
     if (!focusPoint) return;
     const clamped = this.clampToBounds(pt)
     focusPoint.x = clamped.x;
     focusPoint.y = clamped.y;
-    
+
     this.render();
   };
-  
+
   async onDragEnd(e) {
     const { target, currentTarget, clientX, clientY } = e;
-    
+
     const focusPoint = this.#points.focus;
     const focusHandle = this.#handles.focus;
-    
+
     if (this.dragMode === 'translation') {
       const dx = Math.floor(this.#points.translation.x);
       const dy = Math.floor(this.#points.translation.y);
-      
+
       const aPoint = this.clampToBounds({
         x: this.#points.a.x + dx,
         y: this.#points.a.y + dy,
       });
-      
+
       const bPoint = this.clampToBounds({
         x: this.#points.b.x + dx,
         y: this.#points.b.y + dy,
       });
-      
+
       this.#points.a.x = aPoint.x;
       this.#points.a.y = aPoint.y;
       this.#points.b.x = bPoint.x;
       this.#points.b.y = bPoint.y;
-      
+
       this.#points.translation.x = 0;
       this.#points.translation.y = 0;
       this.pointerStart = null;
       this.dragMode = 'handle';
     } else {
       const pt = this.domPoint(clientX, clientY, 'floor');
-      
+
       if (!focusHandle || !focusPoint) return;
-      
+
       const clamped = this.clampToBounds(pt)
-      
+
       focusPoint.x = clamped.x;
       focusPoint.y = clamped.y;
     }
-    
+
     this.#handles.setFocus(null);
-    
+
     document.removeEventListener('pointermove', this.dragHandler);
     document.removeEventListener('pointerup', this.dragEndHandler);
     this.isDragging = false;
-    
+
     await this.render();
-    
+
     this.emitRange();
   }
-  
+
   async #render() {
     if (!this.isRendered) {
       this.svgContext.append(this.#self);
     }
-    
+
     if (this.dragMode === 'translation') {
       const x = this.#points.translation.x;
       const y = this.#points.translation.y;
@@ -324,13 +332,13 @@ export class TileSelector extends EventEmitter {
     else {
       this.#self.setAttribute('transform', `translate(${0.5},${0.5})`);
     }
-    
+
     this.selectBox.setAttribute('x', this.#points.x);
     this.selectBox.setAttribute('y', this.#points.y);
-    
+
     this.selectBox.setAttribute('width', this.#points.width);
     this.selectBox.setAttribute('height', this.#points.height);
-    
+
     if (this.#handles.focus) {
       this.#handles.focus.setAttribute('cx', this.#points.focus.x);
       this.#handles.focus.setAttribute('cy', this.#points.focus.y);
@@ -342,13 +350,13 @@ export class TileSelector extends EventEmitter {
       this.#handles.b.setAttribute('cy', this.#points.b.y);
     }
   }
-  
+
   #emitRange() {
     const payload = {
       start: { x: this.#points.x, y: this.#points.y },
       end: { x: this.#points.x2 + 1, y: this.#points.y2 + 1 },
     }
-    
+
     this.emit('selection', payload);
   }
 }
@@ -357,16 +365,16 @@ let SelectorInstance = null;
 
 export const getTileSelector = (ctx = document.querySelector('#scene')) => {
   console.warn('getTileSelector, SelectorInstance: ',)
-  
+
   return new TileSelector(ctx);
- 
- 
+
+
   if (SelectorInstance !== null) {
     return SelectorInstance;
   }
-  
+
   SelectorInstance = new TileSelector(ctx);
   return SelectorInstance;
-  
-  
+
+
 };
