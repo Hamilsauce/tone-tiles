@@ -16,7 +16,7 @@ let hasInitViewBox = false;
 
 const renderMap = (mapData, svgCanvas, graph, actor1, selectionBox) => {
   graph.fromMap(mapData);
-
+  
   if (!hasInitViewBox) {
     // svgCanvas.setViewBox({
     //   x: 0,
@@ -25,30 +25,30 @@ const renderMap = (mapData, svgCanvas, graph, actor1, selectionBox) => {
     //   height: graph.height+5,
     // });
   }
-
+  
   selectionBox.setBounds({
     minX: 0,
     minY: 0,
     maxX: graph.width,
     maxY: graph.height
   });
-
+  
   hasInitViewBox = true;
-
+  
   svgCanvas.layers.tile.innerHTML = '';
-
+  
   // Object.assign(svgCanvas.surface.style, {
   //   x: 0,
   //   y: 0,
   //   width: graph.width,
   //   height: graph.height
   // });
-
+  
   graph.nodes.forEach(({ x, y, tileType }, rowNumber) => {
     if (tileType === 'start') {
       actor1.setAttribute('transform', `translate(${x},${y})`);
     }
-
+    
     svgCanvas.layers.tile.append(
       svgCanvas.createRect({
         width: 1,
@@ -56,7 +56,7 @@ const renderMap = (mapData, svgCanvas, graph, actor1, selectionBox) => {
         // textContent: `${x},${y}`,
         // classList: ['tile'],
         classList: ['tile'],
-
+        
         dataset: {
           tileType,
           x: x,
@@ -73,92 +73,82 @@ const renderMap = (mapData, svgCanvas, graph, actor1, selectionBox) => {
 export const initMapControls = async (graph, svgCanvas, actor1, selectionBox) => {
   hasInitViewBox = false;
   const mapStore = useMapStore();
-
+  
   const app = document.querySelector('#app');
   const appBody = document.querySelector('#app-body');
   const containers = document.querySelectorAll('.container');
   const mapInput = document.querySelector('#map-input');
-
+  
   const mapInput$ = fromEvent(mapInput, 'change');
-
+  
   const saveButton = document.querySelector('#save-map');
   const newButton = document.querySelector('#new-map');
-
+  
   const mapNames = await loadMapMeta();
-
+  
   [...mapInput.options].forEach((e) => {
     e.remove();
   });
-
+  
   const blankOpt = { id: null, name: '' };
   const defaultOpt = { id: 'zYCxQlIXijeHjuwqCK7A', name: 'suk' };
-
+  
   [defaultOpt, ...mapNames].forEach((m) => {
     const opt = document.createElement('option');
     opt.value = m.id;
     opt.textContent = m.name;
-
+    
     mapInput.add(opt);
   });
-
+  
   saveButton.addEventListener('click', async (e) => {
     e.preventDefault();
     e.stopPropagation();
     e.stopImmediatePropagation();
-
+    
     let mapId;
-
+    
     const graphOut = graph.toStorageFormat();
-
-    console.warn({ graphOut });
-    console.warn(mapStore.isMapSaved.value);
-
+    
     if (!mapStore.isMapSaved.value) {
       delete graphOut.id;
     }
-
+    
     mapId = await storeMap(graphOut);
-
+    
     copyTextToClipboard(graphOut);
-
+    
     return mapId;
   });
-
+  
   // newButton.addEventListener('click', async (e) => {
   //   e.preventDefault();
   //   e.stopPropagation();
   //   e.stopImmediatePropagation();
-
+  
   //   renderMap(BLANK_MAP_16X16, svgCanvas, graph, actor1, selectionBox);
   // });
-
+  
   watch(mapStore.currentMap, (newMap, oldMap) => {
     if (newMap && oldMap && newMap.id === oldMap.id) return;
-
+    
     renderMap(newMap, svgCanvas, graph, actor1, selectionBox);
   });
-
-
-
+  
+  
+  
   mapInput$.pipe(
     tap(async ({ target }) => {
       const sel = target.selectedOptions[0].value;
-
+      
       const loadedMap = await loadMap(sel);
-
-      // const loadedMap = await mapStore.loadMap(sel)
-
-
+      
       mapStore.setCurrentMap(loadedMap);
-
-      // renderMap(selectedMap, svgCanvas, graph, actor1, selectionBox)
     }),
   ).subscribe();
-
+  
   setTimeout(() => {
-    // mapInput.dispatchEvent(new Event('change'))
     mapStore.setCurrentMap(BLANK_MAP_16X16);
   }, 500);
-  // }, 1000)
-
+  
 };

@@ -220,7 +220,7 @@ export const runCanvas = async () => {
     if (isMoving) return;
     if (contextMenu.dataset.show === 'true') return;
     if (isSelectingLinkTile === true) return;
-    console.warn({ detail })
+    // console.warn({ detail })
     deselectRange();
     selectedRange = [];
     selectionBox.remove();
@@ -525,7 +525,6 @@ export const runCanvas = async () => {
   //   const arrow = e.target.closest('.edge-line')
 
 
-  //   // console.warn('drag', arrow)
   //   if (!arrow) return;
   //   e.stopPropagation();
   //   e.stopImmediatePropagation();

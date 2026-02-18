@@ -26,10 +26,8 @@ export const useMapStore = () => {
   };
 
   const createMap = async (id) => {
-    console.warn({ id })
 
     const loaded = await loadMap(id);
-    console.warn({ loaded })
     return loaded
     // handle updating stored maps here too?
   };

@@ -6,16 +6,7 @@ export const AppToolbar = defineComponent(
   getTemplate('app-toolbar'),
   (props, ctx) => {
     const { isRunning, setRunning } = useAppState();
-    // const isRunning = computed(() => props.isRunning)
-    
-    // watch(isRunning, (value) => {
-    //   console.warn('isRunning', isRunning.value)
-    // })
-    console.warn({ ctx })
-   
     const handleClick = () => {
-      console.warn('TOOLBAR handleClick', isRunning)
-      // ctx.emit('toggle-running-click')
       
       setRunning(!isRunning.value);
     }

@@ -48,8 +48,6 @@ export class SVGCanvas extends EventTarget {
 
     this.clickDOM$ = fromEvent(this.#self, 'click').pipe(
       tap(e => {
-      console.warn('SVG CANVAS CLICK')
-
         e.preventDefault();
         e.stopPropagation();
       }),
