@@ -115,7 +115,8 @@ export const BLANK_MAP_16X16 = mapStorageFormatter({
   height: 16,
   tileData: {
     '1_1': { tileType: 'start' },
-    '2_2': { tileType: 'teleport', target: { x: 15, y: 15 } }
+    '2_2': { tileType: 'teleport', target: { x: 15, y: 15 } },
+    '15_15': { tileType: 'teleport', target: { x: 0, y: 0 } },
   },
   tiles: [
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
