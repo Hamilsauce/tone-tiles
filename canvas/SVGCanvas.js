@@ -44,7 +44,7 @@ export class SVGCanvas extends EventTarget {
 
     getPanZoom(this.dom);
 
-    const { width: mmWidth, height: mmHeight } = this.minimap.getBoundingClientRect();
+    // const { width: mmWidth, height: mmHeight } = this.minimap.getBoundingClientRect();
 
     this.clickDOM$ = fromEvent(this.#self, 'click').pipe(
       tap(e => {
@@ -59,13 +59,13 @@ export class SVGCanvas extends EventTarget {
       const transformFromMatrix = vpTransform.createSVGTransformFromMatrix(matrix);
       const xform = this.viewport.getAttribute('transform');
 
-      const minimapBB = this.minimap.getBoundingClientRect();
-      const mmBB = {
-        left: minimapBB.x,
-        top: minimapBB.y,
-        right: minimapBB.x + minimapBB.width,
-        bottom: minimapBB.y + minimapBB.height,
-      };
+      // const minimapBB = this.minimap.getBoundingClientRect();
+      // const mmBB = {
+      //   left: minimapBB.x,
+      //   top: minimapBB.y,
+      //   right: minimapBB.x + minimapBB.width,
+      //   bottom: minimapBB.y + minimapBB.height,
+      // };
 
     }));
 

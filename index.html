@@ -108,7 +108,6 @@
           <option value="BIG_ASS_MAP">BIG_ASS_MAP</option>
         </select>
         <div class="container">
-          
           <button id="new-map" @click="handleNewMap" class="file-button" type="button">New</button>
           <button id="save-map" class="file-button" type="button">Save</button>
         </div>
@@ -116,7 +115,7 @@
       
       <div id="app-header-bottom">
         <input :value="mapName" @change="handleMapNameChange" id="map-name" type="text" _class="field__input" placeholder="No Map" maxlength="80" _v-model="mapName" />
-      
+        
         <!-- <div id="map-name" ref="mapName" contenteditable="true" @blur="handleMapNameChange">
           {{ mapName }}
         </div> -->
@@ -197,10 +196,10 @@
           </g>
         </g>
         
-        <g id="minimap" data-x="0" data-y="0" transform="translate(13, 19) rotate(0) scale(1)">
+        <!-- <g id="minimap" data-x="0" data-y="0" transform="translate(13, 19) rotate(0) scale(1)">
           <rect id="minimap-surface" x="0" y="0" rx="0" ry="0" width="5.7" height="6.6"></rect>
           <use href="#scene" transform="translate(0,0) rotate(0) scale(0.3)"></use>
-        </g>
+        </g> -->
       </svg>
     </div>
   </template>
