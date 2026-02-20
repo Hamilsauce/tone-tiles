@@ -428,7 +428,7 @@ export const runCanvas = async () => {
       contextMenu.dataset.show = false;
       contextMenu.dataset.showActions = false;
       
-      svgCanvas.removeEventListener('click', blurContextMenu);
+      svgCanvas.removeEventListener('tile:click', blurContextMenu);
     }
   };
   
@@ -485,7 +485,7 @@ export const runCanvas = async () => {
       
     }
     
-    svgCanvas.addEventListener('click', blurContextMenu);
+    svgCanvas.addEventListener('tile:click', blurContextMenu);
   }
   
   setTimeout(() => {
@@ -519,7 +519,7 @@ export const runCanvas = async () => {
   //   }, 2500)
   // }, 2000);
   
-  svgCanvas.addEventListener('click', (e) => {
+  svgCanvas.addEventListener('tile:click', (e) => {
     if (isRunning.value) {
       handleTileClick(e);
     } else {
@@ -605,12 +605,12 @@ export const runCanvas = async () => {
           
           isSelectingLinkTile = false;
           
-          svgCanvas.dom.removeEventListener('click', handleTileLinkSelect);
+          svgCanvas.removeEventListener('tile:click', handleTileLinkSelect);
           
           return;
         }
         
-        svgCanvas.dom.addEventListener('click', handleTileLinkSelect);
+        svgCanvas.addEventListener('tile:click', handleTileLinkSelect);
         return;
       }
     }
