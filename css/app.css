@@ -37,7 +37,7 @@ body {
   position: relative;
   overflow: hidden;
   /* touch-action: none; */
-  
+
 }
 
 #app-floating-menu {
@@ -49,17 +49,17 @@ body {
   height: fit-content;
   width: 50px;
   height: 50px;
-  
+
   box-shadow: 0 0 12px 0px #00000075;
   border: 2px solid #FFFFFF;
   border-radius: 8px;
   background: #3F3F3FB8;
-  
+
   color: #ECECEC;
   transition: width 0.5s, height 0.5s;
   z-index: 1001;
   filter: opacity(0.6);
-  
+
   overflow: hidden;
 
   #app-floating-menu-collapsed {
@@ -75,21 +75,21 @@ body {
     /* filter: opacity(0.2); */
     touch-action: none;
   }
-  
-  
+
+
   #app-floating-menu-collapsed:hover {
     /* filter: opacity(1); */
   }
-  
+
   #app-floating-menu-collapsed:active {
     /* filter: opacity(1); */
   }
-  
+
   #app-floating-menu-expanded {
     width: 300px;
     height: 500px;
     transition: 0.5s;
-    
+
   }
 }
 
@@ -106,7 +106,7 @@ body {
   height: 500px;
   filter: opacity(1);
   transition: 0.5s;
-  
+
 }
 
 #app-body {
@@ -117,7 +117,7 @@ body {
   gap: 0px;
   overflow: auto;
   touch-action: none;
-  
+
 }
 
 #app-footer {
@@ -155,9 +155,14 @@ body {
   height: 100%;
   border-radius: 3px;
   color: #EFEFEF;
-  font-size: 18px;
-  padding: 4px 8px;
+  font-size: 15px;
+  padding: 4px 6px;
   transition: 0.2s ease;
+  cursor: pointer;
+}
+
+button, input[type=text] {
+  cursor: pointer;
 }
 
 .app-button[data-active=true] {

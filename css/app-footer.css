@@ -21,11 +21,14 @@
   z-index: 100;
   overflow-x: auto;
   padding: 0 4px;
+    width: fit-content;
+  max-width: 550px;
+  margin: auto;
 }
 
 #app-footer-top {
   position: relative;
-  
+
   display: flex;
   flex-direction: column;
   display: grid;
@@ -37,6 +40,9 @@
   z-index: 100;
   overflow-x: auto;
   overflow-y: hidden;
+  width: fit-content;
+  max-width: 550px;
+  margin: auto;
 }
 
 #controls {
