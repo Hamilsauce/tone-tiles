@@ -121,7 +121,6 @@ export class TileSelector extends EventEmitter {
     this.#handles.a = this.#self.querySelector('[data-handle="a"]');
     this.#handles.b = this.#self.querySelector('[data-handle="b"]');
     
-    console.warn('SELECTOR CONSRUCTOR: ')
     this.dragStartHandler = this.onDragStart.bind(this);
     this.dragHandler = this.onDragHandle.bind(this);
     this.dragEndHandler = this.onDragEnd.bind(this);
@@ -131,7 +130,6 @@ export class TileSelector extends EventEmitter {
     this.#self.addEventListener('pointerdown', this.dragStartHandler);
     
     this.#self.addEventListener('click', (e) => {
-      console.warn('TILE SELECTOR CLICK')
       e.stopPropagation();
       e.stopImmediatePropagation();
       e.preventDefault();
@@ -233,7 +231,6 @@ export class TileSelector extends EventEmitter {
       this.isDragging = true;
       
     }
-    
     
     this.render();
     
@@ -376,6 +373,4 @@ export const getTileSelector = (ctx = document.querySelector('#scene')) => {
   
   SelectorInstance = new TileSelector(ctx);
   return SelectorInstance;
-  
-  
 };

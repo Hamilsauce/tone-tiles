@@ -125,7 +125,6 @@ export const initMapControls = async (graph, svgCanvas, actor1, selectionBox) =>
 
   watch(mapStore.currentMap, (newMap, oldMap) => {
     if (newMap && oldMap && newMap.id === oldMap.id) return;
-    console.warn('watcher', newMap)
     renderMap(newMap, svgCanvas, graph, actor1, selectionBox);
   });
 

@@ -9,7 +9,6 @@ export const AppHeader = defineComponent(
     const mapStore = useMapStore();
     const mapState = mapStore.mapState
     
-    // const mapName = ref(mapState.value ? mapState.value.name : 'No Map');
     const footerStateRef = ref('toolbar');
     const mapNameRef = ref('mapName');
     const mapName = computed(() => mapState.value?.name ?? 'No Map')
@@ -20,8 +19,6 @@ export const AppHeader = defineComponent(
     };
     
     const handleMapNameChange = (e) => {
-      console.warn('[[[[[[[[][handleMapNameChange', e.target.value)
-
       const value = e.target.value.trim()
       mapStore.updateMapState({ name: value })
     };
@@ -32,9 +29,7 @@ export const AppHeader = defineComponent(
     };
     
     watch(mapState, (newState, lastState) => {
-      console.warn('WATCHER mapState', newState, lastState)
       console.warn('WATCHER mapName', mapName.value)
-      
     })
     
     return { handleMapNameChange, mapName, footerState, handleFooterToggle, handleNewMap }
