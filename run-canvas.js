@@ -225,13 +225,14 @@ export const runCanvas = async () => {
   let goalTile
   let isMoving = false;
   let isSelectingLinkTile = false;
+  let selectedTileBeingLinked = null;
   
   const handleTileClick = async ({ detail }) => {
     if (!isRunning.value) return;
     if (isMoving) return;
     if (contextMenu.dataset.show === 'true') return;
     if (isSelectingLinkTile === true) return;
-    // console.warn({ detail })
+
     deselectRange();
     selectedRange = [];
     selectionBox.remove();
@@ -432,7 +433,6 @@ export const runCanvas = async () => {
     }
   };
   
-  
   const handleEditTileClick = async (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -519,8 +519,31 @@ export const runCanvas = async () => {
   //   }, 2500)
   // }, 2000);
   
+  const handleTileLinkSelect = (e) => {
+    const linkTarget = e.detail.target.closest('.tile')
+    const node = selectedTileBeingLinked
+    const nodeToLink = graph.getNodeAtPoint({
+      x: +linkTarget.dataset.x,
+      y: +linkTarget.dataset.y,
+    });
+    
+    nodeToLink.setType('teleport');
+    linkTarget.dataset.tileType = 'teleport'
+    node.linkToNode({ x: nodeToLink.x, y: nodeToLink.y });
+    
+    nodeToLink.linkToNode({ x: node.x, y: node.y });
+    
+    isSelectingLinkTile = false;
+    selectedTileBeingLinked = null
+    
+    return;
+  }
+  
+  
   svgCanvas.addEventListener('tile:click', (e) => {
-    if (isRunning.value) {
+    if (isSelectingLinkTile) {
+      handleTileLinkSelect(e);
+    } else if (isRunning.value) {
       handleTileClick(e);
     } else {
       handleEditTileClick(e);
@@ -565,7 +588,6 @@ export const runCanvas = async () => {
   contextMenu.addEventListener('click', e => {
     e.preventDefault();
     e.stopPropagation();
-    e.stopImmediatePropagation();
     
     const targ = e.target.closest('li');
     
@@ -583,47 +605,12 @@ export const runCanvas = async () => {
       y: +selectedTile.dataset.y,
     });
     
-    console.warn({
-      selectedOptionType,
-      selectedOptionValue,
-      node,
-      e: e.type,
-      targ: e.target,
-    })
-    
     if (selectedOptionType === 'tile-action') {
       
       if (selectedOptionValue === 'link-teleport') {
-        contextMenu.dataset.show = false;
         isSelectingLinkTile = true;
+        selectedTileBeingLinked = node;
         
-        
-        const handleTileLinkSelect = (e) => {
-          console.warn({ e })
-          const linkTarget = e.detail.target.closest('.tile')
-          
-          const nodeToLink = graph.getNodeAtPoint({
-            x: +linkTarget.dataset.x,
-            y: +linkTarget.dataset.y,
-          });
-          
-          // nodeToLink.setType('teleport');
-          
-          node.linkToNode({ x: nodeToLink.x, y: nodeToLink.y });
-          
-          // nodeToLink.linkToNode({ x: node.x, y: node.y });
-          
-          // if (!nodeToLink.linkedNodeAddress) {}
-          console.warn({ node, nodeToLink })
-          
-          isSelectingLinkTile = false;
-          svgCanvas.removeEventListener('tile:click', handleTileLinkSelect);
-          
-          return;
-        }
-        
-        
-        svgCanvas.addEventListener('tile:click', handleTileLinkSelect);
         return;
       }
     }

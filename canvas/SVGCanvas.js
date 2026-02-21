@@ -89,6 +89,7 @@ export class SVGCanvas extends EventTarget {
         }),
         map(({ type, detail }) => createCustomEvent(type, detail)),
         tap((event) => this.dispatchEvent(event)),
+        tap((event) => console.log('[ CANVAS EMIT$ ]: ', { event: event.type })),
       );
     
     this.toggleScroll = this.#toggleScroll.bind(this);
