@@ -37,15 +37,15 @@ body {
     left,
     right;
   /* transition: 0.5s ease; */
-  
+
 }
 
 .bg-blend-overlay {
   background-blend-mode: soft-light;
   /* background-blend-mode: overlay, color-dodge; */
-  
+
   transition: 0.5s ease;
-  
+
 }
 
 /* .gradient.bg-blend-overlay, .gradient, .bg-blend-overlay {
@@ -91,8 +91,17 @@ body {
   font-weight: 400;
 }
 
-#tile-layer {
+#tile-layer[data-is-selecting-link-tile=true] {
   /* pointer-events: auto !important; */
+  .tile:hover rect {
+    /* stroke-width: 0.095; */
+    /* stroke: #c12222; */
+    fill: rgba(39, 186, 56, 0.468);
+    /* outline-style: groove; */
+    /* outline-width: 0.005; */
+    /* outline-color: #c12222; */
+    cursor: pointer;
+  }
 }
 
 #stars {
@@ -121,7 +130,7 @@ body {
   pointer-events: auto;
   touch-action: none;
   width: 100%;
-  
+
   * {
     /* pointer-events: none !important; */
     /* touch-action: none; */
@@ -135,7 +144,7 @@ body {
   height: 30;
   /* touch-action: none; */
   pointer-events: auto;
-  
+
 }
 
 #context-menu-container[data-show=false] {
@@ -147,9 +156,9 @@ body {
   filter: drop-shadow(0 3px 6px #2A2A2AC2);
   overflow-y: hidden;
   overflow-x: auto;
-  
+
   pointer-events: auto;
-  
+
 }
 
 /* .context-menu {
@@ -170,7 +179,7 @@ body {
   width: 100px;
   width: 100%;
   overflow-x: auto;
-  
+
 }
 
 .menu-scroll {
@@ -182,7 +191,7 @@ body {
   scrollbar-width: thin;
   /* Firefox */
   overflow-x: scroll;
-  
+
 }
 
 .context-menu-list {
@@ -204,16 +213,16 @@ body {
   /* width: 200px; */
   width: 100px;
   width: 100%;
-  
+
   display: flex;
   flex-direction: row;
-  
+
   gap: 2px;
   overflow-x: scroll;
   overflow-y: hidden;
   /* white-space: nowrap; */
   pointer-events: auto !important;
-  
+
   /* scrollbar-width: thin; */
 }
 
@@ -225,7 +234,7 @@ body {
   gap: 0px;
   /* width: 100%; */
   /* width: 200px; */
-  
+
   width: fit-content;
   padding: 4px;
   background: #FFFFFF;
@@ -233,6 +242,11 @@ body {
   font-size: 12px;
   white-space: nowrap;
   pointer-events: auto;
+}
+
+.context-menu-list li[data-active=true] {
+  background: green;
+  color: #FFFFFF;
 }
 
 .context-menu[data-show-actions=false] {
@@ -246,7 +260,7 @@ body {
   stroke: #0006FFC9;
   stroke-width: 0.075;
   filter: brightness(1.4) drop-shadow(0 0 0.035px #3B3B3B73);
-  
+
 }
 
 #edge-line-arrow {
@@ -268,5 +282,5 @@ body {
   background-color: #f0f0f0;
   word-wrap: nowrap;
   white-space: nowrap;
-  
+
 }
