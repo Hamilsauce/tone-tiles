@@ -258,17 +258,16 @@ export const runCanvas = async () => {
   }
   
   const getDynamicTone = (x, y, dir = 1) => {
-    const mod = 0 //x % 2 ? -1 : y % 4 ? 1 : 0
+    const mod = y > 5 ? -2 : 0;
     const pitchClass = getTileDegree(x, harmonicCxt.notes.length)
     const octave = getTileOctave(y + mod, harmonicCxt.notes.length)
     
     const pitch = `${pitchClass}${octave + dir}`;
-    
     return pitchToFrequency(pitch)
   }
   
   const toTone = (x, y) => (x % 2 && y % 2) ?
-    getDynamicTone(x, y, -1) :
+    getDynamicTone(x, y, 0) :
     getTileTone(x, y, )
   
   
@@ -389,7 +388,7 @@ export const runCanvas = async () => {
           audioNote1
             .at(audioEngine.currentTime)
             .frequencyHz(freq)
-            .duration(0.095)
+            .duration(0.1)
             .velocity(vel).play();
           
           const el = svgCanvas.querySelector(`.tile[data-x="${curr.x}"][data-y="${curr.y}"]`);
