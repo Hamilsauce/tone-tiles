@@ -7,7 +7,7 @@ import { scheduleOscillator, AudioNote, audioEngine } from './audio/index.js';
 import { TransformList } from './canvas/TransformList.js';
 import ham from 'https://hamilsauce.github.io/hamhelper/hamhelper1.0.0.js';
 import { useAppState } from './store/app.store.js';
-import { getScaleNotes, getChordNotes, pitchToFrequency } from './__MUSIC_THEORY_FUNCTIOS__.js';
+import { getScaleNotes, getChordNotes, pitchToFrequency } from './MUSIC_THEORY_FUNCTIONS.js';
 
 
 // setTimeout(() => {
