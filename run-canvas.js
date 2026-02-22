@@ -100,31 +100,21 @@ export const runCanvas = async () => {
     lineEl.setAttribute('y2', endY);
     lineHandle.setAttribute('cx', endX);
     lineHandle.setAttribute('cy', endY);
-    // console.warn({ line })
     
-    // svgCanvas.dom.addEventListener('pointermove', e => {
-    //   e.stopPropagation();
-    //   e.preventDefault();
-    //   const targ = e.target
-    //   // console.warn({ line })
-    
-    
-    //   if (targ.classList.contains('edge-line-arrow')) {
-    //     const newPoint = domPoint(e.clientX, e.clientY)
-    //     const [newEndX, newEndY] = computeArrowEndpoint(
-    //       [pt1.x + 0.5, pt1.y + 0.5],
-    //       [newPoint.x + 0.5, newPoint.y + 0.5]
-    //     );
-    
-    
-    //     line.firstElementChild.setAttribute('x2', newEndX);
-    //     line.firstElementChild.setAttribute('y2', newEndY);
-    
-    
-    //   }
-    
-    // });
-    
+    line.addEventListener('pointermove', e => {
+      e.stopPropagation();
+      e.preventDefault();
+      
+      const targ = e.currentTarget
+      const newPoint = domPoint(line.parentElement, e.clientX, e.clientY)
+      const [newEndX, newEndY] = computeArrowEndpoint(
+        [pt1.x + 0.5, pt1.y + 0.5],
+        [newPoint.x + 0.5, newPoint.y + 0.5]
+      );
+      
+      line.firstElementChild.setAttribute('x2', newEndX);
+      line.firstElementChild.setAttribute('y2', newEndY);
+    });
     
     return line;
   };
@@ -217,7 +207,7 @@ export const runCanvas = async () => {
     }
   });
   
-  svgCanvas.setCanvasDimensions({ width: window.innerWidth, height: window.innerHeight });
+  svgCanvas.setCanvasDimensions({ width: innerWidth, height: innerHeight });
   
   const pointerup$ = fromEvent(svgCanvas, 'pointerup');
   
