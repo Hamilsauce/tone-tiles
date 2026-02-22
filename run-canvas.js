@@ -139,12 +139,13 @@ export const runCanvas = async () => {
   
   const ANIM_RATE = 115;
   let selectedRange = [];
+  const fireAudioNote = () => (new AudioNote(audioEngine));
+  
   const audioNote1 = (new AudioNote(audioEngine));
   
   const graph = new Graph();
   
   const app = document.querySelector('#app');
-  const appBody = app.querySelector('#app-body');
   const floatingMenu = app.querySelector('#app-floating-menu');
   const canvasEl = document.querySelector('#canvas');
   const svgCanvas = new SVGCanvas(canvasEl);
@@ -153,7 +154,6 @@ export const runCanvas = async () => {
   const tileLayer = scene.querySelector('#tile-layer');
   const objectLayer = scene.querySelector('#object-layer');
   const selectionBox = getTileSelector(objectLayer);
-  
   
   const contextMenu = useTemplate('context-menu');
   const contextMenuTransformList = new TransformList(svgCanvas, contextMenu, {
@@ -349,7 +349,7 @@ export const runCanvas = async () => {
       
       let intervalHandle = setInterval(async () => {
         curr = bfsPath[pointer];
-        audioNote1.velocity(0.01).play();
+        // audioNote1.velocity(0.01).play();
         
         if (!curr) {
           isMoving = false;
@@ -378,7 +378,7 @@ export const runCanvas = async () => {
           audioNote1
             .at(audioEngine.currentTime)
             .frequencyHz(freq)
-            .duration(0.1)
+            .duration(0.15)
             .velocity(vel).play();
           
           const el = svgCanvas.querySelector(`.tile[data-x="${curr.x}"][data-y="${curr.y}"]`);
