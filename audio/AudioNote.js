@@ -51,11 +51,11 @@ export class AudioNote {
     
     if (this.#toneMode === 'soft') {
       gain.gain.setValueAtTime(0.0, startTime);
-      velocity += 0.05
+      velocity += 0.005
     }
     
     gain.gain.linearRampToValueAtTime(velocity, startTime + 0.035); // quick fade-in
-    gain.gain.setValueAtTime(velocity, startTime + durationTime - 0.02);
+    // gain.gain.setValueAtTime(velocity, startTime + durationTime - 0.02);
     gain.gain.linearRampToValueAtTime(0.0, startTime + durationTime); // fade-out
     
     osc.connect(gain);

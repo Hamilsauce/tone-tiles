@@ -137,11 +137,20 @@ export const runCanvas = async () => {
     return range;
   };
   
-  const ANIM_RATE = 115;
+  const ANIM_RATE = 105;
   let selectedRange = [];
-  const fireAudioNote = () => (new AudioNote(audioEngine));
+  const fireAudioNote = (freq, vel, dur = 0.15) => (new AudioNote(audioEngine)
+    .at(audioEngine.currentTime)
+    .frequencyHz(freq)
+    .duration(dur)
+    .velocity(vel).play()
+    // .at(audioEngine.currentTime+0.1)
+    // .velocity(0.005).play()
+    
+    
+  );
   
-  const audioNote1 = (new AudioNote(audioEngine));
+  let audioNote1 // = (new AudioNote(audioEngine));
   
   const graph = new Graph();
   
@@ -347,9 +356,24 @@ export const runCanvas = async () => {
       let dx;
       let dy;
       
+      let shouldPreVel = false;
+      let shouldPreVels = [0, 1, 0];
+      let preVelIndex = 0;
+      
+      const getNextPreVelIndex = () => {
+        preVelIndex = preVelIndex >= shouldPreVels.length - 1 ? 0 : preVelIndex + 1
+        return preVelIndex;
+      };
+      
       let intervalHandle = setInterval(async () => {
         curr = bfsPath[pointer];
-        // audioNote1.velocity(0.01).play();
+        
+        if (audioNote1 && getNextPreVelIndex()) {
+          audioNote1
+            .at(audioEngine.currentTime + 0.33)
+            .velocity(0.05)
+            .play();
+        }
         
         if (!curr) {
           isMoving = false;
@@ -358,28 +382,31 @@ export const runCanvas = async () => {
         }
         
         else {
-          const freqX = ((curr.x + 2) * 2);
-          const freqY = ((curr.y + 2) * 1.5);
+          {
+            const freqX = ((curr.x + 2) * 2);
+            const freqY = ((curr.y + 2) * 1.5);
+            let freq = ((freqX) * (freqY)) * 1.5;
+            freq = freq < 250 ? freq + 200 : freq;
+            freq = freq > 1600 ? 1200 - freq : freq;
+            freq = curr.tileType === 'teleport' ? freq + 100 : freq;
+            
+            let vel = (0.4 - (pointer / bfsPath.length));
+            vel = vel >= 0.4 ? 0.4 : vel;
+            vel = vel <= 0.075 ? 0.075 : vel;
+            
+            const dur = 2 / bfsPath.length;
+            const startMod = ((pointer || 1) * 0.01);
+            
+            freq = toTone(curr.x, curr.y)
+            
+            audioNote1 = fireAudioNote(freq, vel)
+          }
           
-          let freq = ((freqX) * (freqY)) * 1.5;
-          freq = freq < 250 ? freq + 200 : freq;
-          freq = freq > 1600 ? 1200 - freq : freq;
-          freq = curr.tileType === 'teleport' ? freq + 250 : freq;
-          
-          let vel = (0.4 - (pointer / bfsPath.length));
-          vel = vel >= 0.4 ? 0.4 : vel;
-          vel = vel <= 0.075 ? 0.075 : vel;
-          
-          const dur = 2 / bfsPath.length;
-          const startMod = ((pointer || 1) * 0.01);
-          
-          freq = toTone(curr.x, curr.y)
-          
-          audioNote1
-            .at(audioEngine.currentTime)
-            .frequencyHz(freq)
-            .duration(0.15)
-            .velocity(vel).play();
+          // audioNote1
+          //   .at(audioEngine.currentTime)
+          //   .frequencyHz(freq)
+          //   .duration(0.15)
+          //   .velocity(vel).play();
           
           const el = svgCanvas.querySelector(`.tile[data-x="${curr.x}"][data-y="${curr.y}"]`);
           
@@ -440,7 +467,7 @@ export const runCanvas = async () => {
             otherTele.dataset.current = false;
             
             await sleep(10);
-            
+            shouldPreVel = !shouldPreVel
             activeActor.dataset.teleporting = false;
           }
         }
