@@ -1,8 +1,9 @@
 #app-footer {
-  *{
+  * {
     touch-action: auto !important;
   }
 }
+
 #app-footer {
   display: grid;
   grid-template-rows: auto 1fr;
@@ -17,18 +18,16 @@
 #app-footer-bottom {
   display: grid;
   width: 100%;
-  /* height: 100%; */
+  max-width: 550px;
   z-index: 100;
   overflow-x: auto;
   padding: 0 4px;
-    /* width: fit-content; */
-  max-width: 550px;
   margin: auto;
 }
 
 #app-footer-top {
   position: relative;
-
+  
   display: flex;
   flex-direction: column;
   display: grid;
@@ -55,5 +54,5 @@
   width: 100%;
   height: 100%;
   overflow: auto;
-  padding:  4px;
+  padding: 4px;
 }

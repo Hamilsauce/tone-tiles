@@ -6,7 +6,6 @@
   flex-direction: column;
   background: var(--app-bg, #0f1115);
   color: var(--app-fg, #e6e6eb);
-  /* overflow: hidden; */
 }
 
 .map-create {

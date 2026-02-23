@@ -89,34 +89,24 @@
 }
 
 @keyframes yellowToOriginal {
-  0% {
-    /* filter: blur(20px); */
-  }
+  0% {}
   
   8% {
     fill: #46C2F4BF;
     filter: hue-rotate(0deg);
-    /* filter: hue-rotate(-240deg); */
   }
   
   15% {
-    /* fill: #46C6F4BF; */
     fill: #46C2F43D;
     
     filter: hue-rotate(0deg);
-    /* example: rotates back to blue */
     filter: hue-rotate(-240deg);
-    /* example: rotates back to blue */
   }
   
   35% {
     filter: hue-rotate(0deg);
-    /* example: rotates back to blue */
-    
-    /* fill: yellow; */
-    /* filter: hue-rotate(0deg); */
-    /* example: rotates back to blue */
   }
+  
   40% {}
 }
 

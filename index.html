@@ -17,7 +17,6 @@
   <link rel="stylesheet" href="./css/actor.css" />
   <link rel="stylesheet" href="./css/toolbar.css" />
   
-  <link rel="stylesheet" href="./selection-box/selection-box.css" />
   <link rel="stylesheet" href="./css/app-footer.css" />
   <link rel="stylesheet" href="./css/app-header.css" />
   <link rel="stylesheet" href="./css/app-map-creation.css" />
@@ -27,35 +26,13 @@
   <div id="app-host"></div>
   <script type="importmap">
     {
-  "imports": {
-    "vue": "https://unpkg.com/vue@3.4.21/dist/vue.esm-browser.js",
-    "vue-router": "https://unpkg.com/vue-router@4.3.0/dist/vue-router.esm-browser.js",
-    "@vue/devtools-api": "data:text/javascript,export function setupDevtoolsPlugin(){};export function getDevtoolsGlobalHook(){ return undefined; };"
-  }
-}
-</script>
-  
-  <!-- <script type="importmap">
-    {
-    "imports": {
-      "vue": "https://unpkg.com/vue@3.4.21/dist/vue.esm-browser.js",
-  "vue-router": "https://unpkg.com/vue-router@4.3.0/dist/vue-router.esm-browser.js",
-  "@vue/devtools-api": "https://unpkg.com/@vue/devtools-api@6.6.1/dist/devtools-api.esm-browser.js"
+      "imports": {
+        "vue": "https://unpkg.com/vue@3.4.21/dist/vue.esm-browser.js",
+        "vue-router": "https://unpkg.com/vue-router@4.3.0/dist/vue-router.esm-browser.js",
+        "@vue/devtools-api": "data:text/javascript,export function setupDevtoolsPlugin(){};export function getDevtoolsGlobalHook(){ return undefined; };"
+      }
     }
-  }
-  </script> -->
-  
-  <!-- <script type="importmap">
-  {
-  "imports": {
-    "vue": "https://unpkg.com/vue@3/dist/vue.esm-browser.js",
-    "vue-router": "https://unpkg.com/vue-router@4/dist/vue-router.esm-browser.js",
-    "@vue/devtools-api": "https://unpkg.com/@vue/devtools-api@6/dist/devtools-api.esm-browser.js",
-
-  }
-  }
-  </script> -->
-  
+  </script>
   <script src="https://www.gstatic.com/firebasejs/12.0.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore-compat.js"></script>
   
@@ -63,8 +40,15 @@
     const SVG_NS = 'http://www.w3.org/2000/svg';
   </script>
   <script src="./main.js" type="module"></script>
-  <!-- <script src="./script.js" type="module"></script> -->
-  <!-- <script src="./script-dynamic-bfs.js" type="module"></script> -->
+  
+  <template data-component="app">
+    <div id="app">
+      <app-header @footertoggle="handleFooterChange"></app-header>
+      <router-view></router-view>
+      <app-footer></app-footer>
+      <app-floating-menu></app-floating-menu>
+    </div>
+  </template>
   
   <template data-component="app-floating-menu">
     <div id="app-floating-menu" ref="floatingMenuRef" :class="{ expanded: displayState === 'expanded' }" top="300px" left="200px">
@@ -79,20 +63,9 @@
     </div>
   </template>
   
-  <template data-component="app">
-    <div id="app">
-      <app-header @footertoggle="handleFooterChange"></app-header>
-      <router-view></router-view>
-      
-      <app-footer></app-footer>
-      <app-floating-menu></app-floating-menu>
-    </div>
-  </template>
-  
   <template data-component="app-header">
     <header id="app-header">
       <div id="app-header-inner">
-        <!-- <div id="app-header-left"></div> -->
         <div id="app-header-center">
           <h2>tone tiles</h2>
           <div id="app-header-center-bottom"></div>
@@ -116,19 +89,13 @@
         
         <div id="app-header-bottom">
           <input :value="mapName" @change="handleMapNameChange" id="map-name" type="text" _class="field__input" placeholder="No Map" maxlength="80" _v-model="mapName" />
-          
-          <!-- <div id="map-name" ref="mapName" contenteditable="true" @blur="handleMapNameChange">
-          {{ mapName }}
-        </div> -->
         </div>
       </div>
     </header>
   </template>
   
   <template data-component="app-map-list-view">
-    <div id="app-map-list-view">
-      
-    </div>
+    <div id="app-map-list-view"> </div>
   </template>
   
   <template data-component="svg-canvas-host">
@@ -138,18 +105,6 @@
           <marker id="edge-line-arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
             <path d="M 0 0 L 10 5 L 0 10 z" _fill="#00000090" />
           </marker>
-          
-          <!-- <foreignObject data-template="context-menu" id="context-menu-container" class="context-menu-foreignobject" pointer-events="auto" x="0" y="0" width="200" height="30" _transform="translate(0,0) rotate(0) scale(1)">
-            <div xmlns="http://www.w3.org/1999/xhtml" class="context-menu" data-show-actions="false">
-              <ul class="context-menu-list">
-                <li data-value="barrier" data-type="tile-type">barrier</li>
-                <li data-value="empty" data-type="tile-type">empty</li>
-                <li data-value="start" data-type="tile-type">start</li>
-                <li data-value="teleport" data-type="tile-type">teleport</li>
-                <li data-value="link-teleport" data-type="tile-action">Link to...</li>
-              </ul>
-            </div>
-          </foreignObject> -->
           
           <g data-template="context-menu" id="context-menu-container" pointer-events="auto" data-show-actions="false" data-show="false" transform="translate(0,0) rotate(0) scale(0.05)">
             <foreignObject class="context-menu-foreignobject" pointer-events="auto" x="0" y="0" width="200" height="30" _transform="translate(0,0) rotate(0) scale(1)">
@@ -178,14 +133,9 @@
         
         <g id="viewport" ref="canvasViewportRef" transform="matrix(1 0 0 1 0 0)">
           <g id="surface-layer" transform="translate(-0,-0) rotate(0) scale(1)">
-            
             <rect id="surface" x="-100" y="-100" rx="0" ry="0" width="200" height="200"></rect>
-            <!-- <g id="stars">
-              <circle cx="5" cy="-5" r="0.75" transform="translate(0,0) rotate(0) scale(0.2)" />
-            </g> -->
             <line class="axis-line" x1="-100" y1="0" x2="100" y2="0" _marker-end="url(#edge-line-arrow)" transform="translate(0,0) rotate(0) scale(1)" />
             <line class="axis-line" x1="0" y1="-100" x2="0" y2="100" _marker-end="url(#edge-line-arrow)" transform="translate(0,0) rotate(0) scale(1)" />
-            <!-- <circle class="origin" cx="0" cy="0" r="0.2" transform="translate(0,0) rotate(0) scale(1)" /> -->
           </g>
           
           <g id="scene" transform="translate(0,0) rotate(0) scale(1)">
