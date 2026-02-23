@@ -581,16 +581,19 @@ export const runCanvas = async () => {
   const handleTileLinkSelect = (e) => {
     const linkTarget = e.detail.target.closest('.tile');
     const node = selectedTileBeingLinked;
+    
     const nodeToLink = graph.getNodeAtPoint({
       x: +linkTarget.dataset.x,
       y: +linkTarget.dataset.y,
     });
     
-    nodeToLink.setType('teleport');
-    linkTarget.dataset.tileType = 'teleport';
-    node.linkToNode({ x: nodeToLink.x, y: nodeToLink.y });
+    if (nodeToLink.tileType !== 'teleport') {
+      nodeToLink.setType('teleport');
+      linkTarget.dataset.tileType = 'teleport';
+      nodeToLink.linkToNode({ x: node.x, y: node.y });
+    }
     
-    nodeToLink.linkToNode({ x: node.x, y: node.y });
+    node.linkToNode({ x: nodeToLink.x, y: nodeToLink.y });
     
     isSelectingLinkTile = false;
     svgCanvas.layers.tile.dataset.isSelectingLinkTile = false;
