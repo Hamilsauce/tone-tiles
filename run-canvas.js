@@ -383,6 +383,7 @@ export const runCanvas = async () => {
         
         else {
           {
+            // AudioNote Block
             const freqX = ((curr.x + 2) * 2);
             const freqY = ((curr.y + 2) * 1.5);
             let freq = ((freqX) * (freqY)) * 1.5;
@@ -401,12 +402,6 @@ export const runCanvas = async () => {
             
             audioNote1 = fireAudioNote(freq, vel)
           }
-          
-          // audioNote1
-          //   .at(audioEngine.currentTime)
-          //   .frequencyHz(freq)
-          //   .duration(0.15)
-          //   .velocity(vel).play();
           
           const el = svgCanvas.querySelector(`.tile[data-x="${curr.x}"][data-y="${curr.y}"]`);
           
