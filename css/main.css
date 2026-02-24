@@ -60,10 +60,10 @@ body {
 }
 
 #surface {
-  fill: #18181887;
+  fill: #18181857;
   stroke: #FFFFFF80;
   stroke-width: 0.2;
-  filter: drop-shadow(0 0px 1.5px #2F2F2F65);
+  filter: brightness( 1.2) drop-shadow(0 0px 1.5px #2F2F2F65);
   touch-action: none;
 }
 

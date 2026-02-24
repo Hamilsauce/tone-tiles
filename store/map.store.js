@@ -5,8 +5,21 @@ import { Graph, TILE_TYPE_INDEX } from '../lib/graph.model.js';
 import { MAP_DOC_TEMPLATE } from '../maps.js';
 
 
-const currentMap = ref(null);
-const currentMapIndex = ref(null);
+const currentMap = ref({
+  tileData: {},
+  width: 0,
+  height: 0,
+  id: '',
+});
+
+const currentMapIndex = ref({
+  width: 0,
+  height: 0,
+  id: '',
+  meta: {},
+  name: 'No Mapzorz',
+  updated: 0,
+});
 const mapIndexArray = ref([]);
 const mapIndex = reactive(new Map());
 

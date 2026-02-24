@@ -6,7 +6,7 @@ import { router, RouteName, route } from '../../router/router.js'
 export const AppFooter = defineComponent(
   getTemplate('app-footer'),
   (props, ctx) => {
-    const shouldDisplay = computed(() => route.value.name === RouteName.home)
+    const shouldDisplay = computed(() => route.value.path !== '/')
     
     const handleRunningToggle = () => {
       isRunning.value = !isRunning.value;

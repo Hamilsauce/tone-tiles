@@ -11,8 +11,13 @@
   gap: 4px;
   background: #191A2015;
   width: 100%;
-  padding: 4px 6px 2px 6px;
+  height: fit-content;
+  padding: 4px 0 2px 0;
   z-index: 100;
+  background: #535560;
+  background: #3A3B42;
+  /* filter: contrast(1.2) saturate(1.2); */
+
 }
 
 #app-footer-bottom {

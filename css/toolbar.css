@@ -9,7 +9,7 @@
   height: 100%;
   z-index: 100;
   overflow-x: auto;
-  background: #5355607D;
+  /* background: #535560CC; */
 
 }
 
@@ -25,7 +25,7 @@
   font-size: 15px;
   font-weight: 600;
   color: #EFEFEF90;
-  background: #191A208F;
+  background: #191A2069;
   border: 1px solid transparent;
   transition: 0.2s ease;
   cursor: pointer;

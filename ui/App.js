@@ -6,6 +6,7 @@ import { AppBody } from './app-shell/AppBody.js';
 import { AppFooter } from './app-shell/AppFooter.js';
 import { AppFloatingMenu } from './AppFloatingMenu.js';
 import { useMapStore } from '../store/map.store.js';
+import { router, RouteName, route } from '../../router/router.js'
 
 const t = getTemplate('app');
 
@@ -13,6 +14,10 @@ export const App = defineComponent(
   getTemplate('app', true),
   () => {
     const mapStore = useMapStore();
+    const activeMapId = computed(() => route.value.path !== '/')
+    const shouldDisplay = computed(() => route.value.name !== 'list')
+   
+    console.warn(route.value)
     
     const footerDisplayState = ref('toolbar');
     
@@ -26,7 +31,12 @@ export const App = defineComponent(
       mapStore.initMaps();
     })
     
-    return { footerDisplayState, handleFooterChange }
+    watch(route, (newState, lastState) => {
+      const params = route.value.params
+      console.warn('ROUTE IN APP: ', route.value)
+    })
+    
+    return { shouldDisplay, footerDisplayState, handleFooterChange }
   },
   {
     components: {

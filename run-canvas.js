@@ -101,20 +101,20 @@ export const runCanvas = async () => {
     lineHandle.setAttribute('cx', endX);
     lineHandle.setAttribute('cy', endY);
     
-    line.addEventListener('pointermove', e => {
-      e.stopPropagation();
-      e.preventDefault();
-      
-      const targ = e.currentTarget
-      const newPoint = domPoint(line.parentElement, e.clientX, e.clientY)
-      const [newEndX, newEndY] = computeArrowEndpoint(
-        [pt1.x + 0.5, pt1.y + 0.5],
-        [newPoint.x + 0.5, newPoint.y + 0.5]
-      );
-      
-      line.firstElementChild.setAttribute('x2', newEndX);
-      line.firstElementChild.setAttribute('y2', newEndY);
-    });
+    // line.addEventListener('pointermove', e => {
+    //   e.stopPropagation();
+    //   e.preventDefault();
+    
+    //   const targ = e.currentTarget
+    //   const newPoint = domPoint(line.parentElement, e.clientX, e.clientY)
+    //   const [newEndX, newEndY] = computeArrowEndpoint(
+    //     [pt1.x + 0.5, pt1.y + 0.5],
+    //     [newPoint.x + 0.5, newPoint.y + 0.5]
+    //   );
+    
+    //   line.firstElementChild.setAttribute('x2', newEndX);
+    //   line.firstElementChild.setAttribute('y2', newEndY);
+    // });
     
     return line;
   };
@@ -521,6 +521,26 @@ export const runCanvas = async () => {
       
       if (selectedNode.target) {
         const line = createEdgeLine(selectedNode, selectedNode.target);
+        // $$
+        
+        line.addEventListener('pointermove', e => {
+          e.stopPropagation();
+          e.preventDefault();
+          console.warn(isSelectingLinkTile, targ.dataset.selected)
+          if (isSelectingLinkTile && targ.dataset.selected === 'true') {
+            
+            // const targ = e.currentTarget
+            const newPoint = domPoint(line.parentElement, e.clientX, e.clientY)
+            // constP [newEndX, newEndY] = computeArrowEndpoint(
+            //   [pt1.x + 0.5, pt1.y + 0.5],
+            //   [newPoint.x + 0.5, newPoint.y + 0.5]
+            // );
+            
+            line.firstElementChild.setAttribute('x2', newPoint.x);
+            line.firstElementChild.setAttribute('y2', newPoint.y);
+          }
+          
+        });
         objectLayer.append(line);
       }
       
