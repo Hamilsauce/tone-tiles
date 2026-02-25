@@ -6,7 +6,7 @@ import { AppBody } from './app-shell/AppBody.js';
 import { AppFooter } from './app-shell/AppFooter.js';
 import { AppFloatingMenu } from './AppFloatingMenu.js';
 import { useMapStore } from '../store/map.store.js';
-import { router, RouteName, route } from '../../router/router.js'
+import { router, RouteName, route } from '../router/router.js'
 
 const t = getTemplate('app');
 
