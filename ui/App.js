@@ -19,24 +19,15 @@ export const App = defineComponent(
    
     console.warn(route.value)
     
-    const footerDisplayState = ref('toolbar');
-    
-    const footerDisplay = computed(() => footerDisplayState.value);
-    
-    const handleFooterChange = (e) => {
-      footerDisplayState.value = e
-    };
-    
     onMounted(() => {
       mapStore.initMaps();
-    })
+    });
     
-    watch(route, (newState, lastState) => {
-      const params = route.value.params
-      console.warn('ROUTE IN APP: ', route.value)
-    })
+    // watch(route, (newState, lastState) => {
+    //   const params = route.value.params
+    // })
     
-    return { shouldDisplay, footerDisplayState, handleFooterChange }
+    return { shouldDisplay }
   },
   {
     components: {

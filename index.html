@@ -44,7 +44,7 @@
   
   <template data-component="app">
     <div id="app" class="gradient">
-      <app-header v-if="shouldDisplay" @footertoggle="handleFooterChange"></app-header>
+      <app-header v-if="shouldDisplay"></app-header>
       <router-view></router-view>
       <app-footer v-if="shouldDisplay"></app-footer>
       <app-floating-menu></app-floating-menu>
