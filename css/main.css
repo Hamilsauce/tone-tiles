@@ -80,7 +80,7 @@ body {
 }
 
 #tile-layer {
-  filter: brightness(1) hue-rotate(55deg);
+  filter: hue-rotate(55deg) invert(0);
   
   transition: filter 1.5s ease;
 

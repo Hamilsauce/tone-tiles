@@ -9,7 +9,6 @@ import ham from 'https://hamilsauce.github.io/hamhelper/hamhelper1.0.0.js';
 import { useAppState } from './store/app.store.js';
 import { getScaleNotes, getChordNotes, pitchToFrequency } from './MUSIC_THEORY_FUNCTIONS.js';
 
-import './lib/hue-rotato.js';
 
 // setTimeout(() => {
 //   const canvasEl = document.querySelector('#canvas');

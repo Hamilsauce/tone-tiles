@@ -1,11 +1,14 @@
 import ham from 'https://hamilsauce.github.io/hamhelper/hamhelper1.0.0.js';
 import { createCustomEvent } from '../lib/create-event.js';
 import { CanvasObject, DefaultCanvasObjectOptions } from './CanvasObject.js';
+import { initHueRoto } from '../lib/hue-rotato.js';
 
 const { getPanZoom, template, utils, download, TwoWayMap } = ham;
 
 const { fromEvent, } = rxjs;
 const { flatMap, reduce, groupBy, toArray, mergeMap, switchMap, scan, map, tap, filter } = rxjs.operators;
+
+
 
 export class SVGCanvas extends EventTarget {
   #self = null;
@@ -16,6 +19,7 @@ export class SVGCanvas extends EventTarget {
     super();
     
     this.#self = svg;
+    this.hueRotato = initHueRoto()
     
     this.surfaceLayer = this.dom.querySelector('#surface-layer');
     this.#surface = this.surfaceLayer.querySelector('#surface');
@@ -34,11 +38,18 @@ export class SVGCanvas extends EventTarget {
       
       this.dom.addEventListener('click', this.toggleScroll);
       document.querySelector('#context-menu-container').addEventListener('click', this.toggleScroll);
+      
     });
     let shouldInvert = 0;
+    
     this.#surface.addEventListener('dblclick', (e) => {
       shouldInvert = shouldInvert === 0 ? 1 : 0;
-    this.layers.tile.style.filter = `invert(${shouldInvert})`
+      this.layers.tile.style.filter = `hue-rotate(55deg) invert(${shouldInvert})`
+    });
+    
+    document.querySelector('#map-name-text').addEventListener('dblclick', (e) => {
+      this.hueRotato()
+      
     });
     
     this.addEventListener('blurContextMenu', (e) => {
