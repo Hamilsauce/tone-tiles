@@ -34,7 +34,7 @@ body {
   position: relative;
   overflow: hidden;
   touch-action: none;
-  filter: hue-rotate(190deg) brightness(1.2) saturate(1.2);
+  /* filter: hue-rotate(80deg) contrast(1.2) saturate(1.2); */
 }
 
 #app-floating-menu {
@@ -114,6 +114,7 @@ body {
   touch-action: none;
   /* filter: invert(1); */
   /* filter: brightness(1.2); */ /* hue-rotate(45deg) */;
+  /* filter: hue-rotate(80deg) contrast(1.2) saturate(1.2); */
 
 }
 

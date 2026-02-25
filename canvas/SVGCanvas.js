@@ -31,7 +31,6 @@ export class SVGCanvas extends EventTarget {
     
     this.layers.tile.addEventListener('contextmenu', (e) => {
       this.#isContextMenuActive = true;
-      console.warn('this.isContextMenuActive ', this.isContextMenuActive);
       
       this.dom.addEventListener('click', this.toggleScroll);
       document.querySelector('#context-menu-container').addEventListener('click', this.toggleScroll);
@@ -44,7 +43,6 @@ export class SVGCanvas extends EventTarget {
     
     this.addEventListener('blurContextMenu', (e) => {
       this.#isContextMenuActive = false;
-      console.warn('PPOP.#blurContextMenu', this.#isContextMenuActive);
     });
     
     getPanZoom(this.dom);

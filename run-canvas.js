@@ -9,7 +9,7 @@ import ham from 'https://hamilsauce.github.io/hamhelper/hamhelper1.0.0.js';
 import { useAppState } from './store/app.store.js';
 import { getScaleNotes, getChordNotes, pitchToFrequency } from './MUSIC_THEORY_FUNCTIONS.js';
 
-// import './lib/hue-rotato.js';
+import './lib/hue-rotato.js';
 
 // setTimeout(() => {
 //   const canvasEl = document.querySelector('#canvas');
@@ -527,21 +527,15 @@ export const runCanvas = async () => {
         line.addEventListener('pointermove', e => {
           e.stopPropagation();
           e.preventDefault();
-          console.warn(isSelectingLinkTile, targ.dataset.selected)
+          
           if (isSelectingLinkTile && targ.dataset.selected === 'true') {
-            
-            // const targ = e.currentTarget
             const newPoint = domPoint(line.parentElement, e.clientX, e.clientY)
-            // constP [newEndX, newEndY] = computeArrowEndpoint(
-            //   [pt1.x + 0.5, pt1.y + 0.5],
-            //   [newPoint.x + 0.5, newPoint.y + 0.5]
-            // );
             
             line.firstElementChild.setAttribute('x2', newPoint.x);
             line.firstElementChild.setAttribute('y2', newPoint.y);
           }
-          
         });
+        
         objectLayer.append(line);
       }
       

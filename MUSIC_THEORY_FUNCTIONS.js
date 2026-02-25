@@ -3,7 +3,7 @@ const noteDataURL = 'https://raw.githubusercontent.com/Hamilsauce/guitar-tab/ref
 const {
   notes: responseNotes
 } = (await (await fetch(noteDataURL)).json());
-console.warn(responseNotes)
+
 export const NoteData = responseNotes
   .map(({ note, name, ...rest }, i) => ({
     ...rest,

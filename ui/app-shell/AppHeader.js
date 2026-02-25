@@ -8,11 +8,8 @@ export const AppHeader = defineComponent(
   (props, ctx) => {
     const mapStore = useMapStore();
     const mapState = mapStore.mapState
-    console.warn(route)
-    // const footerStateRef = ref('toolbar');
     const mapNameRef = ref('mapName');
     const mapName = computed(() => mapState.value?.name ?? 'No Map')
-    // const footerState = computed(() => footerStateRef.value)
     const shouldDisplay = computed(() => route.value.path !== '/')
     
     const handleNewMap = () => {
@@ -24,15 +21,14 @@ export const AppHeader = defineComponent(
       mapStore.updateMapState({ name: value })
     };
     
-    // const handleFooterToggle = () => {
-    //   footerStateRef.value = footerStateRef.value === 'toolbar' ? 'drawer' : 'toolbar';
-    //   ctx.emit('footertoggle', footerState.value)
-    // };
+    const handleChangeMap = () => {
+      router.push({ name: RouteName.mapList }) //, params: { id: route.value.params.id ?? undefined } })
+    };
     
     watch(mapState, (newState, lastState) => {
-      console.warn('WATCHER mapName', mapName.value)
+      // console.warn('WATCHER mapName', mapName.value)
     })
     
-    return { shouldDisplay, handleMapNameChange, mapName, handleNewMap }
+    return { shouldDisplay, handleChangeMap, handleMapNameChange, mapName, handleNewMap }
   }, {},
 )

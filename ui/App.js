@@ -16,8 +16,6 @@ export const App = defineComponent(
     const mapStore = useMapStore();
     const activeMapId = computed(() => route.value.path !== '/')
     const shouldDisplay = computed(() => route.value.name !== 'list')
-   
-    console.warn(route.value)
     
     onMounted(() => {
       mapStore.initMaps();

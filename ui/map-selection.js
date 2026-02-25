@@ -106,7 +106,6 @@ export const initMapControls = async (graph, svgCanvas, actor1, selectionBox) =>
     if (!mapStore.isMapSaved.value) {
       delete graphOut.id;
     }
-    console.warn('STORE', { graphOut, currindex: mapStore.currentMapIndex.value })
     
     mapId = await storeMap({ ...graphOut, ...(mapStore.currentMapIndex.value || {}) });
     

@@ -21,7 +21,6 @@ const routes = [
       panel: AppCreateMapView,
     },
     beforeEnter: (to, from) => {
-      console.warn('in /:id', to, from)
       if (!to.params.id) {
         return { name: RouteName.mapList }
       }

@@ -90,17 +90,10 @@ export const AppCreateMapView = defineComponent(
       }
       
       const mapId = await storeMap(graphOut)
-      // const mapmeta = await loadMapIndex()
-      
-      
       
       mapStore.setCurrentMapById(mapId)
-      // mapStore.setCurrentMap(mapDoc)
+      
       try {
-        console.warn(
-          'create: ', mapDoc
-        )
-        // const id = await createMapDoc(mapDoc)
         router.push({
           name: RouteName.home,
           query: { mapID: 'fuk' } //mapStore.currentMap.value.id || 'no-id' }
