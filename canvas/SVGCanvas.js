@@ -8,8 +8,6 @@ const { getPanZoom, template, utils, download, TwoWayMap } = ham;
 const { fromEvent, } = rxjs;
 const { flatMap, reduce, groupBy, toArray, mergeMap, switchMap, scan, map, tap, filter } = rxjs.operators;
 
-
-
 export class SVGCanvas extends EventTarget {
   #self = null;
   #surface = null;
