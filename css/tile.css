@@ -38,14 +38,14 @@
 }
 
 .tile[data-active=true] rect {
-  fill: #288ED0;
-  fill: #F2CA69;
+  /* fill: #632B61; */
+  fill: #BB1D1D;
   stroke: #14CC3A;
 }
 
 .tile[data-current=true] rect {
-  fill: #288ED0;
-  stroke: #C214CC;
+  fill: #4D7E2A;
+  stroke: #FDFDFD;
 }
 
 .tile[data-active=true][data-is-path-node=false] text {
@@ -55,7 +55,7 @@
 }
 
 .tile[data-highlight=true] rect {
-  fill: #FFEE9F;
+  fill: #9FFFF9;
 }
 
 .tile[data-highlight=true][data-is-path-node=false][data-tile-type=empty] text {

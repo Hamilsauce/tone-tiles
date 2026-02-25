@@ -36,6 +36,11 @@ export class SVGCanvas extends EventTarget {
       this.dom.addEventListener('click', this.toggleScroll);
       document.querySelector('#context-menu-container').addEventListener('click', this.toggleScroll);
     });
+    let shouldInvert = 0;
+    this.#surface.addEventListener('dblclick', (e) => {
+      shouldInvert = shouldInvert === 0 ? 1 : 0;
+    this.layers.tile.style.filter = `invert(${shouldInvert})`
+    });
     
     this.addEventListener('blurContextMenu', (e) => {
       this.#isContextMenuActive = false;

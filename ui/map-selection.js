@@ -70,29 +70,29 @@ export const initMapControls = async (graph, svgCanvas, actor1, selectionBox) =>
   const app = document.querySelector('#app');
   const appBody = document.querySelector('#app-body');
   const containers = document.querySelectorAll('.container');
-  const mapInput = document.querySelector('#map-input');
+  // const mapIn fput = document.querySelector('#map-input');
   
-  const mapInput$ = fromEvent(mapInput, 'change');
+  // const mapInput$ = fromEvent(mapInput, 'change');
   
   const saveButton = document.querySelector('#save-map');
   const newButton = document.querySelector('#new-map');
   
   const mapNames = await loadMapIndex();
   
-  [...mapInput.options].forEach((e) => {
-    e.remove();
-  });
+  // [...mapInput.options].forEach((e) => {
+  //   e.remove();
+  // });
   
   const blankOpt = { id: null, name: '' };
   const defaultOpt = { id: '', name: '' };
   
-  [defaultOpt, ...mapNames].forEach((m) => {
-    const opt = document.createElement('option');
-    opt.value = m.id;
-    opt.textContent = m.name;
+  // [defaultOpt, ...mapNames].forEach((m) => {
+  //   const opt = document.createElement('option');
+  //   opt.value = m.id;
+  //   opt.textContent = m.name;
     
-    mapInput.add(opt);
-  });
+  //   mapInput.add(opt);
+  // });
   
   saveButton.addEventListener('click', async (e) => {
     e.preventDefault();
@@ -130,15 +130,15 @@ export const initMapControls = async (graph, svgCanvas, actor1, selectionBox) =>
   
   
   
-  mapInput$.pipe(
-    tap(async ({ target }) => {
-      const sel = target.selectedOptions[0].value;
+  // mapInput$.pipe(
+  //   tap(async ({ target }) => {
+  //     const sel = target.selectedOptions[0].value;
       
-      // const loadedMap = await loadMap(sel);
+  //     // const loadedMap = await loadMap(sel);
       
-      mapStore.setCurrentMapById(sel);
-    }),
-  ).subscribe();
+  //     mapStore.setCurrentMapById(sel);
+  //   }),
+  // ).subscribe();
   
   // setTimeout(() => {
   //   mapStore.setCurrentMap(BLANK_MAP_16X16);

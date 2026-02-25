@@ -67,28 +67,29 @@
   <template data-component="app-header">
     <header v-if="shouldDisplay" id="app-header">
       <div id="app-header-inner">
-        <div id="app-header-center">
+        <!-- <div id="app-header-center">
           <h2>tone tiles</h2>
           <div id="app-header-center-bottom"></div>
-        </div>
+        </div> -->
         <!-- <div id="app-header-right">
         <div id="app-state-display"></div>
       </div> -->
         <div id="app-header-top">
-          <label for="map-input">Pick Map</label>
-          <select name="map-input" id="map-input">
+          <!-- <select name="map-input" id="map-input">
             <option value="MAP_9X15_1">MAP_9X15_1</option>
             <option value="BLANK_MAP_9X15_1">BLANK_MAP_9X15_1</option>
             <option value="suk">suk</option>
             <option value="BIG_ASS_MAP">BIG_ASS_MAP</option>
-          </select>
-          <div class="container">
+          </select> -->
+          <div id="header-actions" class="container">
+            <button id="header-map-list-button" @click="handleMapListClick" class="file-button" type="button">to map list</button>
             <button id="new-map" @click="handleNewMap" class="file-button" type="button">New</button>
             <button id="save-map" class="file-button" type="button">Save</button>
           </div>
         </div>
         
         <div id="app-header-bottom">
+          <label for="map-name">Map:</label>
           <input :value="mapName" @change="handleMapNameChange" id="map-name" type="text" _class="field__input" placeholder="No Map" maxlength="80" _v-model="mapName" />
         </div>
       </div>
