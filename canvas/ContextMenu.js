@@ -71,7 +71,7 @@ export class ContextMenu extends CanvasObject {
     super(ctx, 'context-menu', contextMenuTransforms);
     
     this.#menuList = this.getEl('.context-menu-list.primary')
-    console.warn('this.#menuList', this.#menuList)
+    // console.warn('this.#menuList', this.#menuList)
     // this.#menuItems = menuItems.reduce((items, {
     //   type,
     //   value,
