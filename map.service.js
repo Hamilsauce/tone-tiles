@@ -63,6 +63,7 @@ export const storeMap = async (mapToStore) => {
   
   await batch.commit();
   
+  
   return id;
 };
 

@@ -85,19 +85,22 @@ export const AppCreateMapView = defineComponent(
         // initFill: initFill.value,
         // startPlacement: startPlacement.value,
         // exitPlacement: exitPlacement.value,
-        createdAt: Date.now(),
-        updatedAt: Date.now()
+        tileData: {},
+        deletedAddresses: [],
+        meta: { created: Date.now(), author: 'slamster' },
+        updated: Date.now()
       }
       
-      const mapId = await storeMap(graphOut)
-      
-      mapStore.setCurrentMapById(mapId)
       
       try {
+        const mapId = await storeMap(mapDoc);
+        mapStore.setCurrentMapById(mapId);
+        
         router.push({
-          name: RouteName.home,
-          query: { mapID: 'fuk' } //mapStore.currentMap.value.id || 'no-id' }
-        })
+          name: RouteName.edit,
+          params: { id: mapStore.currentMap.value.id } //mapStore.currentMap.value.id || 'no-id' }
+        });
+        
         if (openInEditor.value) {
           
         } else {
