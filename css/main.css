@@ -68,10 +68,10 @@ body {
 }
 
 #surface {
-  fill: #f0f0f02b;
+  fill: #2925222B;
   stroke: #FFFFFF80;
   stroke-width: 0.2;
-  filter: contrast(1.2);
+  filter: saturate(1.2);
   touch-action: none;
 }
 
