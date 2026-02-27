@@ -1,14 +1,15 @@
 import { ref, computed, watch, onMounted } from 'vue'
 import { defineComponent, getTemplate } from '../lib/vue-helpers.js';
-// import { AppToolbar } from '../AppToolbar.js';
 import { useAppState } from '../store/app.store.js';
+import { useMapStore } from '../store/map.store.js';
 import { runCanvas } from '../run-canvas.js';
 
 export const SVGCanvasHost = defineComponent(
   getTemplate('svg-canvas-host'),
   (props, ctx) => {
+    const { mapState } = useMapStore();
     const { isRunning, setRunning } = useAppState();
-    
+    const map = computed(() => mapState.value);
     let canvasEl; // = document.querySelector('#canvas');
     let viewport; // = document.querySelector('#canvas');
     let scene; // = canvasEl.querySelector('#scene');
@@ -25,14 +26,6 @@ export const SVGCanvasHost = defineComponent(
       viewport.setAttribute('transform', 'matrix(1 0 0 1 0 0)')
     }
     
-    watch(isRunning, (value) => {
-      if (value) {
-        // objectLayer.style.display = null;
-      } else {
-        // objectLayer.style.display = 'none';
-      }
-    });
-    
     onMounted(() => {
       canvasEl = document.querySelector('#canvas');
       viewport = canvasEl.querySelector('#viewport');
@@ -43,10 +36,8 @@ export const SVGCanvasHost = defineComponent(
       runCanvas();
     });
     
-    return { centerViewport }
+    return { centerViewport, map }
   }, {
-    components: {
-      // 'app-toolbar': AppToolbar,
-    }
+    components: {}
   },
 );

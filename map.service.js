@@ -39,10 +39,19 @@ export const storeMap = async (mapToStore) => {
   
   const batch = writeBatch(db);
   
-  batch.set(mapIndexRef, { ...formatted, id }, { merge: true });
+  batch.set(
+    mapIndexRef, {
+      ...formatted,
+      id
+    }, { merge: true }
+  );
   
   batch.set(
-    tileDataRef, { id, width: formatted.width, height: formatted.height }, { merge: true }
+    tileDataRef, {
+      id,
+      width: formatted.width,
+      height: formatted.height
+    }, { merge: true }
   );
   
   // build nested updates for adds/updates + deletes

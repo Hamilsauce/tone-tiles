@@ -4,12 +4,12 @@ import { ref, computed, watch, reactive } from 'vue'
 import { Graph, TILE_TYPE_INDEX } from '../lib/graph.model.js';
 import { MAP_DOC_TEMPLATE } from '../maps.js';
 
-
 const currentMap = ref({
   tileData: {},
   width: 0,
   height: 0,
   id: '',
+  name: 'suk',
 });
 
 const currentMapIndex = ref({
@@ -31,39 +31,27 @@ export const useMapStore = () => {
   const setCurrentMap = (mapDoc) => {
     currentMap.value = { ...MAP_DOC_TEMPLATE, ...mapDoc, id: mapDoc.id ?? `TEMP_MAP_${Date.now()}`, };
     currentMapIndex.value = mapIndex.has(mapDoc.id) ? mapIndex.get(mapDoc.id) : null;
-    // console.warn('currentMapIndex.value', currentMapIndex.value)
-    // return currentMap.value.id;
   };
   
-  const saveMap = async (map) => {
-    // handle updating stored maps here too?
-  };
+  const saveMap = async (map) => {};
   
-  const deleteMap = async (map) => {
-    // handle updating stored maps here too?
-  };
+  const deleteMap = async (map) => {};
   
   const createMap = async (id) => {
     
     const loaded = await loadMap(id);
     return loaded
-    // handle updating stored maps here too?
   };
   
   const initMaps = async () => {
     const res = await loadMapIndex();
-    // console.warn('init maps', res)
     res.forEach(m => mapIndex.set(m.id, m))
-    // mapIndex.value = await loadMapIndex();
   };
   
   const setCurrentMapById = async (mapId) => {
     const loaded = await loadMap(mapId);
-    // currentMap.value = 
-    // console.warn('setCurrentMapById', loaded)
     
     setCurrentMap(loaded);
-    // currentMap.value = setCurrentMap(loaded);
   };
   
   const updateMapState = async (mapPatch = {}) => {
@@ -71,7 +59,6 @@ export const useMapStore = () => {
       currentMapIndex.value.name = mapPatch.name
     }
   };
-  
   
   return {
     setCurrentMap,
