@@ -1,6 +1,6 @@
 #app-header {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   gap: 8px;
@@ -15,18 +15,131 @@
   color: #FFFFFFA3;
   
   #app-header-inner {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    gap: 8px;
     width: 100%;
     max-width: 550px;
     padding: 4px 6px;
+    height: 30px;
+    display: grid;
+    /* flex-direction: column; */
+    overflow-y: hidden;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    
+    display: grid;
+    grid-template-rows: 1px auto;
+    grid-template-columns: 80px 1f;
+    /* justify-content: center; */
+    grid-template:
+      "LE RB"
+      "LE RT";
+    align-items: center;
+    gap: 0px;
+    /* padding: 4px 0 4px 4px; */
+
+    #app-header-left {
+      grid-area: LE;
+      
+      /* display: flex; */
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      /* gap: 8px; */
+      width: 100%;
+      height: 100%;
+      max-width: 60px;
+      padding: 4px 0;
+      
+      h2 {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        
+        height: fit-content;
+        font-size: 14px;
+        font-weight: 600;
+        line-height: 16.5px;
+      }
+      
+    }
+    
+    #app-header-right-top {
+      grid-area: RT;
+      
+      #header-actions {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: flex-start;
+        gap: 4px;
+        
+        button {
+          padding: 2px 4px;
+          font-weight: 500;
+          font-size: 16px;
+          background: #00000099;
+          color: #EAEAEA9E;
+          white-space: nowrap;
+          border: none;
+        }
+      }
+    }
+    
+    /* #app-header-right-bottom {} */
+    
+    #app-header-right-bottom {
+      grid-area: RB;
+      
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      gap: 4px;
+      width: 100%;
+      height: 100%;
+      padding: 4px;
+      
+      #map-name {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        
+        width: 100%;
+        max-width: 140px;
+        background: transparent;
+        border: transparent;
+        border-bottom: 2px solid #00000036;
+        padding: 2px 8px 0px 4px;
+        outline: none;
+        color: #FFFFFFA3;
+        color: #FFFFFFA3;
+        text-align: left;
+        font-size: 15px;
+      }
+    }
+  }
+  
+  
+}
+
+#app-header-inner:hover {
+  filter: brightness(2);
+  color: #FFFFFF !important;
+  height: 100% !important;
+  
+  input {
+    color: #FFFFFF !important;
+  }
+  
+  #app-header-left {
+    h2 {
+      font-size: 22px !important;
+    }
   }
 }
 
-#app-header-center {
+/* #app-header-center {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -34,9 +147,9 @@
   gap: 2px;
   padding: 0 6px;
   text-align: left;
-}
+} */
 
-.app-header-top {
+/* .app-header-top {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -44,27 +157,17 @@
   gap: 0px;
   padding: 4px;
   width: 100%;
-}
+} */
 
-#app-header-bottom {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  gap: 4px;
-  width: 100%;
-  height: 100%;
-  padding: 4px;
-}
 
-.app-header-center-bottom {
+/* .app-header-center-bottom {
   flex-direction: column;
   justify-content: center;
   align-items: flex-end;
   gap: 0px;
-}
+} */
 
-#header-actions {
+/* #header-actions {
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
@@ -98,4 +201,4 @@
   color: #FFFFFFA3;
   text-align: left;
   font-size: 15px;
-}
+} */

@@ -67,20 +67,11 @@
   <template data-component="app-header">
     <header v-if="shouldDisplay" id="app-header">
       <div id="app-header-inner">
-        <!-- <div id="app-header-center">
+        <div id="app-header-left">
           <h2>tone tiles</h2>
-          <div id="app-header-center-bottom"></div>
-        </div> -->
-        <!-- <div id="app-header-right">
-        <div id="app-state-display"></div>
-      </div> -->
-        <div id="app-header-top">
-          <!-- <select name="map-input" id="map-input">
-            <option value="MAP_9X15_1">MAP_9X15_1</option>
-            <option value="BLANK_MAP_9X15_1">BLANK_MAP_9X15_1</option>
-            <option value="suk">suk</option>
-            <option value="BIG_ASS_MAP">BIG_ASS_MAP</option>
-          </select> -->
+        </div>
+        
+        <div id="app-header-right-top">
           <div id="header-actions" class="container">
             <button id="header-map-list-button" @click="handleChangeMap" class="file-button" type="button">to map list</button>
             <button id="new-map" @click="handleNewMap" class="file-button" type="button">New</button>
@@ -88,8 +79,8 @@
           </div>
         </div>
         
-        <div id="app-header-bottom">
-          <label for="map-name">Map:</label>
+        <div id="app-header-right-bottom">
+          <label for="map-name">Current:</label>
           <input :value="mapName" @change="handleMapNameChange" id="map-name" type="text" _class="field__input" placeholder="No Map" maxlength="80" _v-model="mapName" />
         </div>
       </div>
@@ -99,7 +90,7 @@
   <template data-component="app-map-list-view">
     <div id="app-map-list-view">
       <div id="map-list-view-top">
-        <h2>TONE TILES</h2>
+        <h2>tone tiles</h2>
         <div id="map-list-view-actions">
           <input type="button" name="create-map" id="create-map" value="create" />
         </div>
@@ -109,6 +100,15 @@
         <li class="map-list-item" @click="handleMapClick(map.id)" v-for="map in mapList">
           <div class="map-name">
             {{map.name}}
+          </div>
+          <div class="map-author">
+            creator: {{ map.meta.author ?? 'Unknown' }}
+          </div>
+          <div class="map-updated">
+            updated: {{ new Date(map.updated).toLocaleDateString() }}
+          </div>
+          <div class="map-dims">
+            size: {{ `${map.width}x${map.height}` }}
           </div>
         </li>
       </ul>
@@ -154,7 +154,7 @@
             <line class="axis-line" x1="-100" y1="0" x2="100" y2="0" _marker-end="url(#edge-line-arrow)" transform="translate(0,0) rotate(0) scale(1)" />
             <line class="axis-line" x1="0" y1="-100" x2="0" y2="100" _marker-end="url(#edge-line-arrow)" transform="translate(0,0) rotate(0) scale(1)" />
             <g id="map-name" transform="translate(5,-2) rotate(0) scale(0.1)">
-              <text id="map-name-text" style="fill:#FFFFFF;fill-opacity:1;stroke:#FFFFFF;stroke-width:1;stroke-opacity:1;stroke-linecap:butt;stroke-miterlimit:4;stroke-dashoffset:0;" font-style="normal" text-align="left">
+              <text id="map-name-text" style="fill:#FFFFFF;fill-opacity:1;stroke:#00000090;stroke-width:0.3;stroke-opacity:1;stroke-linecap:butt;stroke-miterlimit:4;stroke-dashoffset:0;" font-style="normal" text-align="left">
                 HAM
               </text>
             </g>

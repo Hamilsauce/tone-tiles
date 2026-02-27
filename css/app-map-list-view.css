@@ -10,12 +10,23 @@
   overflow-y: auto;
   backdrop-filter: hue-rotate(340deg) saturate(0.8) brightness(0.9);
   
+  input[type=button] {
+    padding: 2px 4px;
+    font-weight: 500;
+    font-size: 16px;
+    background: #00000099;
+    color: #EAEAEA9E;
+    white-space: nowrap;
+    border: none;
+  }
+  
   #map-list-view-top {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     gap: 8px;
+    color: #FCFCFC9C;
   }
   
   #map-list-view-list {
@@ -45,9 +56,55 @@
       min-height: 70px;
       width: 100%;
       
-      padding: 4px 8px;
-      background: #3C3C3C;
+      padding: 8px 8px;
+      background: #222020CC;
       color: #EEEEEE;
+      
+      
+      
+      display: grid;
+      grid-template-rows: 1px auto;
+      grid-template-columns: 1fr 1fr;
+      justify-content: space-between;
+      grid-template:
+        "n a"
+        "u d";
+      /* align-item */
+      gap: 8px;
+      font-size: 15px;
+      
+      > {
+        
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 2px;
+      }
+      
+      .map-name {
+        grid-area: n;
+      }
+      
+      .map-author {
+        grid-area: a;
+      }
+      
+      .map-updated {
+        grid-area: u;
+        font-size: 13px;
+        
+        opacity: 0.8;
+        
+      }
+      
+      .map-dims {
+        grid-area: d;
+        font-size: 13px;
+        /* color: #FFFFFF6B; */
+        opacity: 0.8;
+        text-align: right;
+      }
     }
   }
 }
