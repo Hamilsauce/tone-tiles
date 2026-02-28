@@ -140,8 +140,8 @@ export const runCanvas = async () => {
   
   const ANIM_RATE = 105;
   let selectedRange = [];
-  const fireAudioNote = (freq, vel, dur = 0.15) => (new AudioNote(audioEngine)
-    .at(audioEngine.currentTime)
+  const fireAudioNote = (freq, vel, dur = 0.15) => (new AudioNote(audioEngine.ctx)
+    .at(audioEngine.now)
     .frequencyHz(freq)
     .duration(dur)
     .velocity(vel).play()
@@ -189,7 +189,7 @@ export const runCanvas = async () => {
   
   const actor2TransformList = new TransformList(svgCanvas, actor2);
   
-  initMapControls(graph, svgCanvas, actor1, selectionBox);
+  const selectMapById = await initMapControls(graph, svgCanvas, actor1, selectionBox);
   
   actor2.setAttribute('transform', 'translate(12,21) rotate(0) scale(1)');
   
@@ -283,6 +283,8 @@ export const runCanvas = async () => {
     selectionBox.remove();
     
     let tile = detail.target.closest('.tile');
+    let linkedMapId = tile.dataset.linkedMap
+    
     let activeActor;
     let actorTrans = activeActor === actor1 ? actor1TransformList : actor2TransformList;
     
@@ -374,6 +376,7 @@ export const runCanvas = async () => {
             .at(audioEngine.currentTime + 0.33)
             .velocity(0.05)
             .play();
+          
         }
         
         if (!curr) {
@@ -399,9 +402,16 @@ export const runCanvas = async () => {
             const dur = 2 / bfsPath.length;
             const startMod = ((pointer || 1) * 0.01);
             
-            freq = toTone(curr.x, curr.y)
             
-            audioNote1 = fireAudioNote(freq, vel)
+            try {
+              freq = toTone(curr.x, curr.y)
+              audioNote1 = fireAudioNote(freq, vel)
+              
+              
+            } catch (e) {
+              console.error('coukdbt play audio note')
+            }
+            
           }
           
           const el = svgCanvas.querySelector(`.tile[data-x="${curr.x}"][data-y="${curr.y}"]`);
@@ -434,6 +444,43 @@ export const runCanvas = async () => {
             return;
           }
           
+          if (el.dataset.tileType === 'map-link') {
+            // const linkedMapId = el.dataset.linkedMap
+            console.warn('linkedMapId',linkedMapId)
+            if (!linkedMapId) return
+            selectMapById(linkedMapId)
+            return
+            actor1.dataset.teleporting = true;
+            
+            if (el === startNodeEl) {
+              el.dataset.active = false;
+              el.dataset.current = false;
+              
+              return;
+            }
+            
+            el.dataset.active = true;
+            el.dataset.current = true;
+            
+            const tels = [...svgCanvas.querySelectorAll('.tile[data-tile-type="teleport"]')];
+            const otherTele = tels.find(t => el != t && t.dataset.current != 'true');
+            
+            activeActor.dataset.x = el.dataset.x;
+            activeActor.dataset.y = el.dataset.y;
+            
+            actorTrans = activeActor === actor1 ? actor1TransformList : actor2TransformList;
+            actorTrans.translateTo(el.dataset.x, el.dataset.y);
+            
+            el.dataset.active = false;
+            el.dataset.current = false;
+            
+            otherTele.dataset.active = false;
+            otherTele.dataset.current = false;
+            
+            await sleep(10);
+            shouldPreVel = !shouldPreVel
+            activeActor.dataset.teleporting = false;
+          }
           if (el.dataset.tileType === 'teleport') {
             actor1.dataset.teleporting = true;
             

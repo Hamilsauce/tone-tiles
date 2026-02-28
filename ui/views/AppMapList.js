@@ -8,7 +8,7 @@ export const AppMapList = defineComponent(
   (props, ctx) => {
     const mapStore = useMapStore();
     const maps = mapStore.mapIndex
-    const mapList = computed(() => [...maps.values()])
+    const mapList = computed(() => [...maps.values()].sort((a, b) => a.updated < b.updated ? 1 : -1))
     const editingId = ref(null);
     
     const handleNewMap = () => {
@@ -16,6 +16,8 @@ export const AppMapList = defineComponent(
     };
     
     const handleMapClick = (id) => {
+      if (editingId.value) return
+      
       if (id) {
         router.push({
           name: RouteName.home,
@@ -29,12 +31,14 @@ export const AppMapList = defineComponent(
     };
     
     const handleListItemBlur = () => {
-      console.warn('item blur', editingId.value)
       editingId.value = null;
     };
     
-    // watch(maps, (newState, lastState) => {})
+    const handleListClick = () => {
+      editingId.value = null;
+    };
     
-    return { handleListItemBlur, handleMapContextMenu, editingId, mapList, handleNewMap, handleMapClick }
+    
+    return { handleListClick, handleListItemBlur, handleMapContextMenu, editingId, mapList, handleNewMap, handleMapClick }
   }, {},
 )

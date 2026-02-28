@@ -29,8 +29,15 @@ export const useMapStore = () => {
   const mapState = computed(() => currentMapIndex.value)
   
   const setCurrentMap = (mapDoc) => {
-    currentMap.value = { ...MAP_DOC_TEMPLATE, ...mapDoc, id: mapDoc.id ?? `TEMP_MAP_${Date.now()}`, };
     currentMapIndex.value = mapIndex.has(mapDoc.id) ? mapIndex.get(mapDoc.id) : null;
+    
+    currentMap.value = { ...(currentMapIndex.value ?? MAP_DOC_TEMPLATE), ...mapDoc, id: mapDoc.id ?? `TEMP_MAP_${Date.now()}`, };
+    
+    // console.warn('mapData',
+    //   currentMap.value,
+    //   currentMapIndex.value,
+    // )
+    
   };
   
   const saveMap = async (map) => {};

@@ -88,7 +88,7 @@
   </template>
   
   <template data-component="app-map-list-view">
-    <div id="app-map-list-view">
+    <div id="app-map-list-view" @click="handleListClick">
       <div id="map-list-view-top">
         <h2>tone tiles</h2>
         <div id="map-list-view-actions">
@@ -97,11 +97,7 @@
       </div>
       
       <ul id="map-list-view-list">
-        <li class="map-list-item" :class="{ editing: editingId === map.id}"
-        @click="handleMapClick(map.id)" 
-        @contextmenu="handleMapContextMenu(map.id)" 
-        @blur="handleListItemBlur(map.id)" 
-        v-for="map in mapList">
+        <li class="map-list-item" :class="{ editing: editingId === map.id}" @click="handleMapClick(map.id)" @contextmenu="handleMapContextMenu(map.id)" @blur="handleListItemBlur(map.id)" v-for="map in mapList">
           <div class="map-name">
             {{map.name}}
           </div>
@@ -112,6 +108,9 @@
             updated: {{ new Date(map.updated).toLocaleDateString() }}
           </div>
           <div class="map-dims">
+            size: {{ `${map.width}x${map.height}` }}
+          </div>
+          <div v-if="editingId === map.id" class="map-edit">
             size: {{ `${map.width}x${map.height}` }}
           </div>
         </li>

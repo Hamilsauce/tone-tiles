@@ -38,11 +38,12 @@ export const storeMap = async (mapToStore) => {
   const tileDataRef = doc(db, "tileData", id);
   
   const batch = writeBatch(db);
-  
+  formatted.updated = Date.now()
   batch.set(
     mapIndexRef, {
       ...formatted,
-      id
+      id,
+      linkedMaps: formatted.linkedMaps ?? [],
     }, { merge: true }
   );
   

@@ -17,15 +17,6 @@ let hasInitViewBox = false;
 const renderMap = (mapData, svgCanvas, graph, actor1, selectionBox) => {
   graph.fromMap(mapData);
   
-  if (!hasInitViewBox) {
-    // svgCanvas.setViewBox({
-    //   x: 0,
-    //   y: 0,
-    //   width: graph.width+5,
-    //   height: graph.height+5,
-    // });
-  }
-  
   selectionBox.setBounds({
     minX: 0,
     minY: 0,
@@ -46,20 +37,48 @@ const renderMap = (mapData, svgCanvas, graph, actor1, selectionBox) => {
       svgCanvas.createRect({
         width: 1,
         height: 1,
-        // textContent: `${x},${y}`,
-        // classList: ['tile'],
         classList: ['tile'],
         
         dataset: {
           tileType,
-          x: x,
-          y: y,
+          x,
+          y,
           current: false,
           active: false,
           isPathNode: false,
         },
       }));
-  });
+  });;
+  (mapData.linkedMaps || []).forEach((linkedMap, i) => {
+    let x
+    let y
+    if ([0, 2].includes(i)) {
+      x = Math.floor(graph.width / 2)
+      y = i === 2 ? graph.height : -1
+    }
+    
+    if ([1, 3].includes(i)) {
+      y = Math.floor(graph.height / 2)
+      x = i === 3 ? graph.width : -1
+    }
+    
+    svgCanvas.layers.tile.append(
+      svgCanvas.createRect({
+        width: 1,
+        height: 1,
+        classList: ['tile'],
+        
+        dataset: {
+          linkedMap,
+          tileType: 'map-link',
+          x,
+          y,
+          current: false,
+          active: false,
+          isPathNode: false,
+        },
+      }));
+  })
 };
 
 
@@ -70,29 +89,16 @@ export const initMapControls = async (graph, svgCanvas, actor1, selectionBox) =>
   const app = document.querySelector('#app');
   const appBody = document.querySelector('#app-body');
   const containers = document.querySelectorAll('.container');
-  // const mapIn fput = document.querySelector('#map-input');
-  
-  // const mapInput$ = fromEvent(mapInput, 'change');
   
   const saveButton = document.querySelector('#save-map');
   const newButton = document.querySelector('#new-map');
   
   const mapNames = await loadMapIndex();
   
-  // [...mapInput.options].forEach((e) => {
-  //   e.remove();
-  // });
   
   const blankOpt = { id: null, name: '' };
   const defaultOpt = { id: '', name: '' };
   
-  // [defaultOpt, ...mapNames].forEach((m) => {
-  //   const opt = document.createElement('option');
-  //   opt.value = m.id;
-  //   opt.textContent = m.name;
-    
-  //   mapInput.add(opt);
-  // });
   
   saveButton.addEventListener('click', async (e) => {
     e.preventDefault();
@@ -114,13 +120,6 @@ export const initMapControls = async (graph, svgCanvas, actor1, selectionBox) =>
     return mapId;
   });
   
-  // newButton.addEventListener('click', async (e) => {
-  //   e.preventDefault();
-  //   e.stopPropagation();
-  //   e.stopImmediatePropagation();
-  
-  //   renderMap(BLANK_MAP_16X16, svgCanvas, graph, actor1, selectionBox);
-  // });
   
   watch(mapStore.currentMap, (newMap, oldMap) => {
     if (newMap && oldMap && newMap.id === oldMap.id) return;
@@ -128,19 +127,8 @@ export const initMapControls = async (graph, svgCanvas, actor1, selectionBox) =>
   }, { immediate: true });
   
   
-  
-  // mapInput$.pipe(
-  //   tap(async ({ target }) => {
-  //     const sel = target.selectedOptions[0].value;
-      
-  //     // const loadedMap = await loadMap(sel);
-      
-  //     mapStore.setCurrentMapById(sel);
-  //   }),
-  // ).subscribe();
-  
-  // setTimeout(() => {
-  //   mapStore.setCurrentMap(BLANK_MAP_16X16);
-  // }, 500);
+  return (id) => {
+    mapStore.setCurrentMapById(id);
+  }
   
 };

@@ -11,6 +11,13 @@
   font-weight: 600;
 }
 
+.tile[data-tile-type=map-link] rect {
+  fill: #ED311D;
+  rx: 0.2;
+  /* stroke: #E0F11C; */
+  /* filter: drop-shadow(0 0 1px #292B43); */
+}
+
 .tile[data-tile-type=barrier] rect {
   fill: #4F5057;
   /* filter: drop-shadow(0 0 1px #292B43); */
