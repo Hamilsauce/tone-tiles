@@ -9,6 +9,7 @@ export const AppMapList = defineComponent(
     const mapStore = useMapStore();
     const maps = mapStore.mapIndex
     const mapList = computed(() => [...maps.values()])
+    const editingId = ref(null);
     
     const handleNewMap = () => {
       router.push({ name: RouteName.createMap })
@@ -23,13 +24,17 @@ export const AppMapList = defineComponent(
       }
     };
     
-    const handleFooterToggle = () => {
-      footerStateRef.value = footerStateRef.value === 'toolbar' ? 'drawer' : 'toolbar';
-      ctx.emit('footertoggle', footerState.value)
+    const handleMapContextMenu = (id) => {
+      editingId.value = id;
+    };
+    
+    const handleListItemBlur = () => {
+      console.warn('item blur', editingId.value)
+      editingId.value = null;
     };
     
     // watch(maps, (newState, lastState) => {})
     
-    return { mapList, handleNewMap, handleMapClick }
+    return { handleListItemBlur, handleMapContextMenu, editingId, mapList, handleNewMap, handleMapClick }
   }, {},
 )

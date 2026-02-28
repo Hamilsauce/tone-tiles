@@ -97,7 +97,11 @@
       </div>
       
       <ul id="map-list-view-list">
-        <li class="map-list-item" @click="handleMapClick(map.id)" v-for="map in mapList">
+        <li class="map-list-item" :class="{ editing: editingId === map.id}"
+        @click="handleMapClick(map.id)" 
+        @contextmenu="handleMapContextMenu(map.id)" 
+        @blur="handleListItemBlur(map.id)" 
+        v-for="map in mapList">
           <div class="map-name">
             {{map.name}}
           </div>

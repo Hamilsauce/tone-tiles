@@ -7,12 +7,13 @@ export const MAP_DOC_TEMPLATE = {
   width: 16,
   height: 16,
   tileData: {},
+  linkedMaps: {},
 };
 
 export const mapStorageFormatter = ({ name, tiles, tileData, meta, width, height }) => {
   height = height ?? tiles.length;
   width = width ?? tiles[0].length;
-
+  
   return {
     name,
     tileData,

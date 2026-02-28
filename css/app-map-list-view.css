@@ -47,21 +47,6 @@
     min-width: 300px;
     
     li {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      gap: 2px;
-      height: 100%;
-      min-height: 70px;
-      width: 100%;
-      
-      padding: 8px 8px;
-      background: #222020CC;
-      color: #EEEEEE;
-      
-      
-      
       display: grid;
       grid-template-rows: 1px auto;
       grid-template-columns: 1fr 1fr;
@@ -69,12 +54,16 @@
       grid-template:
         "n a"
         "u d";
-      /* align-item */
       gap: 8px;
+      height: 100%;
+      min-height: 70px;
+      width: 100%;
+      padding: 8px 8px;
+      background: #222020CC;
+      color: #EEEEEE;
       font-size: 15px;
       
       > {
-        
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -105,6 +94,10 @@
         opacity: 0.8;
         text-align: right;
       }
+    }
+    
+    li.editing {
+      filter: contrast(1.4);
     }
   }
 }
