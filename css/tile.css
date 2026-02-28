@@ -18,6 +18,8 @@
   /* filter: drop-shadow(0 0 1px #292B43); */
 }
 
+
+
 .tile[data-tile-type=barrier] rect {
   fill: #4F5057;
   /* filter: drop-shadow(0 0 1px #292B43); */
@@ -121,4 +123,10 @@
 
 .rect-animate {
   animation: yellowToOriginal 1.5s forwards;
+}
+.tile[data-linked-map=null], .tile[data-linked-map=null] rect {
+  fill: #898989 !important;
+  stroke: #74A6A4;
+  pointer-events: none !important;
+  filter: saturate(0.4) brightness(0.7);
 }
