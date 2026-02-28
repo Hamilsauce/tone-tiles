@@ -280,6 +280,8 @@ export const runCanvas = async () => {
     
     deselectRange();
     selectedRange = [];
+    
+    
     selectionBox.remove();
     
     let tile = detail.target.closest('.tile');
@@ -446,7 +448,7 @@ export const runCanvas = async () => {
           
           if (el.dataset.tileType === 'map-link') {
             // const linkedMapId = el.dataset.linkedMap
-            console.warn('linkedMapId',linkedMapId)
+            console.warn('linkedMapId', linkedMapId)
             if (!linkedMapId) return
             selectMapById(linkedMapId)
             return

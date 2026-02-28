@@ -13,6 +13,7 @@ import ham from 'https://hamilsauce.github.io/hamhelper/hamhelper1.0.0.js';
 const { sleep, template, utils, download, TwoWayMap } = ham;
 
 let hasInitViewBox = false;
+let mapStore = useMapStore();
 
 const renderMap = (mapData, svgCanvas, graph, actor1, selectionBox) => {
   graph.fromMap(mapData);
@@ -78,13 +79,17 @@ const renderMap = (mapData, svgCanvas, graph, actor1, selectionBox) => {
           isPathNode: false,
         },
       }));
+    
+    if (mapStore.previousMapId.value === linkedMap) {
+      actor1.setAttribute('transform', `translate(${x},${y})`);
+    }
   })
 };
 
 
 export const initMapControls = async (graph, svgCanvas, actor1, selectionBox) => {
   hasInitViewBox = false;
-  const mapStore = useMapStore();
+  mapStore = useMapStore();
   
   const app = document.querySelector('#app');
   const appBody = document.querySelector('#app-body');
@@ -130,5 +135,4 @@ export const initMapControls = async (graph, svgCanvas, actor1, selectionBox) =>
   return (id) => {
     mapStore.setCurrentMapById(id);
   }
-  
 };

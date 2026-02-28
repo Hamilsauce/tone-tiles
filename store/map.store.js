@@ -27,8 +27,10 @@ export const useMapStore = () => {
   const isMapSaved = computed(() => !!currentMap.value.id && !currentMap.value.id.includes('TEMP'));
   const mapList = computed(() => [...mapIndex.values()])
   const mapState = computed(() => currentMapIndex.value)
+  const previousMapId = ref(null)
   
   const setCurrentMap = (mapDoc) => {
+    previousMapId.value = currentMapIndex.value?.id
     currentMapIndex.value = mapIndex.has(mapDoc.id) ? mapIndex.get(mapDoc.id) : null;
     
     currentMap.value = { ...(currentMapIndex.value ?? MAP_DOC_TEMPLATE), ...mapDoc, id: mapDoc.id ?? `TEMP_MAP_${Date.now()}`, };
@@ -77,6 +79,7 @@ export const useMapStore = () => {
     isMapSaved,
     currentMap,
     currentMapIndex,
+    previousMapId,
     mapIndex,
     mapState,
     initMaps,
