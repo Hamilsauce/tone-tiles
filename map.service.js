@@ -3,30 +3,33 @@ import { maps, mapStorageFormatter } from './maps.js';
 
 const { collection, doc, writeBatch, db, deleteField } = mapSyncHelpers;
 
+export const validateMapLinks = (graph) => {
+  const OPP = { N: "S", S: "N", E: "W", W: "E" };
+  
+  for (const [id, links] of Object.entries(graph)) {
+    for (const [dir, neighbor] of Object.entries(links)) {
+      if (graph[neighbor]?.[OPP[dir]] !== id) {
+        throw new Error(`Broken symmetry at ${id}.${dir}`);
+      }
+    }
+  }
+}
+
+export const bulkUpdateMapsLinks = async (mapGraph = {}) => {
+  validateMapLinks(mapGraph)
+  
+  for (const [id, linkedMaps] of Object.entries(mapGraph)) {
+    await dbUpdate('mapIndex', id, { linkedMaps })
+  }
+  
+  console.warn('YPDATE COMPLETE')
+}
+
 const cache = new Map();
 
 export const updateMap = async (mapToStore) => {
   const id = await dbUpdate('maps', mapToStore.id, mapToStore);
   
-  return id;
-};
-
-export const storeMap2 = async (mapToStore) => {
-  const { tileData, ...formatted } = mapStorageFormatter(mapToStore);
-  
-  const id = doc(collection(db, "mapIndex")).id;
-  
-  const batch = writeBatch(db);
-  
-  batch.set(doc(db, "mapIndex", id), formatted);
-  batch.set(doc(db, "tileData", id), {
-    id,
-    tileData,
-    width: formatted.width,
-    height: formatted.height,
-  });
-  
-  await batch.commit();
   return id;
 };
 
@@ -43,7 +46,7 @@ export const storeMap = async (mapToStore) => {
     mapIndexRef, {
       ...formatted,
       id,
-      linkedMaps: formatted.linkedMaps ?? [],
+      linkedMaps: formatted.linkedMaps ?? {},
     }, { merge: true }
   );
   

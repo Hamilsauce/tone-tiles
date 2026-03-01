@@ -3,6 +3,7 @@ import { storeMaps, storeMap, updateMap, loadMap, loadMaps, clearMaps, loadMapIn
 import { ref, computed, watch, reactive } from 'vue'
 import { Graph, TILE_TYPE_INDEX } from '../lib/graph.model.js';
 import { MAP_DOC_TEMPLATE } from '../maps.js';
+// import { mapGraph } from '../map-id-pojo.js';
 
 const currentMap = ref({
   tileData: {},
@@ -35,12 +36,7 @@ export const useMapStore = () => {
     
     currentMap.value = { ...(currentMapIndex.value ?? MAP_DOC_TEMPLATE), ...mapDoc, id: mapDoc.id ?? `TEMP_MAP_${Date.now()}`, };
     
-    // console.warn('mapData',
-    //   currentMap.value,
-    //   currentMapIndex.value,
-    // )
-    
-  };
+    };
   
   const saveMap = async (map) => {};
   

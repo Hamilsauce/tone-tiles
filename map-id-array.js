@@ -1,0 +1,21 @@
+export const mapIds = [
+  'AV1lKxUDArOcODrZAgaQ',
+  'BoDOb3lgb6Z3fMk8UhKP',
+  'GijGXx13yedhOXZq694U',
+  'I8hahrSpL3j8FdMCzp94',
+  'Jx2rD9TSjts2jlXn1ZXM',
+  'NztlAyh8RELZFqMXWmc6',
+  'PhbgBZBKSM4TQCALpORE',
+  'VSMgQcxUcd7j1anw4hmF',
+  'WzV0CcaKCs8gZbGGjVE4',
+  'XRzrWXGpgX2GcpgqSlYd',
+  'XWsVSANAskL3zh5F8DOH',
+  'h0byiPaNSwYdGFThGkzE',
+  'hoWsS4ofkurt87Bqk19l',
+  'ksaaobFav35eX3BvVXAR',
+  'nov7SIQARK8xoowIeDDN',
+  'oWUBdxUQTgHhCPSFBbB8',
+  'rqZVYRoeTTOVsJKv3oGL',
+  'tLVuYp6SBXlVESGfB7xg',
+  'zYCxQlIXijeHjuwqCK7A'
+];

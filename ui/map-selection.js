@@ -1,4 +1,5 @@
 import { ref, computed, watch } from 'vue';
+import { getLinkCoords } from '../lib/graph.model.js';
 
 import { BLANK_MAP_16X16, mapStorageFormatter } from '../maps.js';
 import { storeMaps, storeMap, updateMap, loadMap, loadMaps, clearMaps, loadMapIndex } from '../map.service.js';
@@ -50,18 +51,8 @@ const renderMap = (mapData, svgCanvas, graph, actor1, selectionBox) => {
         },
       }));
   });;
-  (mapData.linkedMaps || []).forEach((linkedMap, i) => {
-    let x
-    let y
-    if ([0, 2].includes(i)) {
-      x = Math.floor(graph.width / 2)
-      y = i === 2 ? graph.height : -1
-    }
-    
-    if ([1, 3].includes(i)) {
-      y = Math.floor(graph.height / 2)
-      x = i === 3 ? graph.width : -1
-    }
+  Object.entries((mapData.linkedMaps)).forEach(([dir, linkedMap], i) => {
+    const { x, y } = getLinkCoords(dir, { width: graph.width, height: graph.height })
     
     svgCanvas.layers.tile.append(
       svgCanvas.createRect({
