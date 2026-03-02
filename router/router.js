@@ -3,6 +3,7 @@ import { createMemoryHistory, createRouter } from 'vue-router'
 import { AppBody } from '../ui/app-shell/AppBody.js';
 import { AppCreateMapView } from '../ui/views/AppCreateMapView.js'
 import { AppMapList } from '../ui/views/AppMapList.js'
+import { AppMapProps } from '../ui/views/AppMapProps.js'
 import { useMapStore } from '../store/map.store.js';
 
 export const RouteName = {
@@ -10,6 +11,7 @@ export const RouteName = {
   edit: 'edit',
   createMap: 'create',
   mapList: 'list',
+  mapProps: 'props',
 };
 
 const routes = [
@@ -33,6 +35,7 @@ const routes = [
   { path: '/edit/:id', component: AppBody, name: RouteName.edit },
   { path: '/create', component: AppCreateMapView, name: RouteName.createMap },
   { path: '/list', component: AppMapList, name: RouteName.mapList },
+  { path: '/props/:id', component: AppMapProps, name: RouteName.mapProps },
 ];
 
 export const router = createRouter({

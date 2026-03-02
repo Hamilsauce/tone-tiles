@@ -21,6 +21,7 @@
   <link rel="stylesheet" href="./css/app-header.css" />
   <link rel="stylesheet" href="./css/app-map-creation.css" />
   <link rel="stylesheet" href="./css/app-map-list-view.css" />
+  <link rel="stylesheet" href="./css/app-map-props-view.css" />
 </head>
 
 <body>
@@ -115,6 +116,32 @@
           </div>
         </li>
       </ul>
+    </div>
+  </template>
+  
+  <template data-component="app-map-props-view">
+    <div id="app-map-props-view" @click="handleListClick">
+      <div id="map-props-view-top">
+        <h2>{{ map.name}}</h2>
+        <div id="map-props-view-actions">
+          <input type="button" name="done-button" id="done-button" value="done" @click="handleDoneClick" />
+          <input type="button" name="delete-button" id="delete-button" value="delete" @click="handleDeleteClick" />
+        </div>
+      </div>
+      
+      <div id="map-props-view-list">
+        <!-- <li class="map-props-item" :class="{ editing: editingId === map.id}" @click="handleMapClick(map.id)" @contextmenu="handleMapContextMenu(map.id)" @blur="handleListItemBlur(map.id)"> -->
+        <div class="map-author">
+          creator: {{ map.meta.author ?? 'Unknown' }}
+        </div>
+        <div class="map-updated">
+          updated: {{ new Date(map.updated).toLocaleDateString() }}
+        </div>
+        <div class="map-dims">
+          size: {{ `${map.width}x${map.height}` }}
+        </div>
+        <!-- </li> -->
+      </div>
     </div>
   </template>
   

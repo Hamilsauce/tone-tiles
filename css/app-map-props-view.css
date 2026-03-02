@@ -1,0 +1,130 @@
+#app-map-props-view {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  width: 100%;
+  height: 100dvh;
+  padding: 8px;
+  /* overflow-y: auto; */
+  /* backdrop-filter: hue-rotate(340deg) saturate(0.8) brightness(0.9); */
+  
+  input[type=button] {
+    padding: 2px 4px;
+    font-weight: 500;
+    font-size: 16px;
+    background: #00000099;
+    color: #EAEAEA9E;
+    white-space: nowrap;
+    border: none;
+  }
+  
+  #map-props-view-top {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    color: #FCFCFC9C;
+    /* width: 100%; */
+    /* height: 100%; */
+    
+  }
+  
+  #map-props-view-list {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 2px;
+    /* width: 100%; */
+    height: 100%;
+    /* background: #FFFFFF; */
+    list-style: none;
+    margin: 0 auto;
+    /* overflow-y: auto; */
+    
+    width: 100%;
+    /* max-width: 340px; */
+    /* min-width: 300px; */
+    background: #222020CC;
+    
+    li {
+      display: grid;
+      grid-template-rows: 1px auto;
+      grid-template-columns: 1fr 1fr;
+      justify-content: space-between;
+      grid-template:
+        "n a"
+        "u d";
+      gap: 8px;
+      height: 100%;
+      min-height: 70px;
+      width: 100%;
+      padding: 8px 8px;
+      background: #222020CC;
+      color: #EEEEEE;
+      font-size: 15px;
+      
+      > {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 2px;
+      }
+      
+    }
+    
+    li.editing {
+      grid-template:
+        "n a e"
+        "u d e";
+      filter: contrast(1.4);
+      
+      .map-edit {
+        grid-area: e;
+        width: 100%;
+        font-size: 13px;
+        /* color: #FFFFFF6B; */
+        text-align: right;
+        background: #8F2929C9;
+      }
+    }
+    
+    .map-name {
+      grid-area: n;
+    }
+    
+    .map-author {
+      grid-area: a;
+    }
+    
+    .map-updated {
+      grid-area: u;
+      font-size: 13px;
+      opacity: 0.8;
+    }
+    
+    .map-dims {
+      grid-area: d;
+      font-size: 13px;
+      /* color: #FFFFFF6B; */
+      opacity: 0.8;
+      text-align: right;
+    }
+    
+    .map-edit {
+      width: 0%;
+      
+      grid-area: e;
+      font-size: 13px;
+      /* color: #FFFFFF6B; */
+      text-align: right;
+      background: #8F2929C9;
+      transition: 0.3s;
+      overflow: hidden;
+    }
+  }
+}

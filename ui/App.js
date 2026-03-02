@@ -15,15 +15,11 @@ export const App = defineComponent(
   () => {
     const mapStore = useMapStore();
     const activeMapId = computed(() => route.value.path !== '/')
-    const shouldDisplay = computed(() => route.value.name !== 'list')
+    const shouldDisplay = computed(() => route.value.name === 'edit')
     
     onMounted(() => {
       mapStore.initMaps();
     });
-    
-    // watch(route, (newState, lastState) => {
-    //   const params = route.value.params
-    // })
     
     return { shouldDisplay }
   },

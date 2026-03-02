@@ -36,7 +36,7 @@ export const useMapStore = () => {
     
     currentMap.value = { ...(currentMapIndex.value ?? MAP_DOC_TEMPLATE), ...mapDoc, id: mapDoc.id ?? `TEMP_MAP_${Date.now()}`, };
     
-    };
+  };
   
   const saveMap = async (map) => {};
   
@@ -57,6 +57,10 @@ export const useMapStore = () => {
     const loaded = await loadMap(mapId);
     
     setCurrentMap(loaded);
+  };
+  
+  const getMapData = async (mapId) => {
+    return mapIndex.get(mapId)
   };
   
   const updateMapState = async (mapPatch = {}) => {
@@ -80,5 +84,6 @@ export const useMapStore = () => {
     mapState,
     initMaps,
     setCurrentMapById,
+    getMapData,
   }
 };

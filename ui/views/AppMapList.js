@@ -30,6 +30,13 @@ export const AppMapList = defineComponent(
     
     const handleMapContextMenu = (id) => {
       editingId.value = id;
+      
+      if (id) {
+        router.push({
+          name: RouteName.mapProps,
+          params: { id },
+        })
+      }
     };
     
     const handleListItemBlur = () => {
