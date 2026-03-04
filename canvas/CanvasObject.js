@@ -1,7 +1,6 @@
 import { EventEmitter } from 'https://hamilsauce.github.io/hamhelper/event-emitter.js';
 import { TransformList } from './TransformList.js';
 import { SVGCanvas } from './SVGCanvas.js';
-
 export const DefaultCanvasObjectOptions = {
   id: '',
   classList: [],
@@ -17,7 +16,7 @@ export const DefaultCanvasObjectOptions = {
     width: 1,
     height: 1,
   },
-  transforms: [],
+  transforms: undefined,
 }
 
 export class CanvasObject extends EventEmitter {
@@ -28,12 +27,14 @@ export class CanvasObject extends EventEmitter {
   #transformList;
   
   constructor(context = new SVGCanvas(), type, options = DefaultCanvasObjectOptions) {
+    console.warn(type, options)
+    
     super();
     this.#context = context;
     this.#type = type;
     this.#id = options.id;
     this.#self = this.#context.useTemplate(type, options);
-    this.#transformList = new TransformList(this.#context, this.#self)
+    this.#transformList = new TransformList(this.#context, this.#self, options)
   }
   
   get context() { return this.#context; }
@@ -41,6 +42,8 @@ export class CanvasObject extends EventEmitter {
   get dom() { return this.#self; }
   
   get data() { return this.dom.dataset; }
+  
+  get isVisible() { return this.data.show === 'true' ? true : false; }
   
   get transforms() { return this.#transformList; }
   
@@ -66,9 +69,11 @@ export class CanvasObject extends EventEmitter {
   
   show() {
     this.data.visible = true;
+    this.data.show = true;
   }
   
   hide() {
+    this.data.show = false;
     this.data.visible = false;
   }
   

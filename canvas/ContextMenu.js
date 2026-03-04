@@ -1,6 +1,6 @@
-import { CanvasObject, DefaultCanvasObjectOptions } from  './CanvasObject.js';
+import { CanvasObject, DefaultCanvasObjectOptions } from './CanvasObject.js';
 
-const contextMenuTransforms = [
+const _contextMenuTransforms = [
 {
   type: 'translate',
   values: [0, 0],
@@ -16,6 +16,11 @@ const contextMenuTransforms = [
   values: [0.05, 0.05],
   position: 2,
 }];
+const contextMenuTransforms = [
+  { type: 'translate', values: [0, 0], position: 0 },
+  { type: 'rotate', values: [0, 0, 0], position: 1 },
+  { type: 'scale', values: [0.05, 0.05], position: 2 },
+];
 
 const defaultContextMenuItems = [
 {
@@ -56,66 +61,57 @@ const defaultContextMenuItems = [
 }, ];
 
 export class ContextMenu extends CanvasObject {
-  #menuItems = {
-    primary: [],
-    secondary: [],
-  };
+  #menuList = null;
   
-  #menuLists = {
-    primary: null,
-    secondary: null,
-  };
+  #menuItems = [];
   
   
   constructor(ctx, menuItems = defaultContextMenuItems) {
-    super(ctx, 'context-menu', contextMenuTransforms);
+    super(ctx, 'context-menu', { transforms: contextMenuTransforms });
     
-    this.#menuList = this.getEl('.context-menu-list.primary')
-    // console.warn('this.#menuList', this.#menuList)
-    // this.#menuItems = menuItems.reduce((items, {
-    //   type,
-    //   value,
-    //   textContent,
-    //   list,
-    // }, i) => {
-    //   const el = document.createElement('li');
-      
-    //   el.dataset.value = value;
-    //   el.dataset.type = type;
-    //   el.textContent = textContent;
-    //   items[list].append(el);
-      
-    //   return items;
-    // }, this.#menuItems);
+    this.#menuList = this.getEl('.context-menu-list')
+    this.dom.addEventListener('click', e => {
+      e.preventDefault();
+      e.stopPropagation();
 
-    menuItems.forEach(({
-      type,
-      value,
-      textContent,
-      list,
-    }, i) => {
-      const el = document.createElement('li');
-      Object.assign(el, {
-        dataset: { value, type },
-        text
-      })
-      el.dataset.value = value;
-      el.dataset.type = type;
-      el.textContent = textContent;
-      this.#menuLists.append(el);
+      const targ = e.target.closest('li');
+      if (!targ) return;
+      
+      const selectedOptionValue = targ.dataset.value;
+      const selectedOptionType = targ.dataset.type;
+      const selectedTileTypeName = targ.dataset.value;
+      
+      targ.dataset.active = true;
+      
+      this.emit('tile-action', {
+        type: selectedOptionType === 'tile-action' ? selectedOptionValue : selectedTileTypeName
+      });
     });
   };
+  
+  hide() {
+    this.menuItems.forEach(_ => _.dataset.active = false)
+    super.hide();
+  }
   
   onMenuClick(e) {
     const value = e.target.dataset.value;
     // this.dispatchEvent('');
   }
   
-  toggleSecondaryMenu() {}
+  toggleActions(v = null) {
+    if (v === true || v === false) {
+      this.data.showActions = v
+    } else {
+      const isTrue = this.data.showActions === 'true'
+      
+      this.data.showActions = isTrue ? false : true
+    }
+  }
   
-  get prop() { return this.#prop; };
+  get menuItems() { return [...this.getEls('li')]; };
   
-  get prop() { return this.#prop; };
+  // get prop() { return this.#prop; };
   
-  set prop(newValue) { this._prop = newValue; };
+  // set prop(newValue) { this._prop = newValue; };
 }

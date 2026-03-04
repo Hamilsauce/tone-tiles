@@ -94,7 +94,11 @@ body {
 #tile-layer.no-shadow {
   filter: hue-rotate(55deg) invert(0);
   
-  
+  .tile rect {
+    fill: #FFFFFF7D;
+    stroke: #0E0E0E52;
+    stroke-width: 0.025px;
+  }
 }
 
 #tile-layer[data-is-selecting-link-tile=true] {
@@ -129,6 +133,13 @@ body {
   pointer-events: auto;
   touch-action: none;
   width: 100%;
+  
+  .context-menu[data-show-actions=false] {
+    li[data-type="tile-action"] {
+      display: none;
+    }
+  }
+  
 }
 
 .context-menu-foreignobject {
@@ -210,12 +221,12 @@ body {
   color: #FFFFFF;
 }
 
-.context-menu[data-show-actions=false] {
+/* .context-menu[data-show-actions=false] {
   li[data-type="tile-action"] {
     display: none;
   }
 }
-
+ */
 .edge-line>line {
   stroke: #0006FFC9;
   stroke-width: 0.075;

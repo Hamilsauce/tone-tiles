@@ -54,7 +54,6 @@ export class TransformList {
   constructor(svgCanvas, element, { transforms } = DEFAULT_TRANSFORMS) {
     this.#canvas = svgCanvas;
     this.#self = (element.dom ?? element).transform.baseVal;
-    
     this.init(transforms);
   };
   
