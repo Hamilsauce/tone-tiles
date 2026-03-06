@@ -31,8 +31,9 @@ export const AppMapList = defineComponent(
       selectedId.value = id;
     };
     
-    const handleMapEdit = (id) => {
+    const handleMapEdit = async (id) => {
       if (selectedId.value === id) {
+        await mapStore.setCurrentMapById(id)
         router.push({
           name: RouteName.mapProps,
           params: { id },

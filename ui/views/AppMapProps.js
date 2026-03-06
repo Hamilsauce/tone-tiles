@@ -12,6 +12,27 @@ export const AppMapProps = defineComponent(
     const maps = mapStore.mapIndex
     const mapId = computed(() => route.value.params.id)
     const map = computed(() => mapStore.mapIndex.get(mapId.value))
+    const currentMap = computed(() => mapStore.currentMap.value)
+    console.warn('curre', currentMap.value)
+    
+    const aggregateTileData = ({ tileData }) => {
+      const res = Object.values(tileData).reduce((acc, curr, i) => {
+        if (acc[curr.tileType] !== undefined) {
+          acc[curr.tileType] === acc[curr.tileType]++
+        }
+        
+        return acc
+      }, {
+        barrier: 0,
+        teleport: 0,
+        start: 0,
+        end: 0,
+      })
+      
+      return res
+    }
+    const mapStats = computed(() => aggregateTileData(currentMap.value))
+    
     const editingId = ref(null);
     
     const handleNewMap = () => {
@@ -40,7 +61,17 @@ export const AppMapProps = defineComponent(
       console.warn(map.value)
     })
     
+    watch(currentMap, () => {
+      console.warn(mapStats.value)
+    }, { immediate: true })
     
-    return { map, editingId, handleDoneClick, handleDeleteClick }
+    
+    return {
+      mapStats,
+      map,
+      editingId,
+      handleDoneClick,
+      handleDeleteClick
+    }
   }, {},
 )

@@ -127,7 +127,6 @@ export const initMapControls = async (graph, svgCanvas, actor1, selectionBox) =>
     return mapId;
   });
   
-  
   watch(mapStore.currentMap, (newMap, oldMap) => {
     if (newMap && oldMap && newMap.id === oldMap.id) return;
     renderMap(newMap, svgCanvas, graph, actor1, selectionBox);
