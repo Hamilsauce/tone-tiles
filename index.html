@@ -144,6 +144,14 @@
           size: {{ `${map.width}x${map.height}` }}
         </div>
       </div>
+      
+      <div id="map-props-view-stats">
+        <div class="map-barrier">barrier: {{ mapStats.barrier }}</div>
+        <div class="map-teleport">teleport: {{ mapStats.teleport }}</div>
+        <div class="map-start">start: {{ mapStats.start }}</div>
+        <div class="map-empty">empty: {{ mapStats.empty }}</div>
+        <div class="map-total">total: {{ mapStats.total }}</div>
+      </div>
     </div>
   </template>
   

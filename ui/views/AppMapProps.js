@@ -15,10 +15,12 @@ export const AppMapProps = defineComponent(
     const currentMap = computed(() => mapStore.currentMap.value)
     console.warn('curre', currentMap.value)
     
-    const aggregateTileData = ({ tileData }) => {
+    const aggregateTileData = ({ tileData, width, height }) => {
+      
       const res = Object.values(tileData).reduce((acc, curr, i) => {
         if (acc[curr.tileType] !== undefined) {
-          acc[curr.tileType] === acc[curr.tileType]++
+          acc[curr.tileType] === acc[curr.tileType]++;
+          acc.total++;
         }
         
         return acc
@@ -27,8 +29,11 @@ export const AppMapProps = defineComponent(
         teleport: 0,
         start: 0,
         end: 0,
+        total: 0,
       })
       
+      res.empty = (width * height) - res.total
+      res.total = (width * height)
       return res
     }
     const mapStats = computed(() => aggregateTileData(currentMap.value))
