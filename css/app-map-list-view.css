@@ -10,16 +10,6 @@
   overflow-y: auto;
   backdrop-filter: hue-rotate(340deg) saturate(0.8) brightness(0.9);
   
-  input[type=button] {
-    padding: 2px 4px;
-    font-weight: 500;
-    font-size: 16px;
-    background: #00000099;
-    color: #EAEAEA9E;
-    white-space: nowrap;
-    border: none;
-  }
-  
   #map-list-view-top {
     display: flex;
     flex-direction: column;
@@ -45,7 +35,7 @@
     width: 100%;
     max-width: 340px;
     min-width: 300px;
-
+    
     .map-list-item {
       display: grid;
       grid-template-rows: 1px auto;
@@ -113,7 +103,7 @@
     
     .map-edit {
       width: 0%;
-
+      
       grid-area: e;
       font-size: 13px;
       /* color: #FFFFFF6B; */
@@ -123,4 +113,14 @@
       overflow: hidden;
     }
   }
+}
+
+input[type=button] {
+  padding: 2px 4px;
+  font-weight: 500;
+  font-size: 16px;
+  background: #00000099;
+  color: #EAEAEA9E;
+  white-space: nowrap;
+  border: none;
 }

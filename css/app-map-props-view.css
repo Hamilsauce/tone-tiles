@@ -8,7 +8,8 @@
   height: 100dvh;
   padding: 8px;
   color: #EEEEEE;
-
+  /* background: #6F70805E; */
+  backdrop-filter: hue-rotate(50deg);
   /* overflow-y: auto; */
   /* backdrop-filter: hue-rotate(340deg) saturate(0.8) brightness(0.9); */
   
@@ -53,6 +54,7 @@
     background: #222020CC;
     color: #EEEEEE;
   }
+  
   #map-props-view-stats {
     display: flex;
     flex-direction: column;

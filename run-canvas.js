@@ -345,7 +345,7 @@ export const runCanvas = async () => {
       
       let intervalHandle = setInterval(async () => {
         curr = bfsPath[pointer];
-        
+
         if (audioNote1 && getNextPreVelIndex()) {
           audioNote1
             .at(audioEngine.currentTime + 0.33)
@@ -658,7 +658,7 @@ export const runCanvas = async () => {
     const selectedOptionType = data.type;
     const selectedTileTypeName = data.type;
     const selectedTile = svgCanvas.layers.tile.querySelector('.tile[data-selected="true"]');
-    
+    console.warn(selectedTile)
     if (!selectedTile) return;
     
     const node = graph.getNodeAtPoint({

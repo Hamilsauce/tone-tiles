@@ -75,6 +75,7 @@ export class ContextMenu extends CanvasObject {
       e.stopPropagation();
       
       const targ = e.target.closest('li');
+      console.warn(targ.dataset)
       if (!targ) return;
       
       const selectedOptionValue = targ.dataset.value;

@@ -35,7 +35,11 @@ const routes = [
   { path: '/edit/:id', component: AppBody, name: RouteName.edit },
   { path: '/create', component: AppCreateMapView, name: RouteName.createMap },
   { path: '/list', component: AppMapList, name: RouteName.mapList },
-  { path: '/props/:id', component: AppMapProps, name: RouteName.mapProps },
+  {
+    path: '/props/:id',
+    components: { default: AppMapProps, panel: AppBody, },
+    name: RouteName.mapProps
+  },
 ];
 
 export const router = createRouter({

@@ -47,7 +47,7 @@ export const storeMap = async (mapToStore) => {
       ...formatted,
       id,
       linkedMaps: formatted.linkedMaps ?? {},
-    }, { merge: true }
+    }//, { merge: true }
   );
   
   batch.set(
