@@ -85,8 +85,8 @@ export class CanvasObject extends EventEmitter {
     this.data.selected = false;
   }
   
-  setData(key, value) {
-    this.data[key] = value;
+  setData(attributeMap = {}) {
+    Object.assign(this.data, attributeMap);
   }
   
   deleteData(key) {

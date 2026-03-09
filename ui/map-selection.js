@@ -34,11 +34,10 @@ const renderMap = (mapData, svgCanvas, graph, actor1, selectionBox) => {
   console.log({ tilesTotal })
   if (tilesTotal > 512) {
     svgCanvas.layers.tile.classList.add('no-shadow')
-    
   } else {
     svgCanvas.layers.tile.classList.remove('no-shadow')
-    
   }
+  
   svgCanvas.layers.tile.innerHTML = '';
   
   graph.nodes.forEach(({ x, y, tileType }, rowNumber) => {
@@ -61,7 +60,8 @@ const renderMap = (mapData, svgCanvas, graph, actor1, selectionBox) => {
           isPathNode: false,
         },
       }));
-  });;
+  });
+  
   Object.entries((mapData.linkedMaps)).forEach(([dir, linkedMap], i) => {
     const { x, y } = getLinkCoords(dir, { width: graph.width, height: graph.height })
     

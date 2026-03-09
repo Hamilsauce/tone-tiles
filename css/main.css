@@ -62,6 +62,11 @@ body {
   filter: contrast(1.2) hue-rotate(200deg) saturate(1.2);
 }
 
+/* #viewport {
+  transform-box: fill-box;
+  will-change: transform;
+} */
+
 #scene {
   transform: translate(0.2px, 0.2px);
   filter: saturate(1.3) contrast(1.2);
@@ -71,43 +76,13 @@ body {
   fill: #2925222B;
   stroke: #FFFFFF80;
   stroke-width: 0.2;
-  filter: saturate(1.2);
+  /* filter: saturate(1.2); */
   touch-action: none;
 }
 
 #map-name-text {
   font-size: 15px;
   font-weight: 600;
-}
-
-#tile-layer {
-  filter: hue-rotate(55deg) invert(0) drop-shadow(1px 1px 0.1px #00000050);
-  
-  transition: filter 1.5s ease;
-  
-  .tile rect {
-    filter: hue-rotate(30deg) saturate(1.3);
-    
-  }
-}
-
-#tile-layer.no-shadow {
-  filter: hue-rotate(55deg) invert(0);
-  
-  .tile rect {
-    fill: #FFFFFF7D;
-    stroke: #0E0E0E52;
-    stroke-width: 0.025px;
-  }
-}
-
-#tile-layer[data-is-selecting-link-tile=true] {
-  
-  .tile:hover rect {
-    fill: rgba(39, 186, 56, 0.468);
-    cursor: pointer;
-  }
-  
 }
 
 #stars {
@@ -214,7 +189,7 @@ body {
   overflow-y: hidden;
   pointer-events: auto !important;
   background: #646464;
-
+  
 }
 
 .context-menu-list li {
