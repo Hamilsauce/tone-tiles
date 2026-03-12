@@ -196,12 +196,13 @@
         </defs>
         
         <g id="viewport" ref="canvasViewportRef" transform="matrix(1 0 0 1 0 0)">
+          
           <g id="surface-layer" transform="translate(-0,-0) rotate(0) scale(1)">
             <rect id="surface" x="-100" y="-100" rx="0" ry="0" width="200" height="200"></rect>
             <line class="axis-line" x1="-100" y1="0" x2="100" y2="0" _marker-end="url(#edge-line-arrow)" transform="translate(0,0) rotate(0) scale(1)" />
             <line class="axis-line" x1="0" y1="-100" x2="0" y2="100" _marker-end="url(#edge-line-arrow)" transform="translate(0,0) rotate(0) scale(1)" />
-            <g id="map-name" transform="translate(0,-3) rotate(0) scale(0.1)">
-              <text id="map-name-text" _dominant-baseline="hanging" _text-anchor="middle">
+            <g id="surface-map-name" transform="translate(0,0) rotate(0) scale(0.1)">
+              <text id="map-name-text" _dominant-baseline="hanging" text-anchor="middle">
                 {{ map.name }}
               </text>
             </g>
