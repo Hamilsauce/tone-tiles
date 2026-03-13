@@ -24,8 +24,8 @@ body {
 
 .gradient {
   background-image: linear-gradient(45deg, #465FA1, #1182B9),
-    linear-gradient(to right, rgba(30, 75, 115, 1), #352F34),
-    linear-gradient(to right, rgba(30, 75, 115, 1), #2F3135);
+    linear-gradient(to bottom right, rgba(30, 75, 115, 1), #352F34),
+    linear-gradient(to top left, rgba(71, 157, 157, 1), #302F36);
   background-blend-mode: exclusion, color-dodge, luminosity;
   background-repeat: no-repeat,
     no-repeat,

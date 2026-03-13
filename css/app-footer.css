@@ -5,6 +5,11 @@
 }
 
 #app-footer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
   display: grid;
   grid-template-rows: auto 1fr;
   grid-auto-columns: 1fr;
@@ -15,8 +20,9 @@
   padding: 4px 0 2px 0;
   z-index: 100;
   background: #535560;
-  background: #3A3B42;
+  background: #3A3B4291;
   /* filter: contrast(1.2) saturate(1.2); */
+  backdrop-filter: blur(10px) hue-rotate(0deg) contrast(1.4);
 
 }
 

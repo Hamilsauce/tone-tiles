@@ -35,7 +35,7 @@ export class CanvasObject extends EventEmitter {
 	
 	constructor(context = new SVGCanvas(), type = '', { model = {}, transforms }) {
 		super();
-
+		
 		this.#context = context;
 		this.#type = type;
 		this.#model = { ...this.#model, ...model };

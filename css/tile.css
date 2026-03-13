@@ -15,15 +15,28 @@
   }
 }
 
+.tile {
+  /* transform-origin: bottom; */
+}
+
 .tile>* {
   fill: #FFFFFF7D;
   stroke: #5F5F5F;
   stroke-width: 0.025px;
 }
 
+.tile[data-tile-type=map-link]{
+  fill: #ED311D;
+  rx: 1;
+  ry: 1;
+  /* transform: rotate((); */
+}
+
 .tile[data-tile-type=map-link]>* {
   fill: #ED311D;
-  rx: 0.2;
+  rx: 1;
+  ry: 1;
+  
 }
 
 

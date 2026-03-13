@@ -643,18 +643,25 @@ export const runCanvas = async () => {
   
   svgCanvas.layers.tile.addEventListener('contextmenu', handleEditTileClick);
   
+  let sourceRange = {}
+  
   contextMenu.on('tile-action', data => {
     const selectedOptionValue = data.type;
     const selectedOptionType = data.type;
     const selectedTileTypeName = data.type;
     const selectedTile = svgCanvas.layers.tile.querySelector('.tile[data-selected="true"]');
-    console.warn(selectedTile)
+    // console.warn('contextMenu.on(tile-action', { data })
+    
     if (!selectedTile) return;
     
     const node = graph.getNodeAtPoint({
       x: +selectedTile.dataset.x,
       y: +selectedTile.dataset.y,
     });
+    
+    if (selectedOptionValue === 'copy') {
+      sourceRange = selectedRange;
+    }
     
     if (selectedOptionValue === 'link-teleport') {
       isSelectingLinkTile = true;
@@ -687,8 +694,25 @@ export const runCanvas = async () => {
     };
   });
   
+  await sleep(50)
+  
+  // console.warn(JSON.stringify(selectionBox, null, 2))
+  
+  let hasSetListener = false
+  
+  selectionBox.dom.addEventListener('dblclick', e => {
+    if (sourceRange) {
+      selectedRange.forEach(item => {
+        // console.warn({ item })
+      })
+    }
+  });
+  
   selectionBox.on('selection', range => {
     selectedRange = getRange(range);
+    // sourceRange = selectedRange;
+    // console.warn({ selectedRange })
+    
     const { start, end } = range;
     
     const middle = Math.abs(start.x - end.x);
@@ -696,5 +720,23 @@ export const runCanvas = async () => {
     graph.getRange(range, (tile) => tile.selected = true);
     
     contextMenu.update({ x: start.x, y: start.y - 2 }).show();
+    
+    if (!hasSetListener) {
+      
+      selectionBox.dom.addEventListener('dblclick', e => {
+        // console.warn({
+        //   selectedRangeLength: selectedRange.length,
+        //   sourceRangeLength: sourceRange.length,
+        // })
+        
+        if (sourceRange) {
+          selectedRange.forEach(item => {
+            
+            // console.warn({ item })
+          })
+        }
+      });
+    }
+    
   });
 };

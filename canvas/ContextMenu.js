@@ -7,42 +7,49 @@ const contextMenuTransforms = [
 ];
 
 const defaultContextMenuItems = [
-{
-  type: 'tile-type',
-  value: 'empty',
-  textContent: 'Empty',
-  list: 'primary',
-},
-{
-  type: 'tile-type',
-  value: 'barrier',
-  textContent: 'Barrier',
-  list: 'primary',
-},
-{
-  type: 'tile-type',
-  value: 'start',
-  textContent: 'Start',
-  list: 'primary',
-},
-{
-  type: 'tile-type',
-  value: 'goal',
-  textContent: 'Goal',
-  list: 'primary',
-},
-{
-  type: 'tile-type',
-  value: 'teleport',
-  textContent: 'Teleport',
-  list: 'primary',
-},
-{
-  type: 'tile-action',
-  value: 'link-teleport',
-  textContent: 'Link to...',
-  list: 'primary',
-}, ];
+  {
+    type: 'tile-type',
+    value: 'empty',
+    textContent: 'Empty',
+    list: 'primary',
+  },
+  {
+    type: 'tile-type',
+    value: 'barrier',
+    textContent: 'Barrier',
+    list: 'primary',
+  },
+  // {
+  //   type: 'tile-type',
+  //   value: 'start',
+  //   textContent: 'Start',
+  //   list: 'primary',
+  // },
+  {
+    type: 'tile-action',
+    value: 'copy',
+    textContent: 'copy',
+    list: 'primary',
+  },
+  {
+    type: 'tile-type',
+    value: 'goal',
+    textContent: 'Goal',
+    list: 'primary',
+  },
+  {
+    type: 'tile-type',
+    value: 'teleport',
+    textContent: 'Teleport',
+    list: 'primary',
+  },
+  {
+    type: 'tile-action',
+    value: 'link-teleport',
+    textContent: 'Link to...',
+    list: 'primary',
+  },
+];
 
 export class ContextMenu extends CanvasObject {
   #menuList = null;

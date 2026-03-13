@@ -83,25 +83,24 @@ export class SVGCanvas extends EventTarget {
     
     this.pointerMove$.subscribe();
     
-    this.eventEmits$ = this.clickDOM$
-      .pipe(
-        map(({ type, target, clientX, clientY }) => {
-          const point = this.domPoint(clientX, clientY);
-          const isTile = !!target.closest('.tile');
-          
-          return {
-            type: `${isTile ? 'tile:' : ''}${type}`,
-            detail: {
-              target,
-              x: point.x,
-              y: point.y,
-            }
-          };
-        }),
-        map(({ type, detail }) => createCustomEvent(type, detail)),
-        tap((event) => this.dispatchEvent(event)),
-        tap((event) => console.log('[ CANVAS EMIT$ ]: ', { event: event.type })),
-      );
+    this.eventEmits$ = this.clickDOM$.pipe(
+      map(({ type, target, clientX, clientY }) => {
+        const point = this.domPoint(clientX, clientY);
+        const isTile = !!target.closest('.tile');
+        
+        return {
+          type: `${isTile ? 'tile:' : ''}${type}`,
+          detail: {
+            target,
+            x: point.x,
+            y: point.y,
+          }
+        };
+      }),
+      map(({ type, detail }) => createCustomEvent(type, detail)),
+      tap((event) => this.dispatchEvent(event)),
+      tap((event) => console.log('[ CANVAS EMIT$ ]: ', { event: event.type })),
+    );
     
     this.toggleScroll = this.#toggleScroll.bind(this);
     this.clickDOMSubscription = this.eventEmits$.subscribe();
