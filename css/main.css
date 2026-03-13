@@ -88,8 +88,9 @@ body {
   font-size: 16px;
   font-weight: 800;
   fill: #FFFFFFD4;
-  stroke: #0606067A;
+  /* stroke: #0606067A; */
   stroke-width: 0.35;
+  opacity: 0.3;
 }
 
 #stars {
