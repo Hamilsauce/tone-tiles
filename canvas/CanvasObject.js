@@ -33,13 +33,13 @@ export class CanvasObject extends EventEmitter {
 	#self;
 	#transformList;
 	
-	constructor(context = new SVGCanvas(), type = '', { model = {}, transforms }) {
+	constructor(context = new SVGCanvas(), type = '', { id, model = {}, transforms }) {
 		super();
 		
 		this.#context = context;
 		this.#type = type;
 		this.#model = { ...this.#model, ...model };
-		this.#id = `${type}${utils.uuid()}`;
+		this.#id = id ?? `${type}${utils.uuid()}`;
 		this.#self = this.#context.useTemplate(type, {
 			id: this.#id,
 			dataset: this.#model,
@@ -57,13 +57,8 @@ export class CanvasObject extends EventEmitter {
 	get x() { return this.#model.x; }
 	get y() { return this.#model.y; }
 	
-	set x(v) {
-		this.#model.x = v;
-	}
-	
-	set y(v) {
-		this.#model.y = v;
-	}
+	set x(v) { this.#model.x = v; }
+	set y(v) { this.#model.y = v; }
 	
 	get data() { return this.dom.dataset; }
 	
@@ -85,6 +80,7 @@ export class CanvasObject extends EventEmitter {
 	
 	scaleTo(x, y) {
 		this.transforms.scaleTo(x, y);
+		
 	}
 	
 	remove() {
@@ -131,6 +127,11 @@ export class CanvasObject extends EventEmitter {
 	deleteData(key) {
 		delete this.data[key];
 	}
+	
+	disableEvents() {
+		this.el.style.pointerEvents = "none"
+	}
+	
 	
 	getEl(selector = '') { return this.dom.querySelector(selector); }
 	

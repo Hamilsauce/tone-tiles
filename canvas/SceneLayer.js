@@ -5,7 +5,8 @@ export class SceneLayer extends CanvasObject {
   #objects = new Nap()
   
   constructor(ctx, name, options = {}) {
-    super(ctx, 'layer');
+    super(ctx, 'layer', options);
+    const models = options.models;
     
     this.#name = name;
   };
@@ -45,11 +46,7 @@ export class SceneLayer extends CanvasObject {
     }
     this.#objects.clear();
   }
-  
-  disableEvents() {
-    this.el.style.pointerEvents = "none"
-  }
-  
+
   sort(compareFn) {
     const sorted = [...this.#objects.values()].sort(compareFn)
     
@@ -59,6 +56,6 @@ export class SceneLayer extends CanvasObject {
   }
   
   serialize() {
-    return [...this.#objects.values()].map(o => o.serialize())
+    return [...this.#objects.values()].map(o => o.toJSON())
   }
 }

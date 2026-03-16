@@ -64,6 +64,10 @@ body {
   *[data-hide=true] {
     display: none;
   }
+
+  *[data-interactive=false] {
+    pointer-events: none;
+  }
 }
 
 /* #viewport {
