@@ -1,5 +1,3 @@
-.actor {}
-
 .actor {
   fill: #00A7FF;
   stroke: #000000;
@@ -7,18 +5,14 @@
 }
 
 .actor[data-moving=false],
-.actor[data-moving=false] * {
-}
-
+.actor[data-moving=false] * {}
 
 .actor[data-moving=true][data-teleporting=false],
 .actor[data-moving=true][data-teleporting=false] * {
   fill: #38DD17;
   r: 0.3;
   transition: 0.125s ease-out;
-  
 }
-
 
 .actor[data-teleporting=false],
 .actor[data-teleporting=false] * {

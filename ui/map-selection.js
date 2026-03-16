@@ -1,5 +1,5 @@
 import { ref, computed, watch } from 'vue';
-import { getLinkCoords } from '../lib/graph.model.js';
+import { getLinkCoords, getDirectionFromPoints } from '../lib/graph.model.js';
 
 import { BLANK_MAP_16X16, mapStorageFormatter } from '../maps.js';
 import { storeMaps, storeMap, updateMap, loadMap, loadMaps, clearMaps, loadMapIndex } from '../map.service.js';

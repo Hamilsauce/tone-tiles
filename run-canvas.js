@@ -1,4 +1,4 @@
-import { Graph, TILE_TYPE_INDEX } from './lib/graph.model.js';
+import { Graph, TILE_TYPE_INDEX, getChordToneDegreeFromDir, getDirectionFromPoints } from './lib/graph.model.js';
 import { SVGCanvas } from './canvas/SVGCanvas.js';
 import { maps } from './maps.js';
 import { getTileSelector } from 'https://hamilsauce.github.io/svg-range-selector/tile-selector.js';
@@ -214,25 +214,29 @@ export const runCanvas = async () => {
     return arp ? (x + y) % harmonicCxt.chordNotes.length : (x + y) % harmonicCxt.notes.length
   }
   
-  const getTileTone = (x, y, arp = false) => {
-    const deg = getScaleDegree(x, y, arp)
-    const pitch = arp ? harmonicCxt.chordNotes[deg] : harmonicCxt.notes[deg]
+  const getTileTone = (x, y, degree, arp = false) => {
+    const deg = degree ?? getScaleDegree(x, y, arp)
     
+    const pitch = arp ? harmonicCxt.chordNotes[deg] : harmonicCxt.notes[deg]
     return pitchToFrequency(pitch.pitch)
   }
   
   const getDynamicTone = (x, y, dir = 1) => {
     const mod = y > 5 ? -2 : 0;
+    
     const pitchClass = getTileDegree(x, harmonicCxt.notes.length)
-    const octave = getTileOctave(y + mod, harmonicCxt.notes.length)
+    const octave = getTileOctave(Math.min(y, 5), harmonicCxt.notes.length)
     
     const pitch = `${pitchClass}${octave + dir}`;
+    
     return pitchToFrequency(pitch)
   }
   
-  const toTone = (x, y) => (x % 2 && y % 2) ?
+  const _toTone = (x, y, deg) => (x % 2 && y % 2) ?
     getDynamicTone(x, y, 0) :
-    getTileTone(x, y, )
+    getTileTone(x, y, deg, true)
+  
+  const toTone = (x, y, deg, arp) => getTileTone(x, y, deg, arp)
   
   const handleTileClick = async ({ detail }) => {
     if (!isRunning.value) return;
@@ -298,12 +302,12 @@ export const runCanvas = async () => {
     const startNode = graph.getNodeAtPoint({ x: +startNodeEl.dataset.x, y: +startNodeEl.dataset.y });
     const targetNode = graph.getNodeAtPoint({ x: +targetNodeEl.dataset.x, y: +targetNodeEl.dataset.y });
     const bfsPath = graph.getPath(startNode, targetNode);
-   console.warn(bfsPath);
- 
+    
     if (bfsPath === null) return;
     
     let pointer = 0;
     let curr = bfsPath;
+    let prev = curr;
     
     let path = [];
     
@@ -334,14 +338,10 @@ export const runCanvas = async () => {
       
       
       let intervalHandle = setInterval(async () => {
+        prev = curr;
         curr = bfsPath[pointer];
-        
-        if (audioNote1 && getNextPreVelIndex()) {
-          audioNote1
-            .at(audioEngine.currentTime + 0.33)
-            .velocity(0.05)
-            .play();
-        }
+        const travelDir = getDirectionFromPoints(prev, curr)
+        const chordToneDegree = getChordToneDegreeFromDir(travelDir)
         
         if (!curr) {
           isMoving = false;
@@ -362,12 +362,12 @@ export const runCanvas = async () => {
             let vel = (0.4 - (pointer / bfsPath.length));
             vel = vel >= 0.4 ? 0.4 : vel;
             vel = vel <= 0.075 ? 0.075 : vel;
-            
+            vel = pointer % 2 === 0 ? 0.1 : 0.4;
             const dur = 2 / bfsPath.length;
             const startMod = ((pointer || 1) * 0.01);
             
             try {
-              freq = toTone(curr.x, curr.y)
+              freq = toTone(curr.x, curr.y, chordToneDegree)
               audioNote1 = fireAudioNote(freq, vel)
             } catch (e) {
               console.error('no audio note for you')
