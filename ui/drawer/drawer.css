@@ -10,9 +10,6 @@ body {
   touch-action: none;
 }
 
-.app {
-  min-height: 100vh;
-}
 
 .button-container {}
 
