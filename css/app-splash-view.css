@@ -18,7 +18,7 @@ body::before {
   align-items: center;
   width: 100dvw;
   height: 100dvh;
-    background-color: #0b0620;
+  background-color: #0b0620;
 }
 
 #app-splash-view.fade {
@@ -44,6 +44,12 @@ body::before {
   font-size: 140px;
   font-weight: 900;
   color: #EFEFEF99;
+  mask-image: radial-gradient(circle,
+      black 50%,
+      transparent 75%);
+  /* animation: maskImage 5s linear infinite alternate; */
+  /* box-shadow: 0 10px 40px rgba(0, 0, 0, 0.45), 0 0 30px rgba(0, 255, 120, 0.15); */
+
 }
 
 #app-splash-foreground {
@@ -52,7 +58,7 @@ body::before {
   justify-content: flex-start;
   align-items: center;
   width: 100%;
-  max-width: 600px;
+  max-width: 400px;
   height: 400px;
   padding: 8px;
   font-size: 140px;
@@ -68,6 +74,35 @@ body::before {
   filter: contrast(1.2);
   border-top: 32px groove #0D0D2078;
   border-bottom: 32px groove #0D0D2078;
+  border: 32px groove #0D0D2078;
+  border-radius: 50%;
+}
+
+#app-splash-background::before {
+  
+  animation:
+    portalPulse 6s ease-in-out infinite,
+    portalHue 18s linear infinite;
+  
+}
+
+#app-splash-foreground::before {
+  content: "";
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  pointer-events: none;
+  
+  background: radial-gradient(circle,
+      transparent 60%,
+      rgba(0, 255, 140, .35) 70%,
+      rgba(0, 255, 140, .15) 78%,
+      transparent 85%);
+  
+  filter: blur(6px);
+  animation: portalPulse 5s ease-in-out infinite;
+  
+  
 }
 
 #app-splash-overlay {
@@ -83,12 +118,13 @@ body::before {
   z-index: 1001;
   mix-blend-mode: luminosity;
   filter: brightness(1.4) contrast(2) drop-shadow(0 0 8px #000000);
+  
 }
 
 #app-splash-cta {
   font-size: 20px;
   font-weight: 600;
-  color: #FFFFFF;
+  color: #FFFFFF90;
   padding: 8px;
   filter: invert(1);
 }
@@ -118,6 +154,35 @@ body::before {
   pointer-events: none;
 }
 
+/* .portal::before {
+  animation:
+    portalPulse 6s ease-in-out infinite,
+    portalHue 18s linear infinite;
+} */
+
+@keyframes portalHue {
+  from {
+    filter: blur(6px) hue-rotate(0deg);
+  }
+  
+  to {
+    filter: blur(6px) hue-rotate(360deg);
+  }
+}
+
+@keyframes portalPulse {
+  
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: .6;
+  }
+  
+  50% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+}
 
 @keyframes drift {
   from {
@@ -126,6 +191,20 @@ body::before {
   
   to {
     transform: translate(3%, 3%) scale(1.5);
+  }
+}
+
+@keyframes maskImage {
+  from {
+    mask-image: radial-gradient(circle,
+        black 50%,
+        transparent 100%);
+  }
+  
+  to {
+    mask-image: radial-gradient(circle,
+        black 50%,
+        transparent 60%);
   }
 }
 
