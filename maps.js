@@ -7,7 +7,7 @@ export const MAP_DOC_TEMPLATE = {
   width: 16,
   height: 16,
   tileData: {},
-  linkedMaps:{},
+  linkedMaps: {},
 };
 
 export const mapStorageFormatter = ({ name, tiles, tileData, meta, width, height }) => {
@@ -147,7 +147,7 @@ export const MAP_9X15_1 = {
   },
   tiles: [
     [1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 2, 1, 0, 0, 0, 0, 0, 1],
+    [1, 2, 1, 0, 0, 0, 0, 4, 1],
     [1, 0, 1, 1, 1, 0, 1, 0, 1],
     [1, 0, 1, 0, 0, 0, 1, 0, 1],
     [1, 0, 0, 0, 1, 1, 1, 0, 1],
@@ -159,7 +159,7 @@ export const MAP_9X15_1 = {
     [1, 0, 1, 1, 1, 0, 1, 0, 1],
     [1, 0, 1, 0, 0, 0, 1, 0, 1],
     [1, 0, 1, 0, 1, 0, 1, 0, 1],
-    [1, 0, 1, 0, 0, 0, 0, 0, 1],
+    [1, 4, 1, 0, 0, 0, 0, 0, 1],
     [1, 1, 1, 1, 1, 1, 1, 1, 1],
   ],
 };

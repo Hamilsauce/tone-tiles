@@ -1,14 +1,18 @@
 import { computed, watch } from 'vue'
-import { createMemoryHistory, createRouter } from 'vue-router'
+import { createMemoryHistory, createWebHashHistory, createRouter } from 'vue-router'
 import { AppBody } from '../ui/app-shell/AppBody.js';
 import { AppCreateMapView } from '../ui/views/AppCreateMapView.js'
 import { AppMapList } from '../ui/app-map-list/AppMapList.js'
 import { AppMapProps } from '../ui/views/AppMapProps.js'
+import { AppSplashView } from '../ui/views/AppSplashView.js'
 import { useMapStore } from '../store/map.store.js';
+
+let hasAppLoaded = false;
 
 export const RouteName = {
   home: 'home',
   edit: 'edit',
+  splash: 'splash',
   createMap: 'create',
   mapList: 'list',
   mapProps: 'props',
@@ -23,16 +27,24 @@ const routes = [
       panel: AppCreateMapView,
     },
     beforeEnter: (to, from) => {
+      if (!hasAppLoaded) {
+        hasAppLoaded = true;
+        
+        return { name: RouteName.splash };
+      }
+      
       if (!to.params.id) {
-        return { name: RouteName.mapList }
+        return { name: RouteName.mapList };
       }
       
       const mapStore = useMapStore();
-      mapStore.setCurrentMapById(to.params.id)
+      mapStore.setCurrentMapById(to.params.id);
+      
       return { name: RouteName.edit, params: { id: to.params.id } }
     },
   },
   { path: '/edit/:id', component: AppBody, name: RouteName.edit },
+  { path: '/splash', component: AppSplashView, name: RouteName.splash },
   { path: '/create', component: AppCreateMapView, name: RouteName.createMap },
   { path: '/list', component: AppMapList, name: RouteName.mapList },
   {
@@ -43,7 +55,7 @@ const routes = [
 ];
 
 export const router = createRouter({
-  history: createMemoryHistory(),
+  history: createWebHashHistory(),
   routes,
 });
 

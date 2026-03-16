@@ -2,17 +2,63 @@ import { CanvasObject, DefaultCanvasObjectOptions } from './CanvasObject.js';
 
 export class SceneLayer extends CanvasObject {
   #name = null
-  #objects = []
+  #objects = new Nap()
   
   constructor(ctx, name, options = {}) {
-    super(ctx, 'layer', {
-      ...options,
-      id: `${name}-layer`,
-      dataset: {
-        layerName: name,
-      },
-    });
+    super(ctx, 'layer');
     
     this.#name = name;
   };
+  
+  add(obj) {
+    if (!(obj instanceof CanvasObject)) {
+      throw new Error("SceneLayer can only contain CanvasObjects");
+    }
+    
+    this.#objects.set(obj.id, obj);
+    this.dom.appendChild(obj.dom);
+    
+    this.emit('object:add', obj);
+  }
+  
+  remove(id) {
+    const obj = this.#objects.get(id);
+    if (!obj) return;
+    
+    obj.remove();
+    this.#objects.delete(id);
+    
+    this.emit('object:remove', obj);
+  }
+  
+  get(id) {
+    return this.#objects.get(id);
+  }
+  
+  forEach(fn) {
+    this.#objects.forEach(fn);
+  }
+  
+  clear() {
+    for (const obj of this.#objects.values()) {
+      obj.remove();
+    }
+    this.#objects.clear();
+  }
+  
+  disableEvents() {
+    this.el.style.pointerEvents = "none"
+  }
+  
+  sort(compareFn) {
+    const sorted = [...this.#objects.values()].sort(compareFn)
+    
+    sorted.forEach(obj => {
+      this.el.appendChild(obj.el)
+    })
+  }
+  
+  serialize() {
+    return [...this.#objects.values()].map(o => o.serialize())
+  }
 }

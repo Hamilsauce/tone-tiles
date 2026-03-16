@@ -1,0 +1,145 @@
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  
+  background:
+    radial-gradient(circle at 75% 55%,
+      rgba(255, 140, 80, .35),
+      transparent 60%);
+  
+  pointer-events: none;
+}
+
+#app-splash-view {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100dvw;
+  height: 100dvh;
+    background-color: #0b0620;
+}
+
+#app-splash-view.fade {
+  filter: brightness(0) hue-rotate(200deg) invert(1) blur(6px) opacity(1);
+  transition: 3s;
+}
+
+#app-splash-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100vh;
+  animation: hueDrift 4s linear infinite alternate;
+  background:
+    radial-gradient(circle at 45% 60%,
+      rgba(120, 255, 120, 0.35),
+      rgba(0, 0, 0, 0) 60%);
+  font-size: 140px;
+  font-weight: 900;
+  color: #EFEFEF99;
+}
+
+#app-splash-foreground {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  max-width: 600px;
+  height: 400px;
+  padding: 8px;
+  font-size: 140px;
+  font-weight: 900;
+  color: #EFEFEF99;
+  background-image: url("../assets/tone-tiles-splash5.jpg");
+  background-size: 130%;
+  background-position: right;
+  background-repeat: no-repeat;
+  opacity: 0.85;
+  animation: hueDrift 3s linear infinite alternate;
+  backdrop-filter: contrast(2);
+  filter: contrast(1.2);
+  border-top: 32px groove #0D0D2078;
+  border-bottom: 32px groove #0D0D2078;
+}
+
+#app-splash-overlay {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  text-align: center;
+  font-size: 150px;
+  font-weight: 1200;
+  color: #3C9C17;
+  z-index: 1001;
+  mix-blend-mode: luminosity;
+  filter: brightness(1.4) contrast(2) drop-shadow(0 0 8px #000000);
+}
+
+#app-splash-cta {
+  font-size: 20px;
+  font-weight: 600;
+  color: #FFFFFF;
+  padding: 8px;
+  filter: invert(1);
+}
+
+#app-splash-background::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  
+  background:
+    radial-gradient(circle at 75% 40%,
+      rgba(255, 160, 90, 0.7),
+      rgba(0, 0, 0, 0) 60%);
+  
+  backdrop-filter: contrast(1.15) saturate(1.25);
+  pointer-events: none;
+}
+
+#app-splash-background::before {
+  /* green */
+  content: "";
+  position: absolute;
+  inset: 0;
+  animation: hueDrift 3s linear infinite alternate;
+  
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+
+@keyframes drift {
+  from {
+    transform: translate(-3%, -3%) scale(0.9);
+  }
+  
+  to {
+    transform: translate(3%, 3%) scale(1.5);
+  }
+}
+
+.glow-layer {
+  animation: drift 12s ease-in-out infinite alternate;
+}
+
+@keyframes hueDrift {
+  from {
+    filter: hue-rotate(0deg);
+    
+  }
+  
+  to {
+    filter: hue-rotate(60deg);
+  }
+}

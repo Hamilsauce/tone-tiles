@@ -151,8 +151,8 @@ export class SVGCanvas extends EventTarget {
     );
   }
   
-  createCanvasObject(type, options = DefaultCanvasObjectOptions) {
-    const cObj = new CanvasObject(this, type, options);
+  createObject(type, model = {}) {
+    const cObj = new CanvasObject(this, type, { model });
     
     return cObj;
   }
@@ -167,6 +167,23 @@ export class SVGCanvas extends EventTarget {
       this.dom.addEventListener('contextmenu', this.toggleScroll);
       this.dom.removeEventListener('click', this.toggleScroll);
     }
+  }
+  
+  createTileObject({ x, y, tileType, linkedMap, linkedNodeAddress }) {
+    const model = {
+      tileType,
+      x,
+      y,
+      current: false,
+      active: false,
+      isPathNode: false,
+      linkedNodeAddress: linkedNodeAddress ?? '',
+      linkedMap,
+    }
+    
+    const t = this.createObject('tile', model)
+    
+    return t;
   }
   
   createTile({ x, y, tileType, linkedMap }) {

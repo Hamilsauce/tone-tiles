@@ -54,7 +54,8 @@ export class CanvasObject extends EventEmitter {
 	
 	get model() { return this.#model; }
 	
-	get x() { return this.#model.x; } get y() { return this.#model.y; }
+	get x() { return this.#model.x; }
+	get y() { return this.#model.y; }
 	
 	set x(v) {
 		this.#model.x = v;

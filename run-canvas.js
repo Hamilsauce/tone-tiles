@@ -281,7 +281,6 @@ export const runCanvas = async () => {
       
       tile.dataset.active = true;
       
-      
       [...neighbors.values()].forEach((node, i) => {
         const el = svgCanvas.querySelector(`.tile[data-x="${node.x}"][data-y="${node.y}"]`);
         el.dataset.highlight = true;
@@ -299,7 +298,8 @@ export const runCanvas = async () => {
     const startNode = graph.getNodeAtPoint({ x: +startNodeEl.dataset.x, y: +startNodeEl.dataset.y });
     const targetNode = graph.getNodeAtPoint({ x: +targetNodeEl.dataset.x, y: +targetNodeEl.dataset.y });
     const bfsPath = graph.getPath(startNode, targetNode);
-    
+   console.warn(bfsPath);
+ 
     if (bfsPath === null) return;
     
     let pointer = 0;
@@ -370,7 +370,7 @@ export const runCanvas = async () => {
               freq = toTone(curr.x, curr.y)
               audioNote1 = fireAudioNote(freq, vel)
             } catch (e) {
-              console.error('coukdbt play audio note')
+              console.error('no audio note for you')
             }
           }
           
@@ -408,37 +408,8 @@ export const runCanvas = async () => {
             if (!linkedMapId) return
             selectMapById(linkedMapId)
             return
-            actor1.dataset.teleporting = true;
-            
-            if (el === startNodeEl) {
-              el.dataset.active = false;
-              el.dataset.current = false;
-              
-              return;
-            }
-            
-            el.dataset.active = true;
-            el.dataset.current = true;
-            
-            const tels = [...svgCanvas.querySelectorAll('.tile[data-tile-type="teleport"]')];
-            const otherTele = tels.find(t => el != t && t.dataset.current != 'true');
-            
-            activeActor.dataset.x = el.dataset.x;
-            activeActor.dataset.y = el.dataset.y;
-            
-            actorTrans = activeActor === actor1 ? actor1TransformList : actor2TransformList;
-            actorTrans.translateTo(el.dataset.x, el.dataset.y);
-            
-            el.dataset.active = false;
-            el.dataset.current = false;
-            
-            otherTele.dataset.active = false;
-            otherTele.dataset.current = false;
-            
-            await sleep(10);
-            shouldPreVel = !shouldPreVel
-            activeActor.dataset.teleporting = false;
           }
+          
           if (el.dataset.tileType === 'teleport') {
             actor1.dataset.teleporting = true;
             
@@ -467,7 +438,7 @@ export const runCanvas = async () => {
             otherTele.dataset.active = false;
             otherTele.dataset.current = false;
             
-            await sleep(10);
+            await sleep(10); // you know you like it
             shouldPreVel = !shouldPreVel
             activeActor.dataset.teleporting = false;
           }

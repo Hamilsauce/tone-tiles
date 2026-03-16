@@ -46,14 +46,14 @@ const renderMap = (mapData, svgCanvas, graph, actor1, selectionBox) => {
     }
     
     svgCanvas.layers.tile.append(
-      svgCanvas.createTile({
+      svgCanvas.createTileObject({
         tileType: mapStore.previousMapId.value && tileType === 'start' ? 'empty' : tileType,
         x,
         y,
         current: false,
         active: false,
         isPathNode: false,
-      }));
+      }).show().dom);
   });
   
   
