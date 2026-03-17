@@ -1,25 +1,27 @@
 import ham from 'https://hamilsauce.github.io/hamhelper/hamhelper1.0.0.js';
 import { EventEmitter } from 'https://hamilsauce.github.io/hamhelper/event-emitter.js';
-import { TransformList } from './TransformList.js';
+import { TransformList, DEFAULT_TRANSFORMS } from './TransformList.js';
 import { SVGCanvas } from './SVGCanvas.js';
 const { utils } = ham;
 
+export const DefaultCanvasObjectModel = {
+	x: 0,
+	y: 0,
+	width: 1,
+	height: 1,
+}
+
+export const CanvasObjectDisplayState = {
+	selected: false,
+	active: false,
+	hide: false,
+}
+
 export const DefaultCanvasObjectOptions = {
 	id: '',
-	classList: [],
-	dataset: {
-		active: false,
-		selected: false,
-	},
-	attributes: {
-		fill: '#000000',
-		stroke: '#FFFFFF',
-		'stroke-width': 0.05,
-		r: 0.4,
-		width: 1,
-		height: 1,
-	},
-	transforms: undefined,
+	model: DefaultCanvasObjectModel,
+	transforms: DEFAULT_TRANSFORMS,
+	dataset: CanvasObjectDisplayState,
 }
 
 export class CanvasObject extends EventEmitter {
@@ -33,8 +35,9 @@ export class CanvasObject extends EventEmitter {
 	#self;
 	#transformList;
 	
-	constructor(context = new SVGCanvas(), type = '', { id, model = {}, transforms }) {
+	constructor(context = new SVGCanvas(), type = '', options = DefaultCanvasObjectOptions) {
 		super();
+		const { id, model = {}, transforms } = options;
 		
 		this.#context = context;
 		this.#type = type;
@@ -72,15 +75,18 @@ export class CanvasObject extends EventEmitter {
 	
 	get layer() { return this.dom.closest('g.layer') }
 	
+	get parent() { return this.dom.parentElement; }
+	
 	translateTo(x, y) {
 		this.transforms.translateTo(x, y);
+		return this;
 	}
 	
 	rotateTo() {}
 	
 	scaleTo(x, y) {
 		this.transforms.scaleTo(x, y);
-		
+		return this;
 	}
 	
 	remove() {
@@ -126,10 +132,12 @@ export class CanvasObject extends EventEmitter {
 	
 	deleteData(key) {
 		delete this.data[key];
+		return this;
 	}
 	
 	disableEvents() {
-		this.el.style.pointerEvents = "none"
+		this.el.style.pointerEvents = 'none';
+		return this;
 	}
 	
 	

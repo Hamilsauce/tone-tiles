@@ -132,6 +132,9 @@ body {
     li:active[data-type="tile-action"] {
       background: #A7A7A7;
     }
+    li[data-disable=true] {
+      background: #A3A3A3 !important; 
+    }
   }
 }
 

@@ -21,7 +21,7 @@ const TransformMatrixMap = {
   f: 'ty',
 }
 
-const DEFAULT_TRANSFORMS = [{
+export const DEFAULT_TRANSFORMS = [{
   type: 'translate',
   values: [0, 0],
   position: 0,

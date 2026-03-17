@@ -158,7 +158,7 @@ export const runCanvas = async () => {
   const selectionBox = getTileSelector(objectLayer);
   
   const contextMenu = new ContextMenu(svgCanvas)
-  
+  contextMenu.disableItem('copy')
   const actor1 = useTemplate('actor', {
     dataset: { moving: false, teleporting: false },
     id: 'actor1',

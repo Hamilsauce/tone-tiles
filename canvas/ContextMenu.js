@@ -92,6 +92,15 @@ export class ContextMenu extends CanvasObject {
     super.hide();
   }
   
+  disableItem(itemValue) {
+    const item = this.menuItems.find(_ => _.value = itemValue)
+    if (item) {
+      item.dataset.disable = true;
+      
+    }
+    super.hide();
+  }
+  
   onMenuClick(e) {
     const value = e.target.dataset.value;
   }

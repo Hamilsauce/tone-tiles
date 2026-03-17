@@ -11,12 +11,12 @@
 .actor[data-moving=true][data-teleporting=false] * {
   fill: #38DD17;
   r: 0.3;
-  transition: 0.125s ease-out;
+  transition: 0.15s ease-out;
 }
 
 .actor[data-teleporting=false],
 .actor[data-teleporting=false] * {
-  transition: 0.5s;
+  /* transition: 0.5s; */
 }
 
 .actor[data-teleporting=true],
