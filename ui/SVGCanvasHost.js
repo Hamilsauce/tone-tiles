@@ -4,6 +4,7 @@ import { useAppState } from '../store/app.store.js';
 import { useMapStore } from '../store/map.store.js';
 import { runCanvas } from '../run-canvas.js';
 import { AudioClockLoop } from '../lib/loop-engine.js'
+import { router, RouteName } from '../../router/router.js'
 
 export const SVGCanvasHost = defineComponent(
   getTemplate('svg-canvas-host'),
@@ -11,12 +12,14 @@ export const SVGCanvasHost = defineComponent(
     const { mapState } = useMapStore();
     const { isRunning, setRunning } = useAppState();
     const map = computed(() => mapState.value);
+    const mapId = computed(() => router.params.id);
     let canvasEl; // = document.querySelector('#canvas');
     let viewport; // = document.querySelector('#canvas');
     let scene; // = canvasEl.querySelector('#scene');
     let tileLayer; // = scene.querySelector('#tile-layer');
     let objectLayer; // = scene.querySelector('#object-layer');
     // const selectionBox = getTileSelector(objectLayer);
+
     const routine1 = (dt, now) =>{
       console.warn('routine 1', dt, now)
     }
@@ -46,7 +49,7 @@ export const SVGCanvasHost = defineComponent(
       tileLayer = scene.querySelector('#tile-layer');
       objectLayer = scene.querySelector('#object-layer');
       
-      runCanvas();
+      runCanvas(mapId.value);
     });
     
     return { centerViewport, map }

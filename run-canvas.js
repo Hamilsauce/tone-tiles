@@ -111,7 +111,7 @@ const fireAudioNote = (freq, vel, dur = 0.15) => (new AudioNote(audioEngine.ctx)
 const ANIM_RATE = 105;
 
 
-export const runCanvas = async () => {
+export const runCanvas = async (mapId) => {
   const { isRunning, setRunning } = useAppState();
   
   let selectedRange = [];
@@ -175,7 +175,9 @@ export const runCanvas = async () => {
   const actor2TransformList = new TransformList(svgCanvas, actor2);
   
   const selectMapById = await initMapControls(graph, svgCanvas, actor1, selectionBox);
-  
+if (mapId) {
+  selectMapById(selectMapById)
+}  
   actor2.setAttribute('transform', 'translate(12,21) rotate(0) scale(1)');
   
   objectLayer.setAttribute('transform', 'translate(0,0) rotate(0) scale(1)');
