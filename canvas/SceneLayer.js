@@ -46,13 +46,25 @@ export class SceneLayer extends CanvasObject {
     }
     this.#objects.clear();
   }
-
+  
   sort(compareFn) {
     const sorted = [...this.#objects.values()].sort(compareFn)
     
     sorted.forEach(obj => {
       this.el.appendChild(obj.el)
     })
+  }
+  
+  bringToFront(obj) {
+    this.dom.append(obj.dom);
+  }
+  
+  sendToBack(obj) {
+    this.dom.prepend(obj.dom);
+  }
+  
+  insertBefore(obj, target) {
+    this.dom.insertBefore(obj.dom, target.dom);
   }
   
   serialize() {
