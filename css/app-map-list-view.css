@@ -35,6 +35,7 @@
     width: 100%;
     max-width: 340px;
     min-width: 300px;
+    scroll-behavior: smooth;
     
     .map-list-item {
       display: grid;
