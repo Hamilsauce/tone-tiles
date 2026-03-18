@@ -81,27 +81,37 @@ body {
     /* filter: opacity(1); */
   }
   
-  #app-floating-menu-expanded {
-    width: 300px;
-    height: 500px;
-    transition: 0.5s;
-    
-  }
+  #app-floating-menu-expanded {}
 }
 
-#app-floating-men:hover {
+#app-floating-menu:hover {
   filter: opacity(1);
 }
 
-#app-floating-men:active {
+#app-floating-menu:active {
   filter: opacity(1);
 }
 
 #app-floating-menu.expanded {
-  width: 300px;
+  width: 260px;
   height: 500px;
   filter: opacity(1);
   transition: 0.5s;
+  /* padding: 4px 4px; */
+  overflow-y: auto;
+  
+  #app-floating-menu-expanded {
+    /* width: 300px; */
+    /* width: fit-content; */
+    /* height: 500px; */
+    /* transition: 0.5s; */
+    /* padding: 4px 4px; */
+    /* background: #337BB6; */
+    opacity: 1;
+    transition: 0.5s;
+    
+    
+  }
 }
 
 #app-body {

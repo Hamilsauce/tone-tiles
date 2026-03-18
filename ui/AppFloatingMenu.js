@@ -1,5 +1,6 @@
 import { reactive, computed, ref, watch, onMounted } from 'vue'
 import { defineComponent, getTemplate } from '../lib/vue-helpers.js';
+import { AppMapList } from '../ui/app-map-list/AppMapList.js'
 // import ham from 'https://hamilsauce.github.io/hamhelper/hamhelper1.0.0.js';
 // con)st { getPanZoom, template, utils, download, TwoWayMap } = ham;
 
@@ -105,5 +106,9 @@ export const AppFloatingMenu = defineComponent(
     });
     
     return { floatingMenuRef, displayState, handleDisplayChange }
-  }, {},
+  }, {
+    components: {
+      'app-map-list': AppMapList,
+    }
+  },
 )

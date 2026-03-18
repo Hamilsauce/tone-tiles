@@ -56,7 +56,7 @@
       <app-header v-if="shouldDisplay"></app-header>
       <router-view></router-view>
       <app-footer v-if="shouldDisplay"></app-footer>
-      <app-floating-menu></app-floating-menu>
+      <app-floating-menu _v-if="shouldDisplay"></app-floating-menu>
     </div>
   </template>
   
@@ -68,7 +68,9 @@
         </svg>
       </div>
       <div v-if="displayState === 'expanded'" @click.stop="handleDisplayChange('collapsed')" id="app-floating-menu-expanded">
-        <router-view name="panel"></router-view>
+        <!-- <router-view name="panel"></router-view> -->
+        <app-map-list :display-mode="'compact'"></app-map-list>
+        
       </div>
     </div>
   </template>
@@ -97,16 +99,16 @@
   </template>
   
   <template data-component="app-map-list-view">
-    <div id="app-map-list-view" @click="handleListClick">
+    <div id="app-map-list-view" :class="{ compact: isCompact }" @click="handleListClick">
       <div id="map-list-view-top">
-        <h2>tone tiles</h2>
+        <!-- <h2>"tone tiles</h2> -->
         <div id="map-list-view-actions">
-          <input _click="handleNewMap" type="button" name="create-map" id="create-map" value="create" />
+          <input @click="handleNewMap" type="button" name="create-map" id="create-map" value="create" />
         </div>
       </div>
       
       <ul id="map-list-view-list">
-        <app-map-list-item @map-item-click="handleMapClick" @map-item-select="handleMapSelect" @map-item-edit="handleMapEdit" v-for="map in mapList" :key="map.id" :map="map" :selected-id="selectedId"></app-map-list-item>
+        <app-map-list-item :display-mode @map-item-click="handleMapClick" @map-item-select="handleMapSelect" @map-item-edit="handleMapEdit" v-for="map in mapList" :key="map.id" :map="map" :selected-id="selectedId"></app-map-list-item>
       </ul>
     </div>
   </template>
@@ -123,7 +125,7 @@
         updated: {{ new Date(map.updated).toLocaleDateString() }}
       </div>
       <div class="map-dims">
-        size: {{ `${map.width}x${map.height}` }}
+        {{ isCompact ? '' : 'size: ' }}{{ `${map.width}x${map.height}` }}
       </div>
       <div v-if="isSelected" class="map-edit" @click="handleEdit">
         Edit

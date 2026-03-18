@@ -22,12 +22,13 @@ export const AppMapListItem = defineComponent(
     return {
       map,
       isSelected,
+      isCompact: computed(() => props.displayMode === 'compact'),
       handleSelect,
       handleClick,
       handleEdit,
+      displayMode: props.displayMode,
     }
   }, {},
 )
-
-AppMapListItem.props = ['map', 'selectedId']
+AppMapListItem.props = ['map', 'selectedId','displayMode']
 AppMapListItem.emits = ['mapItemClick', 'mapItemSelect', 'mapItemEdit']
