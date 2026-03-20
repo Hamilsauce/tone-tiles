@@ -171,10 +171,6 @@
     <div id="svg-canvas-host">
       <svg @_dblclick="centerViewport" id="canvas" class="gradient" width="412" _height="681" viewBox="0 0 19 22" preserveAspectRatio="xMinYMid meet" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <marker id="edge-line-arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-            <path d="M 0 0 L 10 5 L 0 10 z" _fill="#00000090" />
-          </marker>
-          
           <g data-template="context-menu" class="context-menu-container" pointer-events="auto" data-show-actions="false" data-show="false" transform="translate(0,0) rotate(0) scale(0.05)">
             <foreignObject class="context-menu-foreignobject" pointer-events="auto" x="0" y="0" width="200" height="30" _transform="translate(0,0) rotate(0) scale(1)">
               <div xmlns="http://www.w3.org/1999/xhtml" class="context-menu" data-show-actions="false">
@@ -191,8 +187,18 @@
             </foreignObject>
           </g>
           
+          <marker id="edge-line-arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" _fill="#00000090" />
+          </marker>
+          
+          <g data-template="edge-line" class="edge-line" id="" data-x="0" data-y="0" transform="translate(0,0) rotate(0) scale(1)">
+            <line class="edge-line-arrow-path" x1="0" y1="0" x2="1" y2="1" marker-end="url(#edge-line-arrow)" transform="translate(0,0) rotate(0) scale(1)" />
+            <circle cx="1" cy="1" r="0.25" fill="#FFFFFF00" transform="translate(0,0) rotate(0) scale(1)" />
+          </g>
+          
           <rect id="tile-rect" width="1" height="1"></rect>
-          <!-- <rect id="tile-rect" width="1" height="1"></rect> -->
+          
+          <g data-template="layer" class="layer" id="" data-z="0" transform="translate(0,0) rotate(0) scale(1)"> </g>
           
           <g data-template="tile" data-tile-type="empty" data-x="0" data-y="0" data-current="false" data-active="false" data-is-path-node="false" transform="translate(0,0)" class="tile" id="">
             <use href="#tile-rect"></use>
@@ -202,10 +208,7 @@
             <circle cx="0.5" cy="0.5" r="0.4" transform="translate(0,0) rotate(0) scale(1)" />
           </g>
           
-          <g data-template="edge-line" class="edge-line" id="" data-x="0" data-y="0" transform="translate(0,0) rotate(0) scale(1)">
-            <line class="edge-line-arrow-path" x1="0" y1="0" x2="1" y2="1" marker-end="url(#edge-line-arrow)" transform="translate(0,0) rotate(0) scale(1)" />
-            <circle cx="1" cy="1" r="0.25" fill="#FFFFFF00" transform="translate(0,0) rotate(0) scale(1)" />
-          </g>
+          
         </defs>
         
         <g id="viewport" ref="canvasViewportRef" transform="matrix(1 0 0 1 0 0)">
@@ -222,10 +225,10 @@
             
           </g>
           
-          <g id="scene" transform="translate(0,0) rotate(0) scale(1)">
+          <!-- <g id="scene" transform="translate(0,0) rotate(0) scale(1)">
             <g id="tile-layer" transform="translate(-0,-0) rotate(0) scale(1)"></g>
             <g id="object-layer" transform="translate(0.5,0.5) rotate(0) scale(1)"></g>
-          </g>
+          </g> -->
         </g>
         
         <!-- <g id="minimap" data-x="0" data-y="0" transform="translate(13, 19) rotate(0) scale(1)">

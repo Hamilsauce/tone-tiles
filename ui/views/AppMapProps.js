@@ -13,7 +13,6 @@ export const AppMapProps = defineComponent(
     const mapId = computed(() => route.value.params.id)
     const map = computed(() => mapStore.mapIndex.get(mapId.value))
     const currentMap = computed(() => mapStore.currentMap.value)
-    console.warn('curre', currentMap.value)
     
     const aggregateTileData = ({ tileData, width, height }) => {
       
@@ -61,15 +60,6 @@ export const AppMapProps = defineComponent(
     const handleListClick = () => {
       editingId.value = null;
     };
-    
-    onMounted(() => {
-      console.warn(map.value)
-    })
-    
-    watch(currentMap, () => {
-      console.warn(mapStats.value)
-    }, { immediate: true })
-    
     
     return {
       mapStats,
