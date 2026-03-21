@@ -1,0 +1,891 @@
+<g data-tile-type="map-link" data-x="2" data-y="-1" data-current="false" data-active="false" data-is-path-node="false" transform="translate(2 -1) rotate(0) scale(1 1)" class="tile" id="tileofkxamk3od6y7zpmgxx" data-type="tile" data-id="2_-1" data-address="2_-1" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="map-link" data-x="-1" data-y="3" data-current="false" data-active="false" data-is-path-node="true" transform="translate(-1 3) rotate(0) scale(1 1)" class="tile" id="tileuoxlkljoe7mzyxabumx" data-type="tile" data-id="-1_3" data-address="-1_3" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="map-link" data-x="2" data-y="6" data-current="false" data-active="false" data-is-path-node="false" transform="translate(2 6) rotate(0) scale(1 1)" class="tile" id="tileqsdmphxqmkxxpd3vzoy" data-type="tile" data-id="2_6" data-address="2_6" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="0" data-y="0" data-current="false" data-active="false" data-is-path-node="false" transform="translate(0 0) rotate(0) scale(1 1)" class="tile" id="tileu3tmtp1blcmz1nz0ycx" data-type="tile" data-id="0_0" data-address="0_0" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="1" data-y="0" data-current="false" data-active="false" data-is-path-node="false" transform="translate(1 0) rotate(0) scale(1 1)" class="tile" id="tileb8ityymzvgml1dn1xs" data-type="tile" data-id="1_0" data-address="1_0" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="2" data-y="0" data-current="false" data-active="false" data-is-path-node="false" transform="translate(2 0) rotate(0) scale(1 1)" class="tile" id="tilemplmp511mjmhb88syix" data-type="tile" data-id="2_0" data-address="2_0" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="3" data-y="0" data-current="false" data-active="false" data-is-path-node="false" transform="translate(3 0) rotate(0) scale(1 1)" class="tile" id="tilegmml6j5bd3711kmmxy5" data-type="tile" data-id="3_0" data-address="3_0" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="4" data-y="0" data-current="false" data-active="false" data-is-path-node="false" transform="translate(4 0) rotate(0) scale(1 1)" class="tile" id="tilekxbm1osmcvdm1dby90l" data-type="tile" data-id="4_0" data-address="4_0" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="5" data-y="0" data-current="false" data-active="false" data-is-path-node="false" transform="translate(5 0) rotate(0) scale(1 1)" class="tile" id="tilemzyvx1a1b2n2l43ml3" data-type="tile" data-id="5_0" data-address="5_0" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="6" data-y="0" data-current="false" data-active="false" data-is-path-node="false" transform="translate(6 0) rotate(0) scale(1 1)" class="tile" id="tile2y9bvmlp02xemdm1q4k7" data-type="tile" data-id="6_0" data-address="6_0" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="7" data-y="0" data-current="false" data-active="false" data-is-path-node="false" transform="translate(7 0) rotate(0) scale(1 1)" class="tile" id="tiledmy3bx21zigz7jmlcsl" data-type="tile" data-id="7_0" data-address="7_0" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="8" data-y="0" data-current="false" data-active="false" data-is-path-node="false" transform="translate(8 0) rotate(0) scale(1 1)" class="tile" id="tilexmi2dy1mlcl1g5mmbjn" data-type="tile" data-id="8_0" data-address="8_0" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="9" data-y="0" data-current="false" data-active="false" data-is-path-node="false" transform="translate(9 0) rotate(0) scale(1 1)" class="tile" id="tileezyembpzbnx3lr2qnm1" data-type="tile" data-id="9_0" data-address="9_0" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="10" data-y="0" data-current="false" data-active="false" data-is-path-node="false" transform="translate(10 0) rotate(0) scale(1 1)" class="tile" id="tile1btvnzlmy2mhxgajaee" data-type="tile" data-id="10_0" data-address="10_0" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="11" data-y="0" data-current="false" data-active="false" data-is-path-node="false" transform="translate(11 0) rotate(0) scale(1 1)" class="tile" id="tile4uroyn012buxmx6mlgc2" data-type="tile" data-id="11_0" data-address="11_0" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="12" data-y="0" data-current="false" data-active="false" data-is-path-node="false" transform="translate(12 0) rotate(0) scale(1 1)" class="tile" id="tile1l37v2yygcb4mmb2xt" data-type="tile" data-id="12_0" data-address="12_0" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="0" data-y="1" data-current="false" data-active="false" data-is-path-node="false" transform="translate(0 1) rotate(0) scale(1 1)" class="tile" id="tile1nlznc3x72bm5y1qmh" data-type="tile" data-id="0_1" data-address="0_1" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="1" data-y="1" data-current="false" data-active="false" data-is-path-node="false" transform="translate(1 1) rotate(0) scale(1 1)" class="tile" id="tilejm8lncbfyx2mj1omqlb" data-type="tile" data-id="1_1" data-address="1_1" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="2" data-y="1" data-current="false" data-active="false" data-is-path-node="false" transform="translate(2 1) rotate(0) scale(1 1)" class="tile" id="tile6ooxlyj2b14mxsm4pb" data-type="tile" data-id="2_1" data-address="2_1" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="3" data-y="1" data-current="false" data-active="false" data-is-path-node="false" transform="translate(3 1) rotate(0) scale(1 1)" class="tile" id="tileoy2cl3xk311w3moxbml" data-type="tile" data-id="3_1" data-address="3_1" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="4" data-y="1" data-current="false" data-active="false" data-is-path-node="false" transform="translate(4 1) rotate(0) scale(1 1)" class="tile" id="tile92qlbnrm13fxp5mkkuy" data-type="tile" data-id="4_1" data-address="4_1" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="5" data-y="1" data-current="false" data-active="false" data-is-path-node="false" transform="translate(5 1) rotate(0) scale(1 1)" class="tile" id="tileyy2lxi5ucb0emlem2u1" data-type="tile" data-id="5_1" data-address="5_1" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="6" data-y="1" data-current="false" data-active="false" data-is-path-node="false" transform="translate(6 1) rotate(0) scale(1 1)" class="tile" id="tilet1slyb9m30jxjmnaor9" data-type="tile" data-id="6_1" data-address="6_1" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="7" data-y="1" data-current="false" data-active="false" data-is-path-node="false" transform="translate(7 1) rotate(0) scale(1 1)" class="tile" id="tilemqm63kxyidbylecq11i" data-type="tile" data-id="7_1" data-address="7_1" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="8" data-y="1" data-current="false" data-active="false" data-is-path-node="false" transform="translate(8 1) rotate(0) scale(1 1)" class="tile" id="tileqjmwmr3fymbx1lazl3" data-type="tile" data-id="8_1" data-address="8_1" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="9" data-y="1" data-current="false" data-active="false" data-is-path-node="false" transform="translate(9 1) rotate(0) scale(1 1)" class="tile" id="tile3qs8pmjg3bmrxxlky18" data-type="tile" data-id="9_1" data-address="9_1" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="10" data-y="1" data-current="false" data-active="false" data-is-path-node="false" transform="translate(10 1) rotate(0) scale(1 1)" class="tile" id="tilenmblugcywu7xmuxzx31" data-type="tile" data-id="10_1" data-address="10_1" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="11" data-y="1" data-current="false" data-active="false" data-is-path-node="false" transform="translate(11 1) rotate(0) scale(1 1)" class="tile" id="tilean1m3vbtlkxhkmbcmby" data-type="tile" data-id="11_1" data-address="11_1" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="12" data-y="1" data-current="false" data-active="false" data-is-path-node="false" transform="translate(12 1) rotate(0) scale(1 1)" class="tile" id="tilemmcl3gyqlpbxhumhne1" data-type="tile" data-id="12_1" data-address="12_1" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="teleport" data-x="0" data-y="2" data-current="false" data-active="false" data-is-path-node="false" transform="translate(0 2) rotate(0) scale(1 1)" class="tile" id="tiletmi1x91drylbn31im7" data-type="tile" data-id="0_2" data-address="0_2" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="12_14" data-target="[object Object]">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="1" data-y="2" data-current="false" data-active="false" data-is-path-node="false" transform="translate(1 2) rotate(0) scale(1 1)" class="tile" id="tilewun1bx3y1n3yimrm3l" data-type="tile" data-id="1_2" data-address="1_2" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="2" data-y="2" data-current="false" data-active="false" data-is-path-node="false" transform="translate(2 2) rotate(0) scale(1 1)" class="tile" id="tilemmzxyeolbhbsn1ygx3j" data-type="tile" data-id="2_2" data-address="2_2" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="3" data-y="2" data-current="false" data-active="false" data-is-path-node="false" transform="translate(3 2) rotate(0) scale(1 1)" class="tile" id="tile23w1fflyxmmqbpbzzz" data-type="tile" data-id="3_2" data-address="3_2" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="4" data-y="2" data-current="false" data-active="false" data-is-path-node="false" transform="translate(4 2) rotate(0) scale(1 1)" class="tile" id="tilem8yp581xcjpb45l5m03" data-type="tile" data-id="4_2" data-address="4_2" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="5" data-y="2" data-current="false" data-active="false" data-is-path-node="false" transform="translate(5 2) rotate(0) scale(1 1)" class="tile" id="tileglgzxz78by1xmm34jbl0" data-type="tile" data-id="5_2" data-address="5_2" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="6" data-y="2" data-current="false" data-active="false" data-is-path-node="false" transform="translate(6 2) rotate(0) scale(1 1)" class="tile" id="tile4l2wbyeym13xmjxtxlh" data-type="tile" data-id="6_2" data-address="6_2" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="teleport" data-x="7" data-y="2" data-current="false" data-active="false" data-is-path-node="false" transform="translate(7 2) rotate(0) scale(1 1)" class="tile" id="tilenmlbvlsz0nymxj1se3" data-type="tile" data-id="7_2" data-address="7_2" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="12_14" data-target="[object Object]">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="8" data-y="2" data-current="false" data-active="false" data-is-path-node="false" transform="translate(8 2) rotate(0) scale(1 1)" class="tile" id="tile9bk12yklombpm4jx8ey" data-type="tile" data-id="8_2" data-address="8_2" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="9" data-y="2" data-current="false" data-active="false" data-is-path-node="false" transform="translate(9 2) rotate(0) scale(1 1)" class="tile" id="tile6hlb14zmg8yxbmplhpt" data-type="tile" data-id="9_2" data-address="9_2" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="10" data-y="2" data-current="false" data-active="false" data-is-path-node="false" transform="translate(10 2) rotate(0) scale(1 1)" class="tile" id="tile3l91m4vximllbuxyjcl" data-type="tile" data-id="10_2" data-address="10_2" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="11" data-y="2" data-current="false" data-active="false" data-is-path-node="false" transform="translate(11 2) rotate(0) scale(1 1)" class="tile" id="tilet4g3p14ymm9wqub3l2x" data-type="tile" data-id="11_2" data-address="11_2" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="12" data-y="2" data-current="false" data-active="false" data-is-path-node="false" transform="translate(12 2) rotate(0) scale(1 1)" class="tile" id="tilec1dj7n64l52xmmuybof" data-type="tile" data-id="12_2" data-address="12_2" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="0" data-y="3" data-current="false" data-active="false" data-is-path-node="false" transform="translate(0 3) rotate(0) scale(1 1)" class="tile" id="tilev41ml6cxxzbs3rum9yc" data-type="tile" data-id="0_3" data-address="0_3" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="1" data-y="3" data-current="false" data-active="false" data-is-path-node="false" transform="translate(1 3) rotate(0) scale(1 1)" class="tile" id="tileqmem0axei146ltyq4xb" data-type="tile" data-id="1_3" data-address="1_3" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="2" data-y="3" data-current="false" data-active="false" data-is-path-node="false" transform="translate(2 3) rotate(0) scale(1 1)" class="tile" id="tilezgb4mxlmr9y1v71bmh" data-type="tile" data-id="2_3" data-address="2_3" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="3" data-y="3" data-current="false" data-active="false" data-is-path-node="false" transform="translate(3 3) rotate(0) scale(1 1)" class="tile" id="tile2idmulqp1hxmy4p7kb" data-type="tile" data-id="3_3" data-address="3_3" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="4" data-y="3" data-current="false" data-active="false" data-is-path-node="false" transform="translate(4 3) rotate(0) scale(1 1)" class="tile" id="tiley8m0xt18gyl4bb6m8ib" data-type="tile" data-id="4_3" data-address="4_3" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="5" data-y="3" data-current="false" data-active="false" data-is-path-node="false" transform="translate(5 3) rotate(0) scale(1 1)" class="tile" id="tile45rmy9lmbecq52xx1x" data-type="tile" data-id="5_3" data-address="5_3" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="6" data-y="3" data-current="false" data-active="false" data-is-path-node="false" transform="translate(6 3) rotate(0) scale(1 1)" class="tile" id="tilem7lvjy1ly4jmxbhqg1" data-type="tile" data-id="6_3" data-address="6_3" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="7" data-y="3" data-current="false" data-active="false" data-is-path-node="false" transform="translate(7 3) rotate(0) scale(1 1)" class="tile" id="tileobmb7o9xwd4l914ym3d" data-type="tile" data-id="7_3" data-address="7_3" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="8" data-y="3" data-current="false" data-active="false" data-is-path-node="false" transform="translate(8 3) rotate(0) scale(1 1)" class="tile" id="tiley284l1vxuomm9k4dhbr" data-type="tile" data-id="8_3" data-address="8_3" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="9" data-y="3" data-current="false" data-active="false" data-is-path-node="false" transform="translate(9 3) rotate(0) scale(1 1)" class="tile" id="tile96r4lbdxazvmzrny1pm" data-type="tile" data-id="9_3" data-address="9_3" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="10" data-y="3" data-current="false" data-active="false" data-is-path-node="false" transform="translate(10 3) rotate(0) scale(1 1)" class="tile" id="tile4n18mbhsh2xtnlyvkrm" data-type="tile" data-id="10_3" data-address="10_3" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="11" data-y="3" data-current="false" data-active="false" data-is-path-node="false" transform="translate(11 3) rotate(0) scale(1 1)" class="tile" id="tilecmw1jfbcypxrp1l5kmjz" data-type="tile" data-id="11_3" data-address="11_3" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="12" data-y="3" data-current="false" data-active="false" data-is-path-node="false" transform="translate(12 3) rotate(0) scale(1 1)" class="tile" id="tile12ktqxhxctzl5bmpym9" data-type="tile" data-id="12_3" data-address="12_3" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="0" data-y="4" data-current="false" data-active="false" data-is-path-node="false" transform="translate(0 4) rotate(0) scale(1 1)" class="tile" id="tilemymxv75bygxr1oabl47" data-type="tile" data-id="0_4" data-address="0_4" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="1" data-y="4" data-current="false" data-active="false" data-is-path-node="false" transform="translate(1 4) rotate(0) scale(1 1)" class="tile" id="tilermy50uao1abx3luf1ym" data-type="tile" data-id="1_4" data-address="1_4" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="2" data-y="4" data-current="false" data-active="false" data-is-path-node="false" transform="translate(2 4) rotate(0) scale(1 1)" class="tile" id="tile2l7y15xx1b6qm1vml8" data-type="tile" data-id="2_4" data-address="2_4" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="3" data-y="4" data-current="false" data-active="false" data-is-path-node="false" transform="translate(3 4) rotate(0) scale(1 1)" class="tile" id="tile5gmuxql0rmlb7x741y" data-type="tile" data-id="3_4" data-address="3_4" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="4" data-y="4" data-current="false" data-active="false" data-is-path-node="false" transform="translate(4 4) rotate(0) scale(1 1)" class="tile" id="tilemua1xemr5byuuz24l66" data-type="tile" data-id="4_4" data-address="4_4" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="5" data-y="4" data-current="false" data-active="false" data-is-path-node="false" transform="translate(5 4) rotate(0) scale(1 1)" class="tile" id="tilebrmuy96x5l1me4txow" data-type="tile" data-id="5_4" data-address="5_4" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="6" data-y="4" data-current="false" data-active="false" data-is-path-node="false" transform="translate(6 4) rotate(0) scale(1 1)" class="tile" id="tilebmlwxcoy5566d1y3lm" data-type="tile" data-id="6_4" data-address="6_4" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="7" data-y="4" data-current="false" data-active="false" data-is-path-node="false" transform="translate(7 4) rotate(0) scale(1 1)" class="tile" id="tilemwy7xnlx5g5lmbtzlt1" data-type="tile" data-id="7_4" data-address="7_4" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="8" data-y="4" data-current="false" data-active="false" data-is-path-node="false" transform="translate(8 4) rotate(0) scale(1 1)" class="tile" id="tile6a1mp5jyrxyalj5xfmb" data-type="tile" data-id="8_4" data-address="8_4" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="9" data-y="4" data-current="false" data-active="false" data-is-path-node="false" transform="translate(9 4) rotate(0) scale(1 1)" class="tile" id="tile5uxj11l2kzgnmk0eybm" data-type="tile" data-id="9_4" data-address="9_4" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="10" data-y="4" data-current="false" data-active="false" data-is-path-node="false" transform="translate(10 4) rotate(0) scale(1 1)" class="tile" id="tilesxy27t50mxa31lsblm3" data-type="tile" data-id="10_4" data-address="10_4" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="11" data-y="4" data-current="false" data-active="false" data-is-path-node="false" transform="translate(11 4) rotate(0) scale(1 1)" class="tile" id="tile1m3ixlybxybx5imqzh" data-type="tile" data-id="11_4" data-address="11_4" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="12" data-y="4" data-current="false" data-active="false" data-is-path-node="false" transform="translate(12 4) rotate(0) scale(1 1)" class="tile" id="tile60plyx1m8mml76bfkmp" data-type="tile" data-id="12_4" data-address="12_4" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="0" data-y="5" data-current="false" data-active="false" data-is-path-node="false" transform="translate(0 5) rotate(0) scale(1 1)" class="tile" id="tiled89fg14dabytm6xfmlm" data-type="tile" data-id="0_5" data-address="0_5" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="1" data-y="5" data-current="false" data-active="false" data-is-path-node="false" transform="translate(1 5) rotate(0) scale(1 1)" class="tile" id="tile40wlmbs3x1amsy6f7fl" data-type="tile" data-id="1_5" data-address="1_5" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="2" data-y="5" data-current="false" data-active="false" data-is-path-node="false" transform="translate(2 5) rotate(0) scale(1 1)" class="tile" id="tilengm16nrbya4bxmslzu" data-type="tile" data-id="2_5" data-address="2_5" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="3" data-y="5" data-current="false" data-active="false" data-is-path-node="false" transform="translate(3 5) rotate(0) scale(1 1)" class="tile" id="tilezgmm2z4lhs61yxb13l9" data-type="tile" data-id="3_5" data-address="3_5" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="4" data-y="5" data-current="false" data-active="false" data-is-path-node="false" transform="translate(4 5) rotate(0) scale(1 1)" class="tile" id="tile6xbzpom6m6b3l1ykyp" data-type="tile" data-id="4_5" data-address="4_5" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="5" data-y="5" data-current="false" data-active="false" data-is-path-node="false" transform="translate(5 5) rotate(0) scale(1 1)" class="tile" id="tile8myxlmbpjlbmg561kc" data-type="tile" data-id="5_5" data-address="5_5" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="6" data-y="5" data-current="false" data-active="false" data-is-path-node="false" transform="translate(6 5) rotate(0) scale(1 1)" class="tile" id="tile9ylmj1u16rfgmoxfb6o" data-type="tile" data-id="6_5" data-address="6_5" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="7" data-y="5" data-current="false" data-active="false" data-is-path-node="false" transform="translate(7 5) rotate(0) scale(1 1)" class="tile" id="tilem1j672zlayw7bd5hmxx" data-type="tile" data-id="7_5" data-address="7_5" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="8" data-y="5" data-current="false" data-active="false" data-is-path-node="false" transform="translate(8 5) rotate(0) scale(1 1)" class="tile" id="tile18tmymmgb1l62bvts3x" data-type="tile" data-id="8_5" data-address="8_5" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="9" data-y="5" data-current="false" data-active="false" data-is-path-node="false" transform="translate(9 5) rotate(0) scale(1 1)" class="tile" id="tilexlym3ybl1mhz66od67o" data-type="tile" data-id="9_5" data-address="9_5" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="10" data-y="5" data-current="false" data-active="false" data-is-path-node="false" transform="translate(10 5) rotate(0) scale(1 1)" class="tile" id="tile51y6m7lmlss0lxh0b4x" data-type="tile" data-id="10_5" data-address="10_5" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="11" data-y="5" data-current="false" data-active="false" data-is-path-node="false" transform="translate(11 5) rotate(0) scale(1 1)" class="tile" id="tile61by5mmsxx9fpyl2lkd" data-type="tile" data-id="11_5" data-address="11_5" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="12" data-y="5" data-current="false" data-active="false" data-is-path-node="false" transform="translate(12 5) rotate(0) scale(1 1)" class="tile" id="tilexl4i6kmbmnr889915yp" data-type="tile" data-id="12_5" data-address="12_5" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="0" data-y="6" data-current="false" data-active="false" data-is-path-node="false" transform="translate(0 6) rotate(0) scale(1 1)" class="tile" id="tile1xmy6ojbmxlzrdlbwm" data-type="tile" data-id="0_6" data-address="0_6" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="1" data-y="6" data-current="false" data-active="false" data-is-path-node="false" transform="translate(1 6) rotate(0) scale(1 1)" class="tile" id="tilez7hybmcyha1174mx6ml" data-type="tile" data-id="1_6" data-address="1_6" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="2" data-y="6" data-current="false" data-active="false" data-is-path-node="false" transform="translate(2 6) rotate(0) scale(1 1)" class="tile" id="tiley6b1txjwykmml1op0y" data-type="tile" data-id="2_6" data-address="2_6" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="3" data-y="6" data-current="false" data-active="false" data-is-path-node="false" transform="translate(3 6) rotate(0) scale(1 1)" class="tile" id="tileymbm3lahox1kyxleb7a" data-type="tile" data-id="3_6" data-address="3_6" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="4" data-y="6" data-current="false" data-active="false" data-is-path-node="false" transform="translate(4 6) rotate(0) scale(1 1)" class="tile" id="tilemy1x3b4m77lh2e9gx" data-type="tile" data-id="4_6" data-address="4_6" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="5" data-y="6" data-current="false" data-active="false" data-is-path-node="false" transform="translate(5 6) rotate(0) scale(1 1)" class="tile" id="tilelb1lc7a1m6r7xr1y4me" data-type="tile" data-id="5_6" data-address="5_6" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="6" data-y="6" data-current="false" data-active="false" data-is-path-node="false" transform="translate(6 6) rotate(0) scale(1 1)" class="tile" id="tile7m8dedy1hmblv7gbjxt" data-type="tile" data-id="6_6" data-address="6_6" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="7" data-y="6" data-current="false" data-active="false" data-is-path-node="false" transform="translate(7 6) rotate(0) scale(1 1)" class="tile" id="tilek0mxlxfqzm0lubiy17mi" data-type="tile" data-id="7_6" data-address="7_6" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="8" data-y="6" data-current="false" data-active="false" data-is-path-node="false" transform="translate(8 6) rotate(0) scale(1 1)" class="tile" id="tiley127mgxm4l31v7vbt3" data-type="tile" data-id="8_6" data-address="8_6" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="9" data-y="6" data-current="false" data-active="false" data-is-path-node="false" transform="translate(9 6) rotate(0) scale(1 1)" class="tile" id="tilepl7m1m3aymxb4o1iea" data-type="tile" data-id="9_6" data-address="9_6" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="10" data-y="6" data-current="false" data-active="false" data-is-path-node="false" transform="translate(10 6) rotate(0) scale(1 1)" class="tile" id="tilem47ic2ybik1lmx5ab301b" data-type="tile" data-id="10_6" data-address="10_6" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="11" data-y="6" data-current="false" data-active="false" data-is-path-node="false" transform="translate(11 6) rotate(0) scale(1 1)" class="tile" id="tilepdm7by01lmetfko2qx2" data-type="tile" data-id="11_6" data-address="11_6" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="12" data-y="6" data-current="false" data-active="false" data-is-path-node="false" transform="translate(12 6) rotate(0) scale(1 1)" class="tile" id="tile7913ym9crljjxmrgb8u" data-type="tile" data-id="12_6" data-address="12_6" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="0" data-y="7" data-current="false" data-active="false" data-is-path-node="false" transform="translate(0 7) rotate(0) scale(1 1)" class="tile" id="tilelwybx77mb1m64jawtl" data-type="tile" data-id="0_7" data-address="0_7" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="1" data-y="7" data-current="false" data-active="false" data-is-path-node="false" transform="translate(1 7) rotate(0) scale(1 1)" class="tile" id="tilemmblkxm1875any511rc" data-type="tile" data-id="1_7" data-address="1_7" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="2" data-y="7" data-current="false" data-active="false" data-is-path-node="false" transform="translate(2 7) rotate(0) scale(1 1)" class="tile" id="tilebxtlfu31ky57mwuaoom" data-type="tile" data-id="2_7" data-address="2_7" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="3" data-y="7" data-current="false" data-active="false" data-is-path-node="false" transform="translate(3 7) rotate(0) scale(1 1)" class="tile" id="tiled3yomwbe1cbl7mhybxr" data-type="tile" data-id="3_7" data-address="3_7" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="4" data-y="7" data-current="false" data-active="false" data-is-path-node="false" transform="translate(4 7) rotate(0) scale(1 1)" class="tile" id="tile7l5bmemx61bzyxlbtky" data-type="tile" data-id="4_7" data-address="4_7" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="5" data-y="7" data-current="false" data-active="false" data-is-path-node="false" transform="translate(5 7) rotate(0) scale(1 1)" class="tile" id="tilel97mzc8y6bx541efhtm" data-type="tile" data-id="5_7" data-address="5_7" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="6" data-y="7" data-current="false" data-active="false" data-is-path-node="false" transform="translate(6 7) rotate(0) scale(1 1)" class="tile" id="tilelbvmtv8my07ty1xmnw" data-type="tile" data-id="6_7" data-address="6_7" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="7" data-y="7" data-current="false" data-active="false" data-is-path-node="false" transform="translate(7 7) rotate(0) scale(1 1)" class="tile" id="tileuhfzywmt1ds8xrb9ml" data-type="tile" data-id="7_7" data-address="7_7" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="8" data-y="7" data-current="false" data-active="false" data-is-path-node="false" transform="translate(8 7) rotate(0) scale(1 1)" class="tile" id="tile5y58cl1yzk9mxubmfa" data-type="tile" data-id="8_7" data-address="8_7" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="9" data-y="7" data-current="false" data-active="false" data-is-path-node="false" transform="translate(9 7) rotate(0) scale(1 1)" class="tile" id="tilehm08mgbmlqcpm0x5y1" data-type="tile" data-id="9_7" data-address="9_7" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="10" data-y="7" data-current="false" data-active="false" data-is-path-node="false" transform="translate(10 7) rotate(0) scale(1 1)" class="tile" id="tile98mfk0xxmgbvyx3lb1b" data-type="tile" data-id="10_7" data-address="10_7" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="11" data-y="7" data-current="false" data-active="false" data-is-path-node="false" transform="translate(11 7) rotate(0) scale(1 1)" class="tile" id="tilegle8yc8mlxlngm1bao3" data-type="tile" data-id="11_7" data-address="11_7" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="12" data-y="7" data-current="false" data-active="false" data-is-path-node="false" transform="translate(12 7) rotate(0) scale(1 1)" class="tile" id="tilegs68m1fm7yxkl0551bo" data-type="tile" data-id="12_7" data-address="12_7" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="0" data-y="8" data-current="false" data-active="false" data-is-path-node="false" transform="translate(0 8) rotate(0) scale(1 1)" class="tile" id="tileyg1bl4mxpmhstvr8yx8" data-type="tile" data-id="0_8" data-address="0_8" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="1" data-y="8" data-current="false" data-active="false" data-is-path-node="false" transform="translate(1 8) rotate(0) scale(1 1)" class="tile" id="tilecm19ylym1k08lbx838m" data-type="tile" data-id="1_8" data-address="1_8" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="2" data-y="8" data-current="false" data-active="false" data-is-path-node="false" transform="translate(2 8) rotate(0) scale(1 1)" class="tile" id="tilee8bpm9z1yd8lmzmypnx" data-type="tile" data-id="2_8" data-address="2_8" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="3" data-y="8" data-current="false" data-active="false" data-is-path-node="false" transform="translate(3 8) rotate(0) scale(1 1)" class="tile" id="tile61bhmy9z08gx3mk8o7l" data-type="tile" data-id="3_8" data-address="3_8" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="4" data-y="8" data-current="false" data-active="false" data-is-path-node="false" transform="translate(4 8) rotate(0) scale(1 1)" class="tile" id="tilelnm8bkmydz1rxhj03ssl" data-type="tile" data-id="4_8" data-address="4_8" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="5" data-y="8" data-current="false" data-active="false" data-is-path-node="false" transform="translate(5 8) rotate(0) scale(1 1)" class="tile" id="tilebmyx0l61udazmxmf8s5" data-type="tile" data-id="5_8" data-address="5_8" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="6" data-y="8" data-current="false" data-active="false" data-is-path-node="false" transform="translate(6 8) rotate(0) scale(1 1)" class="tile" id="tiler83q1mjxmbyycsmu93l" data-type="tile" data-id="6_8" data-address="6_8" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="7" data-y="8" data-current="false" data-active="false" data-is-path-node="false" transform="translate(7 8) rotate(0) scale(1 1)" class="tile" id="tile1mdxm8dbqlkx6yltbb5" data-type="tile" data-id="7_8" data-address="7_8" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="8" data-y="8" data-current="false" data-active="false" data-is-path-node="false" transform="translate(8 8) rotate(0) scale(1 1)" class="tile" id="tilex9sm9srgmbmywlrok1" data-type="tile" data-id="8_8" data-address="8_8" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="9" data-y="8" data-current="false" data-active="false" data-is-path-node="false" transform="translate(9 8) rotate(0) scale(1 1)" class="tile" id="tilem0glmu9bnxy1malnjko" data-type="tile" data-id="9_8" data-address="9_8" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="10" data-y="8" data-current="false" data-active="false" data-is-path-node="false" transform="translate(10 8) rotate(0) scale(1 1)" class="tile" id="tilezn24l11blimy8lx9mf" data-type="tile" data-id="10_8" data-address="10_8" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="11" data-y="8" data-current="false" data-active="false" data-is-path-node="false" transform="translate(11 8) rotate(0) scale(1 1)" class="tile" id="tilerxy1mcbm17q9v4l9jl" data-type="tile" data-id="11_8" data-address="11_8" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="12" data-y="8" data-current="false" data-active="false" data-is-path-node="false" transform="translate(12 8) rotate(0) scale(1 1)" class="tile" id="tilemxlb1td5s9ym8lffnl" data-type="tile" data-id="12_8" data-address="12_8" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="0" data-y="9" data-current="false" data-active="false" data-is-path-node="false" transform="translate(0 9) rotate(0) scale(1 1)" class="tile" id="tilee8m9srmtoxkmbepypl1" data-type="tile" data-id="0_9" data-address="0_9" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="1" data-y="9" data-current="false" data-active="false" data-is-path-node="false" transform="translate(1 9) rotate(0) scale(1 1)" class="tile" id="tilehulytffm1jfxrf9ebam" data-type="tile" data-id="1_9" data-address="1_9" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="2" data-y="9" data-current="false" data-active="false" data-is-path-node="false" transform="translate(2 9) rotate(0) scale(1 1)" class="tile" id="tile98lbm8iv9xjys4omfx1" data-type="tile" data-id="2_9" data-address="2_9" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="3" data-y="9" data-current="false" data-active="false" data-is-path-node="false" transform="translate(3 9) rotate(0) scale(1 1)" class="tile" id="tileblj27mcoktxrx931cmy" data-type="tile" data-id="3_9" data-address="3_9" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="4" data-y="9" data-current="false" data-active="false" data-is-path-node="false" transform="translate(4 9) rotate(0) scale(1 1)" class="tile" id="tileb61myh9lx5pkqm160bmy" data-type="tile" data-id="4_9" data-address="4_9" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="5" data-y="9" data-current="false" data-active="false" data-is-path-node="false" transform="translate(5 9) rotate(0) scale(1 1)" class="tile" id="tilembl85xmhutd1mymmhx9" data-type="tile" data-id="5_9" data-address="5_9" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="6" data-y="9" data-current="false" data-active="false" data-is-path-node="false" transform="translate(6 9) rotate(0) scale(1 1)" class="tile" id="tileyr10bojmmx19cfl5kd" data-type="tile" data-id="6_9" data-address="6_9" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="7" data-y="9" data-current="false" data-active="false" data-is-path-node="false" transform="translate(7 9) rotate(0) scale(1 1)" class="tile" id="tileqalubyx7mb1b2smx9i1" data-type="tile" data-id="7_9" data-address="7_9" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="8" data-y="9" data-current="false" data-active="false" data-is-path-node="false" transform="translate(8 9) rotate(0) scale(1 1)" class="tile" id="tile9x42ym1dbvbhflxibmr" data-type="tile" data-id="8_9" data-address="8_9" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="9" data-y="9" data-current="false" data-active="false" data-is-path-node="false" transform="translate(9 9) rotate(0) scale(1 1)" class="tile" id="tile9uxzlatm51bvsymb2e" data-type="tile" data-id="9_9" data-address="9_9" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="10" data-y="9" data-current="false" data-active="false" data-is-path-node="false" transform="translate(10 9) rotate(0) scale(1 1)" class="tile" id="tilef9jy61hx2le9tmbvkme" data-type="tile" data-id="10_9" data-address="10_9" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="11" data-y="9" data-current="false" data-active="false" data-is-path-node="false" transform="translate(11 9) rotate(0) scale(1 1)" class="tile" id="tileumb4cly739qm11b2bx" data-type="tile" data-id="11_9" data-address="11_9" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="12" data-y="9" data-current="false" data-active="false" data-is-path-node="false" transform="translate(12 9) rotate(0) scale(1 1)" class="tile" id="tilebca7txnlgkqmpl1zyym" data-type="tile" data-id="12_9" data-address="12_9" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="0" data-y="10" data-current="false" data-active="false" data-is-path-node="false" transform="translate(0 10) rotate(0) scale(1 1)" class="tile" id="tiles1mfmklixk6cfbakvpy" data-type="tile" data-id="0_10" data-address="0_10" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="1" data-y="10" data-current="false" data-active="false" data-is-path-node="false" transform="translate(1 10) rotate(0) scale(1 1)" class="tile" id="tileytdx8sal609mymi7lb1" data-type="tile" data-id="1_10" data-address="1_10" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="2" data-y="10" data-current="false" data-active="false" data-is-path-node="false" transform="translate(2 10) rotate(0) scale(1 1)" class="tile" id="tile0y1mlxayyjaim9bb637" data-type="tile" data-id="2_10" data-address="2_10" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="3" data-y="10" data-current="false" data-active="false" data-is-path-node="false" transform="translate(3 10) rotate(0) scale(1 1)" class="tile" id="tileuj712bpmmmjnlaxz4y" data-type="tile" data-id="3_10" data-address="3_10" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="4" data-y="10" data-current="false" data-active="false" data-is-path-node="false" transform="translate(4 10) rotate(0) scale(1 1)" class="tile" id="tilewvmzmlbryjjk1axzmpf" data-type="tile" data-id="4_10" data-address="4_10" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="5" data-y="10" data-current="false" data-active="false" data-is-path-node="false" transform="translate(5 10) rotate(0) scale(1 1)" class="tile" id="tileabmdo3xyrmm19rz9vl" data-type="tile" data-id="5_10" data-address="5_10" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="6" data-y="10" data-current="false" data-active="false" data-is-path-node="false" transform="translate(6 10) rotate(0) scale(1 1)" class="tile" id="tilemtyaxglbsbamx614u1y" data-type="tile" data-id="6_10" data-address="6_10" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="7" data-y="10" data-current="false" data-active="false" data-is-path-node="false" transform="translate(7 10) rotate(0) scale(1 1)" class="tile" id="tilelkyxm1b2pwdgdd0acm" data-type="tile" data-id="7_10" data-address="7_10" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="8" data-y="10" data-current="false" data-active="false" data-is-path-node="false" transform="translate(8 10) rotate(0) scale(1 1)" class="tile" id="tile5vuyldmox8mbwlvj1a" data-type="tile" data-id="8_10" data-address="8_10" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="9" data-y="10" data-current="false" data-active="false" data-is-path-node="false" transform="translate(9 10) rotate(0) scale(1 1)" class="tile" id="tileaybv55lmxpmknx1wae" data-type="tile" data-id="9_10" data-address="9_10" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="10" data-y="10" data-current="false" data-active="false" data-is-path-node="false" transform="translate(10 10) rotate(0) scale(1 1)" class="tile" id="tile13ayp3cwvmrkopmlxb9" data-type="tile" data-id="10_10" data-address="10_10" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="11" data-y="10" data-current="false" data-active="false" data-is-path-node="false" transform="translate(11 10) rotate(0) scale(1 1)" class="tile" id="tilehm1wxqqhbljjyamaml" data-type="tile" data-id="11_10" data-address="11_10" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="12" data-y="10" data-current="false" data-active="false" data-is-path-node="false" transform="translate(12 10) rotate(0) scale(1 1)" class="tile" id="tile2bylmxyazylmk8hvep1" data-type="tile" data-id="12_10" data-address="12_10" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="0" data-y="11" data-current="false" data-active="false" data-is-path-node="false" transform="translate(0 11) rotate(0) scale(1 1)" class="tile" id="tilekwvwl1bxbmymvacaum3" data-type="tile" data-id="0_11" data-address="0_11" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="1" data-y="11" data-current="false" data-active="false" data-is-path-node="false" transform="translate(1 11) rotate(0) scale(1 1)" class="tile" id="tile9h1xima2zceyxb9gmlv" data-type="tile" data-id="1_11" data-address="1_11" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="2" data-y="11" data-current="false" data-active="false" data-is-path-node="false" transform="translate(2 11) rotate(0) scale(1 1)" class="tile" id="tilexyltmeb5mnx4j71ebx" data-type="tile" data-id="2_11" data-address="2_11" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="3" data-y="11" data-current="false" data-active="false" data-is-path-node="false" transform="translate(3 11) rotate(0) scale(1 1)" class="tile" id="tileip2l4bscgx1umjbmm0y" data-type="tile" data-id="3_11" data-address="3_11" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="4" data-y="11" data-current="false" data-active="false" data-is-path-node="false" transform="translate(4 11) rotate(0) scale(1 1)" class="tile" id="tileojlm6mcbm13ybofxv7y" data-type="tile" data-id="4_11" data-address="4_11" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="5" data-y="11" data-current="false" data-active="false" data-is-path-node="false" transform="translate(5 11) rotate(0) scale(1 1)" class="tile" id="tile6bm0b1my713xin9blfk" data-type="tile" data-id="5_11" data-address="5_11" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="6" data-y="11" data-current="false" data-active="false" data-is-path-node="false" transform="translate(6 11) rotate(0) scale(1 1)" class="tile" id="tilexmyy1z1t5zmbhb6hlkd" data-type="tile" data-id="6_11" data-address="6_11" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="7" data-y="11" data-current="false" data-active="false" data-is-path-node="false" transform="translate(7 11) rotate(0) scale(1 1)" class="tile" id="tilemblmply5zctj18bxnm" data-type="tile" data-id="7_11" data-address="7_11" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="8" data-y="11" data-current="false" data-active="false" data-is-path-node="false" transform="translate(8 11) rotate(0) scale(1 1)" class="tile" id="tilenm29ysaklb1hfbommx" data-type="tile" data-id="8_11" data-address="8_11" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="9" data-y="11" data-current="false" data-active="false" data-is-path-node="false" transform="translate(9 11) rotate(0) scale(1 1)" class="tile" id="tile6gtnyoibmmkd5lxkbu1" data-type="tile" data-id="9_11" data-address="9_11" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="10" data-y="11" data-current="false" data-active="false" data-is-path-node="false" transform="translate(10 11) rotate(0) scale(1 1)" class="tile" id="tilezy1iembzxm5oodlbqml" data-type="tile" data-id="10_11" data-address="10_11" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="11" data-y="11" data-current="false" data-active="false" data-is-path-node="false" transform="translate(11 11) rotate(0) scale(1 1)" class="tile" id="tilexmnh19myb8jxq3lb2r" data-type="tile" data-id="11_11" data-address="11_11" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="12" data-y="11" data-current="false" data-active="false" data-is-path-node="false" transform="translate(12 11) rotate(0) scale(1 1)" class="tile" id="tilemfowyr6xmbd1dybele" data-type="tile" data-id="12_11" data-address="12_11" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="0" data-y="12" data-current="false" data-active="false" data-is-path-node="false" transform="translate(0 12) rotate(0) scale(1 1)" class="tile" id="tileb72lmtr0yxezn1mvmrb" data-type="tile" data-id="0_12" data-address="0_12" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="1" data-y="12" data-current="false" data-active="false" data-is-path-node="false" transform="translate(1 12) rotate(0) scale(1 1)" class="tile" id="tilemblulrovxbmpmy1gk9x" data-type="tile" data-id="1_12" data-address="1_12" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="2" data-y="12" data-current="false" data-active="false" data-is-path-node="false" transform="translate(2 12) rotate(0) scale(1 1)" class="tile" id="tileymrc5j7bbxf1lcsmijl" data-type="tile" data-id="2_12" data-address="2_12" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="3" data-y="12" data-current="false" data-active="false" data-is-path-node="false" transform="translate(3 12) rotate(0) scale(1 1)" class="tile" id="tilebxu97b9bilymmr41410" data-type="tile" data-id="3_12" data-address="3_12" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="4" data-y="12" data-current="false" data-active="false" data-is-path-node="false" transform="translate(4 12) rotate(0) scale(1 1)" class="tile" id="tileb1mldub4m1xihyvw6w" data-type="tile" data-id="4_12" data-address="4_12" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="5" data-y="12" data-current="false" data-active="false" data-is-path-node="false" transform="translate(5 12) rotate(0) scale(1 1)" class="tile" id="tilevky0b8be1lmsxpgew9m" data-type="tile" data-id="5_12" data-address="5_12" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="6" data-y="12" data-current="false" data-active="false" data-is-path-node="false" transform="translate(6 12) rotate(0) scale(1 1)" class="tile" id="tilekmbmlgkyflccqdmo11x" data-type="tile" data-id="6_12" data-address="6_12" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="7" data-y="12" data-current="false" data-active="false" data-is-path-node="false" transform="translate(7 12) rotate(0) scale(1 1)" class="tile" id="tile9bwgmazmx0i4yc61wgly" data-type="tile" data-id="7_12" data-address="7_12" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="8" data-y="12" data-current="false" data-active="false" data-is-path-node="false" transform="translate(8 12) rotate(0) scale(1 1)" class="tile" id="tiledl6mgpk0ytb1mcx6nhl" data-type="tile" data-id="8_12" data-address="8_12" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="9" data-y="12" data-current="false" data-active="false" data-is-path-node="false" transform="translate(9 12) rotate(0) scale(1 1)" class="tile" id="tilex99m14sm7ybbcleh8vg" data-type="tile" data-id="9_12" data-address="9_12" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="10" data-y="12" data-current="false" data-active="false" data-is-path-node="false" transform="translate(10 12) rotate(0) scale(1 1)" class="tile" id="tilexhlyc2hp97aw1mm67bt" data-type="tile" data-id="10_12" data-address="10_12" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="11" data-y="12" data-current="false" data-active="false" data-is-path-node="false" transform="translate(11 12) rotate(0) scale(1 1)" class="tile" id="tilemcslmyb7x5o1tcmidql" data-type="tile" data-id="11_12" data-address="11_12" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="12" data-y="12" data-current="false" data-active="false" data-is-path-node="false" transform="translate(12 12) rotate(0) scale(1 1)" class="tile" id="tilelct41bmxeuheb2ymxlm" data-type="tile" data-id="12_12" data-address="12_12" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="0" data-y="13" data-current="false" data-active="false" data-is-path-node="false" transform="translate(0 13) rotate(0) scale(1 1)" class="tile" id="tilenyab9c31dhfxgbmmblv" data-type="tile" data-id="0_13" data-address="0_13" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="1" data-y="13" data-current="false" data-active="false" data-is-path-node="false" transform="translate(1 13) rotate(0) scale(1 1)" class="tile" id="tilesctxyl9ogg6mmcaxb1f" data-type="tile" data-id="1_13" data-address="1_13" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="2" data-y="13" data-current="false" data-active="false" data-is-path-node="false" transform="translate(2 13) rotate(0) scale(1 1)" class="tile" id="tile4asybe6qpwx1lc7omnm" data-type="tile" data-id="2_13" data-address="2_13" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="3" data-y="13" data-current="false" data-active="false" data-is-path-node="false" transform="translate(3 13) rotate(0) scale(1 1)" class="tile" id="tilemmcx1c8ys5bs18yxl8i" data-type="tile" data-id="3_13" data-address="3_13" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="4" data-y="13" data-current="false" data-active="false" data-is-path-node="false" transform="translate(4 13) rotate(0) scale(1 1)" class="tile" id="tilec81wbaxz2mc54ylrz8m" data-type="tile" data-id="4_13" data-address="4_13" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="5" data-y="13" data-current="false" data-active="false" data-is-path-node="false" transform="translate(5 13) rotate(0) scale(1 1)" class="tile" id="tileuq1yx6yjbuccmexlrhm" data-type="tile" data-id="5_13" data-address="5_13" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="6" data-y="13" data-current="false" data-active="false" data-is-path-node="false" transform="translate(6 13) rotate(0) scale(1 1)" class="tile" id="tiledavuxubsm7lc1mbafyn" data-type="tile" data-id="6_13" data-address="6_13" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="7" data-y="13" data-current="false" data-active="false" data-is-path-node="false" transform="translate(7 13) rotate(0) scale(1 1)" class="tile" id="tileq1lme6iimcbjlbyb35x" data-type="tile" data-id="7_13" data-address="7_13" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="8" data-y="13" data-current="false" data-active="false" data-is-path-node="false" transform="translate(8 13) rotate(0) scale(1 1)" class="tile" id="tileylqrjx1f7nmqmndojbw" data-type="tile" data-id="8_13" data-address="8_13" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="9" data-y="13" data-current="false" data-active="false" data-is-path-node="false" transform="translate(9 13) rotate(0) scale(1 1)" class="tile" id="tileybyizmd14xlf5dh3mv" data-type="tile" data-id="9_13" data-address="9_13" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="10" data-y="13" data-current="false" data-active="false" data-is-path-node="false" transform="translate(10 13) rotate(0) scale(1 1)" class="tile" id="tilexmdgbk8jfjsblqm1ysu" data-type="tile" data-id="10_13" data-address="10_13" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="11" data-y="13" data-current="false" data-active="false" data-is-path-node="false" transform="translate(11 13) rotate(0) scale(1 1)" class="tile" id="tileeel1mr4miixfb5k7yd4" data-type="tile" data-id="11_13" data-address="11_13" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="12" data-y="13" data-current="false" data-active="false" data-is-path-node="false" transform="translate(12 13) rotate(0) scale(1 1)" class="tile" id="tilecbo018mxyvhd4sxlum" data-type="tile" data-id="12_13" data-address="12_13" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="0" data-y="14" data-current="false" data-active="false" data-is-path-node="false" transform="translate(0 14) rotate(0) scale(1 1)" class="tile" id="tilex1dmfiiby1m7xmwdpl" data-type="tile" data-id="0_14" data-address="0_14" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="1" data-y="14" data-current="false" data-active="false" data-is-path-node="false" transform="translate(1 14) rotate(0) scale(1 1)" class="tile" id="tileywym18lb1dxm6mqk72" data-type="tile" data-id="1_14" data-address="1_14" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="2" data-y="14" data-current="false" data-active="false" data-is-path-node="false" transform="translate(2 14) rotate(0) scale(1 1)" class="tile" id="tileba1yyx0wmmjuldlxcu" data-type="tile" data-id="2_14" data-address="2_14" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="3" data-y="14" data-current="false" data-active="false" data-is-path-node="false" transform="translate(3 14) rotate(0) scale(1 1)" class="tile" id="tilebjcdx6dluzurmmwyi1" data-type="tile" data-id="3_14" data-address="3_14" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="4" data-y="14" data-current="false" data-active="false" data-is-path-node="false" transform="translate(4 14) rotate(0) scale(1 1)" class="tile" id="tilexs7med718cb766xumly" data-type="tile" data-id="4_14" data-address="4_14" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="5" data-y="14" data-current="false" data-active="false" data-is-path-node="false" transform="translate(5 14) rotate(0) scale(1 1)" class="tile" id="tileoolmk8x8oy1wgmmd2by" data-type="tile" data-id="5_14" data-address="5_14" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="6" data-y="14" data-current="false" data-active="false" data-is-path-node="false" transform="translate(6 14) rotate(0) scale(1 1)" class="tile" id="tilegsdgbgxm65vcl5y1m8b" data-type="tile" data-id="6_14" data-address="6_14" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="7" data-y="14" data-current="false" data-active="false" data-is-path-node="false" transform="translate(7 14) rotate(0) scale(1 1)" class="tile" id="tilelnumzf06amduyxh36n1b" data-type="tile" data-id="7_14" data-address="7_14" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="8" data-y="14" data-current="false" data-active="false" data-is-path-node="false" transform="translate(8 14) rotate(0) scale(1 1)" class="tile" id="tilejrdvx0ufmgo1ml86y76b" data-type="tile" data-id="8_14" data-address="8_14" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="9" data-y="14" data-current="false" data-active="false" data-is-path-node="false" transform="translate(9 14) rotate(0) scale(1 1)" class="tile" id="tile287gxm5dcv5m41tylbj" data-type="tile" data-id="9_14" data-address="9_14" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="10" data-y="14" data-current="false" data-active="false" data-is-path-node="false" transform="translate(10 14) rotate(0) scale(1 1)" class="tile" id="tileqlbm1emxyu2ky4pmq" data-type="tile" data-id="10_14" data-address="10_14" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="11" data-y="14" data-current="false" data-active="false" data-is-path-node="false" transform="translate(11 14) rotate(0) scale(1 1)" class="tile" id="tile9q1mlbyvehxmtc6bbe" data-type="tile" data-id="11_14" data-address="11_14" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="teleport" data-x="12" data-y="14" data-current="false" data-active="false" data-is-path-node="false" transform="translate(12 14) rotate(0) scale(1 1)" class="tile" id="tilembm0z1yl13mtxfem3d7" data-type="tile" data-id="12_14" data-address="12_14" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="7_2" data-target="[object Object]">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="0" data-y="15" data-current="false" data-active="false" data-is-path-node="false" transform="translate(0 15) rotate(0) scale(1 1)" class="tile" id="tileebm1ypcdmim8luk2ex" data-type="tile" data-id="0_15" data-address="0_15" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="1" data-y="15" data-current="false" data-active="false" data-is-path-node="false" transform="translate(1 15) rotate(0) scale(1 1)" class="tile" id="tilewx12c7muxqmelyrmb8m" data-type="tile" data-id="1_15" data-address="1_15" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="2" data-y="15" data-current="false" data-active="false" data-is-path-node="false" transform="translate(2 15) rotate(0) scale(1 1)" class="tile" id="tilerylmxjyzboe1qpgjmjc" data-type="tile" data-id="2_15" data-address="2_15" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="3" data-y="15" data-current="false" data-active="false" data-is-path-node="false" transform="translate(3 15) rotate(0) scale(1 1)" class="tile" id="tile4bxlm8mz1fcwdejyh13" data-type="tile" data-id="3_15" data-address="3_15" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="4" data-y="15" data-current="false" data-active="false" data-is-path-node="false" transform="translate(4 15) rotate(0) scale(1 1)" class="tile" id="tilewe1mv9xyryblgm7u6eb" data-type="tile" data-id="4_15" data-address="4_15" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="5" data-y="15" data-current="false" data-active="false" data-is-path-node="false" transform="translate(5 15) rotate(0) scale(1 1)" class="tile" id="tilex0yamylrbntv9enm8p1" data-type="tile" data-id="5_15" data-address="5_15" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="6" data-y="15" data-current="false" data-active="false" data-is-path-node="false" transform="translate(6 15) rotate(0) scale(1 1)" class="tile" id="tile1wmxce35l214byvmmy5" data-type="tile" data-id="6_15" data-address="6_15" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="7" data-y="15" data-current="false" data-active="false" data-is-path-node="false" transform="translate(7 15) rotate(0) scale(1 1)" class="tile" id="tile2kbaalmy3pqgxe1am6x" data-type="tile" data-id="7_15" data-address="7_15" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="8" data-y="15" data-current="false" data-active="false" data-is-path-node="false" transform="translate(8 15) rotate(0) scale(1 1)" class="tile" id="tileaxyzml5etwa1gu9jhmb" data-type="tile" data-id="8_15" data-address="8_15" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="9" data-y="15" data-current="false" data-active="false" data-is-path-node="false" transform="translate(9 15) rotate(0) scale(1 1)" class="tile" id="tilexb1q3gbyransm3e7elm" data-type="tile" data-id="9_15" data-address="9_15" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="10" data-y="15" data-current="false" data-active="false" data-is-path-node="false" transform="translate(10 15) rotate(0) scale(1 1)" class="tile" id="tileyb3gxmy1yglpxie1mde" data-type="tile" data-id="10_15" data-address="10_15" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="11" data-y="15" data-current="false" data-active="false" data-is-path-node="false" transform="translate(11 15) rotate(0) scale(1 1)" class="tile" id="tilex9rlmb2euwcmx6y1m0i" data-type="tile" data-id="11_15" data-address="11_15" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="12" data-y="15" data-current="false" data-active="false" data-is-path-node="false" transform="translate(12 15) rotate(0) scale(1 1)" class="tile" id="tile4dexvxlmbyp9m3jm71" data-type="tile" data-id="12_15" data-address="12_15" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="0" data-y="16" data-current="false" data-active="false" data-is-path-node="false" transform="translate(0 16) rotate(0) scale(1 1)" class="tile" id="tileomwfxembfm1dvm1lysh" data-type="tile" data-id="0_16" data-address="0_16" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="1" data-y="16" data-current="false" data-active="false" data-is-path-node="false" transform="translate(1 16) rotate(0) scale(1 1)" class="tile" id="tileyo14xvebljo7a1mmclf" data-type="tile" data-id="1_16" data-address="1_16" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="2" data-y="16" data-current="false" data-active="false" data-is-path-node="false" transform="translate(2 16) rotate(0) scale(1 1)" class="tile" id="tilembylxtbd1fn39oqm6ym" data-type="tile" data-id="2_16" data-address="2_16" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="3" data-y="16" data-current="false" data-active="false" data-is-path-node="false" transform="translate(3 16) rotate(0) scale(1 1)" class="tile" id="tileltmbfxxpylmo7pw4y1r" data-type="tile" data-id="3_16" data-address="3_16" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="4" data-y="16" data-current="false" data-active="false" data-is-path-node="false" transform="translate(4 16) rotate(0) scale(1 1)" class="tile" id="tilecbmm1no0vxyfal4pl4z" data-type="tile" data-id="4_16" data-address="4_16" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="5" data-y="16" data-current="false" data-active="false" data-is-path-node="false" transform="translate(5 16) rotate(0) scale(1 1)" class="tile" id="tilefxe1yqcb5wmum1libbm" data-type="tile" data-id="5_16" data-address="5_16" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="6" data-y="16" data-current="false" data-active="false" data-is-path-node="false" transform="translate(6 16) rotate(0) scale(1 1)" class="tile" id="tilevum1yx3muxllfxmbmu" data-type="tile" data-id="6_16" data-address="6_16" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="7" data-y="16" data-current="false" data-active="false" data-is-path-node="false" transform="translate(7 16) rotate(0) scale(1 1)" class="tile" id="tilebi1lxgfmy7cn0mpxgk4" data-type="tile" data-id="7_16" data-address="7_16" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="8" data-y="16" data-current="false" data-active="false" data-is-path-node="false" transform="translate(8 16) rotate(0) scale(1 1)" class="tile" id="tilejlyf4j9m1f0milb2xlm" data-type="tile" data-id="8_16" data-address="8_16" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="9" data-y="16" data-current="false" data-active="false" data-is-path-node="false" transform="translate(9 16) rotate(0) scale(1 1)" class="tile" id="tilefbemzgb14lm9yxcysvl" data-type="tile" data-id="9_16" data-address="9_16" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="10" data-y="16" data-current="false" data-active="false" data-is-path-node="false" transform="translate(10 16) rotate(0) scale(1 1)" class="tile" id="tilemymmlxfbtxoxh1exoi8" data-type="tile" data-id="10_16" data-address="10_16" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="11" data-y="16" data-current="false" data-active="false" data-is-path-node="false" transform="translate(11 16) rotate(0) scale(1 1)" class="tile" id="tilemegmum1bydfflxmxl1s" data-type="tile" data-id="11_16" data-address="11_16" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="12" data-y="16" data-current="false" data-active="false" data-is-path-node="false" transform="translate(12 16) rotate(0) scale(1 1)" class="tile" id="tiler3mi9xglf1ydbizm21q" data-type="tile" data-id="12_16" data-address="12_16" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="0" data-y="17" data-current="false" data-active="false" data-is-path-node="false" transform="translate(0 17) rotate(0) scale(1 1)" class="tile" id="tilefb1l3kjylakxbcmt1pm" data-type="tile" data-id="0_17" data-address="0_17" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="1" data-y="17" data-current="false" data-active="false" data-is-path-node="false" transform="translate(1 17) rotate(0) scale(1 1)" class="tile" id="tileypymgfwllb1zkkm47x1" data-type="tile" data-id="1_17" data-address="1_17" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="2" data-y="17" data-current="false" data-active="false" data-is-path-node="false" transform="translate(2 17) rotate(0) scale(1 1)" class="tile" id="tileo0gbkhyklxfgxwm1om" data-type="tile" data-id="2_17" data-address="2_17" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="3" data-y="17" data-current="false" data-active="false" data-is-path-node="false" transform="translate(3 17) rotate(0) scale(1 1)" class="tile" id="tileldby05gu83alyhxwm1m" data-type="tile" data-id="3_17" data-address="3_17" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="4" data-y="17" data-current="false" data-active="false" data-is-path-node="false" transform="translate(4 17) rotate(0) scale(1 1)" class="tile" id="tileeyogxmb00g1m2m6mmlm" data-type="tile" data-id="4_17" data-address="4_17" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="5" data-y="17" data-current="false" data-active="false" data-is-path-node="false" transform="translate(5 17) rotate(0) scale(1 1)" class="tile" id="tiled1b2blxsmmg1yqpn3bn" data-type="tile" data-id="5_17" data-address="5_17" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="6" data-y="17" data-current="false" data-active="false" data-is-path-node="false" transform="translate(6 17) rotate(0) scale(1 1)" class="tile" id="tile5ysbe1b9mm9xlfdsveh" data-type="tile" data-id="6_17" data-address="6_17" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="7" data-y="17" data-current="false" data-active="false" data-is-path-node="false" transform="translate(7 17) rotate(0) scale(1 1)" class="tile" id="tilelb0xk86y5h9h1mkadhmd" data-type="tile" data-id="7_17" data-address="7_17" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="8" data-y="17" data-current="false" data-active="false" data-is-path-node="false" transform="translate(8 17) rotate(0) scale(1 1)" class="tile" id="tilesxto5b66ehckmw1yml0" data-type="tile" data-id="8_17" data-address="8_17" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="9" data-y="17" data-current="false" data-active="false" data-is-path-node="false" transform="translate(9 17) rotate(0) scale(1 1)" class="tile" id="tilelmmth1b1ylwd51j9sux" data-type="tile" data-id="9_17" data-address="9_17" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="10" data-y="17" data-current="false" data-active="false" data-is-path-node="false" transform="translate(10 17) rotate(0) scale(1 1)" class="tile" id="tilemb9lslwp7h19of1mxdy" data-type="tile" data-id="10_17" data-address="10_17" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="11" data-y="17" data-current="false" data-active="false" data-is-path-node="false" transform="translate(11 17) rotate(0) scale(1 1)" class="tile" id="tilenmlyhmx1bk912vp9id" data-type="tile" data-id="11_17" data-address="11_17" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="12" data-y="17" data-current="false" data-active="false" data-is-path-node="false" transform="translate(12 17) rotate(0) scale(1 1)" class="tile" id="tile4ykim9drxib1hyrtlm" data-type="tile" data-id="12_17" data-address="12_17" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="0" data-y="18" data-current="false" data-active="false" data-is-path-node="false" transform="translate(0 18) rotate(0) scale(1 1)" class="tile" id="tile0mh1mydj8bwgvxx2kln" data-type="tile" data-id="0_18" data-address="0_18" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="1" data-y="18" data-current="false" data-active="false" data-is-path-node="false" transform="translate(1 18) rotate(0) scale(1 1)" class="tile" id="tilel3ymb31mhxbspqsmr5" data-type="tile" data-id="1_18" data-address="1_18" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="2" data-y="18" data-current="false" data-active="false" data-is-path-node="false" transform="translate(2 18) rotate(0) scale(1 1)" class="tile" id="tileyxx5gb1ltg7imyom7h" data-type="tile" data-id="2_18" data-address="2_18" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="3" data-y="18" data-current="false" data-active="false" data-is-path-node="false" transform="translate(3 18) rotate(0) scale(1 1)" class="tile" id="tileialnyhx1myyqmjhbky" data-type="tile" data-id="3_18" data-address="3_18" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="4" data-y="18" data-current="false" data-active="false" data-is-path-node="false" transform="translate(4 18) rotate(0) scale(1 1)" class="tile" id="tile8e4lnhlfyh1x5mmwbi2" data-type="tile" data-id="4_18" data-address="4_18" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="5" data-y="18" data-current="false" data-active="false" data-is-path-node="false" transform="translate(5 18) rotate(0) scale(1 1)" class="tile" id="tilelkd4nxe6myb1my1hzz" data-type="tile" data-id="5_18" data-address="5_18" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="6" data-y="18" data-current="false" data-active="false" data-is-path-node="false" transform="translate(6 18) rotate(0) scale(1 1)" class="tile" id="tile4mrbg98ylxnmbdei31k" data-type="tile" data-id="6_18" data-address="6_18" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="7" data-y="18" data-current="false" data-active="false" data-is-path-node="false" transform="translate(7 18) rotate(0) scale(1 1)" class="tile" id="tile7li5bm0xx71orep1myi" data-type="tile" data-id="7_18" data-address="7_18" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="8" data-y="18" data-current="false" data-active="false" data-is-path-node="false" transform="translate(8 18) rotate(0) scale(1 1)" class="tile" id="tilelbi0y4xmlr1m8958yl" data-type="tile" data-id="8_18" data-address="8_18" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="9" data-y="18" data-current="false" data-active="false" data-is-path-node="false" transform="translate(9 18) rotate(0) scale(1 1)" class="tile" id="tileb41mx08lm61bc6yi1j" data-type="tile" data-id="9_18" data-address="9_18" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="10" data-y="18" data-current="false" data-active="false" data-is-path-node="false" transform="translate(10 18) rotate(0) scale(1 1)" class="tile" id="tile3xgmlmiqpb1l51yrh66" data-type="tile" data-id="10_18" data-address="10_18" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="11" data-y="18" data-current="false" data-active="false" data-is-path-node="false" transform="translate(11 18) rotate(0) scale(1 1)" class="tile" id="tileam6ylm1lbjidahn9wxy" data-type="tile" data-id="11_18" data-address="11_18" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="12" data-y="18" data-current="false" data-active="false" data-is-path-node="false" transform="translate(12 18) rotate(0) scale(1 1)" class="tile" id="tilemygi0x91yvbv8ixlmh" data-type="tile" data-id="12_18" data-address="12_18" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="0" data-y="19" data-current="false" data-active="false" data-is-path-node="false" transform="translate(0 19) rotate(0) scale(1 1)" class="tile" id="tilemd3xbpy11md92bnvili" data-type="tile" data-id="0_19" data-address="0_19" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="1" data-y="19" data-current="false" data-active="false" data-is-path-node="false" transform="translate(1 19) rotate(0) scale(1 1)" class="tile" id="tile7bf4atym8lexm0woi19" data-type="tile" data-id="1_19" data-address="1_19" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="2" data-y="19" data-current="false" data-active="false" data-is-path-node="false" transform="translate(2 19) rotate(0) scale(1 1)" class="tile" id="tilefhbrdhywmg4iml1xeov" data-type="tile" data-id="2_19" data-address="2_19" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="3" data-y="19" data-current="false" data-active="false" data-is-path-node="false" transform="translate(3 19) rotate(0) scale(1 1)" class="tile" id="tilezxihmtmfx1kyiibllb" data-type="tile" data-id="3_19" data-address="3_19" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="4" data-y="19" data-current="false" data-active="false" data-is-path-node="false" transform="translate(4 19) rotate(0) scale(1 1)" class="tile" id="tiley1mh1bylvlau9iwxmxk" data-type="tile" data-id="4_19" data-address="4_19" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="5" data-y="19" data-current="false" data-active="false" data-is-path-node="false" transform="translate(5 19) rotate(0) scale(1 1)" class="tile" id="tileulmiyxem1xaycmibkd" data-type="tile" data-id="5_19" data-address="5_19" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="6" data-y="19" data-current="false" data-active="false" data-is-path-node="false" transform="translate(6 19) rotate(0) scale(1 1)" class="tile" id="tile1yp49jbll6miem9u1dx" data-type="tile" data-id="6_19" data-address="6_19" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="7" data-y="19" data-current="false" data-active="false" data-is-path-node="false" transform="translate(7 19) rotate(0) scale(1 1)" class="tile" id="tilexo1l256i2hgbcvmxmky" data-type="tile" data-id="7_19" data-address="7_19" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="8" data-y="19" data-current="false" data-active="false" data-is-path-node="false" transform="translate(8 19) rotate(0) scale(1 1)" class="tile" id="tilelylmmbtxyk47t1oqe9i" data-type="tile" data-id="8_19" data-address="8_19" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="9" data-y="19" data-current="false" data-active="false" data-is-path-node="false" transform="translate(9 19) rotate(0) scale(1 1)" class="tile" id="tilemgxudm3lv8ivrue12yb" data-type="tile" data-id="9_19" data-address="9_19" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="10" data-y="19" data-current="false" data-active="false" data-is-path-node="false" transform="translate(10 19) rotate(0) scale(1 1)" class="tile" id="tileoaxmj4qm3jyzbwl18p" data-type="tile" data-id="10_19" data-address="10_19" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="11" data-y="19" data-current="false" data-active="false" data-is-path-node="false" transform="translate(11 19) rotate(0) scale(1 1)" class="tile" id="tilemjbxsmfpoa4mxy1wolk" data-type="tile" data-id="11_19" data-address="11_19" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="12" data-y="19" data-current="false" data-active="false" data-is-path-node="false" transform="translate(12 19) rotate(0) scale(1 1)" class="tile" id="tilesjlt7xs1wn5mml8ygb" data-type="tile" data-id="12_19" data-address="12_19" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="0" data-y="20" data-current="false" data-active="false" data-is-path-node="false" transform="translate(0 20) rotate(0) scale(1 1)" class="tile" id="tilewhsyblvmxm1emjsy7x" data-type="tile" data-id="0_20" data-address="0_20" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="1" data-y="20" data-current="false" data-active="false" data-is-path-node="false" transform="translate(1 20) rotate(0) scale(1 1)" class="tile" id="tilel1mxjn7pwmubsourjy" data-type="tile" data-id="1_20" data-address="1_20" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="2" data-y="20" data-current="false" data-active="false" data-is-path-node="false" transform="translate(2 20) rotate(0) scale(1 1)" class="tile" id="tileihxk7bjmylx1mms5qll" data-type="tile" data-id="2_20" data-address="2_20" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="3" data-y="20" data-current="false" data-active="false" data-is-path-node="false" transform="translate(3 20) rotate(0) scale(1 1)" class="tile" id="tilebj2s871mm1xlyz1464q" data-type="tile" data-id="3_20" data-address="3_20" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="4" data-y="20" data-current="false" data-active="false" data-is-path-node="false" transform="translate(4 20) rotate(0) scale(1 1)" class="tile" id="tile1q2clybi0j7zmmwx3n1" data-type="tile" data-id="4_20" data-address="4_20" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="5" data-y="20" data-current="false" data-active="false" data-is-path-node="false" transform="translate(5 20) rotate(0) scale(1 1)" class="tile" id="tile5nxlubgyjmm1b03m16" data-type="tile" data-id="5_20" data-address="5_20" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="6" data-y="20" data-current="false" data-active="false" data-is-path-node="false" transform="translate(6 20) rotate(0) scale(1 1)" class="tile" id="tileblsejtihbgyypmwfxm1" data-type="tile" data-id="6_20" data-address="6_20" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="7" data-y="20" data-current="false" data-active="false" data-is-path-node="false" transform="translate(7 20) rotate(0) scale(1 1)" class="tile" id="tiledjxxbmmdsrlcmsy15" data-type="tile" data-id="7_20" data-address="7_20" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="8" data-y="20" data-current="false" data-active="false" data-is-path-node="false" transform="translate(8 20) rotate(0) scale(1 1)" class="tile" id="tilem5bljm4xhnxyef3ovc1" data-type="tile" data-id="8_20" data-address="8_20" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="9" data-y="20" data-current="false" data-active="false" data-is-path-node="false" transform="translate(9 20) rotate(0) scale(1 1)" class="tile" id="tilec4bsmelywm1ywxoqrjj" data-type="tile" data-id="9_20" data-address="9_20" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="10" data-y="20" data-current="false" data-active="false" data-is-path-node="false" transform="translate(10 20) rotate(0) scale(1 1)" class="tile" id="tileehmjfmzpblxwje1jy0c" data-type="tile" data-id="10_20" data-address="10_20" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="11" data-y="20" data-current="false" data-active="false" data-is-path-node="false" transform="translate(11 20) rotate(0) scale(1 1)" class="tile" id="tileyjdsda31gdelm9xbmuv" data-type="tile" data-id="11_20" data-address="11_20" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="12" data-y="20" data-current="false" data-active="false" data-is-path-node="false" transform="translate(12 20) rotate(0) scale(1 1)" class="tile" id="tile6jrj1mm0xnrqbtaydla" data-type="tile" data-id="12_20" data-address="12_20" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="0" data-y="21" data-current="false" data-active="false" data-is-path-node="false" transform="translate(0 21) rotate(0) scale(1 1)" class="tile" id="tilek6wrmblm1yjmubxixp" data-type="tile" data-id="0_21" data-address="0_21" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="1" data-y="21" data-current="false" data-active="false" data-is-path-node="false" transform="translate(1 21) rotate(0) scale(1 1)" class="tile" id="tileiby3njuj0omlbm6x1l6" data-type="tile" data-id="1_21" data-address="1_21" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="2" data-y="21" data-current="false" data-active="false" data-is-path-node="false" transform="translate(2 21) rotate(0) scale(1 1)" class="tile" id="tilet1ym19yklgxmbt2yps" data-type="tile" data-id="2_21" data-address="2_21" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="3" data-y="21" data-current="false" data-active="false" data-is-path-node="false" transform="translate(3 21) rotate(0) scale(1 1)" class="tile" id="tilebyd3q17rxymkwn0lmtz" data-type="tile" data-id="3_21" data-address="3_21" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="4" data-y="21" data-current="false" data-active="false" data-is-path-node="false" transform="translate(4 21) rotate(0) scale(1 1)" class="tile" id="tileyfuhqk2lm1zoumlbxwa" data-type="tile" data-id="4_21" data-address="4_21" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="5" data-y="21" data-current="false" data-active="false" data-is-path-node="false" transform="translate(5 21) rotate(0) scale(1 1)" class="tile" id="tilemn1dymgklb8x1rnmnsn" data-type="tile" data-id="5_21" data-address="5_21" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="6" data-y="21" data-current="false" data-active="false" data-is-path-node="false" transform="translate(6 21) rotate(0) scale(1 1)" class="tile" id="tilekyxb1lh5e5ty9mm7bx1" data-type="tile" data-id="6_21" data-address="6_21" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="barrier" data-x="7" data-y="21" data-current="false" data-active="false" data-is-path-node="false" transform="translate(7 21) rotate(0) scale(1 1)" class="tile" id="tilekgbebseluwmm1xsefby" data-type="tile" data-id="7_21" data-address="7_21" data-is-traversable="false" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="8" data-y="21" data-current="false" data-active="false" data-is-path-node="false" transform="translate(8 21) rotate(0) scale(1 1)" class="tile" id="tileblymxke29zkmz1kmhx" data-type="tile" data-id="8_21" data-address="8_21" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="9" data-y="21" data-current="false" data-active="false" data-is-path-node="false" transform="translate(9 21) rotate(0) scale(1 1)" class="tile" id="tile02b5xlrv2yvp5bmkm1" data-type="tile" data-id="9_21" data-address="9_21" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="10" data-y="21" data-current="false" data-active="false" data-is-path-node="false" transform="translate(10 21) rotate(0) scale(1 1)" class="tile" id="tilemkm1j8ckegxmlbtjyml" data-type="tile" data-id="10_21" data-address="10_21" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="11" data-y="21" data-current="false" data-active="false" data-is-path-node="false" transform="translate(11 21) rotate(0) scale(1 1)" class="tile" id="tilebmxqjyz1qkm96lryul9" data-type="tile" data-id="11_21" data-address="11_21" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="12" data-y="21" data-current="false" data-active="false" data-is-path-node="false" transform="translate(12 21) rotate(0) scale(1 1)" class="tile" id="tilelbzmg1rxy1tsmylokld" data-type="tile" data-id="12_21" data-address="12_21" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="map-link" data-x="-1" data-y="11" data-current="false" data-active="false" data-is-path-node="false" transform="translate(-1 11) rotate(0) scale(1 1)" class="tile" id="tilemulmgjx9e1wrbkyxly8" data-type="tile" data-id="-1_11" data-address="-1_11" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="map-link" data-x="6" data-y="-1" data-current="false" data-active="false" data-is-path-node="false" transform="translate(6 -1) rotate(0) scale(1 1)" class="tile" id="tileb7k1ml6yyxd66rpkwm" data-type="tile" data-id="6_-1" data-address="6_-1" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="map-link" data-x="6" data-y="22" data-current="false" data-active="false" data-is-path-node="false" transform="translate(6 22) rotate(0) scale(1 1)" class="tile" id="tilezvm9bxj1xfyblpmklb" data-type="tile" data-id="6_22" data-address="6_22" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="empty" data-x="13" data-y="11" data-current="false" data-active="false" data-is-path-node="false" transform="translate(13 11) rotate(0) scale(1 1)" class="tile" id="tilepl9m2i1kymxfbbjwmk" data-type="tile" data-id="13_11" data-address="13_11" data-is-traversable="true" data-is-visited="false" data-previous="null" data-linked-node-address="null" data-target="undefined">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="map-link" data-x="-1" data-y="11" data-current="false" data-active="false" data-is-path-node="false" transform="translate(-1 11) rotate(0) scale(1 1)" class="tile" id="tilelmwxbyylbhzuxf1mkmq" data-type="tile" data-id="-1_11" data-address="-1_11" data-linked-map="BoDOb3lgb6Z3fMk8UhKP">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="map-link" data-x="6" data-y="-1" data-current="false" data-active="false" data-is-path-node="false" transform="translate(6 -1) rotate(0) scale(1 1)" class="tile" id="tilel12bry7xjammw4mmtl" data-type="tile" data-id="6_-1" data-address="6_-1" data-linked-map="I8hahrSpL3j8FdMCzp94">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="map-link" data-x="6" data-y="22" data-current="false" data-active="false" data-is-path-node="false" transform="translate(6 22) rotate(0) scale(1 1)" class="tile" id="tilel2eexlmrmeby71258tx" data-type="tile" data-id="6_22" data-address="6_22" data-linked-map="Jx2rD9TSjts2jlXn1ZXM">
+  <use href="#tile-rect"></use>
+</g>
+<g data-tile-type="start" data-x="13" data-y="11" data-current="false" data-active="false" data-is-path-node="false" transform="translate(13 11) rotate(0) scale(1 1)" class="tile" id="tilenlmfl81uym5qxbbpn" data-type="tile" data-id="13_11" data-address="13_11" data-linked-map="GijGXx13yedhOXZq694U">
+  <use href="#tile-rect"></use>
+</g>

@@ -4,7 +4,10 @@ import { SVGCanvasHost } from '../SVGCanvasHost.js';
 
 export const AppBody = defineComponent(
   getTemplate('app-body'),
-  () => {},
+  () => {
+    
+    
+  },
   {
     components: {
       'svg-canvas-host': SVGCanvasHost,

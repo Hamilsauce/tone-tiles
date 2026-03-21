@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>RxJS Reactive Music Engine</title>
+  <style>
+    body {
+      font-family: system-ui;
+      background: #111;
+      color: #eee;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px;
+    }
+    
+    .panel {
+      display: flex;
+      gap: 20px;
+      margin: 10px;
+      align-items: center;
+    }
+    
+    button,
+    select,
+    input {
+      padding: 6px 10px;
+      font-size: 14px;
+    }
+    
+    label {
+      font-size: 12px;
+      opacity: 0.8;
+    }
+  </style>
+</head>
+
+<body>
+  
+  <h2>Reactive Music Engine (RxJS)</h2>
+  
+  <div class="panel">
+    <button id="start">Start Audio</button>
+  </div>
+  
+  <div class="panel">
+    <label>Tempo</label>
+    <input id="tempo" type="range" min="60" max="180" value="100" />
+    <span id="tempoVal">100</span>
+  </div>
+  
+  <div class="panel">
+    <label>Scale</label>
+    <select id="scale">
+      <option value="major">Major</option>
+      <option value="minor">Minor</option>
+    </select>
+  </div>
+  
+  <div class="panel">
+    <label>Trigger Mode</label>
+    <select id="mode">
+      <option value="clock">Clock (withLatestFrom)</option>
+      <option value="combine">combineLatest</option>
+    </select>
+  </div>
+  
+  <script type="module">
+    import {
+      interval,
+      BehaviorSubject,
+      combineLatest
+    } from 'https://esm.sh/rxjs@7';
+    
+    import {
+      map,
+      switchAll,
+      withLatestFrom
+    } from 'https://esm.sh/rxjs@7/operators';
+    
+    // ---------------- AUDIO ----------------
+    
+    const audioCtx = new(window.AudioContext || window.webkitAudioContext)();
+    
+    function playNote(freq, time, duration = 0.15) {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      
+      osc.frequency.value = freq;
+      osc.type = 'sine';
+      
+      gain.gain.setValueAtTime(0.0001, time);
+      gain.gain.exponentialRampToValueAtTime(0.2, time + 0.01);
+      gain.gain.exponentialRampToValueAtTime(0.0001, time + duration);
+      
+      osc.connect(gain).connect(audioCtx.destination);
+      
+      osc.start(time);
+      osc.stop(time + duration);
+    }
+    
+    // ---------------- THEORY ----------------
+    
+    const SCALES = {
+      major: [0, 2, 4, 5, 7, 9, 11],
+      minor: [0, 2, 3, 5, 7, 8, 10]
+    };
+    
+    function noteToFreq(noteIndex, scaleName) {
+      const scale = SCALES[scaleName];
+      const root = 220; // A3
+      
+      const octave = Math.floor(noteIndex / scale.length);
+      const degree = scale[noteIndex % scale.length];
+      
+      const semitone = degree + octave * 12;
+      return root * Math.pow(2, semitone / 12);
+    }
+    
+    // ---------------- STATE ----------------
+    
+    const tempo$ = new BehaviorSubject(100);
+    const scale$ = new BehaviorSubject('major');
+    const mode$ = new BehaviorSubject('clock');
+    
+    // ---------------- STREAMS ----------------
+    
+    // Rhythm = clock
+    const rhythm$ = tempo$.pipe(
+      map(bpm => 60000 / bpm),
+      map(ms => interval(ms)),
+      switchAll()
+    );
+    
+    // Melody = evolving state
+    const melody$ = interval(300).pipe(
+      map(i => (i * 2) % 12) // slightly more interesting pattern
+    );
+    
+    // ---------------- CORE LOGIC ----------------
+    
+    // Mode switcher
+    const music$ = mode$.pipe(
+      map(mode => {
+        if (mode === 'combine') {
+          return combineLatest([rhythm$, melody$, scale$]).pipe(
+            map(([_, note, scale]) => ({ note, scale }))
+          );
+        }
+        
+        // default: rhythm drives
+        return rhythm$.pipe(
+          withLatestFrom(melody$, scale$),
+          map(([_, note, scale]) => ({ note, scale }))
+        );
+      }),
+      switchAll()
+    );
+    
+    // ---------------- AUDIO BINDING ----------------
+    
+    music$.subscribe(({ note, scale }) => {
+      const now = audioCtx.currentTime;
+      const freq = noteToFreq(note, scale);
+      
+      playNote(freq, now);
+    });
+    
+    // ---------------- UI ----------------
+    
+    const tempoSlider = document.getElementById('tempo');
+    const tempoVal = document.getElementById('tempoVal');
+    
+    tempoSlider.oninput = e => {
+      const val = Number(e.target.value);
+      tempoVal.textContent = val;
+      tempo$.next(val);
+    };
+    
+    document.getElementById('scale').onchange = e => {
+      scale$.next(e.target.value);
+    };
+    
+    document.getElementById('mode').onchange = e => {
+      mode$.next(e.target.value);
+    };
+    
+    document.getElementById('start').onclick = () => {
+      audioCtx.resume();
+    };
+  </script>
+  
+</body>
+
+</html>

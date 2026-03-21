@@ -11,10 +11,13 @@ export const AppMapList = defineComponent(
   (props, ctx) => {
     const mapStore = useMapStore();
     const maps = mapStore.mapIndex
+    const displayMode = computed(() => props.displayMode);
+    const isCompactMode = computed(() => props.displayMode === 'compact');
     const mapList = computed(() => [...maps.values()].sort((a, b) => a.updated < b.updated || b.id === PINNED_MAP_ID ? 1 : -1))
     const selectedId = ref(null);
     
     const handleNewMap = () => {
+      console.warn('CLICK')
       router.push({ name: RouteName.createMap })
     };
     
@@ -49,8 +52,6 @@ export const AppMapList = defineComponent(
       selectedId.value = null;
     };
     
-    
-    
     return {
       handleListClick,
       handleListItemBlur,
@@ -59,9 +60,13 @@ export const AppMapList = defineComponent(
       selectedId: computed(() => selectedId.value),
       mapList,
       handleNewMap,
-      handleMapClick
+      handleMapClick,
+      isCompact: isCompactMode,
+      displayMode,
     }
   }, {
     components: { 'app-map-list-item': AppMapListItem }
   },
 )
+
+AppMapList.props = ['displayMode']

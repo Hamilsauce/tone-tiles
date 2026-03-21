@@ -6,6 +6,8 @@
   gap: 16px;
   width: 100%;
   height: 100%;
+  height: 100dvh;
+
   padding: 8px;
   overflow-y: auto;
   backdrop-filter: hue-rotate(340deg) saturate(0.8) brightness(0.9);
@@ -25,16 +27,13 @@
     justify-content: flex-start;
     align-items: center;
     gap: 2px;
-    /* width: 100%; */
     height: 100%;
-    /* background: #FFFFFF; */
     list-style: none;
     margin: 0 auto;
     overflow-y: auto;
     
     width: 100%;
-    max-width: 340px;
-    min-width: 300px;
+    max-width: 380px;
     scroll-behavior: smooth;
     
     .map-list-item {
@@ -121,6 +120,65 @@
       margin: auto 0;
       
     }
+  }
+}
+
+#app-map-list-view.compact {
+/* background: #337BB6; */
+  /* container tweak */
+  #map-list-view-list {
+    gap: 1px;
+  }
+  
+  #map-list-view-list .map-list-item {
+    display: grid;
+    grid-template-rows: 1fr;
+    align-items: center;
+    
+    min-height: 48px;
+    padding: 4px 8px;
+    
+    gap: 8px;
+  }
+  
+  /* kill multi-row layout */
+  #map-list-view-list .map-list-item>* {
+    grid-area: unset !important;
+  }
+  
+  
+  
+  /* name = primary */
+  #map-list-view-list .map-name {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  
+  /* size = right aligned */
+  #map-list-view-list .map-size {
+    /* text-align: right; */
+    font-size: 0.85em;
+    opacity: 0.7;
+  }
+  
+  /* hide extra metadata */
+  #map-list-view-list .map-author,
+  #map-list-view-list .map-updated,
+  #map-list-view-list .date {
+    display: none;
+  }
+  
+  #map-list-view-list .meta-inline {
+    display: block;
+    font-size: 0.75em;
+    opacity: 0.6;
+  }
+  
+  #map-list-view-list .meta-inline {
+    display: block;
+    font-size: 0.75em;
+    opacity: 0.6;
   }
 }
 

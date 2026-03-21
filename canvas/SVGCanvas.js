@@ -2,6 +2,7 @@ import ham from 'https://hamilsauce.github.io/hamhelper/hamhelper1.0.0.js';
 import { createCustomEvent } from '../lib/create-event.js';
 import { CanvasObject, DefaultCanvasObjectOptions } from './CanvasObject.js';
 import { initHueRoto } from '../lib/hue-rotato.js';
+import { Scene } from '../canvas/Scene.js';
 
 const { getPanZoom, template, utils, download, TwoWayMap } = ham;
 
@@ -11,6 +12,7 @@ const { flatMap, reduce, groupBy, toArray, mergeMap, switchMap, scan, map, tap, 
 export class SVGCanvas extends EventTarget {
   #self = null;
   #surface = null;
+  #scene = null;
   #isContextMenuActive = false;
   
   constructor(svg) {
@@ -24,6 +26,22 @@ export class SVGCanvas extends EventTarget {
     
     this.viewport = this.dom.querySelector('#viewport');
     this.minimap = this.dom.querySelector('#minimap');
+    
+    this.#scene = new Scene(this, [
+      {
+        name: 'object',
+        id: 'object-layer',
+        transforms: [{ type: 'translate', values: [0.5, 0.5], position: 0 }]
+      },
+      {
+        name: 'tile',
+        id: 'tile-layer',
+        transforms: [{ type: 'translate', values: [0.5, 0.5], position: 0 }]
+      },
+      
+    ]);
+
+    this.viewport.append(this.#scene.dom)
     
     this.layers = {
       surface: this.dom.querySelector('#surface-layer'),
@@ -104,6 +122,7 @@ export class SVGCanvas extends EventTarget {
     
     this.toggleScroll = this.#toggleScroll.bind(this);
     this.clickDOMSubscription = this.eventEmits$.subscribe();
+    
   }
   
   get dom() { return this.#self; }
@@ -123,7 +142,8 @@ export class SVGCanvas extends EventTarget {
   
   get isContextMenuActive() { return this.#isContextMenuActive; }
   
-  get scene() { return this.#self.querySelector('#scene'); }
+  get scene() { return this.#scene; }
+  // get scene() { return this.#self.querySelector('#scene'); }
   
   get surface() { return this.#surface; }
   

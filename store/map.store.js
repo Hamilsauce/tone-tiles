@@ -31,11 +31,12 @@ export const useMapStore = () => {
   const previousMapId = ref(null)
   
   const setCurrentMap = (mapDoc) => {
+  	console.warn('[ setCurrentMap ]', mapDoc)
     previousMapId.value = currentMapIndex.value?.id
     currentMapIndex.value = mapIndex.has(mapDoc.id) ? mapIndex.get(mapDoc.id) : null;
     
     currentMap.value = { ...(currentMapIndex.value ?? MAP_DOC_TEMPLATE), ...mapDoc, id: mapDoc.id ?? `TEMP_MAP_${Date.now()}`, };
-    console.warn('set curr map', currentMap.value)
+    // console.warn('set curr map', currentMap.value)
   };
   
   const saveMap = async (map) => {};

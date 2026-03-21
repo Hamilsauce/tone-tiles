@@ -35,13 +35,13 @@ export class CanvasObject extends EventEmitter {
 	#self;
 	#transformList;
 	
-	constructor(context = new SVGCanvas(), type = '', options = DefaultCanvasObjectOptions) {
+	constructor(context = new SVGCanvas(), type = '', options) {
 		super();
 		const { id, model = {}, transforms } = options;
 		
 		this.#context = context;
 		this.#type = type;
-		this.#model = { ...this.#model, ...model };
+		Object.assign(this.#model, model)
 		this.#id = id ?? `${type}${utils.uuid()}`;
 		this.#self = this.#context.useTemplate(type, {
 			id: this.#id,

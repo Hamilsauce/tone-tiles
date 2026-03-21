@@ -37,13 +37,22 @@ const routes = [
         return { name: RouteName.mapList };
       }
       
-      const mapStore = useMapStore();
-      mapStore.setCurrentMapById(to.params.id);
-      
       return { name: RouteName.edit, params: { id: to.params.id } }
     },
   },
-  { path: '/edit/:id', component: AppBody, name: RouteName.edit },
+  {
+    path: '/edit/:id',
+    component: AppBody,
+    name: RouteName.edit,
+    beforeEnter: async (to, from) => {
+      hasAppLoaded = true;
+      
+      const mapStore = useMapStore();
+      await mapStore.setCurrentMapById(to.params.id);
+      
+      return true;
+    },
+  },
   { path: '/splash', component: AppSplashView, name: RouteName.splash },
   { path: '/create', component: AppCreateMapView, name: RouteName.createMap },
   { path: '/list', component: AppMapList, name: RouteName.mapList },
