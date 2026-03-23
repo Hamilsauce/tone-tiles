@@ -133,25 +133,22 @@ export const runCanvas = async (mapId) => {
 	
 	canvasEl = document.querySelector('#canvas');
 	svgCanvas = new SVGCanvas(canvasEl);
-	sceneObj = svgCanvas.scene //.querySelector('#scene');
-	scene = sceneObj.dom //.querySelector('#scene');
-	tileLayerObj = sceneObj.getLayer('tile')
-	tileLayer = tileLayerObj.dom
-	objectLayerObj = sceneObj.getLayer('object')
-	objectLayer = objectLayerObj.dom
+	sceneObj = svgCanvas.scene;
+	scene = sceneObj.dom;
+	tileLayerObj = sceneObj.getLayer('tile');
+	tileLayer = tileLayerObj.dom;
+	objectLayerObj = sceneObj.getLayer('object');
+	objectLayer = objectLayerObj.dom;
 	selectionBox = getTileSelector(objectLayer);
-	
 	
 	let selectedRange = [];
 	let getSelectedRange = () => tileLayerObj.findAll({ tileType: 'selected' });
 	
-	// const tileAt = (x, y) => tileLayerObj.dom.querySelector(`.tile[data-y="${y}"][data-x="${x}"]`);
 	const tileAt = (x, y) => tileLayerObj.getTileAt(x, y)
 	
 	const deselectRange = () => {
 		getSelectedRange().forEach((t, i) => {
 			t.update({ selected: false })
-			// t.dataset.selected = false;
 		});
 	};
 	
@@ -164,7 +161,6 @@ export const runCanvas = async (mapId) => {
 			for (let y = start.y; y < end.y; y++) {
 				const tile = tileAt(x, y);
 				const t = graph.getNodeAtPoint({ x, y })
-				// tile.dataset.selected = true;
 				t.update({ selected: true })
 				
 				range.push(tile);
@@ -176,14 +172,6 @@ export const runCanvas = async (mapId) => {
 	
 	let audioNote1 // = (new AudioNote(audioEngine));
 	
-	
-	// canvasEl = canvasEl ?? document.querySelector('#canvas');
-	// svgCanvas = svgCanvas ?? new SVGCanvas(canvasEl);
-	// scene = scene ?? svgCanvas.scene.dom //.querySelector('#scene');
-	// tileLayer = tileLayer ?? scene.querySelector('#tile-layer');
-	// objectLayer = objectLayer ?? scene.querySelector('#object-layer');
-	// selectionBox = selectionBox ?? getTileSelector(objectLayer);
-	
 	contextMenu = contextMenu ?? new ContextMenu(svgCanvas)
 	contextMenu.disableItem('copy')
 	const actor1 = objectLayerObj.add({
@@ -192,11 +180,6 @@ export const runCanvas = async (mapId) => {
 		moving: false,
 		teleporting: false,
 	}).dom
-	// const actor1 = useTemplate('actor', {
-	// 	dataset: { moving: false, teleporting: false },
-	// 	id: 'actor1',
-	// });
-	
 	
 	const actor1TransformList = new TransformList(svgCanvas, actor1);
 	
@@ -218,8 +201,6 @@ export const runCanvas = async (mapId) => {
 	
 	pointerup$.pipe().subscribe();
 	
-	let lastX;
-	let lastY;
 	let goalTile;
 	let isMoving = false;
 	let isSelectingLinkTile = false;
@@ -269,104 +250,64 @@ export const runCanvas = async (mapId) => {
 	
 	const toTone = (x, y, deg, arp) => getTileTone(x, y, deg, arp)
 	
-	let TRAVERSAL_GEN
+	let goalNode
 	let dynamicCurr
+	let intervalHandle
 	
+	let TRAVERSAL_GEN = graph.traverseHybrid(
+		graph.startNode,
+		() => goalNode
+	);
 	
 	const handleTileClick = async ({ detail }) => {
 		if (!isRunning.value) return;
-		// if (isPMoving) return;
 		if (contextMenu.isVisible) return;
 		if (isSelectingLinkTile === true) return;
 		
 		deselectRange();
 		selectedRange = [];
 		
-		
 		selectionBox.remove();
 		
-		let tile = detail.target.closest('.tile');
-		let linkedMapId = tile.dataset.linkedMap
+		goalNode = graph.getNodeByAddress(detail.id);
+		
+		if (!goalNode || !goalNode.isTraversable) {
+			console.warn('NO GOAL OR GOAL NOT TRAVERSABLE. Early return');
+			console.warn(goalNode.id, goalNode.isTraversable)
+			
+			return
+		}
+		
+		let currentNode = goalNode;
+		let linkedMapId = currentNode.linkedMap
 		let activeActor;
 		let actorTrans = activeActor === actor1 ? actor1TransformList : actor2TransformList;
 		
-		const actorTarget = detail.target.closest('.actor');
+		const actorTarget = actor1
+		activeActor = actor1;
 		
-		if (actorTarget) {
-			const actors = [...scene.querySelectorAll('.actor')];
-			activeActor = actors.find(t => actorTarget != t);
-			tile = svgCanvas.querySelector(`.tile[data-x="${actorTarget.dataset.x}"][data-y="${actorTarget.dataset.y}"]`);
-		} else {
-			activeActor = actor1;
-		}
+		graph.findAny({
+			isPathNode: true,
+			current: true,
+			active: true,
+			selected: true,
+		}).forEach(_ => _.update({
+			isPathNode: false,
+			current: false,
+			active: false,
+			selected: false,
+		}));
 		
-		const pathNodes = svgCanvas.querySelectorAll('.tile[data-is-path-node="true"]');
+		currentNode.update({
+			current: true,
+			active: true,
+		})
 		
-		pathNodes.forEach((el, i) => { el.dataset.isPathNode = false; });
-		
-		if (tile && tile.dataset.tileType !== 'barrier') {
-			// const activeTiles = svgCanvas.querySelectorAll('.tile[data-active="true"]');
-			const activeTiles = tileLayerObj.findAll({ active: true }) //.querySelectorAll('.tile[data-active="true"]');
-			const highlightedTiles = svgCanvas.querySelectorAll('.tile[data-highlight="true"]');
-			
-			// console.warn({ activeTiles })
-			
-			activeTiles.forEach((t, i) => { t.update({ active: false }); });
-			highlightedTiles.forEach((el, i) => { el.dataset.highlight = false; });
-			
-			const pt = { x: +tile.dataset.x, y: +tile.dataset.y };
-			
-			const tileNode = graph.getNodeAtPoint(pt);
-			
-			const neighbors = graph.getNeighbors(tileNode);
-			
-			tile.dataset.active = true;
-			
-			[...neighbors.values()].forEach((node, i) => {
-				const el = svgCanvas.querySelector(`.tile[data-x="${node.x}"][data-y="${node.y}"]`);
-				el.dataset.highlight = true;
-			});
-		}
-		
-		const startNodeEl = svgCanvas.querySelector('.tile[data-current="true"]') || svgCanvas.querySelector('.tile[data-tile-type="start"]');
-		const targetNodeEl = actorTarget ? tile : svgCanvas.querySelector('.tile[data-active="true"]');
-		
-		if (!targetNodeEl) {
-			console.warn('No Target Node');
-			return;
-		}
-		
-		const startNode = graph.getNodeAtPoint({ x: +startNodeEl.dataset.x, y: +startNodeEl.dataset.y });
-		const targetNode = graph.getNodeAtPoint({ x: +targetNodeEl.dataset.x, y: +targetNodeEl.dataset.y });
-		
-		const bfsPath = graph.getPath(startNode, targetNode);
-		graph.setStart({ x: +startNodeEl.dataset.x, y: +startNodeEl.dataset.y })
-		graph.setGoal({ x: +targetNodeEl.dataset.x, y: +targetNodeEl.dataset.y })
-		TRAVERSAL_GEN = TRAVERSAL_GEN ?? graph.traverseHybrid();
-		
-		
-		dynamicCurr = TRAVERSAL_GEN.next().value
-		
-		if (bfsPath === null) return;
+		if (intervalHandle) return
 		
 		let pointer = 0;
-		let curr = bfsPath;
+		let curr = currentNode;
 		let prev = curr;
-		// await navigator.clipboard.writeText(JSON.stringify(curr, null, 2))
-		let path = [];
-		// console.warn({
-		// 	dynamicCurr
-		// });
-		
-		// while (curr) {
-		// 	let previous = curr.previous;
-		// 	console.warn(JSON.stringify(previous, null, 2))
-		// 	path.push(curr);
-		// 	curr = previous;
-		// }
-		
-		path.reverse();
-		curr = bfsPath[pointer];
 		
 		isMoving = true;
 		activeActor.dataset.moving = isMoving;
@@ -384,23 +325,24 @@ export const runCanvas = async (mapId) => {
 				return preVelIndex;
 			};
 			
-			let intervalHandle = setInterval(async () => {
-				prev = curr;
-				// curr = bfsPath[pointer];
-				dynamicCurr = TRAVERSAL_GEN.next().value
+			intervalHandle = setInterval(async () => {
+				curr = TRAVERSAL_GEN.next().value
+				prev = currentNode;
+				currentNode = curr;
 				
-				curr = dynamicCurr
+				activeActor.dataset.moving = true;
 				
-				const travelDir = getDirectionFromPoints(prev, curr)
-				const chordToneDegree = getChordToneDegreeFromDir(travelDir)
+				if (prev.tileType === 'teleport') {
+					activeActor.dataset.teleporting = false;
+				}
 				
 				if (!curr) {
-					isMoving = false;
-					activeActor.dataset.moving = isMoving;
-					TRAVERSAL_GEN = undefined
-					clearInterval(intervalHandle);
-				}
-				else {
+					console.warn('no curr')
+					return;
+				} else {
+					const travelDir = getDirectionFromPoints(prev, curr)
+					const chordToneDegree = getChordToneDegreeFromDir(travelDir)
+					
 					{
 						// AudioNote Block
 						const freqX = ((curr.x + 2) * 2);
@@ -410,11 +352,11 @@ export const runCanvas = async (mapId) => {
 						freq = freq > 1600 ? 1200 - freq : freq;
 						freq = curr.tileType === 'teleport' ? freq + 100 : freq;
 						
-						let vel = (0.4 - (pointer / bfsPath.length));
+						let vel = (0.4 - (pointer / 4));
 						vel = vel >= 0.4 ? 0.4 : vel;
 						vel = vel <= 0.075 ? 0.075 : vel;
 						vel = pointer % 2 === 0 ? 0.1 : 0.4;
-						const dur = 2 / bfsPath.length;
+						const dur = 2 / 4;
 						const startMod = ((pointer || 1) * 0.01);
 						
 						try {
@@ -425,11 +367,7 @@ export const runCanvas = async (mapId) => {
 						}
 					}
 					
-					const el = svgCanvas.querySelector(`.tile[data-x="${curr.x}"][data-y="${curr.y}"]`);
-					const currTile = tileLayerObj.getTileAt(curr.x, curr.y)
-					
-					const lastX = +activeActor.dataset.x;
-					const lastY = +activeActor.dataset.y;
+					const currTile = tileLayerObj.get(curr.address)
 					
 					activeActor.dataset.x = curr.x;
 					activeActor.dataset.y = curr.y;
@@ -437,80 +375,57 @@ export const runCanvas = async (mapId) => {
 					actorTrans = activeActor === actor1 ? actor1TransformList : actor2TransformList;
 					actorTrans.translateTo(curr.x, curr.y);
 					
-					if (currTile.dom === startNodeEl) {
-						startNodeEl.dataset.current = false;
-					}
+					const isLink = curr.tileType === 'map-link' || curr.tileType === 'start' && !!curr.linkedMap
+					const isStartingNode = curr.tileType === 'start' //curr.id === currentNode.id
 					
-					// el.dataset.isPathNode = true;
-	
-					// currTile.update({ isPathNode: true })
-					curr.update({ isPathNode: true })
-		
-					pointer++;
-					
-					if (el === goalTile) {
-						console.warn('----- GOAL FOUND -----');
-					}
-					
-					if (currTile.dom === targetNodeEl) {
-						// el.dataset.active = true;
-						// el.dataset.current = true;
-			
-						// currTile.update({ active: true, current: true })
-						curr.update({ active: true, current: true })
+					if (isLink && !isStartingNode) {
+						isMoving = false;
+						activeActor.dataset.moving = isMoving;
+						clearInterval(intervalHandle);
+						intervalHandle = null
 						
-					}
-					
-					const isLink = currTile.model.tileType === 'map-link' || currTile.model.tileType === 'start' && !!currTile.model.linkedMap
-					const isStartingEl = currTile.dom === startNodeEl
-					
-					if (isLink && !isStartingEl) {
 						selectMapById(linkedMapId)
 						return
 					}
 					
-					if (currTile.model.tileType === 'teleport') {
+					curr.update({ isPathNode: true })
+					
+					pointer++;
+					
+					if (curr.id === goalNode.id) {
+						curr.update({ active: true, current: true })
+						console.warn('----- GOAL FOUND -----');
+					}
+					
+					if (curr.tileType === 'teleport') {
 						actor1.dataset.teleporting = true;
 						
-						if (currTile.dom === startNodeEl) {
-							// el.dataset.active = false;
-							// el.dataset.current = false;
-							
+						if (curr.id === currentNode.id) {
 							curr.update({ active: false, current: false })
-							// currTile.update({ active: false, current: false })
 							
 							return;
 						}
 						
-						curr.update({ active: true, current: true })
-						// currTile.update({ active: true, current: true })
-						
-						
-						// el.dataset.active = true;
-						// el.dataset.current = true;
-						
-						const tels = [...svgCanvas.querySelectorAll('.tile[data-tile-type="teleport"]')];
-						const otherTele = tels.find(t => el != t && t.dataset.current != 'true');
-						
-						activeActor.dataset.x = currTile.x //el.dataset.x;
-						activeActor.dataset.y = currTile.y //el.dataset.y;
+						activeActor.dataset.x = curr.x;
+						activeActor.dataset.y = curr.y;
 						
 						actorTrans = activeActor === actor1 ? actor1TransformList : actor2TransformList;
-						// actorTrans.translateTo(el.dataset.x, el.dataset.y);
-						actorTrans.translateTo(currTile.x, currTile.y);
+						actorTrans.translateTo(curr.x, curr.y);
 						
-						// el.dataset.active = false;
-						// el.dataset.current = false;
-						
-						// currTile.update({ active: false, current: false })
 						curr.update({ active: false, current: false })
 						
-						otherTele.dataset.active = false;
-						otherTele.dataset.current = false;
-						
-						await sleep(10); // you know you like it
+						await sleep(10);
 						shouldPreVel = !shouldPreVel
 						activeActor.dataset.teleporting = false;
+					}
+					
+					const reachedGoal = goalNode && currentNode.id === goalNode.id;
+					
+					if (reachedGoal) {
+						isMoving = false;
+						activeActor.dataset.moving = isMoving;
+						clearInterval(intervalHandle);
+						intervalHandle = null
 					}
 				}
 			}, ANIM_RATE);
@@ -588,39 +503,6 @@ export const runCanvas = async (mapId) => {
 		svgCanvas.addEventListener('tile:click', blurContextMenu);
 	};
 	
-	// setTimeout(() => {
-	//   lastX = +tileLayer.lastElementChild.dataset.x;
-	//   lastY = +tileLayer.lastElementChild.dataset.y;
-	
-	//   tileLayer.dataset.width = lastX;
-	//   tileLayer.dataset.height = lastY;
-	
-	//   goalTile = tileLayer.querySelector('[data-tile-type="goal"]');
-	//   const stuff = document.querySelector('#tile-layer').innerHTML
-	//   // const stuff = [...document.querySelector('#tile-layer').querySelectorAll('.tile')]
-	//   // navigator.clipboard.writeText(stuff)
-	// }, 2000);
-	
-	
-	/*
-	  ACTOR-TARGET AUTOMATION
-	*/
-	
-	// setTimeout(() => {
-	//   const targetEls = [
-	//     tileAt(5, 7),
-	//     tileAt(10, 6),
-	//     tileAt(13, 2),
-	//   ];
-	//   let i = 0
-	//   setInterval(() => {
-	//     if (i < targetEls.length) {
-	//       handleTileClick({ detail: { target: targetEls[i] } })
-	//     }
-	//     i++
-	
-	//   }, 2500)
-	// }, 2000);
 	
 	const handleTileLinkSelect = (e) => {
 		const linkTarget = e.detail.target.closest('.tile');

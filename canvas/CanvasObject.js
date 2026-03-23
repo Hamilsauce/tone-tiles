@@ -2,6 +2,7 @@ import ham from 'https://hamilsauce.github.io/hamhelper/hamhelper1.0.0.js';
 import { EventEmitter } from 'https://hamilsauce.github.io/hamhelper/event-emitter.js';
 import { TransformList, DEFAULT_TRANSFORMS } from './TransformList.js';
 import { SVGCanvas } from './SVGCanvas.js';
+import { GraphNode } from '../lib/graph.model.js';
 const { utils } = ham;
 
 export const DefaultCanvasObjectModel = {
@@ -43,12 +44,13 @@ export class CanvasObject extends EventEmitter {
 		this.#type = type;
 		Object.assign(this.#model, model)
 		this.#id = id ?? `${type}${utils.uuid()}`;
+		
 		this.#self = this.#context.useTemplate(type, {
 			id: this.#id,
 			dataset: this.#model,
 		});
 		
-		this.#transformList = new TransformList(this.#context, this.#self, transforms)
+		this.#transformList = new TransformList(this.#context, this.#self, transforms);
 	}
 	
 	get context() { return this.#context; }

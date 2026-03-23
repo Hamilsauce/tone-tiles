@@ -48,7 +48,7 @@ export class SceneLayer extends CanvasObject {
 	
 	findAll(attributeMap = {}) {
 		const entries = Object.entries(attributeMap);
-
+		
 		return [...this.#objects.values()].filter((o) => {
 			return entries.every(([k, v]) => o.model[k] === v)
 		});

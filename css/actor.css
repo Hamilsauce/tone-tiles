@@ -3,6 +3,9 @@
   stroke: #000000;
   stroke-width: 0.05px;
   pointer-events: none;
+  filter: invert(1);
+  transition: 0.15s ease-out;
+
 }
 
 .actor[data-moving=false],
@@ -17,7 +20,7 @@
 
 .actor[data-teleporting=false],
 .actor[data-teleporting=false] * {
-  /* transition: 0.5s; */
+  /* transition: 0.0s; */
 }
 
 .actor[data-teleporting=true],

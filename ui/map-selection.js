@@ -54,42 +54,11 @@ const renderMap = async (mapData, svgCanvas, graph, actor1, selectionBox) => {
 			actor1.setAttribute('transform', `translate(${node.x},${node.y})`);
 		}
 		
-		const tile = tileLayer.add(node.data());
-		// tileLayer.add(node);
-		
-		node.on('node:update', ({ id, data }) => {
-			tile.update({ ...data })
-		})
+		const tile = tileLayer.add(node);
 	});
-	
-	// Object.entries((mapData.linkedMaps)).forEach(([dir, linkedMap], i) => {
-	//   const { x, y } = getLinkCoords(dir, { width: graph.width, height: graph.height });
-	//   const tileType = linkedMap === mapStore.previousMapId.value ? 'start' : 'map-link';
-	
-	//   if (tileType === 'start') {
-	//     actor1.setAttribute('transform', `translate(${x},${y})`);
-	//   }
-	
-	//   tileLayer.add({
-	//     type: 'tile',
-	//     id: `${x}_${y}`,
-	//     address: `${x}_${y}`,
-	//     linkedMap,
-	//     tileType,
-	//     x,
-	//     y,
-	//     current: false,
-	//     active: false,
-	//     isPathNode: false,
-	//   })
-	// });
 	
 	svgCanvas.layers.surface.setAttribute('transform', `translate(${Math.floor((graph.width + 2) / 2) - 0.3}, ${Math.floor((graph.height + 2) / 2) - 0.25})`);
 	svgCanvas.layers.surface.querySelector('#surface-map-name').setAttribute('transform', `translate(0, ${-((graph.height / 2)) - 3}) scale(0.4)`);
-	
-	// await navigator.clipboard.writeText(tileLayer.dom.closest('svg').outerHTML)
-	// await navigator.clipboard.writeText(JSON.stringify(graph.nodes, null, 2))
-	
 };
 
 let stuff = {
@@ -129,7 +98,7 @@ export const initMapControls = async (graph, svgCanvas, actor1, selectionBox) =>
 	});
 	
 	watch(mapStore.currentMap, (newMap, oldMap) => {
-		// if (!newMap.id || newMap && oldMap && newMap.id === oldMap.id) return;
+		if (!newMap.id || newMap && oldMap && newMap.id === oldMap.id) return;
 		renderMap(mapStore.currentMap, stuff.svgCanvas, graph, stuff.actor1, stuff.selectionBox);
 	}, { immediate: true });
 	

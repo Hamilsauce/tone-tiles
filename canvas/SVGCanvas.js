@@ -28,19 +28,17 @@ export class SVGCanvas extends EventTarget {
     this.minimap = this.dom.querySelector('#minimap');
     
     this.#scene = new Scene(this, [
-      {
-        name: 'object',
-        id: 'object-layer',
-        transforms: [{ type: 'translate', values: [0.5, 0.5], position: 0 }]
-      },
-      {
-        name: 'tile',
-        id: 'tile-layer',
-        transforms: [{ type: 'translate', values: [0.5, 0.5], position: 0 }]
-      },
-      
-    ]);
-
+    {
+      name: 'tile',
+      id: 'tile-layer',
+      transforms: [{ type: 'translate', values: [0.5, 0.5], position: 0 }]
+    },
+    {
+      name: 'object',
+      id: 'object-layer',
+      transforms: [{ type: 'translate', values: [0.5, 0.5], position: 0 }]
+    }]);
+    
     this.viewport.append(this.#scene.dom)
     
     this.layers = {
@@ -56,6 +54,7 @@ export class SVGCanvas extends EventTarget {
       document.querySelector('.context-menu-container').addEventListener('click', this.toggleScroll);
       
     });
+    
     let shouldInvert = 0;
     
     this.#surface.addEventListener('dblclick', (e) => {
@@ -65,7 +64,6 @@ export class SVGCanvas extends EventTarget {
     
     document.querySelector('#map-name-text').addEventListener('dblclick', (e) => {
       this.hueRotato();
-      
     });
     
     this.addEventListener('blurContextMenu', (e) => {
@@ -105,19 +103,20 @@ export class SVGCanvas extends EventTarget {
       map(({ type, target, clientX, clientY }) => {
         const point = this.domPoint(clientX, clientY);
         const isTile = !!target.closest('.tile');
+        const x = Math.floor(point.x);
+        const y = Math.floor(point.y);
         
         return {
           type: `${isTile ? 'tile:' : ''}${type}`,
           detail: {
-            target,
-            x: point.x,
-            y: point.y,
+            id: `${x}_${y}`,
+            x,
+            y,
           }
         };
       }),
       map(({ type, detail }) => createCustomEvent(type, detail)),
       tap((event) => this.dispatchEvent(event)),
-      tap((event) => console.log('[ CANVAS EMIT$ ]: ', { event: event.type })),
     );
     
     this.toggleScroll = this.#toggleScroll.bind(this);
@@ -143,7 +142,6 @@ export class SVGCanvas extends EventTarget {
   get isContextMenuActive() { return this.#isContextMenuActive; }
   
   get scene() { return this.#scene; }
-  // get scene() { return this.#self.querySelector('#scene'); }
   
   get surface() { return this.#surface; }
   
@@ -167,7 +165,7 @@ export class SVGCanvas extends EventTarget {
   
   domPoint(x, y) {
     return new DOMPoint(x, y).matrixTransform(
-      this.dom.getScreenCTM().inverse()
+      this.#scene.dom.getScreenCTM().inverse()
     );
   }
   
