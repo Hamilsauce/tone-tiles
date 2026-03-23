@@ -3,6 +3,7 @@ import { GraphNode } from '../lib/graph.model.js';
 
 export class TileObject extends CanvasObject {
 	#node
+	
 	constructor(ctx, options = DefaultCanvasObjectOptions) {
 		if (options.model && !(options.model instanceof GraphNode)) {
 			throw new Error(`Must init TileObject with GraphNode Model. Received: ${JSON.stringify(options.model, null, 2)}`)

@@ -173,8 +173,9 @@ export const runCanvas = async (mapId) => {
 	let audioNote1 // = (new AudioNote(audioEngine));
 	
 	contextMenu = contextMenu ?? new ContextMenu(svgCanvas)
-objectLayerObj.dom.append(contextMenu.dom)
 	contextMenu.disableItem('copy')
+	objectLayerObj.add(contextMenu ?? new ContextMenu(svgCanvas)).dom
+	
 	const actor1 = objectLayerObj.add({
 		id: 'actor1',
 		type: 'actor',
@@ -513,21 +514,15 @@ objectLayerObj.dom.append(contextMenu.dom)
 	
 	
 	const handleTileLinkSelect = (e) => {
-		const linkTarget = e.detail.target.closest('.tile');
+		const nodeToLink = graph.getNodeAtPoint({ ...e.detail })
+		
 		const node = selectedTileBeingLinked;
 		
-		const nodeToLink = graph.getNodeAtPoint({
-			x: +linkTarget.dataset.x,
-			y: +linkTarget.dataset.y,
-		});
-		
 		if (nodeToLink.tileType !== 'teleport') {
-			nodeToLink.setType('teleport');
-			linkTarget.dataset.tileType = 'teleport';
-			nodeToLink.linkToNode({ x: node.x, y: node.y });
+			nodeToLink.update({ tileType: 'teleport', target: { x: node.x, y: node.y } })
 		}
 		
-		node.linkToNode({ x: nodeToLink.x, y: nodeToLink.y });
+		node.update({ target: { x: nodeToLink.x, y: nodeToLink.y } })
 		
 		isSelectingLinkTile = false;
 		svgCanvas.layers.tile.dataset.isSelectingLinkTile = false;
@@ -584,7 +579,6 @@ objectLayerObj.dom.append(contextMenu.dom)
 		const selectedOptionType = data.type;
 		const selectedTileTypeName = data.type;
 		const selectedTile = svgCanvas.layers.tile.querySelector('.tile[data-selected="true"]');
-		// console.warn('contextMenu.on(tile-action', { data })
 		
 		if (!selectedTile) return;
 		
@@ -610,56 +604,25 @@ objectLayerObj.dom.append(contextMenu.dom)
 			
 			selectedTile.dataset.tileType = selectedTileTypeName;
 			selectedTile.dataset.selected = false;
-			
-			selectedRange.forEach((tile, i) => {
-				const nodeModel = graph.getNodeAtPoint({
-					x: +tile.dataset.x,
-					y: +tile.dataset.y,
-				});
-				
-				nodeModel.setType(selectedTileTypeName);
-				
-				if (selectedTileTypeName === 'teleport') {
-					nodeModel.target = { x: 1, y: 1 };
-				}
-				
-				tile.dataset.tileType = selectedTileTypeName;
+			selectedRange.forEach((nodeModel, i) => {
+				nodeModel.update({ tileType: selectedTileTypeName });
 			});
 		};
 	});
 	
-	// await sleep(50)
-	
 	let hasSetListener = false
 	
 	selectionBox.on('selection', range => {
-		selectedRange = getRange(range);
-		// sourceRange = selectedRange;
-		// console.warn({ selectedRange })
-		
 		const { start, end } = range;
 		
 		const middle = Math.abs(start.x - end.x);
 		
-		graph.getRange(range, (tile) => tile.selected = true);
+		selectedRange = graph.getRange(range) //, (node) => node.update({ selected: true }));
 		
 		contextMenu.update({ x: start.x, y: start.y - 2 }).show();
 		
 		if (!hasSetListener) {
-			
-			selectionBox.dom.addEventListener('dblclick', e => {
-				// console.warn({
-				//   selectedRangeLength: selectedRange.length,
-				//   sourceRangeLength: sourceRange.length,
-				// })
-				
-				if (sourceRange) {
-					selectedRange.forEach(item => {
-						
-						// console.warn({ item })
-					})
-				}
-			});
+			selectionBox.dom.addEventListener('dblclick', e => {});
 		}
 		
 	});

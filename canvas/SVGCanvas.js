@@ -101,13 +101,16 @@ export class SVGCanvas extends EventTarget {
     
     this.eventEmits$ = this.clickDOM$.pipe(
       map(({ type, target, clientX, clientY }) => {
+        const layer = target.closest('[data-type="layer"]')
+        const layerName = layer.dataset.name;
+        
         const point = this.domPoint(clientX, clientY);
         const isTile = !!target.closest('.tile');
         const x = Math.floor(point.x);
         const y = Math.floor(point.y);
         
         return {
-          type: `${isTile ? 'tile:' : ''}${type}`,
+          type: `${layerName}:${type}`,
           detail: {
             id: `${x}_${y}`,
             x,
@@ -117,6 +120,7 @@ export class SVGCanvas extends EventTarget {
       }),
       map(({ type, detail }) => createCustomEvent(type, detail)),
       tap((event) => this.dispatchEvent(event)),
+      tap((evt) => { console.warn('[ CANVAS EVEVENT ]: ', evt.type) }),
     );
     
     this.toggleScroll = this.#toggleScroll.bind(this);

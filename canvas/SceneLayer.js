@@ -5,6 +5,7 @@ export class SceneLayer extends CanvasObject {
 	#objects = new Map()
 	
 	constructor(ctx, name, options = {}) {
+		options.model = options.model ? { ...options.model, name, type: 'layer' } : { name, type: 'layer' }
 		super(ctx, 'layer', options);
 		this.#name = name;
 		
@@ -22,7 +23,7 @@ export class SceneLayer extends CanvasObject {
 			throw new Error('No object type in layer add');
 		}
 		
-		const cObj = this.context.createObject(obj.type, obj)
+		const cObj = obj instanceof CanvasObject ? obj : this.context.createObject(obj.type, obj)
 		
 		this.#objects.set(obj.id, cObj);
 		this.dom.appendChild(cObj.dom);
