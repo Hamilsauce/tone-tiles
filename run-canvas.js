@@ -173,6 +173,7 @@ export const runCanvas = async (mapId) => {
 	let audioNote1 // = (new AudioNote(audioEngine));
 	
 	contextMenu = contextMenu ?? new ContextMenu(svgCanvas)
+objectLayerObj.dom.append(contextMenu.dom)
 	contextMenu.disableItem('copy')
 	const actor1 = objectLayerObj.add({
 		id: 'actor1',
@@ -325,8 +326,9 @@ export const runCanvas = async (mapId) => {
 				return preVelIndex;
 			};
 			
+			
 			intervalHandle = setInterval(async () => {
-				curr = TRAVERSAL_GEN.next().value
+				curr = TRAVERSAL_GEN.next().value;
 				prev = currentNode;
 				currentNode = curr;
 				
@@ -378,13 +380,19 @@ export const runCanvas = async (mapId) => {
 					const isLink = curr.tileType === 'map-link' || curr.tileType === 'start' && !!curr.linkedMap
 					const isStartingNode = curr.tileType === 'start' //curr.id === currentNode.id
 					
-					if (isLink && !isStartingNode) {
+					if (linkedMapId && isLink) {
 						isMoving = false;
 						activeActor.dataset.moving = isMoving;
 						clearInterval(intervalHandle);
 						intervalHandle = null
 						
-						selectMapById(linkedMapId)
+						await selectMapById(linkedMapId)
+						
+						TRAVERSAL_GEN = graph.traverseHybrid(
+							graph.startNode,
+							() => goalNode
+						);
+						
 						return
 					}
 					
