@@ -2,8 +2,8 @@ import { TileObject } from './TileObject.js';
 import { SceneLayer } from './SceneLayer.js';
 
 export class TileLayer extends SceneLayer {
-	#name = null
-	#objects = new Map()
+	#name = null;
+	#objects = new Map();
 	
 	constructor(ctx, options = {}) {
 		const { objects, ...opts } = options;
@@ -13,7 +13,7 @@ export class TileLayer extends SceneLayer {
 		this.#name = 'tile';
 		
 		if (objects) {
-			objects.forEach(this.add)
+			objects.forEach(this.add);
 		}
 	};
 	
@@ -27,7 +27,8 @@ export class TileLayer extends SceneLayer {
 		
 		this.objects.set(node.id, cObj);
 		this.dom.appendChild(cObj.dom);
-		cObj.update()
+		
+		cObj.update();
 		this.emit('object:add', cObj);
 		
 		return cObj;

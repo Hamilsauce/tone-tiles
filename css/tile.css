@@ -41,25 +41,12 @@
   fill: #4F5057;
 }
 
-.tile[data-tile-type=barrier] text {
-  fill: var(--tiletext-light);
-}
-
 .tile[data-is-path-node=true]>* {
   animation: yellowToOriginal 5s forwards;
 }
 
-.tile[data-is-path-node=true] text {
-  fill: #373736;
-  font-weight: 900;
-}
-
 .tile[data-tile-type=start]>* {
   fill: #9B2B2B;
-}
-
-.tile[data-tile-type=start] text {
-  fill: var(--tiletext-light);
 }
 
 .tile[data-active=true]>* {
@@ -88,16 +75,12 @@
   fill: #D07728;
 }
 
-.tile[data-target=true]>* {
-  fill: #D07728;
-}
-
 .tile[data-tile-type=goal]>* {
   fill: #329B2B;
 }
 
 .tile[data-tile-type=teleport]>* {
-  fill: #12B582;
+  fill: #B5127C;
 }
 
 .tile[data-selected=true]>* {
