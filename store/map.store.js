@@ -31,6 +31,7 @@ export const useMapStore = () => {
   const previousMapId = ref(null)
   
   const setCurrentMap = (mapDoc) => {
+  	console.warn('[ setCurrentMap ]', mapDoc)
     previousMapId.value = currentMapIndex.value?.id
     currentMapIndex.value = mapIndex.has(mapDoc.id) ? mapIndex.get(mapDoc.id) : null;
     
