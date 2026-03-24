@@ -1,6 +1,5 @@
 import { Graph, TILE_TYPE_INDEX, getChordToneDegreeFromDir, getDirectionFromPoints } from './lib/graph.model.js';
 import { SVGCanvas } from './canvas/SVGCanvas.js';
-import { maps } from './maps.js';
 import { getTileSelector } from 'https://hamilsauce.github.io/svg-range-selector/tile-selector.js';
 import { initMapControls } from './ui/map-selection.js';
 import { scheduleOscillator, AudioNote, audioEngine } from './audio/index.js';
@@ -11,8 +10,7 @@ import { AudioClockLoop } from './lib/loop-engine.js';
 import { getScaleNotes, getChordNotes, pitchToFrequency } from './MUSIC_THEORY_FUNCTIONS.js';
 import { ContextMenu } from './canvas/ContextMenu.js';
 
-
-const { addDragAction, sleep, template, utils, download, TwoWayMap } = ham;
+const { sleep, rxjs } = ham;
 const { fromEvent } = rxjs;
 const { tap } = rxjs.operators;
 
@@ -41,7 +39,6 @@ const getAspectRatio = (svgCanvas) => {
 	
 	return width / height;
 };
-
 
 const computeArrowEndpoint = (origin, tileCenter, tileSize = [1, 1]) => {
 	const [ox, oy] = origin;
@@ -80,21 +77,6 @@ const createEdgeLine = (pt1, pt2) => {
 	lineEl.setAttribute('y2', endY);
 	lineHandle.setAttribute('cx', endX);
 	lineHandle.setAttribute('cy', endY);
-	
-	// line.addEventListener('pointermove', e => {
-	//   e.stopPropagation();
-	//   e.preventDefault();
-	
-	//   const targ = e.currentTarget
-	//   const newPoint = domPoint(line.parentElement, e.clientX, e.clientY)
-	//   const [newEndX, newEndY] = computeArrowEndpoint(
-	//     [pt1.x + 0.5, pt1.y + 0.5],
-	//     [newPoint.x + 0.5, newPoint.y + 0.5]
-	//   );
-	
-	//   line.firstElementChild.setAttribute('x2', newEndX);
-	//   line.firstElementChild.setAttribute('y2', newEndY);
-	// });
 	
 	return line;
 };
@@ -185,23 +167,9 @@ export const runCanvas = async (mapId) => {
 	
 	const actor1TransformList = new TransformList(svgCanvas, actor1);
 	
-	const actor2 = useTemplate('actor', {
-		dataset: { moving: false, teleporting: false },
-		fill: '#C1723B',
-		id: 'actor2',
-	});
-	
-	const actor2TransformList = new TransformList(svgCanvas, actor2);
-	
 	const selectMapById = await initMapControls(graph, svgCanvas, actor1, selectionBox);
 	
-	actor2.setAttribute('transform', 'translate(12,21) rotate(0) scale(1)');
-	
 	svgCanvas.setCanvasDimensions({ width: innerWidth, height: innerHeight });
-	
-	const pointerup$ = fromEvent(svgCanvas, 'pointerup');
-	
-	pointerup$.pipe().subscribe();
 	
 	let goalTile;
 	let isMoving = false;
@@ -261,7 +229,7 @@ export const runCanvas = async (mapId) => {
 		() => goalNode
 	);
 	
-	const handleTileClick = async ({ detail }) => {
+	const handleTileClick = async ({ type, detail }) => {
 		if (!isRunning.value) return;
 		if (contextMenu.isVisible) return;
 		if (isSelectingLinkTile === true) return;
@@ -270,7 +238,10 @@ export const runCanvas = async (mapId) => {
 		selectedRange = [];
 		
 		selectionBox.remove();
-		
+		if (!type || type !== 'tile:click') {
+			console.warn('NON TILE CLICK, RETURNING FROM LOOP', type, detail)
+			return;
+		}
 		goalNode = graph.getNodeByAddress(detail.id);
 		
 		if (!goalNode || !goalNode.isTraversable) {
@@ -283,7 +254,7 @@ export const runCanvas = async (mapId) => {
 		let currentNode = goalNode;
 		let linkedMapId = currentNode.linkedMap
 		let activeActor;
-		let actorTrans = activeActor === actor1 ? actor1TransformList : actor2TransformList;
+		let actorTrans = actor1TransformList;
 		
 		const actorTarget = actor1
 		activeActor = actor1;
@@ -327,12 +298,12 @@ export const runCanvas = async (mapId) => {
 				return preVelIndex;
 			};
 			
-			
 			intervalHandle = setInterval(async () => {
 				curr = TRAVERSAL_GEN.next().value;
 				prev = currentNode;
 				currentNode = curr;
 				
+				if (prev.id === curr.id) return;
 				activeActor.dataset.moving = true;
 				
 				if (prev.tileType === 'teleport') {
@@ -348,46 +319,33 @@ export const runCanvas = async (mapId) => {
 					
 					{
 						// AudioNote Block
-						const freqX = ((curr.x + 2) * 2);
-						const freqY = ((curr.y + 2) * 1.5);
-						let freq = ((freqX) * (freqY)) * 1.5;
-						freq = freq < 250 ? freq + 200 : freq;
-						freq = freq > 1600 ? 1200 - freq : freq;
-						freq = curr.tileType === 'teleport' ? freq + 100 : freq;
-						
-						let vel = (0.4 - (pointer / 4));
-						vel = vel >= 0.4 ? 0.4 : vel;
-						vel = vel <= 0.075 ? 0.075 : vel;
-						vel = pointer % 2 === 0 ? 0.1 : 0.4;
-						const dur = 2 / 4;
-						const startMod = ((pointer || 1) * 0.01);
-						
 						try {
-							freq = toTone(curr.x, curr.y, chordToneDegree)
-							audioNote1 = fireAudioNote(freq, vel)
+							const vel = pointer % 2 === 0 ? 0.1 : 0.4;
+							const freq = toTone(curr.x, curr.y, chordToneDegree);
+							
+							audioNote1 = fireAudioNote(freq, vel);
 						} catch (e) {
-							console.error('no audio note for you')
+							console.error('no audio note for you');
 						}
 					}
-					
-					const currTile = tileLayerObj.get(curr.address)
 					
 					activeActor.dataset.x = curr.x;
 					activeActor.dataset.y = curr.y;
 					
-					actorTrans = activeActor === actor1 ? actor1TransformList : actor2TransformList;
+					actorTrans = actor1TransformList;
 					actorTrans.translateTo(curr.x, curr.y);
 					
-					const isLink = curr.tileType === 'map-link' || curr.tileType === 'start' && !!curr.linkedMap
-					const isStartingNode = curr.tileType === 'start' //curr.id === currentNode.id
+					const isLink = curr.tileType === 'map-link' || curr.tileType === 'start' && !!curr.linkedMap;
+					const isStartingNode = curr.tileType === 'start';
 					
 					if (linkedMapId && isLink) {
 						isMoving = false;
 						activeActor.dataset.moving = isMoving;
-						clearInterval(intervalHandle);
-						intervalHandle = null
 						
-						await selectMapById(linkedMapId)
+						clearInterval(intervalHandle);
+						intervalHandle = null;
+						
+						await selectMapById(linkedMapId);
 						
 						TRAVERSAL_GEN = graph.traverseHybrid(
 							graph.startNode,
@@ -397,12 +355,12 @@ export const runCanvas = async (mapId) => {
 						return
 					}
 					
-					curr.update({ isPathNode: true })
+					curr.update({ isPathNode: true });
 					
 					pointer++;
 					
 					if (curr.id === goalNode.id) {
-						curr.update({ active: true, current: true })
+						curr.update({ active: true, current: true });
 						console.warn('----- GOAL FOUND -----');
 					}
 					
@@ -418,7 +376,7 @@ export const runCanvas = async (mapId) => {
 						activeActor.dataset.x = curr.x;
 						activeActor.dataset.y = curr.y;
 						
-						actorTrans = activeActor === actor1 ? actor1TransformList : actor2TransformList;
+						actorTrans = actor1TransformList;
 						actorTrans.translateTo(curr.x, curr.y);
 						
 						curr.update({ active: false, current: false })
@@ -458,7 +416,6 @@ export const runCanvas = async (mapId) => {
 			
 			contextMenu.hide();
 			contextMenu.toggleActions(false);
-			svgCanvas.removeEventListener('tile:click', blurContextMenu);
 		}
 	};
 	
@@ -466,7 +423,6 @@ export const runCanvas = async (mapId) => {
 		e.preventDefault();
 		e.stopPropagation();
 		e.stopImmediatePropagation();
-		
 		// TODO: this normalizes custom events coming from SVGCanvas vs DOM
 		// TODO: So need to standardize events
 		const targ = (e.detail.target ?? e.target).closest('.tile');
@@ -512,7 +468,6 @@ export const runCanvas = async (mapId) => {
 		svgCanvas.addEventListener('tile:click', blurContextMenu);
 	};
 	
-	
 	const handleTileLinkSelect = (e) => {
 		const nodeToLink = graph.getNodeAtPoint({ ...e.detail })
 		
@@ -531,7 +486,6 @@ export const runCanvas = async (mapId) => {
 		return;
 	};
 	
-	
 	svgCanvas.addEventListener('tile:click', (e) => {
 		if (isSelectingLinkTile) {
 			handleTileLinkSelect(e);
@@ -542,33 +496,14 @@ export const runCanvas = async (mapId) => {
 		}
 	});
 	
+	svgCanvas.addEventListener('surface:click', (e) => {
+		clearInterval(intervalHandle);
+		intervalHandle = null;
+	});
+	
 	contextMenu.addEventListener('pointerdown', e => {
 		e.stopPropagation();
 	});
-	
-	// FOR DRAGGING LINES
-	// svgCanvas.dom.addEventListener('pointerdown', e => {
-	//   const arrow = e.target.closest('.edge-line')
-	
-	
-	//   if (!arrow) return;
-	//   e.stopPropagation();
-	//   e.stopImmediatePropagation();
-	
-	//   const handle = arrow.querySelector('circle')
-	//   const line = arrow.querySelector('line')
-	
-	//   if (!handle) return;
-	
-	//   const newPt = domPoint(scene, e.clientX, e.clientY)
-	//   console.warn(newPt.x, newPt.y)
-	
-	//   line.setAttribute('x2', Math.floor(newPt.x));
-	//   line.setAttribute('y2', Math.floor(newPt.y));
-	//   handle.setAttribute('cx', Math.floor(newPt.x));
-	//   handle.setAttribute('cy', Math.floor(newPt.y));
-	
-	// });
 	
 	svgCanvas.layers.tile.addEventListener('contextmenu', handleEditTileClick);
 	
@@ -578,34 +513,29 @@ export const runCanvas = async (mapId) => {
 		const selectedOptionValue = data.type;
 		const selectedOptionType = data.type;
 		const selectedTileTypeName = data.type;
-		const selectedTile = svgCanvas.layers.tile.querySelector('.tile[data-selected="true"]');
+		const selectedNode = selectedRange[0];
 		
-		if (!selectedTile) return;
-		
-		const node = graph.getNodeAtPoint({
-			x: +selectedTile.dataset.x,
-			y: +selectedTile.dataset.y,
-		});
+		if (!selectedNode) return;
 		
 		if (selectedOptionValue === 'copy') {
 			sourceRange = selectedRange;
 		}
 		
 		if (selectedOptionValue === 'link-teleport') {
+			
 			isSelectingLinkTile = true;
 			svgCanvas.layers.tile.dataset.isSelectingLinkTile = true;
 			
-			selectedTileBeingLinked = node;
+			selectedTileBeingLinked = selectedNode
 			
 			return;
 		}
 		else {
-			node.setType(selectedTileTypeName);
-			
-			selectedTile.dataset.tileType = selectedTileTypeName;
-			selectedTile.dataset.selected = false;
 			selectedRange.forEach((nodeModel, i) => {
-				nodeModel.update({ tileType: selectedTileTypeName });
+				nodeModel.update({
+					tileType: selectedTileTypeName,
+					selected: nodeModel.id === selectedNode.id ? true : undefined,
+				});
 			});
 		};
 	});
@@ -617,13 +547,12 @@ export const runCanvas = async (mapId) => {
 		
 		const middle = Math.abs(start.x - end.x);
 		
-		selectedRange = graph.getRange(range) //, (node) => node.update({ selected: true }));
+		selectedRange = graph.getRange(range);
 		
 		contextMenu.update({ x: start.x, y: start.y - 2 }).show();
 		
 		if (!hasSetListener) {
 			selectionBox.dom.addEventListener('dblclick', e => {});
 		}
-		
 	});
 };
