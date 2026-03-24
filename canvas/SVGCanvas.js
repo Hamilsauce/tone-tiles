@@ -47,13 +47,12 @@ export class SVGCanvas extends EventTarget {
       object: this.dom.querySelector('#object-layer'),
     };
     
-    this.layers.tile.addEventListener('contextmenu', (e) => {
-      this.#isContextMenuActive = true;
-      
-      this.dom.addEventListener('click', this.toggleScroll);
-      document.querySelector('.context-menu-container').addEventListener('click', this.toggleScroll);
-      
-    });
+    // this.layers.tile.addEventListener('contextmenu', (e) => {
+    //   this.#isContextMenuActive = true;
+    
+    //   this.dom.addEventListener('click', this.toggleScroll);
+    //   document.querySelector('.context-menu-container').addEventListener('click', this.toggleScroll);
+    // });
     
     let shouldInvert = 0;
     
@@ -80,6 +79,14 @@ export class SVGCanvas extends EventTarget {
         e.stopImmediatePropagation();
       }),
     );
+    this.contextMenuDOM$ = fromEvent(this.#self, 'contextmenu').pipe(
+      tap(e => {
+        e.preventDefault();
+        e.stopPropagation();
+        // e.stopImmediatePropagation();
+      }),
+      tap((evt) => { console.warn(`[ CANVAS EVENT ] ${evt.type}: `, e) }),
+    );
     
     this.pointerMove$ = fromEvent(this.#self, 'pointermove').pipe(tap(e => {
       const vpTransform = this.viewport.transform.baseVal;
@@ -101,8 +108,8 @@ export class SVGCanvas extends EventTarget {
     
     this.eventEmits$ = this.clickDOM$.pipe(
       map(({ type, target, clientX, clientY }) => {
-        const layer = target.closest('[data-type="layer"]')
-        const layerName = layer.dataset.name;
+        const layerDOM = target.closest('[data-type="layer"]')
+        const layerName = layerDOM.dataset.name;
         
         const point = this.domPoint(clientX, clientY);
         const isTile = !!target.closest('.tile');
@@ -125,6 +132,7 @@ export class SVGCanvas extends EventTarget {
     
     this.toggleScroll = this.#toggleScroll.bind(this);
     this.clickDOMSubscription = this.eventEmits$.subscribe();
+    this.contextmenuDOMSubscription = this.contextMenuDOM$.subscribe();
     
   }
   
@@ -179,18 +187,6 @@ export class SVGCanvas extends EventTarget {
     return cObj;
   }
   
-  #toggleScroll(x, y) {
-    this.#isContextMenuActive = !this.#isContextMenuActive;
-    
-    if (this.isContextMenuActive) {
-      this.dom.removeEventListener('contextmenu', this.toggleScroll);
-      this.dom.addEventListener('click', this.toggleScroll);
-    } else {
-      this.dom.addEventListener('contextmenu', this.toggleScroll);
-      this.dom.removeEventListener('click', this.toggleScroll);
-    }
-  }
-  
   createTileObject({ x, y, tileType, linkedMap, linkedNodeAddress }) {
     const model = {
       tileType,
@@ -208,62 +204,16 @@ export class SVGCanvas extends EventTarget {
     return t;
   }
   
-  createTile({ x, y, tileType, linkedMap }) {
-    const t = this.useTemplate('tile', {
-      dataset: {
-        tileType,
-        x,
-        y,
-        current: false,
-        active: false,
-        isPathNode: false,
-      },
-    });
+  #toggleScroll(x, y) {
+    this.#isContextMenuActive = !this.#isContextMenuActive;
     
-    if (linkedMap) {
-      t.dataset.linkedMap = linkedMap;
+    if (this.isContextMenuActive) {
+      this.dom.removeEventListener('contextmenu', this.toggleScroll);
+      this.dom.addEventListener('click', this.toggleScroll);
+    } else {
+      this.dom.addEventListener('contextmenu', this.toggleScroll);
+      this.dom.removeEventListener('click', this.toggleScroll);
     }
-    
-    t.setAttribute('transform', `translate(${x},${y})`);
-    
-    t.id = 'rect' + utils.uuid();
-    
-    return t;
-  }
-  
-  createRect({ classList, width, height, x, y, textContent, dataset }) {
-    const g = document.createElementNS(SVG_NS, 'g');
-    const r = document.createElementNS(SVG_NS, 'rect');
-    
-    Object.assign(g.dataset, dataset);
-    g.setAttribute('transform', `translate(${dataset.x},${dataset.y})`);
-    g.classList.add(...(classList || ['tile']));
-    // r.classList.add('gradient');
-    
-    g.id = 'rect' + utils.uuid();
-    
-    r.setAttribute('width', width);
-    r.setAttribute('height', height);
-    
-    g.append(r);
-    
-    if (textContent) {
-      const t = this.createText({ textContent });
-      g.append(t);
-    }
-    
-    return g;
-  }
-  
-  createText({ textContent }) {
-    const textNode = document.createElementNS(SVG_NS, 'text');
-    textNode.style.fontSize = '0.0175rem';
-    textNode.style.textAnchor = 'middle';
-    textNode.style.dominantBaseline = 'middle';
-    textNode.textContent = textContent;
-    textNode.setAttribute('transform', 'translate(0.5,0.5)');
-    
-    return textNode;
   }
   
   setCanvasDimensions({ width, height } = {}) {

@@ -35,6 +35,7 @@ export class CanvasObject extends EventEmitter {
 	#id;
 	#self;
 	#transformList;
+	#subscriptions = new Map();
 	
 	constructor(context = new SVGCanvas(), type = '', options) {
 		super();
@@ -81,6 +82,23 @@ export class CanvasObject extends EventEmitter {
 	
 	get parent() { return this.dom.parentElement; }
 	
+	subscribe(eventType, unsubFn) {
+		this.#subscriptions.set(eventType, unsubFn)
+	}
+	
+	unsubscribe(eventType) {
+		if (!this.#subscriptions.has(eventType)) return;
+		this.#subscriptions.get(eventType)()
+		
+		return this;
+	}
+	
+	domPoint(x, y) {
+		return new DOMPoint(x, y).matrixTransform(
+			this.dom.getScreenCTM().inverse()
+		);
+	}
+	
 	translateTo(x, y) {
 		this.transforms.translateTo(x, y);
 		return this;
@@ -93,7 +111,14 @@ export class CanvasObject extends EventEmitter {
 		return this;
 	}
 	
-	remove() {
+	remove(clearSubscriptions = false) {
+		if (clearSubscriptions) {
+			this.#subscriptions.forEach(unsubFn => {
+				console.warn(unsubFn)
+				unsubFn();
+			});
+		}
+		
 		this.dom.remove();
 		
 		return this;
@@ -147,5 +172,4 @@ export class CanvasObject extends EventEmitter {
 	getEl(selector = '') { return this.dom.querySelector(selector); }
 	
 	getEls(selector = '') { return [...this.dom.querySelectorAll(selector)]; }
-	
 }

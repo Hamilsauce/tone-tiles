@@ -441,6 +441,7 @@ export const runCanvas = async (mapId) => {
 			});
 			
 			if (selectedNode.target) {
+				// TODO: Make lines into Canvad Object
 				const line = createEdgeLine(selectedNode, selectedNode.target);
 				line.addEventListener('pointermove', e => {
 					e.stopPropagation();
@@ -505,7 +506,7 @@ export const runCanvas = async (mapId) => {
 		e.stopPropagation();
 	});
 	
-	svgCanvas.layers.tile.addEventListener('contextmenu', handleEditTileClick);
+	// svgCanvas.layers.tile.addEventListener('contextmenu', handleEditTileClick);
 	
 	let sourceRange = {}
 	

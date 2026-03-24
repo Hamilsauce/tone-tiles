@@ -19,8 +19,10 @@ export class TileObject extends CanvasObject {
 		
 		this.#node = node;
 		
-		this.#node.on('node:update', ({ id, data }) => {
-			this.update({ ...data });
-		})
+		this.subscribe('node:update',
+			this.#node.on('node:update', ({ id, data }) => {
+				console.warn('NODE UPDATE SUBBED', id)
+				this.update({ ...data });
+			}));
 	};
 }
