@@ -143,4 +143,9 @@ export class CanvasObject extends EventEmitter {
 		this.el.style.pointerEvents = 'none';
 		return this;
 	}
+	
+	getEl(selecxtor = '') { return this.dom.querySelector(selector); }
+	
+	getEls(selector = '') { return [...this.dom.querySelectorAll(selector)]; }
+	
 }
