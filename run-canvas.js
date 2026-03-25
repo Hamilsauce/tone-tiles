@@ -81,7 +81,7 @@ const createEdgeLine = (pt1, pt2) => {
   return line;
 };
 
-const fireAudioNote = (freq, vel, dur = 1.5) => (new AudioNote(audioEngine.ctx)
+const fireAudioNote = (freq, vel, dur = 1) => (new AudioNote(audioEngine.ctx)
 	.at(audioEngine.now)
 	.frequencyHz(freq)
 	.duration(dur)
@@ -292,6 +292,7 @@ export const runCanvas = async (mapId) => {
       let shouldPreVel = false;
       let shouldPreVels = [0, 1, 0];
       let preVelIndex = 0;
+      let prevDir
 
       const getNextPreVelIndex = () => {
         preVelIndex = preVelIndex >= shouldPreVels.length - 1 ? 0 : preVelIndex + 1;
@@ -320,10 +321,12 @@ export const runCanvas = async (mapId) => {
           {
             // AudioNote Block
             try {
-              const vel = pointer % 2 === 0 ? 0.1 : 0.4;
+              const vel = pointer % 3 === 0 ? 0.1 : 0.3;
               const freq = toTone(curr.x, curr.y, chordToneDegree);
+							audioNote1 = prevDir === travelDir ? audioNote1 : fireAudioNote(freq, vel);
+							prevDir = travelDir;
 
-              audioNote1 = fireAudioNote(freq, vel);
+              // audioNote1 = fireAudioNote(freq, vel);
             } catch (e) {
               console.error('no audio note for you');
             }
