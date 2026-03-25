@@ -147,11 +147,11 @@ export class CanvasObject extends EventEmitter {
       if (isValid && hasChanged) {
         this.#model[key] = v;
 
-      } else {
-        console.error(`[TIle Object ${this.id}] invalid Model patch: ${k}: ${v}\n\nReasons: isValid: ${isValid}, hasChanged: ${hasChanged}`);
+      } else if (!isValid) {
+        console.error(`[TIle Object ${this.id}] invalid Model patch: ${key}: ${v}\n\nReasons: isValid: ${isValid}, hasChanged: ${hasChanged}`);
       }
 
-      this.model[key] = attributeMap[key] === undefined ? this.model[key] : attributeMap[key];
+      // this.model[key] = attributeMap[key] === undefined ? this.model[key] : attributeMap[key];
     }
 
     this.render();
