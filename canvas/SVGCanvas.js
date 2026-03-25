@@ -15,17 +15,22 @@ export class SVGCanvas extends EventTarget {
   #scene = null;
   #isContextMenuActive = false;
 
+
   constructor(svg) {
     super();
+
 
     this.#self = svg;
     this.hueRotato = initHueRoto(this.#self);
 
+
     this.surfaceLayer = this.dom.querySelector('#surface-layer');
     this.#surface = this.surfaceLayer.querySelector('#surface');
 
+
     this.viewport = this.dom.querySelector('#viewport');
     this.minimap = this.dom.querySelector('#minimap');
+
 
     this.#scene = new Scene(this, [
     {
@@ -47,20 +52,21 @@ export class SVGCanvas extends EventTarget {
       object: this.dom.querySelector('#object-layer'),
     };
 
-    this.layers.tile.addEventListener('contextmenu', (e) => {
-      this.#isContextMenuActive = true;
+    // this.layers.tile.addEventListener('contextmenu', (e) => {
+    //   this.#isContextMenuActive = true;
 
-      this.dom.addEventListener('click', this.toggleScroll);
-      document.querySelector('.context-menu-container').addEventListener('click', this.toggleScroll);
-
-    });
+    //   this.dom.addEventListener('click', this.toggleScroll);
+    //   document.querySelector('.context-menu-container').addEventListener('click', this.toggleScroll);
+    // });
 
     let shouldInvert = 0;
+
 
     this.#surface.addEventListener('dblclick', (e) => {
       shouldInvert = shouldInvert === 0 ? 1 : 0;
       this.layers.tile.style.filter = `hue-rotate(55deg) invert(${shouldInvert}) drop-shadow(1px 1px 0.1px #00000050)`;
     });
+
 
     document.querySelector('#map-name-text').addEventListener('dblclick', (e) => {
       this.hueRotato();
@@ -79,6 +85,35 @@ export class SVGCanvas extends EventTarget {
         e.stopPropagation();
         e.stopImmediatePropagation();
       }),
+    );
+    this.contextMenuDOM$ = fromEvent(this.#self, 'contextmenu').pipe(
+      tap(e => {
+        e.preventDefault();
+        e.stopPropagation();
+        // e.stopImmediatePropagation();
+      }),
+      map(({ type, target, clientX, clientY }) => {
+        const layerDOM = target.closest('[data-type="layer"]');
+        const layerName = layerDOM.dataset.name;
+
+        const point = this.domPoint(clientX, clientY);
+        const isTile = !!target.closest('.tile');
+        const x = Math.floor(point.x);
+        const y = Math.floor(point.y);
+
+        return {
+          type: `${layerName}:${type}`,
+          detail: {
+            id: `${x}_${y}`,
+            x,
+            y,
+            target,
+          }
+        };
+      }),
+      map(({ type, detail }) => createCustomEvent(type, detail)),
+      tap((event) => this.dispatchEvent(event)),
+      tap((evt) => { console.warn(`[ CANVAS EVENT ] ${evt.type}: `, evt); }),
     );
 
     this.pointerMove$ = fromEvent(this.#self, 'pointermove').pipe(tap(e => {
@@ -101,8 +136,8 @@ export class SVGCanvas extends EventTarget {
 
     this.eventEmits$ = this.clickDOM$.pipe(
       map(({ type, target, clientX, clientY }) => {
-        const layer = target.closest('[data-type="layer"]')
-        const layerName = layer.dataset.name;
+        const layerDOM = target.closest('[data-type="layer"]');
+        const layerName = layerDOM.dataset.name;
 
         const point = this.domPoint(clientX, clientY);
         const isTile = !!target.closest('.tile');
@@ -120,11 +155,12 @@ export class SVGCanvas extends EventTarget {
       }),
       map(({ type, detail }) => createCustomEvent(type, detail)),
       tap((event) => this.dispatchEvent(event)),
-      tap((evt) => { console.warn('[ CANVAS EVEVENT ]: ', evt.type) }),
+      tap((evt) => { console.warn('[ CANVAS EVEVENT ]: ', evt.type); }),
     );
 
     this.toggleScroll = this.#toggleScroll.bind(this);
     this.clickDOMSubscription = this.eventEmits$.subscribe();
+    this.contextmenuDOMSubscription = this.contextMenuDOM$.subscribe();
 
   }
 
@@ -177,6 +213,23 @@ export class SVGCanvas extends EventTarget {
     const cObj = new CanvasObject(this, type, { model });
 
     return cObj;
+  }
+
+  createTileObject({ x, y, tileType, linkedMap, linkedNodeAddress }) {
+    const model = {
+      tileType,
+      x,
+      y,
+      current: false,
+      active: false,
+      isPathNode: false,
+      linkedNodeAddress: linkedNodeAddress ?? '',
+      linkedMap,
+    };
+
+    const t = this.createObject('tile', model);
+
+    return t;
   }
 
   #toggleScroll(x, y) {
@@ -270,11 +323,13 @@ export class SVGCanvas extends EventTarget {
     if (+width) {
       height = +height ? height : width;
 
+
       this.#self.setAttribute('width', width);
       this.#self.setAttribute('height', height);
     }
     else if (this.parentElement) {
       const { width, height } = this.parentElement.getBoundingClientRect();
+
 
       this.#self.setAttribute('width', width);
       this.#self.setAttribute('height', height);
@@ -295,17 +350,21 @@ export class SVGCanvas extends EventTarget {
       const tileBB = this.layers.tile.getBBox();
     }, 0);
 
+
     return this;
   }
 
+
   // isInView(coords) {
   //   const { x, y, width, height } = this.viewBox;
+
 
   //   return coords.x >= x &&
   //     coords.y >= y &&
   //     coords.x <= width &&
   //     coords.y <= height;
   // }
+
 
   getPixelAspectRatio() {
     const { width, height } = this.#self.getBoundingClientRect();

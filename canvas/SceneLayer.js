@@ -61,8 +61,9 @@ export class SceneLayer extends CanvasObject {
 
 	clear() {
 		for (const obj of this.#objects.values()) {
-			obj.remove();
+			obj.remove(true);
 		}
+		
 		this.#objects.clear();
 	}
 

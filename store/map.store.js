@@ -1,9 +1,7 @@
 import { storeMaps, storeMap, updateMap, loadMap, loadMaps, clearMaps, loadMapIndex } from '../map.service.js';
 
-import { ref, computed, watch, reactive } from 'vue'
-import { Graph, TILE_TYPE_INDEX } from '../lib/graph.model.js';
+import { ref, computed, watch, reactive } from 'vue';
 import { MAP_DOC_TEMPLATE } from '../maps.js';
-// import { mapGraph } from '../map-id-pojo.js';
 
 const currentMap = ref({
   tileData: {},
@@ -22,54 +20,52 @@ const currentMapIndex = ref({
   updated: 0,
 });
 const mapIndexArray = ref([]);
-const mapIndex = reactive(new Map());
+const mapIndex = new Map();
 
 export const useMapStore = () => {
   const isMapSaved = computed(() => !!currentMap.value.id && !currentMap.value.id.includes('TEMP'));
-  const mapList = computed(() => [...mapIndex.values()])
-  const mapState = computed(() => currentMapIndex.value)
-  const previousMapId = ref(null)
-  
+  const mapState = computed(() => currentMapIndex.value);
+  const previousMapId = ref(null);
+
   const setCurrentMap = (mapDoc) => {
-  	console.warn('[ setCurrentMap ]', mapDoc)
-    previousMapId.value = currentMapIndex.value?.id
+    console.warn('[ setCurrentMap ]', mapDoc);
+    previousMapId.value = currentMapIndex.value?.id;
     currentMapIndex.value = mapIndex.has(mapDoc.id) ? mapIndex.get(mapDoc.id) : null;
-    
+
     currentMap.value = { ...(currentMapIndex.value ?? MAP_DOC_TEMPLATE), ...mapDoc, id: mapDoc.id ?? `TEMP_MAP_${Date.now()}`, };
-    // console.warn('set curr map', currentMap.value)
   };
-  
-  const saveMap = async (map) => {};
-  
-  const deleteMap = async (map) => {};
-  
+
+  const saveMap = async (map) => { };
+
+  const deleteMap = async (map) => { };
+
   const createMap = async (id) => {
-    
+
     const loaded = await loadMap(id);
-    return loaded
+    return loaded;
   };
-  
+
   const initMaps = async () => {
     const res = await loadMapIndex();
-    res.forEach(m => mapIndex.set(m.id, m))
+    res.forEach(m => mapIndex.set(m.id, m));
   };
-  
+
   const setCurrentMapById = async (mapId) => {
     const loaded = await loadMap(mapId);
-    
+
     setCurrentMap(loaded);
   };
-  
+
   const getMapData = async (mapId) => {
-    return mapIndex.get(mapId)
+    return mapIndex.get(mapId);
   };
-  
+
   const updateMapState = async (mapPatch = {}) => {
     if (mapPatch.name) {
-      currentMapIndex.value.name = mapPatch.name
+      currentMapIndex.value.name = mapPatch.name;
     }
   };
-  
+
   return {
     setCurrentMap,
     updateMapState,
@@ -78,13 +74,13 @@ export const useMapStore = () => {
     loadMap,
     deleteMap,
     isMapSaved,
-    currentMap,
-    currentMapIndex,
+    currentMap: computed(() => currentMap.value),
+    currentMapIndex: computed(() => currentMapIndex.value),
     previousMapId,
     mapIndex,
     mapState,
     initMaps,
     setCurrentMapById,
     getMapData,
-  }
+  };
 };
