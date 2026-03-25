@@ -36,6 +36,15 @@ export class AudioNote {
     this.#velocity = value;
     return this;
   }
+  stop(time = 0) {
+    if (!this._osc) {
+      return
+    }
+    
+    this._osc.stop(this.currentTime + time);
+    
+    return this;
+  }
   
   play() {
     const { audioCtx, startTime, durationTime, frequency } = this;
@@ -43,9 +52,9 @@ export class AudioNote {
     let velocity = clampLow(this.#velocity)
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
-
+    
     this.#toneMode = this.#toneMode === 'perc' ? 'soft' : 'perc'
-
+    
     osc.type = this.type;
     osc.frequency.setValueAtTime(frequency, startTime);
     
