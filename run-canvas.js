@@ -81,7 +81,7 @@ const createEdgeLine = (pt1, pt2) => {
   return line;
 };
 
-const fireAudioNote = (freq, vel, dur = 2) => (new AudioNote(audioEngine.ctx)
+const fireAudioNote = (freq, vel, dur = 1.5) => (new AudioNote(audioEngine.ctx)
 	.at(audioEngine.now)
 	.frequencyHz(freq)
 	.duration(dur)
