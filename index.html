@@ -247,10 +247,10 @@
   </template>
   
   <template data-component="app-splash-view">
-    <section id="app-splash-view" @click="handleClick" :class="{ fade: fade }">
+    <section ref="foregroundRef" id="app-splash-view" @click="handleClick" :class="{ fade: fade }">
       
       <div id="app-splash-background"></div>
-      <div id="app-splash-foreground">
+      <div  id="app-splash-foreground">
         <div id="app-splash-overlay">TONE TILES</div>
       </div>
       <div id="app-splash-cta">Click any button to continue</div>
