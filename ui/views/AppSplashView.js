@@ -21,19 +21,19 @@ export const AppSplashView = defineComponent(
       }, 2000);
     };
     
-    onMounted(() => {
-      parent = foregroundRef.value.parentElement;
+    // onMounted(() => {
+    //   parent = foregroundRef.value.parentElement;
       
-      foregroundRef.value.style.opacity = 0;
-      foregroundRef.value.remove();
-      
-      setTimeout(() => {
-        parent.append(foregroundRef.value);
-        setTimeout(() => {
-          foregroundRef.value.style.opacity = 1;
-        }, 1);
-      }, 0);
-    })
+    //   foregroundRef.value.style.opacity = 0;
+    //   foregroundRef.value.remove();
+    //   parent.append(foregroundRef.value);
+
+    //   setTimeout(() => {
+    //     setTimeout(() => {
+    //       foregroundRef.value.style.opacity = 1;
+    //     }, 1);
+    //   }, 0);
+    // })
     
     return {
       fade,
