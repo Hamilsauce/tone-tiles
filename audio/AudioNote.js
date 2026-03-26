@@ -17,6 +17,8 @@ export class AudioNote {
     this._gain = null;
   }
   
+  get currentTime() { return this.audioCtx.currentTime }
+  
   at(time) {
     this.startTime = time;
     return this;
@@ -36,12 +38,18 @@ export class AudioNote {
     this.#velocity = value;
     return this;
   }
-  stop(time = 0) {
+  stop(time = 0.5) {
     if (!this._osc) {
       return
     }
+    const freq = this._osc.frequency.value
+    this._gain.gain.cancelScheduledValues(this.currentTime)
+    this._gain.gain.setValueAtTime(this._gain.gain.value, this.currentTime); // fade-out
     
-    this._osc.stop(this.currentTime + time);
+    this._osc.frequency.linearRampToValueAtTime(freq - 5, this.currentTime + time+0.1); // fade-out
+    this._gain.gain.linearRampToValueAtTime(0.0001, this.currentTime + time + 0.15); // fade-out
+    
+    // this._osc.stop(this.currentTime + time+0.8);
     
     return this;
   }
@@ -56,7 +64,8 @@ export class AudioNote {
     this.#toneMode = this.#toneMode === 'perc' ? 'soft' : 'perc'
     
     osc.type = this.type;
-    osc.frequency.setValueAtTime(frequency, startTime);
+    osc.frequency.setValueAtTime(frequency - 5, startTime);
+    osc.frequency.linearRampToValueAtTime(frequency, startTime + 0.16); // fade-out
     
     if (this.#toneMode === 'soft') {
       gain.gain.setValueAtTime(0.0, startTime);
