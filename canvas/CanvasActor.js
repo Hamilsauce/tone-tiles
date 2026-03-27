@@ -1,42 +1,51 @@
-import { TileObject } from './TileObject.js';
-import { SceneLayer } from './SceneLayer.js';
+import { CanvasObject, DefaultCanvasObjectOptions } from './CanvasObject.js';
+import { GraphNode } from '../lib/graph.model.js';
 
-export class TileLayer extends SceneLayer {
-	#name = null;
-	#objects = new Map();
-
-	constructor(ctx, options = {}) {
-		const { objects, ...opts } = options;
-
-		super(ctx, 'tile', opts);
-
-		this.#name = 'tile';
-
-		if (objects) {
-			objects.forEach(this.add);
-		}
-	};
-
-	add(node) {
-		if (node.type !== 'tile') {
-			console.warn('node', node)
-			throw new Error('No object type in layer add');
-		}
-
-		const cObj = new TileObject(this.context, { id: node.id, model: node })
-
-		this.objects.set(node.id, cObj);
-		this.dom.appendChild(cObj.dom);
-
-		cObj.update();
-		this.emit('object:add', cObj);
-
-		return cObj;
-	}
-
-	getTileAt(x, y) {
-		const address = `${x}_${y}`;
-
-		return this.get(address)
-	}
+export class CanvasActor extends CanvasObject {
+  #prev = {};
+  #traversalGen;
+  #trail = [];
+  #getGoal;
+  
+  constructor(ctx, options = DefaultCanvasObjectOptions) {
+    // if (options.model && !(options.model instanceof GraphNode)) {
+    //   throw new Error(`Must init CanvasActor with GraphNode Model. Received: ${JSON.stringify(options.model, null, 2)}`);
+    // }'
+    // const graph = options.graph
+    
+    
+    // const node = options.model;
+    options.model = {...options.model, isMoving: false}
+    // options.id = node.address;
+    
+    super(ctx, 'tile', options);
+    
+    this.#traversalGen = graph.traverseHybrid(
+      graph.getNodeAtPoint({ x: this.x, y: this.y }),
+      () => this.#getGoal
+    );
+  };
+  
+  attachTraversal(traversalGen, goalGetter = () => null) {
+    this.#traversalGen = traversalGen;
+    this.#getGoal = goalGetter;
+  }
+  
+  scoot() {
+    if (!this.#traversalGen) {
+      throw new Error(`Cant scoot`)
+    }
+    
+    const curr = this.#traversalGen.next().value;
+    if (curr && this.#prev && curr.id !== this.#prev?.id) {
+      // this.#trail = this.#trail.unshift(curr);
+      this.update({ ...curr.data(), isMoving: true });
+      this.#prev = curr;
+      
+      return curr;
+      
+    } else if (this.model.isMoving) {
+      this.update({ isMoving: true });
+    }
+  }
 }

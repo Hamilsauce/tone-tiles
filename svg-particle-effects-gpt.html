@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SVG Particle Demo</title>
+  <style>
+    :root {
+      --bg1: #0f172a;
+      --bg2: #1e293b;
+      --fg: #e2e8f0;
+      --accent: #7dd3fc;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 20% 20%, #1d4ed8 0%, transparent 30%),
+        radial-gradient(circle at 80% 30%, #9333ea 0%, transparent 28%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
+      color: var(--fg);
+      font-family: system-ui, sans-serif;
+      touch-action: none;
+    }
+
+    .ui {
+      position: fixed;
+      top: 12px;
+      left: 12px;
+      z-index: 10;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.08);
+      font-size: 14px;
+      line-height: 1.4;
+      user-select: none;
+      pointer-events: none;
+    }
+
+    .ui strong {
+      color: white;
+    }
+
+    svg {
+      display: block;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    .particle-layer {
+      pointer-events: none;
+    }
+
+    .particle {
+      transform-box: fill-box;
+      transform-origin: center;
+    }
+
+    .glow {
+      mix-blend-mode: screen;
+    }
+  </style>
+</head>
+<body>
+  <div class="ui">
+    <div><strong>SVG Particle Demo</strong></div>
+    <div>Click = burst</div>
+    <div>Drag = spray</div>
+  </div>
+
+  <svg id="stage" viewBox="0 0 100 100" preserveAspectRatio="none" aria-label="particle demo">
+    <defs>
+      <filter id="blur-glow" x="-100%" y="-100%" width="300%" height="300%">
+        <feGaussianBlur stdDeviation="0.6" />
+      </filter>
+
+      <radialGradient id="particleGradient" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="white" stop-opacity="1" />
+        <stop offset="45%" stop-color="#7dd3fc" stop-opacity="0.95" />
+        <stop offset="100%" stop-color="#a78bfa" stop-opacity="0.15" />
+      </radialGradient>
+
+      <circle id="particleSymbol" cx="0" cy="0" r="1" fill="url(#particleGradient)" />
+    </defs>
+
+    <rect width="100" height="100" fill="transparent" />
+    <g id="particleLayer" class="particle-layer glow" filter="url(#blur-glow)"></g>
+  </svg>
+
+  <script>
+    const svg = document.getElementById("stage");
+    const particleLayer = document.getElementById("particleLayer");
+
+    const MAX_PARTICLES = 350;
+    const particles = [];
+    const pool = [];
+
+    let pointerDown = false;
+    let lastTime = performance.now();
+
+    function createParticleElement() {
+      const el = document.createElementNS("http://www.w3.org/2000/svg", "use");
+      el.setAttribute("href", "#particleSymbol");
+      el.setAttribute("class", "particle");
+      el.style.display = "none";
+      particleLayer.appendChild(el);
+      return el;
+    }
+
+    function getParticleElement() {
+      return pool.pop() || createParticleElement();
+    }
+
+    function releaseParticleElement(el) {
+      el.style.display = "none";
+      pool.push(el);
+    }
+
+    function clamp(value, min, max) {
+      return Math.max(min, Math.min(max, value));
+    }
+
+    function rand(min, max) {
+      return Math.random() * (max - min) + min;
+    }
+
+    function svgPointFromClient(clientX, clientY) {
+      const rect = svg.getBoundingClientRect();
+      const x = ((clientX - rect.left) / rect.width) * 100;
+      const y = ((clientY - rect.top) / rect.height) * 100;
+      return { x, y };
+    }
+
+    function spawnParticle({
+      x,
+      y,
+      vx = 0,
+      vy = 0,
+      life = 1,
+      size = 1,
+      shrink = 0.985,
+      drag = 0.992,
+      gravity = 0.0
+    }) {
+      if (particles.length >= MAX_PARTICLES) {
+        const oldest = particles.shift();
+        releaseParticleElement(oldest.el);
+      }
+
+      const el = getParticleElement();
+      el.style.display = "";
+      particles.push({
+        x,
+        y,
+        vx,
+        vy,
+        life,
+        maxLife: life,
+        size,
+        shrink,
+        drag,
+        gravity,
+        el
+      });
+    }
+
+    function burst(x, y, count = 28) {
+      for (let i = 0; i < count; i++) {
+        const angle = rand(0, Math.PI * 2);
+        const speed = rand(6, 22) / 100;
+        spawnParticle({
+          x,
+          y,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          life: rand(0.55, 1.2),
+          size: rand(0.35, 1.4),
+          shrink: rand(0.975, 0.992),
+          drag: rand(0.986, 0.995),
+          gravity: rand(0.0005, 0.003)
+        });
+      }
+    }
+
+    function spray(x, y) {
+      for (let i = 0; i < 5; i++) {
+        const angle = rand(-0.9, 0.9) - Math.PI / 2;
+        const speed = rand(5, 15) / 100;
+        spawnParticle({
+          x: x + rand(-0.3, 0.3),
+          y: y + rand(-0.3, 0.3),
+          vx: Math.cos(angle) * speed + rand(-0.03, 0.03),
+          vy: Math.sin(angle) * speed + rand(-0.01, 0.05),
+          life: rand(0.35, 0.9),
+          size: rand(0.2, 0.8),
+          shrink: rand(0.98, 0.993),
+          drag: rand(0.985, 0.994),
+          gravity: rand(0.0004, 0.0022)
+        });
+      }
+    }
+
+    function updateParticles(dt) {
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+
+        p.life -= dt * 0.8;
+        if (p.life <= 0 || p.size <= 0.03) {
+          releaseParticleElement(p.el);
+          particles.splice(i, 1);
+          continue;
+        }
+
+        p.vx *= Math.pow(p.drag, dt * 60);
+        p.vy *= Math.pow(p.drag, dt * 60);
+        p.vy += p.gravity * dt * 60;
+
+        p.x += p.vx * dt * 60;
+        p.y += p.vy * dt * 60;
+        p.size *= Math.pow(p.shrink, dt * 60);
+
+        const alpha = clamp(p.life / p.maxLife, 0, 1);
+        const scale = p.size;
+        p.el.setAttribute(
+          "transform",
+          `translate(${p.x} ${p.y}) scale(${scale})`
+        );
+        p.el.setAttribute("opacity", alpha.toFixed(3));
+      }
+    }
+
+    function autoEmitter(t) {
+      const cx = 50;
+      const cy = 50;
+      const radius = 18;
+      const speed = 0.0009;
+
+      const x = cx + Math.cos(t * speed) * radius;
+      const y = cy + Math.sin(t * speed * 1.37) * radius * 0.6;
+
+      spawnParticle({
+        x,
+        y,
+        vx: rand(-0.03, 0.03),
+        vy: rand(-0.05, 0.01),
+        life: rand(0.45, 1.0),
+        size: rand(0.25, 0.7),
+        shrink: rand(0.984, 0.993),
+        drag: rand(0.987, 0.996),
+        gravity: rand(-0.0002, 0.0008)
+      });
+    }
+
+    function frame(now) {
+      const dt = Math.min((now - lastTime) / 1000, 0.033);
+      lastTime = now;
+
+      autoEmitter(now);
+      updateParticles(dt);
+
+      requestAnimationFrame(frame);
+    }
+
+    svg.addEventListener("pointerdown", (e) => {
+      pointerDown = true;
+      const { x, y } = svgPointFromClient(e.clientX, e.clientY);
+      burst(x, y, 36);
+    });
+
+    svg.addEventListener("pointermove", (e) => {
+      if (!pointerDown) return;
+      const { x, y } = svgPointFromClient(e.clientX, e.clientY);
+      spray(x, y);
+    });
+
+    window.addEventListener("pointerup", () => {
+      pointerDown = false;
+    });
+
+    window.addEventListener("pointercancel", () => {
+      pointerDown = false;
+    });
+
+    requestAnimationFrame(frame);
+  </script>
+</body>
+</html>
