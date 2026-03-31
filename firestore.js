@@ -30,54 +30,54 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// export const migrateMapsToSplitModel = async () => {
-//   const mapsSnap = await getDocs(collection(db, "maps"));
+export const migrateMapsToSplitModel = async () => {
+  const mapsSnap = await getDocs(collection(db, "maps"));
 
-//   for (const mapDoc of mapsSnap.docs) {
-//     await runTransaction(db, async (transaction) => {
-//       const mapRef = mapDoc.ref;
-//       const freshSnap = await transaction.get(mapRef);
+  for (const mapDoc of mapsSnap.docs) {
+    await runTransaction(db, async (transaction) => {
+      const mapRef = mapDoc.ref;
+      const freshSnap = await transaction.get(mapRef);
 
-//       if (!freshSnap.exists()) return;
+      if (!freshSnap.exists()) return;
 
-//       const data = freshSnap.data();
+      const data = freshSnap.data();
 
-//       // If already migrated (paranoia guard)
-//       const mapIndexRef = doc(db, "mapIndex", mapDoc.id);
-//       const tileDataRef = doc(db, "tileData", mapDoc.id);
+      // If already migrated (paranoia guard)
+      const mapIndexRef = doc(db, "mapIndex", mapDoc.id);
+      const tileDataRef = doc(db, "tileData", mapDoc.id);
 
-//       const existingIndex = await transaction.get(mapIndexRef);
-//       if (existingIndex.exists()) {
-//         console.log(`Skipping ${mapDoc.id} (already migrated)`);
-//         return;
-//       }
+      const existingIndex = await transaction.get(mapIndexRef);
+      if (existingIndex.exists()) {
+        console.log(`Skipping ${mapDoc.id} (already migrated)`);
+        return;
+      }
 
-//       const mapIndexData = {
-//         id: mapDoc.id,
-//         name: data.name ?? "Untitled",
-//         meta: data.meta ?? {},
-//         width: data.width,
-//         height: data.height,
-//         updated: data.updated ?? Date.now(),
-//       };
+      const mapIndexData = {
+        id: mapDoc.id,
+        name: data.name ?? "Untitled",
+        meta: data.meta ?? {},
+        width: data.width,
+        height: data.height,
+        updated: data.updated ?? Date.now(),
+      };
 
-//       const tileDataDoc = {
-//         id: mapDoc.id,
-//         width: data.width,
-//         height: data.height,
-//         tileData: data.tileData ?? {},
-//       };
+      const tileDataDoc = {
+        id: mapDoc.id,
+        width: data.width,
+        height: data.height,
+        tileData: data.tileData ?? {},
+      };
 
-//       transaction.set(mapIndexRef, mapIndexData);
-//       transaction.set(tileDataRef, tileDataDoc);
-//       transaction.delete(mapRef);
-//     });
+      transaction.set(mapIndexRef, mapIndexData);
+      transaction.set(tileDataRef, tileDataDoc);
+      transaction.delete(mapRef);
+    });
 
-//     console.log(`Migrated ${mapDoc.id}`);
-//   }
+    console.log(`Migrated ${mapDoc.id}`);
+  }
 
-//   console.log("Migration complete.");
-// };
+  console.log("Migration complete.");
+};
 
 
 export const dbGet = async (collectionPath, docId) => {
