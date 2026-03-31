@@ -1,5 +1,6 @@
 const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
 const clampLow = (v) => clamp(v, 0.2, 0.3)
+
 export class AudioNote {
   #toneMode = 'perc';
   #velocity;
@@ -38,18 +39,26 @@ export class AudioNote {
     this.#velocity = value;
     return this;
   }
+  
   stop(time = 0.5) {
-    if (!this._osc) {
-      return
-    }
+    if (!this._osc) return;
+    if (!this._gain) return;
+    
     const freq = this._osc.frequency.value
     this._gain.gain.cancelScheduledValues(this.currentTime)
     this._gain.gain.setValueAtTime(this._gain.gain.value, this.currentTime); // fade-out
     
-    this._osc.frequency.linearRampToValueAtTime(freq - 5, this.currentTime + time+0.1); // fade-out
     this._gain.gain.linearRampToValueAtTime(0.0001, this.currentTime + time + 0.15); // fade-out
+    this._osc.frequency.exponentialRampToValueAtTime(freq * 0.97, this.currentTime + time + 0.15); // fade-out
     
-    // this._osc.stop(this.currentTime + time+0.8);
+    const stopTime = this.currentTime + time + 0.2;
+    
+    this._osc.stop(stopTime);
+    
+    this._osc.onended = () => {
+      this._osc.disconnect();
+      this._gain.disconnect();
+    };
     
     return this;
   }
@@ -73,7 +82,6 @@ export class AudioNote {
     }
     
     gain.gain.linearRampToValueAtTime(velocity, startTime + 0.035); // quick fade-in
-    // gain.gain.setValueAtTime(velocity, startTime + durationTime - 0.02);
     gain.gain.linearRampToValueAtTime(0.0, startTime + durationTime); // fade-out
     
     osc.connect(gain);

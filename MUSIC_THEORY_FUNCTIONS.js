@@ -42,6 +42,14 @@ export const MusicalScales = {
 
 const ChordScaleDegrees = [0, 2, 4, 6]
 
+export function major7(freq) {
+  return [
+    freq,
+    freq * 1.25,
+    freq * 1.5,
+    freq * 1.875
+  ]
+}
 
 export const pitchToFrequency = (pitch = 'C4') => {
   const note = NoteData.find(note => note.pitch === pitch)
