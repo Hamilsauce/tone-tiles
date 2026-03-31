@@ -5,7 +5,7 @@ export class AudioNote {
   #toneMode = 'perc';
   #velocity;
   
-  constructor(audioCtx, { type = "sine" } = {}) {
+  constructor(audioCtx, { type = 'sine' } = {}) {
     this.audioCtx = audioCtx;
     this.type = type;
     
@@ -48,8 +48,8 @@ export class AudioNote {
     this._gain.gain.cancelScheduledValues(this.currentTime)
     this._gain.gain.setValueAtTime(this._gain.gain.value, this.currentTime); // fade-out
     
-    this._gain.gain.linearRampToValueAtTime(0.0001, this.currentTime + time + 0.15); // fade-out
-    this._osc.frequency.exponentialRampToValueAtTime(freq * 0.97, this.currentTime + time + 0.15); // fade-out
+    this._gain.gain.linearRampToValueAtTime(0.0001, this.currentTime + time); // fade-out
+    // this._osc.frequency.exponentialRampToValueAtTime(freq * 0.97, this.currentTime + time + 0.15); // fade-out
     
     const stopTime = this.currentTime + time + 0.2;
     
@@ -73,7 +73,7 @@ export class AudioNote {
     this.#toneMode = this.#toneMode === 'perc' ? 'soft' : 'perc'
     
     osc.type = this.type;
-    osc.frequency.setValueAtTime(frequency - 5, startTime);
+    osc.frequency.setValueAtTime(frequency, startTime);
     osc.frequency.linearRampToValueAtTime(frequency, startTime + 0.16); // fade-out
     
     if (this.#toneMode === 'soft') {

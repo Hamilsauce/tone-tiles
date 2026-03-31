@@ -36,6 +36,29 @@ export class SceneLayer extends CanvasObject {
 		return cObj;
 	}
 	
+	load(id, data = {}) {
+		const obj = this.#objects.get(id);
+		if (!obj || obj.isLoaded) return;
+		
+		
+		obj.update(data)
+		this.dom.appendChild(obj.dom);
+		
+		// this.#objects.delete(id);
+		
+		this.emit('object:load', obj);
+	}
+	
+	unload(id) {
+		const obj = this.#objects.get(id);
+		if (!obj) return;
+		
+		obj.remove();
+		// this.#objects.delete(id);
+		
+		this.emit('object:unload', obj);
+	}
+	
 	remove(id) {
 		const obj = this.#objects.get(id);
 		if (!obj) return;

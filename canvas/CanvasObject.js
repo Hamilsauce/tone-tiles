@@ -84,6 +84,8 @@ export class CanvasObject extends EventEmitter {
   
   get parent() { return this.dom.parentElement; }
   
+  get isLoaded() { return !!this.parent; }
+  
   subscribe(eventType, unsubFn) {
     this.#subscriptions.set(eventType, unsubFn);
   }
@@ -116,13 +118,10 @@ export class CanvasObject extends EventEmitter {
     return this;
   }
   
-  remove(clearSubscriptions = false) {
-    if (clearSubscriptions) {
-      this.#subscriptions.forEach(unsubFn => {
-        console.warn(unsubFn);
-        unsubFn();
-      });
-    }
+  remove() {
+    this.#subscriptions.forEach(unsubFn => {
+      unsubFn();
+    });
     
     this.dom.remove();
     
@@ -152,7 +151,7 @@ export class CanvasObject extends EventEmitter {
       const isValid = !(v === undefined || modelV === undefined);
       const hasChanged = v !== modelV;
       
-      if (isValid && hasChanged) {
+      if (v !== undefined && hasChanged) {
         this.#model[key] = v;
         
       } else if (!isValid) {
@@ -178,8 +177,22 @@ export class CanvasObject extends EventEmitter {
     return this;
   }
   
-  disableEvents() {
-    this.data.pointerEvents = false;
+  activate() {
+    this.show();
+    this.toggleEvents(true);
+    
+    return this;
+  }
+  deactivate() {
+    this.hide();
+    this.toggleEvents(false);
+    
+    return this;
+  }
+  
+  
+  toggleEvents(v) {
+    this.data.pointerEvents = v ?? !this.data.pointerEvents;
     return this;
   }
   

@@ -88,13 +88,13 @@
   filter: hue-rotate(167deg);
 }
 
-.tile[data-linked-map=null],
+/* .tile[data-linked-map=null],
 .tile[data-linked-map=null]>* {
   fill: #898989 !important;
   stroke: #74A6A4;
   pointer-events: none !important;
   filter: saturate(0.4) brightness(0.7);
-}
+} */
 
 @keyframes yellowToOriginal {
   0% {}

@@ -1,4 +1,5 @@
-import { Graph, TILE_TYPE_INDEX, getChordToneDegreeFromDir, getDirectionFromPoints } from './lib/graph.model.js';
+// import graph from './lib/graph.model.js';
+import graph, { TILE_TYPE_INDEX, getChordToneDegreeFromDir, getDirectionFromPoints } from './lib/graph.model.js';
 import { SVGCanvas } from './canvas/SVGCanvas.js';
 import { getTileSelector } from 'https://hamilsauce.github.io/svg-range-selector/tile-selector.js';
 import { initMapControls } from './ui/map-selection.js';
@@ -7,12 +8,16 @@ import { TransformList } from './canvas/TransformList.js';
 import ham from 'https://hamilsauce.github.io/hamhelper/hamhelper1.0.0.js';
 import { useAppState } from './store/app.store.js';
 import { AudioClockLoop } from './lib/loop-engine.js';
-import { getScaleNotes, getChordNotes, pitchToFrequency } from './MUSIC_THEORY_FUNCTIONS.js';
+import { major7, getScaleNotes, getChordNotes, pitchToFrequency } from './MUSIC_THEORY_FUNCTIONS.js';
 import { ContextMenu } from './canvas/ContextMenu.js';
 
 const { sleep, rxjs } = ham;
 const { fromEvent } = rxjs;
 const { tap } = rxjs.operators;
+
+function getRandomInt(max = 4) {
+  return Math.floor(Math.random() * max);
+}
 
 const useTemplate = (templateName, options = {}) => {
   const el = document.querySelector(`[data-template="${templateName}"]`).cloneNode(true);
@@ -92,7 +97,7 @@ const fireAudioNote = (freq, vel, dur = 2) => (new AudioNote(audioEngine.ctx)
 
 const ANIM_RATE = 105;
 
-let graph;
+// let graph;
 let canvasEl;
 let svgCanvas;
 let scene;
@@ -108,7 +113,7 @@ export const runCanvas = async (mapId) => {
   mapId = mapId && mapId.value ? mapId.value : mapId;
   const { isRunning, setRunning } = useAppState();
   
-  const graph = new Graph();
+  // const graph = new Graph();
   
   const app = document.querySelector('#app');
   const floatingMenu = app.querySelector('#app-floating-menu');
@@ -238,6 +243,7 @@ export const runCanvas = async (mapId) => {
     selectedRange = [];
     
     selectionBox.remove();
+    
     if (!type || type !== 'tile:click') {
       console.warn('NON TILE CLICK, RETURNING FROM LOOP', type, detail);
       return;
@@ -300,94 +306,64 @@ export const runCanvas = async (mapId) => {
       };
       
       intervalHandle = setInterval(async () => {
-        curr = TRAVERSAL_GEN.next().value;
-        prev = currentNode;
-        currentNode = curr;
-        
-        if (prev.id === curr.id) return;
-        activeActor.dataset.moving = true;
-        
-        if (prev.tileType === 'teleport') {
-          activeActor.dataset.teleporting = false;
-        }
-        
-        if (!curr) {
-          console.warn('no curr');
-          return;
-        } else {
-          const travelDir = getDirectionFromPoints(prev, curr);
-          const chordToneDegree = getChordToneDegreeFromDir(travelDir);
+        try {
           
-          {
-            // AudioNote Block
-            try {
-              const vel = pointer % 2 === 0 ? 0.1 : 0.3;
-              const freq = toTone(curr.x, curr.y, chordToneDegree);
-              
-              if (!audioNote1) {
-                audioNote1 = fireAudioNote(freq, vel);
-                
-              }
-              else if (prevDir === travelDir) {
-                audioNote1 = audioNote1
-                
-                
-              } else {
-                audioNote1.stop(0.2) 
-                // console.warn(freq)
-                audioNote1 = fireAudioNote(freq, vel);
-              }
-              // audioNote1 = prevDir === travelDir ? audioNote1 : fireAudioNote(freq, vel);
-              prevDir = travelDir;
-              
-              // audioNote1 = fireAudioNote(freq, vel);
-            } catch (e) {
-              console.error(`no audio note for you: ${e}`);
-            }
+          curr = TRAVERSAL_GEN.next().value;
+          prev = currentNode;
+          currentNode = curr;
+          
+          // console.warn(curr.id);
+          // console.warn(prev.id);
+          
+          
+          if (prev && prev.id === curr.id) return;
+          activeActor.dataset.moving = true;
+          
+          if (prev && prev.tileType === 'teleport') {
+            activeActor.dataset.teleporting = false;
           }
           
-          activeActor.dataset.x = curr.x;
-          activeActor.dataset.y = curr.y;
-          
-          actorTrans = actor1TransformList;
-          actorTrans.translateTo(curr.x, curr.y);
-          
-          const isLink = curr.tileType === 'map-link' || curr.tileType === 'start' && !!curr.linkedMap;
-          const isStartingNode = curr.tileType === 'start';
-          
-          if (linkedMapId && isLink) {
-            isMoving = false;
-            activeActor.dataset.moving = isMoving;
-            
-            clearInterval(intervalHandle);
-            intervalHandle = null;
-            
-            await selectMapById(linkedMapId);
-            
-            TRAVERSAL_GEN = graph.traverseHybrid(
-              graph.startNode,
-              () => goalNode
-            );
-            
+          if (!curr) {
+            console.warn('no curr');
             return;
-          }
-          
-          curr.update({ isPathNode: true });
-          
-          pointer++;
-          
-          if (curr.id === goalNode.id) {
-            curr.update({ active: true, current: true });
-            console.warn('----- GOAL FOUND -----');
-          }
-          
-          if (curr.tileType === 'teleport') {
-            actor1.dataset.teleporting = true;
+          } else {
+            const travelDir = getDirectionFromPoints(prev, curr);
+            const chordToneDegree = getChordToneDegreeFromDir(travelDir);
             
-            if (curr.id === currentNode.id) {
-              curr.update({ active: false, current: false });
-              
-              return;
+            {
+              // AudioNote Block
+              try {
+                const vel = pointer % 2 === 0 ? 0.2 : 0.4;
+                let freq = toTone(curr.x, curr.y, chordToneDegree);
+            
+                console.warn({ vel })
+                if (!audioNote1) {
+                  audioNote1 = fireAudioNote(freq, vel);
+                }
+                
+                else if (curr.tileType === 'teleport') {
+           
+                  audioNote1.stop(0.015)
+                  
+                  freq = major7(toTone(curr.x, curr.y, chordToneDegree))[getRandomInt(4)];
+                  
+                  audioNote1 = fireAudioNote(freq, vel);
+                }
+                else if (prevDir === travelDir) {
+                  audioNote1 = audioNote1
+                }
+                else {
+                  audioNote1.stop(0.2)
+                  // console.warn(freq)
+                  audioNote1 = fireAudioNote(freq, vel);
+                }
+                // audioNote1 = prevDir === travelDir ? audioNote1 : fireAudioNote(freq, vel);
+                prevDir = travelDir;
+                
+                // audioNote1 = fireAudioNote(freq, vel);
+              } catch (e) {
+                console.error(`no audio note for you: ${e}`);
+              }
             }
             
             activeActor.dataset.x = curr.x;
@@ -396,21 +372,75 @@ export const runCanvas = async (mapId) => {
             actorTrans = actor1TransformList;
             actorTrans.translateTo(curr.x, curr.y);
             
-            curr.update({ active: false, current: false });
+            const isLink = curr.tileType === 'map-link' || curr.tileType === 'start' && !!curr.linkedMap;
+            const isStartingNode = curr.tileType === 'start';
             
-            await sleep(10);
-            shouldPreVel = !shouldPreVel;
-            activeActor.dataset.teleporting = false;
+            if (linkedMapId && isLink) {
+              isMoving = false;
+              activeActor.dataset.moving = isMoving;
+              
+              clearInterval(intervalHandle);
+              intervalHandle = null;
+              
+              await selectMapById(linkedMapId);
+              
+              TRAVERSAL_GEN = graph.traverseHybrid(
+                graph.startNode,
+                () => goalNode
+              );
+              
+              return;
+            }
+            
+            curr.update({ isPathNode: true });
+            
+            pointer++;
+            
+            if (curr.id === goalNode.id) {
+              curr.update({ active: true, current: true });
+              console.warn('----- GOAL FOUND -----');
+            }
+            
+            if (curr.tileType === 'teleport') {
+              actor1.dataset.teleporting = true;
+              
+              if (curr.id === currentNode.id) {
+                curr.update({ active: false, current: false });
+                
+                // return;
+              }
+              
+              activeActor.dataset.x = curr.x;
+              activeActor.dataset.y = curr.y;
+              
+              actorTrans = actor1TransformList;
+              actorTrans.translateTo(curr.x, curr.y);
+              
+              curr.update({ active: false, current: false });
+              
+              await sleep(10);
+              shouldPreVel = !shouldPreVel;
+              activeActor.dataset.teleporting = false;
+            }
+            
+            const reachedGoal = goalNode && currentNode.id === goalNode.id;
+            
+            if (reachedGoal) {
+              isMoving = false;
+              activeActor.dataset.moving = isMoving;
+              clearInterval(intervalHandle);
+              intervalHandle = null;
+            }
           }
           
-          const reachedGoal = goalNode && currentNode.id === goalNode.id;
+        } catch (e) {
+          console.error(e);
+          isMoving = false;
+          activeActor.dataset.moving = isMoving;
           
-          if (reachedGoal) {
-            isMoving = false;
-            activeActor.dataset.moving = isMoving;
-            clearInterval(intervalHandle);
-            intervalHandle = null;
-          }
+          clearInterval(intervalHandle);
+          intervalHandle = null;
+          
         }
       }, ANIM_RATE);
     }
@@ -574,5 +604,7 @@ export const runCanvas = async (mapId) => {
     if (!hasSetListener) {
       selectionBox.dom.addEventListener('dblclick', e => {});
     }
+    
+    navigator.clipboard.writeText(selectionBox.dom.outerHTML)
   });
 };
