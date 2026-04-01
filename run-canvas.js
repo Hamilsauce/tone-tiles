@@ -335,14 +335,13 @@ export const runCanvas = async (mapId) => {
               try {
                 const vel = pointer % 2 === 0 ? 0.2 : 0.4;
                 let freq = toTone(curr.x, curr.y, chordToneDegree);
-            
-                console.warn({ vel })
+                
                 if (!audioNote1) {
                   audioNote1 = fireAudioNote(freq, vel);
                 }
                 
                 else if (curr.tileType === 'teleport') {
-           
+                  
                   audioNote1.stop(0.015)
                   
                   freq = major7(toTone(curr.x, curr.y, chordToneDegree))[getRandomInt(4)];
