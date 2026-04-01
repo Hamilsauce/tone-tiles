@@ -20,7 +20,7 @@ body {
 
 #app-host {
   width: 100%;
-  height: 100%;
+  height: 100dvh;
   overflow: hidden;
 }
 
@@ -46,19 +46,19 @@ body {
   height: fit-content;
   width: 40px;
   height: 40px;
-
+  
   box-shadow: 0 0 12px 0px #00000075;
   border: 2px solid #FFFFFF;
   border-radius: 8px;
   background: #3F3F3FB8;
-
+  
   color: #ECECEC;
   transition: width 0.2s, height 0.2s;
   z-index: 1001;
   filter: opacity(0.6);
-
+  
   overflow: hidden;
-
+  
   #app-floating-menu-collapsed {
     display: flex;
     flex-direction: row;
@@ -71,17 +71,17 @@ body {
     font-size: 14px;
     touch-action: none;
   }
-
-
+  
+  
   #app-floating-menu-collapsed:hover {
     /* filter: opacity(1); */
     cursor: pointer;
   }
-
+  
   #app-floating-menu-collapsed:active {
     /* filter: opacity(1); */
   }
-
+  
   #app-floating-menu-expanded {}
 }
 
@@ -100,7 +100,7 @@ body {
   transition: 0.2s;
   /* padding: 4px 4px; */
   overflow-y: auto;
-
+  
   #app-floating-menu-expanded {
     /* width: 300px; */
     /* width: fit-content; */
@@ -110,8 +110,8 @@ body {
     /* background: #337BB6; */
     opacity: 1;
     transition: 0.2s;
-
-
+    
+    
   }
 }
 
@@ -122,12 +122,13 @@ body {
   align-items: flex-start;
   gap: 0px;
   overflow: hidden;
+  height: 100%;
   touch-action: none;
   /* filter: invert(1); */
   /* filter: brightness(1.2); */
   /* hue-rotate(45deg) */
   /* filter: hue-rotate(80deg) contrast(1.2) saturate(1.2); */
-
+  
 }
 
 #app-footer {
