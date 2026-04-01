@@ -46,10 +46,6 @@ const routes = [
     name: RouteName.edit,
     beforeEnter: async (to, from) => {
       hasAppLoaded = true;
-      
-      const mapStore = useMapStore();
-      await mapStore.setCurrentMapById(to.params.id);
-      
       return true;
     },
   },

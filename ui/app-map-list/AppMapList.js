@@ -22,6 +22,7 @@ export const AppMapList = defineComponent(
     };
     
     const handleMapClick = (id) => {
+
       if (id && !selectedId.value) {
         router.push({
           name: RouteName.home,

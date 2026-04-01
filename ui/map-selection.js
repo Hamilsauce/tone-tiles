@@ -8,7 +8,6 @@ let mapStore = useMapStore();
 
 const renderMap = async (mapData, svgCanvas, graph, actor1, selectionBox) => {
 	mapData = toValue(mapData);
-	
 	graph.fromMap(mapData);
 	
 	const previousMapId = mapStore.previousMapId.value;
@@ -33,15 +32,14 @@ const renderMap = async (mapData, svgCanvas, graph, actor1, selectionBox) => {
 		tileLayer.dom.classList.remove('no-shadow');
 	}
 	
-	
 	graph.nodes.forEach((node, rowNumber) => {
 		if (node.tileType === 'start') {
 			actor1.setAttribute('transform', `translate(${node.x},${node.y})`);
 		}
 	});
-
+	
 	tileLayer.loadTiles(graph.nodes)
-
+	
 	svgCanvas.layers.surface.setAttribute('transform', `translate(${Math.floor((graph.width + 2) / 2) - 0.3}, ${Math.floor((graph.height + 2) / 2) - 0.25})`);
 	svgCanvas.layers.surface.querySelector('#surface-map-name').setAttribute('transform', `translate(0, ${-((graph.height / 2)) - 3}) scale(0.4)`);
 };
@@ -82,7 +80,7 @@ export const initMapControls = async (graph, svgCanvas, actor1, selectionBox) =>
 	});
 	
 	watch(mapStore.currentMap, (newMap, oldMap) => {
-		if (!newMap.id) return // || newMap && oldMap && newMap.id === oldMap.id) return;
+		if (!newMap.id || newMap && oldMap && newMap.id === oldMap.id) return;
 		renderMap(mapStore.currentMap, stuff.svgCanvas, graph, stuff.actor1, stuff.selectionBox);
 	}, { immediate: true });
 	
