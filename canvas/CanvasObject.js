@@ -84,7 +84,8 @@ export class CanvasObject extends EventEmitter {
   
   get parent() { return this.dom.parentElement; }
   
-  get isLoaded() { return !!this.parent; }
+  // get isLoaded() { return !!this.parent; }
+  get isLoaded() { return this.dom.style.display !== 'none'; }
   
   subscribe(eventType, unsubFn) {
     this.#subscriptions.set(eventType, unsubFn);
@@ -130,13 +131,13 @@ export class CanvasObject extends EventEmitter {
   
   show() {
     this.#hide = false;
-    this.render();
+    this.render({ hide: this.#hide });
     return this;
   }
   
   hide() {
     this.#hide = true;
-    this.render();
+    this.render({ hide: this.#hide });
     return this;
   }
   
@@ -145,24 +146,80 @@ export class CanvasObject extends EventEmitter {
       console.warn('AXTOR UPDATE', attributeMap, this.model)
     }
     
+    let anyChanges = false
+    
     for (const key in attributeMap) {
       const v = attributeMap[key];
       const modelV = this.#model[key];
-      const isValid = !(v === undefined || modelV === undefined);
       const hasChanged = v !== modelV;
-      
+   const isValid = !(v === undefined || modelV === undefined);
+   
       if (v !== undefined && hasChanged) {
         this.#model[key] = v;
-        
-      } else if (!isValid) {
-        console.error(`[${this.constructor.name} ${this.id}] invalid Model patch: ${key}: ${v}\n\nReasons: isValid: ${isValid}, hasChanged: ${hasChanged}`);
+        anyChanges = true
+      } else {
+        // console.error(`[${this.constructor.name} ${this.id}] invalid Model patch: ${key}: ${v}\n\nReasons: isValid: ${isValid}, hasChanged: ${hasChanged}`);
       }
     }
-    
     this.render();
+    
+    if (anyChanges) {}
     
     return this;
   }
+  
+  // update(attributeMap = {}) {
+  
+  //   const patch = Object.entries(attributeMap).reduce((ptch, [k, v]) => {
+  //     const modelV = this.#model[k];
+  //     const isValid = !(v === undefined || modelV === undefined);
+  
+  
+  //     if (v === undefined && v !== modelV) {
+  //       ptch = ptch ?? {};
+  //       this.#model[k] = v;
+  //       ptch[k] = v;
+  //     } else if (!isValid) {
+  //       console.error(`[${this.constructor.name} ${this.id}] invalid Model patch: ${k}: ${v}`);
+  //     }
+  
+  //     return ptch;
+  //   }, null);
+  
+  //   if (this.x === 5 && this.y == 5) {
+  //     console.warn({ patch })
+  
+  //   }
+  //   // if (!patch) return;
+  
+  //   this.render()
+  
+  //   return this;
+  // }
+  
+  // render(patch) {
+  //   if (!patch) {
+  //     this.translateTo(this.x, this.y);
+  //     Object.assign(this.data, this.model);
+  //     return
+  //   }
+  //   for (const key in patch) {
+  //     this.data[key] = patch[key];
+  //   }
+  
+  //   if (patch.x !== undefined || patch.y !== undefined) {
+  //     this.translateTo(this.x, this.y);
+  //   }
+  
+  //   if (this.#hide === true) {
+  //     this.data.hide = true;
+  //   } else {
+  //     delete this.data.hide;
+  //   }
+  
+  //   return this;
+  // }
+  
   
   render() {
     this.translateTo(this.x, this.y);

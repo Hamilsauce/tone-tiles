@@ -38,7 +38,7 @@ const renderMap = async (mapData, svgCanvas, graph, actor1, selectionBox) => {
 		}
 	});
 	
-	tileLayer.loadTiles(graph.nodes)
+	// tileLayer.loadTiles(graph.nodes)
 	
 	svgCanvas.layers.surface.setAttribute('transform', `translate(${Math.floor((graph.width + 2) / 2) - 0.3}, ${Math.floor((graph.height + 2) / 2) - 0.25})`);
 	svgCanvas.layers.surface.querySelector('#surface-map-name').setAttribute('transform', `translate(0, ${-((graph.height / 2)) - 3}) scale(0.4)`);

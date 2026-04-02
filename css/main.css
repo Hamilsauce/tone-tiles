@@ -63,8 +63,10 @@ body {
   
   *[data-hide=true] {
     display: none;
+    opacity: 0;
+    transition: 0.25s;
   }
-
+  
   *[data-interactive=false] {
     pointer-events: none;
   }
@@ -132,8 +134,9 @@ body {
     li:active[data-type="tile-action"] {
       background: #A7A7A7;
     }
+    
     li[data-disable=true] {
-      background: #A3A3A3 !important; 
+      background: #A3A3A3 !important;
     }
   }
 }

@@ -41,8 +41,9 @@ export class SceneLayer extends CanvasObject {
 		if (!obj || obj.isLoaded) return;
 		
 		
-		obj.update(data)
-		this.dom.appendChild(obj.dom);
+		// this.dom.appendChild(obj.dom);
+		obj.dom.style.display = ''
+		// obj.update({ unload: true })
 		
 		// this.#objects.delete(id);
 		
@@ -53,7 +54,8 @@ export class SceneLayer extends CanvasObject {
 		const obj = this.#objects.get(id);
 		if (!obj) return;
 		
-		obj.remove();
+		obj.dom.style.display = 'none'
+		// obj.remove();
 		// this.#objects.delete(id);
 		
 		this.emit('object:unload', obj);

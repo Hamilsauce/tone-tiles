@@ -1,0 +1,73 @@
+[
+{
+  "nodeCount": 290,
+  "elapsed": 14.899999976158142,
+  "newNodeCount": 290,
+  "oldNodeCount": 0
+},
+{
+  "nodeCount": 27,
+  "elapsed": 1.0999999940395355,
+  "newNodeCount": 1,
+  "oldNodeCount": 26
+},
+{
+  "nodeCount": 259,
+  "elapsed": 8.300000011920929,
+  "newNodeCount": 49,
+  "oldNodeCount": 210
+},
+{
+  "nodeCount": 259,
+  "elapsed": 6,
+  "newNodeCount": 1,
+  "oldNodeCount": 258
+},
+{
+  "nodeCount": 258,
+  "elapsed": 6.800000011920929,
+  "newNodeCount": 0,
+  "oldNodeCount": 258
+},
+{
+  "nodeCount": 1026,
+  "elapsed": 39,
+  "newNodeCount": 690,
+  "oldNodeCount": 336
+},
+{
+  "nodeCount": 259,
+  "elapsed": 6,
+  "newNodeCount": 0,
+  "oldNodeCount": 259
+},
+{
+  "nodeCount": 258,
+  "elapsed": 5.5999999940395355,
+  "newNodeCount": 0,
+  "oldNodeCount": 258
+},
+{
+  "nodeCount": 138,
+  "elapsed": 3.2999999821186066,
+  "newNodeCount": 2,
+  "oldNodeCount": 136
+},
+{
+  "nodeCount": 258,
+  "elapsed": 6.799999982118607,
+  "newNodeCount": 0,
+  "oldNodeCount": 258
+},
+{
+  "nodeCount": 138,
+  "elapsed": 3.199999988079071,
+  "newNodeCount": 0,
+  "oldNodeCount": 138
+},
+{
+  "nodeCount": 288,
+  "elapsed": 5.799999982118607,
+  "newNodeCount": 0,
+  "oldNodeCount": 288
+}]

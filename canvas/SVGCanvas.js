@@ -114,7 +114,7 @@ export class SVGCanvas extends EventTarget {
       }),
       map(({ type, detail }) => createCustomEvent(type, detail)),
       tap((event) => this.dispatchEvent(event)),
-      tap((evt) => { console.warn(`[ CANVAS EVENT ] ${evt.type}: `); }),
+      // tap((evt) => { console.warn(`[ CANVAS EVENT ] ${evt.type}: `); }),
     );
     
     this.pointerMove$ = fromEvent(this.#self, 'pointermove').pipe(tap(e => {
@@ -156,13 +156,12 @@ export class SVGCanvas extends EventTarget {
       }),
       map(({ type, detail }) => createCustomEvent(type, detail)),
       tap((event) => this.dispatchEvent(event)),
-      tap((evt) => { console.warn('[ CANVAS EVEVENT ]: ', evt.type); }),
+      // tap((evt) => { console.warn('[ CANVAS EVEVENT ]: ', evt.type); }),
     );
     
     this.toggleScroll = this.#toggleScroll.bind(this);
     this.clickDOMSubscription = this.eventEmits$.subscribe();
     this.contextmenuDOMSubscription = this.contextMenuDOM$.subscribe();
-    
   }
   
   get dom() { return this.#self; }

@@ -1,6 +1,8 @@
 import { TileObject } from './TileObject.js';
 import { SceneLayer } from './SceneLayer.js';
 import graph from '../lib/graph.model.js';
+const loadLogs = []
+window.loadLogs = loadLogs
 
 export class TileLayer extends SceneLayer {
 	#name = null;
@@ -14,7 +16,7 @@ export class TileLayer extends SceneLayer {
 		this.#name = 'tile';
 		
 		
-		graph.on('map:load', ({ width, height, mapLinkNodes, nodes }) => {
+		graph.on('map:load', ({ width, height, nodes }) => {
 			this.forEach((t) => {
 				if (t.linkedMap) {
 					this.remove(t.id)
@@ -56,7 +58,8 @@ export class TileLayer extends SceneLayer {
 			
 			nodes.forEach((newNode, i) => {
 				if (this.objects.has(newNode.id)) {
-					this.objects.get(newNode.id).attachNode(newNode)
+					this.load(newNode.id, newNode.data())
+					
 				} else {
 					this.add(newNode)
 				}
@@ -66,7 +69,6 @@ export class TileLayer extends SceneLayer {
 	
 	add(node) {
 		if (node.type !== 'tile') {
-			console.warn('node', node)
 			throw new Error('No object type in layer add');
 		}
 		

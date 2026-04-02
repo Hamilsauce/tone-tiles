@@ -1,0 +1,58 @@
+[
+{
+  "nodeCount": 290,
+  "elapsed": 14.699999988079071,
+  "createdNodes": 290,
+  "reusedNodes": 0
+},
+{
+  "nodeCount": 27,
+  "elapsed": 2.699999988079071,
+  "createdNodes": 1,
+  "reusedNodes": 26
+},
+{
+  "nodeCount": 259,
+  "elapsed": 8.599999994039536,
+  "createdNodes": 49,
+  "reusedNodes": 210
+},
+
+{
+  "nodeCount": 1027,
+  "elapsed": 51.900000005960464,
+  "createdNodes": 691,
+  "reusedNodes": 336
+},
+
+
+  {
+    "nodeCount": 1027,
+    "elapsed": 47.29999998211861,
+    "newNodeCount": 691,
+    "oldNodeCount": 336
+  },
+{
+  "nodeCount": 403,
+  "elapsed": 10.599999994039536,
+  "createdNodes": 1,
+  "reusedNodes": 402
+},
+{
+  "nodeCount": 1027,
+  "elapsed": 22.599999994039536,
+  "createdNodes": 1,
+  "reusedNodes": 1026
+},
+{
+  "nodeCount": 1027,
+  "elapsed": 21.900000005960464,
+  "createdNodes": 0,
+  "reusedNodes": 1027
+},
+{
+  "nodeCount": 27,
+  "elapsed": 1,
+  "createdNodes": 1,
+  "reusedNodes": 26
+}]

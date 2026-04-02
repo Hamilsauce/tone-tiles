@@ -234,20 +234,44 @@ export const runCanvas = async (mapId) => {
     () => goalNode
   );
   
+  const blurContextMenu = (e) => {
+    // e.preventDefault();
+    // e.stopPropagation();
+    // e.stopImmediatePropagation();
+    
+    const edgeLines = [...objectLayer.querySelectorAll('.edge-line')];
+    
+    edgeLines.forEach(el => {
+      el.remove();
+    });
+    
+    if (contextMenu.isVisible) {
+      deselectRange();
+      selectionBox.remove();
+      
+      contextMenu.hide();
+      contextMenu.toggleActions(false);
+    }
+  };
+  
+  
   const handleTileClick = async ({ type, detail }) => {
     if (!isRunning.value) return;
-    if (contextMenu.isVisible) return;
+
+    if (contextMenu.isVisible) {
+      blurContextMenu()
+      return
+    };
+    
     if (isSelectingLinkTile === true) return;
     
-    deselectRange();
-    selectedRange = [];
     
-    selectionBox.remove();
     
     if (!type || type !== 'tile:click') {
       console.warn('NON TILE CLICK, RETURNING FROM LOOP', type, detail);
       return;
     }
+    
     goalNode = graph.getNodeByAddress(detail.id);
     
     if (!goalNode || !goalNode.isTraversable) {
@@ -312,10 +336,6 @@ export const runCanvas = async (mapId) => {
           prev = currentNode;
           currentNode = curr;
           
-          // console.warn(curr.id);
-          // console.warn(prev.id);
-          
-          
           if (prev && prev.id === curr.id) return;
           activeActor.dataset.moving = true;
           
@@ -353,7 +373,6 @@ export const runCanvas = async (mapId) => {
                 }
                 else {
                   audioNote1.stop(0.2)
-                  // console.warn(freq)
                   audioNote1 = fireAudioNote(freq, vel);
                 }
                 // audioNote1 = prevDir === travelDir ? audioNote1 : fireAudioNote(freq, vel);
@@ -445,55 +464,36 @@ export const runCanvas = async (mapId) => {
     }
   };
   
-  const blurContextMenu = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    e.stopImmediatePropagation();
-    
-    const edgeLines = [...objectLayer.querySelectorAll('.edge-line')];
-    
-    edgeLines.forEach(el => {
-      el.remove();
-    });
-    
-    if (contextMenu.isVisible) {
-      deselectRange();
-      selectionBox.remove();
-      
-      contextMenu.hide();
-      contextMenu.toggleActions(false);
-    }
-  };
-  
-  const handleEditTileClick = async (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    e.stopImmediatePropagation();
+  const handleEditTileClick = async (targetNode) => {
     // TODO: this normalizes custom events coming from SVGCanvas vs DOM
     // TODO: So need to standardize events
-    const targ = (e.detail.target ?? e.target).closest('.tile');
+    // console.warn('Hndle edit', e.type)
+    // console.warn('Hndle edit', e.detail)
+    // console.warn('Hndle edit', e.target)
+    // const targ = (e.detail.target ?? e.target).closest('.tile');
     
-    if (!targ) {
-      blurContextMenu(e);
+    if (!targetNode) {
+      blurContextMenu();
       return;
     }
     
-    const tileType = targ.dataset.tileType;
+    const { tileType, target, selected } = targetNode;
     
     if (tileType === 'teleport') {
-      const selectedNode = graph.getNodeAtPoint({
-        x: +targ.dataset.x,
-        y: +targ.dataset.y,
-      });
+      // const selectedNode = graph.getNodeAtPoint({
+      //   x: +targ.dataset.x,
+      //   y: +targ.dataset.y,
+      // });
       
-      if (selectedNode.target) {
+      if (target) {
         // TODO: Make lines into Canvad Object
-        const line = createEdgeLine(selectedNode, selectedNode.target);
+        const line = createEdgeLine(targetNode, target);
+        
         line.addEventListener('pointermove', e => {
           e.stopPropagation();
           e.preventDefault();
           
-          if (isSelectingLinkTile && targ.dataset.selected === 'true') {
+          if (isSelectingLinkTile && selected === true) {
             const newPoint = domPoint(line.parentElement, e.clientX, e.clientY);
             
             line.firstElementChild.setAttribute('x2', newPoint.x);
@@ -503,14 +503,17 @@ export const runCanvas = async (mapId) => {
         
         objectLayer.append(line);
       }
+      
       contextMenu.show();
       contextMenu.toggleActions(true);
     } else {
       contextMenu.toggleActions(false);
     }
     
-    targ.dataset.selected = true;
-    selectionBox.insertAt({ x: +targ.dataset.x, y: +targ.dataset.y });
+    targetNode.update({ selected: true })
+    
+    selectionBox.insertAt({ x: targetNode.x, y: targetNode.y });
+    // selectionBox.insertAt({ x: +targ.dataset.x, y: +targ.dataset.y });
     
     svgCanvas.addEventListener('tile:click', blurContextMenu);
   };
@@ -534,17 +537,25 @@ export const runCanvas = async (mapId) => {
   };
   
   svgCanvas.addEventListener('tile:click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    e.stopImmediatePropagation();
+    
+    const targetNode = graph.getNodeByAddress(e.detail.id);
+    
     if (isSelectingLinkTile) {
       handleTileLinkSelect(e);
     } else if (isRunning.value) {
       handleTileClick(e);
     } else {
-      handleEditTileClick(e);
+      handleEditTileClick(targetNode);
     }
   });
   
   svgCanvas.addEventListener('tile:contextmenu', (e) => {
-    handleEditTileClick(e)
+    const targetNode = graph.getNodeByAddress(e.detail.id);
+    
+    handleEditTileClick(targetNode)
   });
   
   svgCanvas.addEventListener('surface:click', (e) => {
@@ -583,7 +594,7 @@ export const runCanvas = async (mapId) => {
       selectedRange.forEach((nodeModel, i) => {
         nodeModel.update({
           tileType: selectedTileTypeName,
-          selected: nodeModel.id === selectedNode.id ? true : undefined,
+          selected: nodeModel.id === selectedNode.id ? true : false,
         });
       });
     };
@@ -591,12 +602,12 @@ export const runCanvas = async (mapId) => {
   
   let hasSetListener = false;
   
-  selectionBox.on('selection', range => {
+  selectionBox.on('selection', ({ type, points, ...range }) => {
     const { start, end } = range;
     
     const middle = Math.abs(start.x - end.x);
     
-    selectedRange = graph.getRange(range);
+    selectedRange = graph.getRange({ type, points, ...range });
     
     contextMenu.update({ x: start.x, y: start.y - 2 }).show();
     
@@ -604,6 +615,6 @@ export const runCanvas = async (mapId) => {
       selectionBox.dom.addEventListener('dblclick', e => {});
     }
     
-    navigator.clipboard.writeText(selectionBox.dom.outerHTML)
+    // navigator.clipz/board.writeText(selectionBox.dom.outerHTML)
   });
 };
