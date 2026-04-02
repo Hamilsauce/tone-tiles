@@ -17,6 +17,14 @@ export class TileLayer extends SceneLayer {
 		
 		
 		graph.on('map:load', ({ width, height, nodes }) => {
+			const tilesTotal = width * height;
+			
+			if (tilesTotal > 512) {
+				this.dom.classList.add('no-shadow');
+			} else {
+				this.dom.classList.remove('no-shadow');
+			}
+			
 			this.forEach((t) => {
 				if (t.linkedMap) {
 					this.remove(t.id)
@@ -24,13 +32,14 @@ export class TileLayer extends SceneLayer {
 				else this.unload(t.id)
 			})
 			
-			nodes.forEach((newNode, i) => {
-				if (this.objects.has(newNode.id)) {
-					this.load(newNode.id, newNode.data())
-				} else {
-					this.add(newNode)
-				}
-			})
+			this.loadTiles(nodes)
+			// nodes.forEach((newNode, i) => {
+			// 	if (this.objects.has(newNode.id)) {
+			// 		this.load(newNode.id, newNode.data())
+			// 	} else {
+			// 		this.add(newNode)
+			// 	}
+			// })
 		});
 		
 		graph.on('node:update', ({ id, data }) => {
@@ -54,16 +63,17 @@ export class TileLayer extends SceneLayer {
 	};
 	
 	loadTiles(nodes) {
+		nodes.forEach((newNode, i) => {
+			if (this.objects.has(newNode.id)) {
+				this.load(newNode.id, newNode.data())
+				
+			} else {
+				this.add(newNode)
+			}
+		})
 		if (this.objects.size < nodes.length) {
 			
-			nodes.forEach((newNode, i) => {
-				if (this.objects.has(newNode.id)) {
-					this.load(newNode.id, newNode.data())
-					
-				} else {
-					this.add(newNode)
-				}
-			})
+			
 		}
 	}
 	

@@ -80,7 +80,10 @@
     <header v-if="shouldDisplay" id="app-header">
       <div id="app-header-inner">
         <div id="app-header-left">
-          <h2>tone tiles</h2>
+          <div class="app-header-framerate">
+            {{ frameRateFormatted }}
+          </div>
+          <!-- <h2>tone tiles</h2> -->
         </div>
         
         <div id="app-header-right-top">
@@ -251,7 +254,7 @@
     <section ref="foregroundRef" id="app-splash-view" @click="handleClick" :class="{ fade: fade }">
       
       <div id="app-splash-background"></div>
-      <div  id="app-splash-foreground">
+      <div id="app-splash-foreground">
         <div id="app-splash-overlay">TONE TILES</div>
       </div>
       <div id="app-splash-cta">Click any button to continue</div>

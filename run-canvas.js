@@ -8,8 +8,10 @@ import { TransformList } from './canvas/TransformList.js';
 import ham from 'https://hamilsauce.github.io/hamhelper/hamhelper1.0.0.js';
 import { useAppState } from './store/app.store.js';
 import { AudioClockLoop } from './lib/loop-engine.js';
+import { frameRate } from './lib/frame-rate.js';
 import { major7, getScaleNotes, getChordNotes, pitchToFrequency } from './MUSIC_THEORY_FUNCTIONS.js';
 import { ContextMenu } from './canvas/ContextMenu.js';
+// import { AudioClockLoop } from './lib/loop-engine.js';
 
 const { sleep, rxjs } = ham;
 const { fromEvent } = rxjs;
@@ -109,9 +111,13 @@ let objectLayer;
 let selectionBox;
 let contextMenu;
 
+const loopEngine = new AudioClockLoop({
+  audioContext: audioEngine.ctx,
+})
+
 export const runCanvas = async (mapId) => {
   mapId = mapId && mapId.value ? mapId.value : mapId;
-  const { isRunning, setRunning } = useAppState();
+  const { isRunning, setRunning, setFrameRate, } = useAppState();
   
   // const graph = new Graph();
   
@@ -254,10 +260,10 @@ export const runCanvas = async (mapId) => {
     }
   };
   
-  
+  let hasSetTraversalRoutine = false
   const handleTileClick = async ({ type, detail }) => {
     if (!isRunning.value) return;
-
+    
     if (contextMenu.isVisible) {
       blurContextMenu()
       return
@@ -306,7 +312,7 @@ export const runCanvas = async (mapId) => {
       active: true,
     });
     
-    if (intervalHandle) return;
+    // if (intervalHandle) return;
     
     let pointer = 0;
     let curr = currentNode;
@@ -316,8 +322,8 @@ export const runCanvas = async (mapId) => {
     activeActor.dataset.moving = isMoving;
     
     if (isMoving) {
-      let dx;
-      let dy;
+      // let dx;
+      // let dy;
       
       let shouldPreVel = false;
       let shouldPreVels = [0, 1, 0];
@@ -329,9 +335,20 @@ export const runCanvas = async (mapId) => {
         return preVelIndex;
       };
       
-      intervalHandle = setInterval(async () => {
+      let dtSum = 0
+      
+      const traverseMap = async (dt, currentTime) => {
+        dtSum += dt;
+        if (dtSum <= 0.1) {
+          return;
+        }
+        setFrameRate(frameRate(dt * 1000))
+        
+        // console.warn(frameRate(dtSum*1000))
+        
+        dtSum = 0;
+        
         try {
-          
           curr = TRAVERSAL_GEN.next().value;
           prev = currentNode;
           currentNode = curr;
@@ -391,21 +408,26 @@ export const runCanvas = async (mapId) => {
             actorTrans.translateTo(curr.x, curr.y);
             
             const isLink = curr.tileType === 'map-link' || curr.tileType === 'start' && !!curr.linkedMap;
+            linkedMapId = curr.linkedMap
+            
             const isStartingNode = curr.tileType === 'start';
             
             if (linkedMapId && isLink) {
+              console.warn('run canv linkedmapid, is link: ', linkedMapId, isLink)
+              console.warn('graph.startNode', graph.startNode)
               isMoving = false;
               activeActor.dataset.moving = isMoving;
               
-              clearInterval(intervalHandle);
-              intervalHandle = null;
-              
+              // clearInterval(intervalHandle);
+              // intervalHandle = null;
+              loopEngine.pause()
               await selectMapById(linkedMapId);
               
               TRAVERSAL_GEN = graph.traverseHybrid(
                 graph.startNode,
                 () => goalNode
               );
+              
               
               return;
             }
@@ -446,8 +468,11 @@ export const runCanvas = async (mapId) => {
             if (reachedGoal) {
               isMoving = false;
               activeActor.dataset.moving = isMoving;
-              clearInterval(intervalHandle);
-              intervalHandle = null;
+              
+              loopEngine.pause()
+              
+              // clearInterval(intervalHandle);
+              // intervalHandle = null;
             }
           }
           
@@ -456,11 +481,153 @@ export const runCanvas = async (mapId) => {
           isMoving = false;
           activeActor.dataset.moving = isMoving;
           
-          clearInterval(intervalHandle);
-          intervalHandle = null;
+          loopEngine.pause()
+          
+          // clearInterval(intervalHandle);
+          // intervalHandle = null;
           
         }
-      }, ANIM_RATE);
+      }
+      if (!hasSetTraversalRoutine) {
+        hasSetTraversalRoutine = true
+        loopEngine.addRoutine(traverseMap)
+        
+      }
+      loopEngine.start()
+      
+      // intervalHandle = setInterval(
+      //   async () => {
+      //     try {
+      
+      //       curr = TRAVERSAL_GEN.next().value;
+      //       prev = currentNode;
+      //       currentNode = curr;
+      
+      //       if (prev && prev.id === curr.id) return;
+      //       activeActor.dataset.moving = true;
+      
+      //       if (prev && prev.tileType === 'teleport') {
+      //         activeActor.dataset.teleporting = false;
+      //       }
+      
+      //       if (!curr) {
+      //         console.warn('no curr');
+      //         return;
+      //       } else {
+      //         const travelDir = getDirectionFromPoints(prev, curr);
+      //         const chordToneDegree = getChordToneDegreeFromDir(travelDir);
+      
+      //         {
+      //           // AudioNote Block
+      //           try {
+      //             const vel = pointer % 2 === 0 ? 0.2 : 0.4;
+      //             let freq = toTone(curr.x, curr.y, chordToneDegree);
+      
+      //             if (!audioNote1) {
+      //               audioNote1 = fireAudioNote(freq, vel);
+      //             }
+      
+      //             else if (curr.tileType === 'teleport') {
+      
+      //               audioNote1.stop(0.015)
+      
+      //               freq = major7(toTone(curr.x, curr.y, chordToneDegree))[getRandomInt(4)];
+      
+      //               audioNote1 = fireAudioNote(freq, vel);
+      //             }
+      //             else if (prevDir === travelDir) {
+      //               audioNote1 = audioNote1
+      //             }
+      //             else {
+      //               audioNote1.stop(0.2)
+      //               audioNote1 = fireAudioNote(freq, vel);
+      //             }
+      //             // audioNote1 = prevDir === travelDir ? audioNote1 : fireAudioNote(freq, vel);
+      //             prevDir = travelDir;
+      
+      //             // audioNote1 = fireAudioNote(freq, vel);
+      //           } catch (e) {
+      //             console.error(`no audio note for you: ${e}`);
+      //           }
+      //         }
+      
+      //         activeActor.dataset.x = curr.x;
+      //         activeActor.dataset.y = curr.y;
+      
+      //         actorTrans = actor1TransformList;
+      //         actorTrans.translateTo(curr.x, curr.y);
+      
+      //         const isLink = curr.tileType === 'map-link' || curr.tileType === 'start' && !!curr.linkedMap;
+      //         const isStartingNode = curr.tileType === 'start';
+      
+      //         if (linkedMapId && isLink) {
+      //           isMoving = false;
+      //           activeActor.dataset.moving = isMoving;
+      
+      //           clearInterval(intervalHandle);
+      //           intervalHandle = null;
+      
+      //           await selectMapById(linkedMapId);
+      
+      //           TRAVERSAL_GEN = graph.traverseHybrid(
+      //             graph.startNode,
+      //             () => goalNode
+      //           );
+      
+      //           return;
+      //         }
+      
+      //         curr.update({ isPathNode: true });
+      
+      //         pointer++;
+      
+      //         if (curr.id === goalNode.id) {
+      //           curr.update({ active: true, current: true });
+      //           console.warn('----- GOAL FOUND -----');
+      //         }
+      
+      //         if (curr.tileType === 'teleport') {
+      //           actor1.dataset.teleporting = true;
+      
+      //           if (curr.id === currentNode.id) {
+      //             curr.update({ active: false, current: false });
+      
+      //             // return;
+      //           }
+      
+      //           activeActor.dataset.x = curr.x;
+      //           activeActor.dataset.y = curr.y;
+      
+      //           actorTrans = actor1TransformList;
+      //           actorTrans.translateTo(curr.x, curr.y);
+      
+      //           curr.update({ active: false, current: false });
+      
+      //           await sleep(10);
+      //           shouldPreVel = !shouldPreVel;
+      //           activeActor.dataset.teleporting = false;
+      //         }
+      
+      //         const reachedGoal = goalNode && currentNode.id === goalNode.id;
+      
+      //         if (reachedGoal) {
+      //           isMoving = false;
+      //           activeActor.dataset.moving = isMoving;
+      //           clearInterval(intervalHandle);
+      //           intervalHandle = null;
+      //         }
+      //       }
+      
+      //     } catch (e) {
+      //       console.error(e);
+      //       isMoving = false;
+      //       activeActor.dataset.moving = isMoving;
+      
+      //       clearInterval(intervalHandle);
+      //       intervalHandle = null;
+      
+      //     }
+      //   }, ANIM_RATE);
     }
   };
   

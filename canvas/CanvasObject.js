@@ -28,7 +28,12 @@ export const DefaultCanvasObjectOptions = {
 export class CanvasObject extends EventEmitter {
   #context;
   #type;
-  #model = { x: null, y: null, pointerEvents: true };
+  #model = {
+    x: null,
+    y: null,
+    pointerEvents: true,
+    unload: false,
+  };
   #x = null;
   #y = null;
   #hide = false;
@@ -36,7 +41,6 @@ export class CanvasObject extends EventEmitter {
   #self;
   #transformList;
   #subscriptions = new Map();
-  
   
   constructor(context = new SVGCanvas(), type = '', options) {
     super();
@@ -152,15 +156,16 @@ export class CanvasObject extends EventEmitter {
       const v = attributeMap[key];
       const modelV = this.#model[key];
       const hasChanged = v !== modelV;
-   const isValid = !(v === undefined || modelV === undefined);
-   
+      const isValid = !(v === undefined || modelV === undefined);
+      
       if (v !== undefined && hasChanged) {
         this.#model[key] = v;
         anyChanges = true
-      } else {
-        // console.error(`[${this.constructor.name} ${this.id}] invalid Model patch: ${key}: ${v}\n\nReasons: isValid: ${isValid}, hasChanged: ${hasChanged}`);
+      } else if (!isValid) {
+        console.error(`[${this.constructor.name} ${this.id}] invalid Model patch: ${key}: ${v}\n\nReasons: isValid: ${isValid}, hasChanged: ${hasChanged}`);
       }
     }
+    
     this.render();
     
     if (anyChanges) {}
