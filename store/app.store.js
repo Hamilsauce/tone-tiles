@@ -2,6 +2,7 @@ import { ref, computed, watch, reactive } from 'vue'
 
 const isRunningState = ref(true);
 const frameRateState = ref(0);
+const currentNodeState = ref(null);
 
 
 export const useAppState = () => {
@@ -20,9 +21,16 @@ export const useAppState = () => {
     frameRateState.value = +value;
   };
   
+  const setCurrentNode = (node) => {
+    currentNodeState.value = node;
+  };
+  
   return {
     setRunning,
     setFrameRate,
+    
+    setCurrentNode,
+    currentNode: computed(() => currentNodeState.value || {}),
     isRunning: computed(() => isRunningState.value),
     frameRate: computed(() => frameRateState.value),
   }

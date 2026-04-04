@@ -31,6 +31,8 @@
   <link rel="stylesheet" href="./css/app-map-list-view.css" />
   <link rel="stylesheet" href="./css/app-map-props-view.css" />
   <link rel="stylesheet" href="./css/app-splash-view.css" />
+  <link rel="stylesheet" href="./css/debug-panel.css" />
+
 </head>
 
 <body>
@@ -61,6 +63,38 @@
     </div>
   </template>
   
+  <!-- <template data-component="debug-panel">
+    <div class="debug-panel">
+      <template v-if="tile">
+        <div class="k">id</div>
+        <div class="v" :class="{ changed: changed.id }">{{ tile.id }}</div>
+        <div class="k">tileType</div>
+        <div class="v" :class="{ changed: changed.tileType }">{{ tile.tileType }}</div>
+        <div class="k">x</div>
+        <div class="v" :class="{ changed: changed.x }">{{ tile.x }}</div>
+        <div class="k">y</div>
+        <div class="v" :class="{ changed: changed.y }">{{ tile.y }}</div>
+        <div class="k">address</div>
+        <div class="v" :class="{ changed: changed.address }">{{ tile.address }}</div>
+        
+        <div class="k">target</div>
+        <div class="v" :class="{ changed: changed.target }">
+          <span v-if="tile.target">
+            {{ tile.target.x }}, {{ tile.target.y }}
+          </span>
+          <span v-else>—</span>
+        </div>
+        
+        <div class="k">active</div>
+        <div class="v" :class="{ changed: changed.active }">{{ tile.active }}</div>
+        <div class="k">linkedMapId</div>
+        <div class="v" :class="{ changed: changed.linkedMapId }">{{ tile.linkedMapId || '—' }}</div>
+      </template>
+      
+      <div v-else class="empty">no tile</div>
+    </div>
+  </template> -->
+  
   <template data-component="app-floating-menu">
     <div id="app-floating-menu" ref="floatingMenuRef" :class="{ expanded: displayState === 'expanded' }" top="300px" left="200px">
       <div v-if="displayState === 'collapsed'" @click.stop="handleDisplayChange('expanded')" id="app-floating-menu-collapsed">
@@ -69,9 +103,61 @@
         </svg>
       </div>
       <div v-if="displayState === 'expanded'" @click.stop="handleDisplayChange('collapsed')" id="app-floating-menu-expanded">
+        <div id="floating-menu-expanded-top">
+          <div id="floating-menu-actions">
+            <input @click="handlePanelButtonClick" type="button" name="toggle-debug-panel" id="toggle-debug-panel" :value="displayMode" />
+          </div>
+        </div>
         <!-- <router-view name="panel"></router-view> -->
-        <app-map-list :display-mode="'compact'"></app-map-list>
         
+        <div id="floating-menu-body">
+          <app-map-list v-if="isListMode" :display-mode="'compact'"></app-map-list>
+          
+          <div v-if="isDebugMode" class="debug-panel">
+            <template v-if="tile">
+              <div class="k">id</div>
+              <div class="v" :class="{ changed: changed.id }">{{ currentNode.id }}</div>
+              <div class="k">tileType</div>
+              <div class="v" :class="{ changed: changed.tileType }">{{ currentNode.tileType }}</div>
+              <div class="k">x</div>
+              <div class="v" :class="{ changed: changed.x }">{{ currentNode.x }}</div>
+              <div class="k">y</div>
+              <div class="v" :class="{ changed: changed.y }">{{ currentNode.y }}</div>
+              <div class="k">address</div>
+              <div class="v" :class="{ changed: changed.address }">{{ currentNode.address }}</div>
+              
+              <div class="k">target</div>
+              <div class="v" :class="{ changed: changed.target }">
+                <span v-if="currentNode.target">
+                  {{ currentNode.target.x }}, {{ currentNode.target.y }}
+                </span>
+                <span v-else>—</span>
+              </div>
+              
+              <div class="k">active</div>
+              <div class="v" :class="{ changed: changed.active }">{{ currentNode.active }}</div>
+              <div class="k">linkedMapId</div>
+              <div class="v" :class="{ changed: changed.linkedMapId }">{{ currentNode.linkedMapId || '—' }}</div>
+            </template>
+            
+            <div v-else class="empty">no tile</div>
+          </div>
+          
+          <!-- <div id="floating-menu-debug">
+            <div class="kv">
+              <template v-for="(val, key) in map">
+                <div class="label">{{ key }}</div>
+                <div class="value">{{ val }}</div>
+              </template>
+            </div>
+            
+            <div id="field-group">
+              <label for="map-name">Current:</label>
+              <input :value="mapName" @change="handleMapNameChange" id="map-name" type="text" _class="field__input" placeholder="No Map" maxlength="80" _v-model="mapName" />
+            </div>
+          </div> -->
+          
+        </div>
       </div>
     </div>
   </template>

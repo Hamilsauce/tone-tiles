@@ -1,0 +1,59 @@
+.debug-panel {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 4px 10px;
+  
+  font-family: ui-monospace, monospace;
+  font-size: 11px;
+  line-height: 1.4;
+  
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.75);
+  color: #FFFFFF !important;
+  
+  border-radius: 6px;
+  backdrop-filter: blur(4px);
+  
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.debug-panel .k {
+  opacity: 0.5;
+  text-transform: lowercase;
+}
+
+.debug-panel .v {
+  text-align: right;
+  font-weight: 500;
+}
+
+/* diff flash */
+.changed {
+  animation: flash 0.4s ease;
+}
+
+@keyframes flash {
+  from {
+    background: rgba(255, 255, 255, 0.45) !important;
+  }
+  
+  to {
+    background: transparent;
+  }
+}
+
+/* empty state */
+.debug-panel .empty {
+  grid-column: 1 / -1;
+  opacity: 0.4;
+  text-align: center;
+}
+
+/* subtle grouping (optional breakpoint between fields) */
+.k:nth-of-type(6),
+.v:nth-of-type(6) {
+  margin-top: 6px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 4px;
+}

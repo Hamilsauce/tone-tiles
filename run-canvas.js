@@ -117,7 +117,7 @@ const loopEngine = new AudioClockLoop({
 
 export const runCanvas = async (mapId) => {
   mapId = mapId && mapId.value ? mapId.value : mapId;
-  const { isRunning, setRunning, setFrameRate, } = useAppState();
+  const { isRunning, setRunning, setFrameRate, setCurrentNode } = useAppState();
   
   // const graph = new Graph();
   
@@ -271,8 +271,6 @@ export const runCanvas = async (mapId) => {
     
     if (isSelectingLinkTile === true) return;
     
-    
-    
     if (!type || type !== 'tile:click') {
       console.warn('NON TILE CLICK, RETURNING FROM LOOP', type, detail);
       return;
@@ -350,6 +348,7 @@ export const runCanvas = async (mapId) => {
         
         try {
           curr = TRAVERSAL_GEN.next().value;
+          setCurrentNode(curr.data())
           prev = currentNode;
           currentNode = curr;
           

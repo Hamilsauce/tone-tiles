@@ -43,7 +43,7 @@ export class SceneLayer extends CanvasObject {
 		
 		// this.dom.appendChild(obj.dom);
 		// obj.dom.style.display = ''
-		obj.update({ unload: false, ...data})
+		obj.update({ unload: false, ...data })
 		
 		// this.#objects.delete(id);
 		

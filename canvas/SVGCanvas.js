@@ -3,6 +3,7 @@ import { createCustomEvent } from '../lib/create-event.js';
 import { CanvasObject, DefaultCanvasObjectOptions } from './CanvasObject.js';
 import { initHueRoto } from '../lib/hue-rotato.js';
 import { Scene } from '../canvas/Scene.js';
+import { TileObject } from '../canvas/TileObject.js';
 
 const { getPanZoom, template, utils, download, TwoWayMap } = ham;
 
@@ -210,6 +211,11 @@ export class SVGCanvas extends EventTarget {
   }
   
   createObject(type, model = {}) {
+    console.warn(type)
+    if (type === 'tile') {
+      return this.createTileObject.bind(this)(model);
+    }
+    
     const cObj = new CanvasObject(this, type, { model });
     
     return cObj;
@@ -225,9 +231,14 @@ export class SVGCanvas extends EventTarget {
       isPathNode: false,
       linkedNodeAddress: linkedNodeAddress ?? '',
       linkedMap,
+      id: null,
     };
-    
-    const t = this.createObject('tile', model);
+    console.warn(model)
+
+    // const t = new TileObject(this, {
+    //   // id: node.id,
+    //   model,
+    // });
     
     return t;
   }

@@ -12,9 +12,7 @@ export class TileLayer extends SceneLayer {
 		const { objects, ...opts } = options;
 		
 		super(ctx, 'tile', opts);
-		
 		this.#name = 'tile';
-		
 		
 		graph.on('map:load', ({ width, height, nodes }) => {
 			const tilesTotal = width * height;
@@ -26,25 +24,16 @@ export class TileLayer extends SceneLayer {
 			}
 			
 			this.forEach((t) => {
-				if (t.linkedMap) {
-					this.remove(t.id)
-				}
+				if (t.linkedMap) this.remove(t.id)
 				else this.unload(t.id)
-			})
+			});
 			
 			this.loadTiles(nodes)
-			// nodes.forEach((newNode, i) => {
-			// 	if (this.objects.has(newNode.id)) {
-			// 		this.load(newNode.id, newNode.data())
-			// 	} else {
-			// 		this.add(newNode)
-			// 	}
-			// })
 		});
 		
 		graph.on('node:update', ({ id, data }) => {
 			if (this.objects.has(id)) {
-				this.get(id).update(data)
+				this.get(id).update(data);
 			}
 		});
 	};
@@ -65,22 +54,23 @@ export class TileLayer extends SceneLayer {
 	loadTiles(nodes) {
 		nodes.forEach((newNode, i) => {
 			if (this.objects.has(newNode.id)) {
-				this.load(newNode.id, newNode.data())
-				
+				this.load(newNode.id, newNode.data());
 			} else {
-				this.add(newNode)
+				this.add(newNode);
 			}
 		})
-		if (this.objects.size < nodes.length) {
-			
-			
-		}
 	}
 	
 	add(node) {
 		if (node.type !== 'tile') {
 			throw new Error('No object type in layer add');
 		}
+		
+		// const cObj = obj instanceof TileObject ? obj :new TileObject(this.context, {
+		// 		id: node.id,
+		// 		model: node.data()
+		// 	});
+		// const cObj = this.context.createObject('tile', node.data())
 		
 		const cObj = new TileObject(this.context, { id: node.id, model: node.data() })
 		
