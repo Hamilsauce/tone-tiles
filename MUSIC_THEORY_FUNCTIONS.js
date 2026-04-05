@@ -1,18 +1,17 @@
 const noteDataURL = 'https://raw.githubusercontent.com/Hamilsauce/guitar-tab/refs/heads/main/data/note-data.json'
 // const noteDataURL = 'https://raw.githubusercontent.com/Hamilsauce/hamilsauce.github.io/refs/heads/master/note-data-with-midi.json';
-
-const {notes} = (await (await fetch(noteDataURL)).json());
-console.warn('responseNotes', notes)
-export const NoteData = notes
-.map(({ note, name, ...rest }, i) => ({
-  ...rest,
-  pitchClass: note,
-  pitch: name,
-  json() {
-    return JSON.stringify({ ...rest, pitchClass: note, pitch: name }, null, 2)
-  },
-  toJSON() { return this; },
-}));
+import { NoteData } from './audio/note-data-fetch.js';
+// const { notes } = (await (await fetch(noteDataURL)).json());
+// console.warn('responseNotes', NoteData)
+// export const NoteData = notes  .map(({ note, name, ...rest }, i) => ({
+//     ...rest,
+//     pitchClass: note,
+//     pitch: name,
+//     json() {
+//       return JSON.stringify({ ...rest, pitchClass: note, pitch: name }, null, 2)
+//     },
+//     toJSON() { return this; },
+//   }));
 
 export const MusicalScales = {
   major: [0, 2, 4, 5, 7, 9, 11],
@@ -52,7 +51,6 @@ export function major7(freq) {
 
 export const pitchToFrequency = (pitch = 'C4') => {
   const note = NoteData.find(note => note.pitch === pitch)
-  // console.warn('pitch', pitch)
   return note.frequency
 }
 
