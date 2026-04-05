@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <title>App</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/rxjs/7.3.0/rxjs.umd.min.js" integrity="sha512-y3JTS47nnpKORJX8Jn1Rlm+QgRIIZHtu3hWxal0e81avPrqUH48yk+aCi+gprT0RMAcpYa0WCkapxe+bpBHD6g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <link rel="stylesheet" href="./style.css" />
+  <style>
+    body {
+      background: #111;
+      color: #ddd;
+      font-family: monospace;
+      padding: 20px;
+    }
+    
+    h1 {
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+    
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    
+    button,
+    select,
+    input {
+      background: #222;
+      color: #ddd;
+      border: 1px solid #444;
+      padding: 6px;
+    }
+    
+    .step-grid {
+      display: grid;
+      grid-template-columns: repeat(16, 1fr);
+      gap: 4px;
+      margin-top: 10px;
+    }
+    
+    .step {
+      height: 30px;
+      background: #222;
+      cursor: pointer;
+      border: 1px solid #333;
+    }
+    
+    .step.active {
+      background: #0a84ff;
+    }
+    
+    .step.playing {
+      outline: 2px solid yellow;
+    }
+  </style>
+</head>
+
+<body>
+  
+  <h1>Web Audio Synth Demo</h1>
+  
+  <div class="controls">
+    <button id="start">Start</button>
+    <button id="stop">Stop</button>
+    
+    <label>
+      Voice:
+      <select id="voice">
+        <option value="mono">Mono Lead</option>
+        <option value="detune">Detuned Stack</option>
+        <option value="chord">Chord Pad</option>
+      </select>
+    </label>
+    
+    <label>
+      Glide:
+      <input type="range" id="glide" min="0" max="0.2" step="0.005" value="0.05">
+    </label>
+    
+    <label>
+      Delay:
+      <input type="range" id="delay" min="0" max="0.7" step="0.01" value="0.3">
+    </label>
+  </div>
+  
+  <div class="step-grid" id="grid"></div>
+  
+  <script>
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    const ctx = new AudioContext();
+    
+    // ======== GLOBAL AUDIO GRAPH ========
+    const master = ctx.createGain();
+    master.gain.value = 0.3;
+    master.connect(ctx.destination);
+    
+    // delay
+    const delay = ctx.createDelay();
+    delay.delayTime.value = 0.25;
+    
+    const feedback = ctx.createGain();
+    feedback.gain.value = 0.4;
+    
+    delay.connect(feedback);
+    feedback.connect(delay);
+    
+    const delayMix = ctx.createGain();
+    delayMix.gain.value = 0.4;
+    
+    delay.connect(delayMix);
+    delayMix.connect(master);
+    
+    // ======== SEQUENCER ========
+    const steps = 16;
+    const grid = document.getElementById('grid');
+    
+    let pattern = new Array(steps).fill(false);
+    let currentStep = 0;
+    let isPlaying = false;
+    let tempo = 120;
+    
+    const notes = [
+      261.63, // C4
+      293.66,
+      329.63,
+      349.23,
+      392.00,
+      440.00,
+      493.88,
+      523.25
+    ];
+    
+    for (let i = 0; i < steps; i++) {
+      const div = document.createElement('div');
+      div.className = 'step';
+      div.onclick = () => {
+        pattern[i] = !pattern[i];
+        div.classList.toggle('active');
+      };
+      grid.appendChild(div);
+    }
+    
+    // ======== SYNTH VOICES ========
+    
+    let lastFreq = 261.63;
+    
+    function createVoice(freq, time) {
+      const type = document.getElementById('voice').value;
+      const glide = parseFloat(document.getElementById('glide').value);
+      
+      const filter = ctx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(1200, time);
+      
+      const amp = ctx.createGain();
+      amp.gain.setValueAtTime(0, time);
+      
+      // envelope
+      amp.gain.linearRampToValueAtTime(0.8, time + 0.01);
+      amp.gain.exponentialRampToValueAtTime(0.001, time + 0.3);
+      
+      filter.connect(amp);
+      amp.connect(master);
+      amp.connect(delay);
+      
+      function glideTo(osc, f) {
+        osc.frequency.setTargetAtTime(f, time, glide);
+      }
+      
+      if (type === "mono") {
+        const osc = ctx.createOscillator();
+        osc.type = "sawtooth";
+        
+        osc.frequency.setValueAtTime(lastFreq, time);
+        glideTo(osc, freq);
+        
+        osc.connect(filter);
+        osc.start(time);
+        osc.stop(time + 0.5);
+        
+      } else if (type === "detune") {
+        // classic "supersaw-ish"
+        for (let i = -2; i <= 2; i++) {
+          const osc = ctx.createOscillator();
+          osc.type = "sawtooth";
+          
+          osc.frequency.setValueAtTime(lastFreq, time);
+          glideTo(osc, freq);
+          
+          osc.detune.value = i * 8;
+          
+          osc.connect(filter);
+          osc.start(time);
+          osc.stop(time + 0.5);
+        }
+        
+      } else if (type === "chord") {
+        const ratios = [1, 1.25, 1.5]; // major triad-ish
+        
+        ratios.forEach(r => {
+          const osc = ctx.createOscillator();
+          osc.type = "triangle";
+          
+          osc.frequency.setValueAtTime(lastFreq * r, time);
+          glideTo(osc, freq * r);
+          
+          osc.connect(filter);
+          osc.start(time);
+          osc.stop(time + 0.5);
+        });
+      }
+      
+      lastFreq = freq;
+    }
+    
+    // ======== CLOCK ========
+    let nextNoteTime = 0;
+    
+    function scheduler() {
+      while (nextNoteTime < ctx.currentTime + 0.1) {
+        if (pattern[currentStep]) {
+          const freq = notes[currentStep % notes.length];
+          createVoice(freq, nextNoteTime);
+        }
+        
+        updateUI(currentStep);
+        
+        const secondsPerBeat = 60 / tempo;
+        nextNoteTime += 0.25 * secondsPerBeat; // 16th notes
+        currentStep = (currentStep + 1) % steps;
+      }
+      
+      if (isPlaying) requestAnimationFrame(scheduler);
+    }
+    
+    // ======== UI ========
+    function updateUI(step) {
+      [...grid.children].forEach((el, i) => {
+        el.classList.toggle('playing', i === step);
+      });
+    }
+    
+    // ======== CONTROLS ========
+    document.getElementById('start').onclick = async () => {
+      if (ctx.state === 'suspended') await ctx.resume();
+      isPlaying = true;
+      nextNoteTime = ctx.currentTime;
+      scheduler();
+    };
+    
+    document.getElementById('stop').onclick = () => {
+      isPlaying = false;
+    };
+    
+    document.getElementById('delay').oninput = (e) => {
+      delayMix.gain.value = parseFloat(e.target.value);
+    };
+  </script>
+  
+</body>
+
+</html>

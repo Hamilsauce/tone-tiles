@@ -18,6 +18,7 @@ export const SVGCanvasHost = defineComponent(
     let scene;
     let tileLayer;
     let objectLayer;
+    let cancelRunCanvas;
     // const selectionBox = getTileSelector(objectLayer);
     
     const routine1 = (dt, now) => {
@@ -46,9 +47,14 @@ export const SVGCanvasHost = defineComponent(
       try {
         if (mapId.value) {
           await mapStore.setCurrentMapById(mapId.value);
-          runCanvas(mapId.value);
+          
+          if (cancelRunCanvas) {
+            cancelRunCanvas()
+          }
+          
+          cancelRunCanvas = runCanvas(mapId.value);
+          
         }
-        
       } catch (e) {
         console.warn('Svg host error run canvas: ', e)
       }
@@ -56,7 +62,7 @@ export const SVGCanvasHost = defineComponent(
     
     watch(mapId, async (id, prev) => {
       if (id && id !== prev) {
-        await mapStore.setCurrentMapById(id);
+        // await mapStore.setCurrentMapById(id);
       }
     });
     

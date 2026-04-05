@@ -1,6 +1,6 @@
 #tile-layer {
   filter: hue-rotate(55deg) invert(0) drop-shadow(1px 1px 0.1px #00000050);
-
+  
   transition: filter 1.5s ease;
 }
 
@@ -19,8 +19,22 @@
   cursor: pointer;
   opacity: 1;
   transition: opacity 0.25s !important;
-
 }
+
+.map-link {
+  
+  text {
+    font-size: 6px;
+    font-weight: 800;
+    fill: #000000D4;
+    /* stroke: #0606067A; */
+    stroke-width: 0.35;
+    opacity: 0.3;
+    filter: hue-rotate(55deg) invert(1);
+    
+  }
+}
+
 
 .tile>* {
   fill: #FFFFFF7D;
@@ -29,15 +43,18 @@
 }
 
 .tile[data-tile-type=map-link] {
-  fill: #ED311D;
-  rx: 1;
-  ry: 1;
+  fill: #27ED1D;
+  rx: 5;
+  ry: 5;
 }
 
-.tile[data-tile-type=map-link]>* {
-  fill: #ED311D;
-  rx: 1;
-  ry: 1;
+.tile[data-tile-type=map-link]>*{
+  fill: #1DEDAE;
+  rx: 0.5;
+  ry: 0.5;
+  width: 2;
+  height: 2;
+  transform-origin: center;
 }
 
 .tile[data-tile-type=barrier]>* {
@@ -101,31 +118,31 @@
 
 @keyframes yellowToOriginal {
   0% {}
-
+  
   8% {
     fill: #46C2F4BF;
     filter: hue-rotate(0deg);
   }
-
+  
   15% {
     fill: #46C2F43D;
-
+    
     filter: hue-rotate(0deg);
     filter: hue-rotate(-240deg);
   }
-
+  
   35% {
     filter: hue-rotate(0deg);
   }
-
+  
   40% {}
 }
 
 .tile[data-hide=true] {
-    /* display: none; */
-    opacity: 0;
-    transition: 0.25s;
-  }
+  /* display: none; */
+  opacity: 0;
+  transition: 0.25s;
+}
 
 .rect-animate {
   animation: yellowToOriginal 1.5s forwards;

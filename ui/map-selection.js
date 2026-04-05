@@ -1,6 +1,7 @@
 import { ref, computed, watch, toValue } from 'vue';
 import { storeMaps, storeMap, updateMap, loadMap, loadMaps, clearMaps, loadMapIndex } from '../map.service.js';
 import { copyTextToClipboard } from '../lib/utils.js';
+
 import { useMapStore } from '../store/map.store.js';
 import ham from 'https://hamilsauce.github.io/hamhelper/hamhelper1.0.0.js';
 const { sleep } = ham
@@ -79,26 +80,27 @@ export const initMapControls = async (graph, svgCanvas, actor1, selectionBox) =>
 		return mapId;
 	});
 	
-	graph.on('map:load', async ({ width, height, nodes, startNode }) => {
-		selectionBox.setBounds({
-			minX: 0,
-			minY: 0,
-			maxX: graph.width,
-			maxY: graph.height
-		});
-		
-		actor1.setAttribute('transform', `translate(${graph.startNode.x},${graph.startNode.y})`);
-		svgCanvas.layers.surface.setAttribute('transform', `translate(${Math.floor((graph.width + 2) / 2) - 0.3}, ${Math.floor((graph.height + 2) / 2) - 0.25})`);
-		svgCanvas.layers.surface.querySelector('#surface-map-name').setAttribute('transform', `translate(0, ${-((graph.height / 2)) - 3}) scale(0.4)`);
-	});
+	// graph.on('map:load', async ({ width, height, nodes, startNode }) => {
+	// 	selectionBox.setBounds({
+	// 		minX: 0,
+	// 		minY: 0,
+	// 		maxX: graph.width,
+	// 		maxY: graph.height
+	// 	});
+	// 	await sleep(500)
+	// 	console.warn('graph', graph)
+	// 	actor1.setAttribute('transform', `translate(${startNode.x},${startNode.y})`);
+	// 	svgCanvas.layers.surface.setAttribute('transform', `translate(${Math.floor((graph.width + 2) / 2) - 0.3}, ${Math.floor((graph.height + 2) / 2) - 0.25})`);
+	// 	svgCanvas.layers.surface.querySelector('#surface-map-name').setAttribute('transform', `translate(0, ${-((graph.height / 2)) - 3}) scale(0.4)`);
+	// });
 	
-	watch(mapStore.currentMap, (newMap, oldMap) => {
-		if (!newMap.id) return;
+	// watch(mapStore.currentMap, (newMap, oldMap) => {
+	// 	if (!newMap.id) return;
 		
-		const mapData = toValue(newMap);
+	// 	const mapData = toValue(newMap);
 		
-		graph.fromMap(mapData);
-	}, { immediate: true });
+	// 	graph.fromMap(mapData);
+	// }, { immediate: true });
 	
 	return async (id) => {
 		await mapStore.setCurrentMapById(id);
