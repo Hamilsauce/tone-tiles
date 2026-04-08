@@ -15,14 +15,14 @@ export class CanvasActor extends CanvasObject {
     
     
     // const node = options.model;
-    options.model = { ...options.model, isMoving: false }
+    options.model = {...options.model, isMoving: false}
     // options.id = node.address;
     
     super(ctx, 'tile', options);
     
     this.#traversalGen = graph.traverseHybrid(
       graph.getNodeAtPoint({ x: this.x, y: this.y }),
-      this.#getGoal
+      () => this.#getGoal
     );
   };
   
@@ -45,7 +45,7 @@ export class CanvasActor extends CanvasObject {
       return curr;
       
     } else if (this.model.isMoving) {
-      this.update({ isMoving: false });
+      this.update({ isMoving: true });
     }
   }
 }
