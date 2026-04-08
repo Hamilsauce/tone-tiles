@@ -17,14 +17,14 @@ export class TileLayer extends SceneLayer {
       this.loadTiles(objects);
     }
 
-    this.handleNodeUpdates = this.#handleNodeUpdates.bind(this);
+    this.applyNodePatch = this.applyNodePatch.bind(this);
   };
 
   get name() {
     return this.#name;
   }
 
-  #handleNodeUpdates({ id, data }) {
+  applyNodePatch({ id, data }) {
     if (this.objects.has(id)) this.get(id).update(data);
   };
 

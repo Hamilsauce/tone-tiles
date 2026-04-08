@@ -118,7 +118,7 @@ export const runCanvas = async (mapId) => {
   selectionBox = getTileSelector(objectLayer);
 
   let selectedRange = [];
-  let getSelectedRange = () => tileLayer.findAll({ tileType: 'selected' });
+  let getSelectedRange = () => tileLayer.findAll({ selected: true });
 
   const tileAt = (x, y) => tileLayer.getTileAt(x, y);
 
@@ -181,7 +181,7 @@ export const runCanvas = async (mapId) => {
   });
 
   const unsubscribeNodeUpdate = graph.on('node:update', async (payload) => {
-    svgCanvas.scene.getLayer('tile').handleNodeUpdates(payload);
+    tileLayer.applyNodePatch(payload);
   });
 
   const unwatch = watch(mapStore.currentMap, (newMap, oldMap) => {
