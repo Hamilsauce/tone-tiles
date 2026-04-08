@@ -20,18 +20,18 @@ export class SceneLayer extends CanvasObject {
 	
 	get name() { return this.#name }
 	
-	add(obj) {
-		if (typeof obj.type !== 'string') {
-			console.warn('obj', obj)
-			throw new Error('No object type in layer add');
-		}
-		
-		const cObj = obj instanceof CanvasObject ? obj : this.context.createObject(obj.type, obj)
-		
-		this.#objects.set(obj.id, cObj);
-		this.dom.appendChild(cObj.dom);
-		cObj.update()
-		this.emit('object:add', cObj);
+		add(obj) {
+			if (typeof obj.type !== 'string') {
+				console.warn('obj', obj)
+				throw new Error('No object type in layer add');
+			}
+			
+			const cObj = obj instanceof CanvasObject ? obj : this.context.createObject(obj.type, obj)
+			
+			this.#objects.set(cObj.id, cObj);
+			this.dom.appendChild(cObj.dom);
+			cObj.update()
+			this.emit('object:add', cObj);
 		
 		return cObj;
 	}
@@ -55,14 +55,14 @@ export class SceneLayer extends CanvasObject {
 		this.emit('object:unload', obj);
 	}
 	
-	remove(id) {
-		const obj = this.#objects.get(id);
-		if (!obj) return;
-		
-		obj.remove();
-		this.#objects.delete(id);
-		
-		this.emit('object:remove', obj);
+		remove(id) {
+			const obj = this.#objects.get(id);
+			if (!obj) return;
+			
+			obj.destroy?.() ?? obj.remove();
+			this.#objects.delete(id);
+			
+			this.emit('object:remove', obj);
 	}
 	
 	get(id) {
@@ -89,13 +89,13 @@ export class SceneLayer extends CanvasObject {
 		this.#objects.forEach(fn);
 	}
 	
-	clear() {
-		for (const obj of this.#objects.values()) {
-			obj.remove(true);
+		clear() {
+			for (const obj of this.#objects.values()) {
+				obj.destroy?.() ?? obj.remove();
+			}
+			
+			this.#objects.clear();
 		}
-		
-		this.#objects.clear();
-	}
 	
 	sort(compareFn) {
 		const sorted = [...this.#objects.values()].sort(compareFn)
