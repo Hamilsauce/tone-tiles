@@ -46,7 +46,7 @@ export class Scene extends CanvasObject {
     if (!layer) return;
     
     this.#layers.delete(id);
-    layer.remove();
+    layer.destroy();
   }
   
   getLayer(id) {
@@ -62,7 +62,7 @@ export class Scene extends CanvasObject {
   clear() {
     this.layers.forEach(layer => this.removeLayer(layer));
   }
-  
+
   // Optional: iterate all objects across layers
   forEachObject(fn) {
     this.layers.forEach(layer => {

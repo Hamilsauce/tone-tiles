@@ -4,16 +4,13 @@ import { CanvasObject, DefaultCanvasObjectOptions } from './CanvasObject.js';
 import { initHueRoto } from '../lib/hue-rotato.js';
 import { Scene } from '../canvas/Scene.js';
 import { TileObject } from '../canvas/TileObject.js';
-import graph, { TILE_TYPE_INDEX, getChordToneDegreeFromDir, getDirectionFromPoints } from '../lib/graph.model.js';
-import { ref, computed, watch, toValue } from 'vue';
-import { useMapStore } from '../store/map.store.js';
+// import getGraph, { TILE_TYPE_INDEX, getChordToneDegreeFromDir, getDirectionFromPoints } from '../lib/graph.model.js';
 
 const { getPanZoom, template, utils, download, TwoWayMap } = ham;
 
 const { fromEvent, } = rxjs;
 const { flatMap, reduce, groupBy, toArray, mergeMap, switchMap, scan, map, tap, filter } = rxjs.operators;
 let hasInitViewBox = false;
-let mapStore = useMapStore();
 
 export class SVGCanvas extends EventTarget {
   #self = null;
@@ -58,32 +55,32 @@ export class SVGCanvas extends EventTarget {
       object: this.dom.querySelector('#object-layer'),
     };
     
-    graph.on('map:load', async ({ width, height, nodes, startNode }) => {
-      // selectionBox.setBounds({
-      //   minX: 0,
-      //   minY: 0,
-      //   maxX: graph.width,
-      //   maxY: graph.height
-      // });
-      // await sleep(500)
-      this.#scene.getLayer('tile').loadTileSet({ width, height, nodes, startNode })
-      // this.layers.object.querySelector('[data-type=actor]').setAttribute('transform', `translate(${startNode.x},${startNode.y})`);
-      const actor1 = this.#scene.getLayer('object').get('actor1')
-      //.querySelector('#actor1').setAttribute('transform', `translate(${startNode.x},${startNode.y})`);
-      console.warn('actor1', actor1)
-      this.layers.surface.setAttribute('transform', `translate(${Math.floor((graph.width + 2) / 2) - 0.3}, ${Math.floor((graph.height + 2) / 2) - 0.25})`);
-      this.layers.surface.querySelector('#surface-map-name').setAttribute('transform', `translate(0, ${-((graph.height / 2)) - 3}) scale(0.4)`);
-    });
+    // graph.on('map:load', async ({ width, height, nodes, startNode }) => {
+    //   // selectionBox.setBounds({
+    //   //   minX: 0,
+    //   //   minY: 0,
+    //   //   maxX: graph.width,
+    //   //   maxY: graph.height
+    //   // });
+    //   // await sleep(500)
+    //   this.#scene.getLayer('tile').loadTileSet({ width, height, nodes, startNode })
+    //   // this.layers.object.querySelector('[data-type=actor]').setAttribute('transform', `translate(${startNode.x},${startNode.y})`);
+    //   const actor1 = this.#scene.getLayer('object').get('actor1')
+    //   //.querySelector('#actor1').setAttribute('transform', `translate(${startNode.x},${startNode.y})`);
+    //   actor1?.translateTo(startNode.x, startNode.y)
+    //   this.layers.surface.setAttribute('transform', `translate(${Math.floor((graph.width + 2) / 2) - 0.3}, ${Math.floor((graph.height + 2) / 2) - 0.25})`);
+    //   this.layers.surface.querySelector('#surface-map-name').setAttribute('transform', `translate(0, ${-((graph.height / 2)) - 3}) scale(0.4)`);
+    // });
     
-    const unwatch = watch(mapStore.currentMap, (newMap, oldMap) => {
-      if (!newMap.id) return;
+    // const unwatch = watch(mapStore.currentMap, (newMap, oldMap) => {
+    //   if (!newMap.id) return;
       
-      const mapData = toValue(newMap);
+    //   const mapData = toValue(newMap);
       
-      graph.fromMap(mapData);
-    }, { immediate: true });
-  
-    console.warn('unwatch', unwatch)
+    //   graph.fromMap(mapData);
+    // }, { immediate: true });
+    
+    // console.warn('unwatch', unwatch)
     
     let shouldInvert = 0;
     
@@ -228,6 +225,14 @@ export class SVGCanvas extends EventTarget {
     
     return el;
   };
+  
+  destroy(x, y) {
+    this.clickDOMSubscription.unsubscribe();
+    this.contextmenuDOMSubscription.unsubscribe();
+    
+    this.#scene.clear();
+    
+  }
   
   domPoint(x, y) {
     return new DOMPoint(x, y).matrixTransform(

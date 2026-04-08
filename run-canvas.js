@@ -1,5 +1,4 @@
-// import graph from './lib/graph.model.js';
-import graph, { TILE_TYPE_INDEX, getChordToneDegreeFromDir, getDirectionFromPoints } from './lib/graph.model.js';
+import getGraph, { TILE_TYPE_INDEX, getChordToneDegreeFromDir, getDirectionFromPoints } from './lib/graph.model.js';
 import { SVGCanvas } from './canvas/SVGCanvas.js';
 import { getTileSelector } from 'https://hamilsauce.github.io/svg-range-selector/tile-selector.js';
 import { initMapControls } from './ui/map-selection.js';
@@ -11,7 +10,8 @@ import { AudioClockLoop } from './lib/loop-engine.js';
 import { frameRate } from './lib/frame-rate.js';
 import { major7, getScaleNotes, getChordNotes, pitchToFrequency } from './MUSIC_THEORY_FUNCTIONS.js';
 import { ContextMenu } from './canvas/ContextMenu.js';
-// import { AudioClockLoop } from './lib/loop-engine.js';
+import { ref, computed, watch, toValue } from 'vue';
+import { useMapStore } from '../store/map.store.js';
 
 const { sleep, rxjs } = ham;
 const { fromEvent } = rxjs;
@@ -99,30 +99,31 @@ const fireAudioNote = (freq, vel, dur = 2) => (new AudioNote(audioEngine.ctx)
 
 const ANIM_RATE = 105;
 
-// let graph;
-let canvasEl;
-let svgCanvas;
-let scene;
-let sceneObj;
-let tileLayerObj;
-let tileLayer;
-let objectLayerObj;
-let objectLayer;
-let selectionBox;
-let contextMenu;
-let selectMapById
-const loopEngine = new AudioClockLoop({
-	audioContext: audioEngine.ctx,
-})
-
 export const runCanvas = async (mapId) => {
+	let graph
+	let canvasEl;
+	let svgCanvas;
+	let scene;
+	let sceneObj;
+	let tileLayerObj;
+	let tileLayer;
+	let objectLayerObj;
+	let objectLayer;
+	let selectionBox;
+	let contextMenu;
+	let selectMapById
+	const loopEngine = new AudioClockLoop({
+		audioContext: audioEngine.ctx,
+	})
+	let mapStore = useMapStore();
+	
 	mapId = mapId && mapId.value ? mapId.value : mapId;
 	const { isRunning, setRunning, setFrameRate, setCurrentNode } = useAppState();
 	
-	// const graph = new Graph();
-	
 	const app = document.querySelector('#app');
 	const floatingMenu = app.querySelector('#app-floating-menu');
+	
+	graph = getGraph();
 	
 	canvasEl = document.querySelector('#canvas');
 	svgCanvas = new SVGCanvas(canvasEl);
@@ -181,6 +182,32 @@ export const runCanvas = async (mapId) => {
 	selectMapById = selectMapById ?? await initMapControls(graph, svgCanvas, actor1, selectionBox);
 	
 	svgCanvas.setCanvasDimensions({ width: innerWidth, height: innerHeight });
+	
+	
+	const unsubscribeMapLoad = graph.on('map:load', async ({ width, height, nodes, startNode }) => {
+		selectionBox.setBounds({
+			minX: 0,
+			minY: 0,
+			maxX: graph.width,
+			maxY: graph.height
+		});
+		
+		svgCanvas.scene.getLayer('tile').loadTileSet({ width, height, nodes, startNode })
+		const _actor1 = svgCanvas.scene.getLayer('object').get('actor1')
+		_actor1?.translateTo(startNode.x, startNode.y)
+		svgCanvas.layers.surface.setAttribute('transform', `translate(${Math.floor((graph.width + 2) / 2) - 0.3}, ${Math.floor((graph.height + 2) / 2) - 0.25})`);
+		svgCanvas.layers.surface.querySelector('#surface-map-name').setAttribute('transform', `translate(0, ${-((graph.height / 2)) - 3}) scale(0.4)`);
+	});
+	
+	const unwatch = watch(mapStore.currentMap, (newMap, oldMap) => {
+		if (!newMap.id) return;
+		
+		const mapData = toValue(newMap);
+		
+		graph.fromMap(mapData);
+	}, { immediate: true });
+	
+	
 	
 	let goalTile;
 	let isMoving = false;
@@ -241,10 +268,6 @@ export const runCanvas = async (mapId) => {
 	);
 	
 	const blurContextMenu = (e) => {
-		// e.preventDefault();
-		// e.stopPropagation();
-		// e.stopImmediatePropagation();
-		
 		const edgeLines = [...objectLayer.querySelectorAll('.edge-line')];
 		
 		edgeLines.forEach(el => {
@@ -310,8 +333,6 @@ export const runCanvas = async (mapId) => {
 			active: true,
 		});
 		
-		// if (intervalHandle) return;
-		
 		let pointer = 0;
 		let curr = currentNode;
 		let prev = curr;
@@ -320,9 +341,6 @@ export const runCanvas = async (mapId) => {
 		activeActor.dataset.moving = isMoving;
 		
 		if (isMoving) {
-			// let dx;
-			// let dy;
-			
 			let shouldPreVel = false;
 			let shouldPreVels = [0, 1, 0];
 			let preVelIndex = 0;
@@ -341,8 +359,6 @@ export const runCanvas = async (mapId) => {
 					return;
 				}
 				setFrameRate(frameRate(dt * 1000))
-				
-				// console.warn(frameRate(dtSum*1000))
 				
 				dtSum = 0;
 				
@@ -391,7 +407,6 @@ export const runCanvas = async (mapId) => {
 									audioNote1.stop(0.2)
 									audioNote1 = fireAudioNote(freq, vel);
 								}
-								// audioNote1 = prevDir === travelDir ? audioNote1 : fireAudioNote(freq, vel);
 								prevDir = travelDir;
 								
 								// audioNote1 = fireAudioNote(freq, vel);
@@ -417,9 +432,8 @@ export const runCanvas = async (mapId) => {
 							isMoving = false;
 							activeActor.dataset.moving = isMoving;
 							
-							// clearInterval(intervalHandle);
-							// intervalHandle = null;
 							loopEngine.pause()
+							
 							await selectMapById(linkedMapId);
 							
 							TRAVERSAL_GEN = graph.traverseHybrid(
@@ -468,10 +482,7 @@ export const runCanvas = async (mapId) => {
 							isMoving = false;
 							activeActor.dataset.moving = isMoving;
 							
-							loopEngine.pause()
-							
-							// clearInterval(intervalHandle);
-							// intervalHandle = null;
+							loopEngine.pause();
 						}
 					}
 					
@@ -480,164 +491,20 @@ export const runCanvas = async (mapId) => {
 					isMoving = false;
 					activeActor.dataset.moving = isMoving;
 					
-					loopEngine.pause()
-					
-					// clearInterval(intervalHandle);
-					// intervalHandle = null;
-					
+					loopEngine.pause();
 				}
 			}
+			
 			if (!hasSetTraversalRoutine) {
-				hasSetTraversalRoutine = true
-				loopEngine.addRoutine(traverseMap)
-				
+				hasSetTraversalRoutine = true;
+				loopEngine.addRoutine(traverseMap);
 			}
-			loopEngine.start()
 			
-			// intervalHandle = setInterval(
-			//   async () => {
-			//     try {
-			
-			//       curr = TRAVERSAL_GEN.next().value;
-			//       prev = currentNode;
-			//       currentNode = curr;
-			
-			//       if (prev && prev.id === curr.id) return;
-			//       activeActor.dataset.moving = true;
-			
-			//       if (prev && prev.tileType === 'teleport') {
-			//         activeActor.dataset.teleporting = false;
-			//       }
-			
-			//       if (!curr) {
-			//         console.warn('no curr');
-			//         return;
-			//       } else {
-			//         const travelDir = getDirectionFromPoints(prev, curr);
-			//         const chordToneDegree = getChordToneDegreeFromDir(travelDir);
-			
-			//         {
-			//           // AudioNote Block
-			//           try {
-			//             const vel = pointer % 2 === 0 ? 0.2 : 0.4;
-			//             let freq = toTone(curr.x, curr.y, chordToneDegree);
-			
-			//             if (!audioNote1) {
-			//               audioNote1 = fireAudioNote(freq, vel);
-			//             }
-			
-			//             else if (curr.tileType === 'teleport') {
-			
-			//               audioNote1.stop(0.015)
-			
-			//               freq = major7(toTone(curr.x, curr.y, chordToneDegree))[getRandomInt(4)];
-			
-			//               audioNote1 = fireAudioNote(freq, vel);
-			//             }
-			//             else if (prevDir === travelDir) {
-			//               audioNote1 = audioNote1
-			//             }
-			//             else {
-			//               audioNote1.stop(0.2)
-			//               audioNote1 = fireAudioNote(freq, vel);
-			//             }
-			//             // audioNote1 = prevDir === travelDir ? audioNote1 : fireAudioNote(freq, vel);
-			//             prevDir = travelDir;
-			
-			//             // audioNote1 = fireAudioNote(freq, vel);
-			//           } catch (e) {
-			//             console.error(`no audio note for you: ${e}`);
-			//           }
-			//         }
-			
-			//         activeActor.dataset.x = curr.x;
-			//         activeActor.dataset.y = curr.y;
-			
-			//         actorTrans = actor1TransformList;
-			//         actorTrans.translateTo(curr.x, curr.y);
-			
-			//         const isLink = curr.tileType === 'map-link' || curr.tileType === 'start' && !!curr.linkedMap;
-			//         const isStartingNode = curr.tileType === 'start';
-			
-			//         if (linkedMapId && isLink) {
-			//           isMoving = false;
-			//           activeActor.dataset.moving = isMoving;
-			
-			//           clearInterval(intervalHandle);
-			//           intervalHandle = null;
-			
-			//           await selectMapById(linkedMapId);
-			
-			//           TRAVERSAL_GEN = graph.traverseHybrid(
-			//             graph.startNode,
-			//             () => goalNode
-			//           );
-			
-			//           return;
-			//         }
-			
-			//         curr.update({ isPathNode: true });
-			
-			//         pointer++;
-			
-			//         if (curr.id === goalNode.id) {
-			//           curr.update({ active: true, current: true });
-			//           console.warn('----- GOAL FOUND -----');
-			//         }
-			
-			//         if (curr.tileType === 'teleport') {
-			//           actor1.dataset.teleporting = true;
-			
-			//           if (curr.id === currentNode.id) {
-			//             curr.update({ active: false, current: false });
-			
-			//             // return;
-			//           }
-			
-			//           activeActor.dataset.x = curr.x;
-			//           activeActor.dataset.y = curr.y;
-			
-			//           actorTrans = actor1TransformList;
-			//           actorTrans.translateTo(curr.x, curr.y);
-			
-			//           curr.update({ active: false, current: false });
-			
-			//           await sleep(10);
-			//           shouldPreVel = !shouldPreVel;
-			//           activeActor.dataset.teleporting = false;
-			//         }
-			
-			//         const reachedGoal = goalNode && currentNode.id === goalNode.id;
-			
-			//         if (reachedGoal) {
-			//           isMoving = false;
-			//           activeActor.dataset.moving = isMoving;
-			//           clearInterval(intervalHandle);
-			//           intervalHandle = null;
-			//         }
-			//       }
-			
-			//     } catch (e) {
-			//       console.error(e);
-			//       isMoving = false;
-			//       activeActor.dataset.moving = isMoving;
-			
-			//       clearInterval(intervalHandle);
-			//       intervalHandle = null;
-			
-			//     }
-			//   }, ANIM_RATE);
+			loopEngine.start();
 		}
 	};
 	
 	const handleEditTileClick = async (targetNode) => {
-		// TODO: this normalizes custom events coming from SVGCanvas vs DOM
-		// TODO: So need to standardize events
-		// console.warn('Hndle edit', e.type)
-		// console.warn('Hndle edit', e.detail)
-		// console.warn('Hndle edit', e.target)
-		// const targ = (e.detail.target ?? e.target).closest('.tile');
-		
 		if (!targetNode) {
 			blurContextMenu();
 			return;
@@ -646,11 +513,6 @@ export const runCanvas = async (mapId) => {
 		const { tileType, target, selected } = targetNode;
 		
 		if (tileType === 'teleport') {
-			// const selectedNode = graph.getNodeAtPoint({
-			//   x: +targ.dataset.x,
-			//   y: +targ.dataset.y,
-			// });
-			
 			if (target) {
 				// TODO: Make lines into Canvad Object
 				const line = createEdgeLine(targetNode, target);
@@ -781,14 +643,17 @@ export const runCanvas = async (mapId) => {
 			selectionBox.dom.addEventListener('dblclick', e => {});
 		}
 		
-		// navigator.clipz/board.writeText(selectionBox.dom.outerHTML)
 	});
 	
 	return () => {
-		svgCanvas.dom = ''
+		loopEngine.destroy();
+		
+		unsubscribeMapLoad();
+		unwatch();
+		svgCanvas.destroy();
 		svgCanvas = null
 		graph.clear()
-		graph = null
-		console.warn('CANCEL RUN CANVAS CALLED')
+		window.graph=undefined
+		console.warn('RUNCANVAS : CANCEL')
 	}
 };

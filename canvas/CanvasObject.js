@@ -102,6 +102,16 @@ export class CanvasObject extends EventEmitter {
     return this;
   }
   
+  destroy() {
+    this.#subscriptions.forEach(unsubFn => {
+      unsubFn();
+    });
+    
+    this.remove();
+    
+    return this;
+  }
+  
   domPoint(x, y) {
     return new DOMPoint(x, y).matrixTransform(
       this.dom.getScreenCTM().inverse()
@@ -124,10 +134,6 @@ export class CanvasObject extends EventEmitter {
   }
   
   remove() {
-    this.#subscriptions.forEach(unsubFn => {
-      unsubFn();
-    });
-    
     this.dom.remove();
     
     return this;
@@ -173,59 +179,6 @@ export class CanvasObject extends EventEmitter {
     return this;
   }
   
-  // update(attributeMap = {}) {
-  
-  //   const patch = Object.entries(attributeMap).reduce((ptch, [k, v]) => {
-  //     const modelV = this.#model[k];
-  //     const isValid = !(v === undefined || modelV === undefined);
-  
-  
-  //     if (v === undefined && v !== modelV) {
-  //       ptch = ptch ?? {};
-  //       this.#model[k] = v;
-  //       ptch[k] = v;
-  //     } else if (!isValid) {
-  //       console.error(`[${this.constructor.name} ${this.id}] invalid Model patch: ${k}: ${v}`);
-  //     }
-  
-  //     return ptch;
-  //   }, null);
-  
-  //   if (this.x === 5 && this.y == 5) {
-  //     console.warn({ patch })
-  
-  //   }
-  //   // if (!patch) return;
-  
-  //   this.render()
-  
-  //   return this;
-  // }
-  
-  // render(patch) {
-  //   if (!patch) {
-  //     this.translateTo(this.x, this.y);
-  //     Object.assign(this.data, this.model);
-  //     return
-  //   }
-  //   for (const key in patch) {
-  //     this.data[key] = patch[key];
-  //   }
-  
-  //   if (patch.x !== undefined || patch.y !== undefined) {
-  //     this.translateTo(this.x, this.y);
-  //   }
-  
-  //   if (this.#hide === true) {
-  //     this.data.hide = true;
-  //   } else {
-  //     delete this.data.hide;
-  //   }
-  
-  //   return this;
-  // }
-  
-  
   render() {
     this.translateTo(this.x, this.y);
     Object.assign(this.data, this.model);
@@ -245,6 +198,7 @@ export class CanvasObject extends EventEmitter {
     
     return this;
   }
+  
   deactivate() {
     this.hide();
     this.toggleEvents(false);

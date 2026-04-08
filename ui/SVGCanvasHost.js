@@ -1,4 +1,4 @@
-import { ref, watch, computed, toValue, onMounted } from 'vue'
+import { ref, watch, onBeforeUnmount, computed, toValue, onMounted } from 'vue'
 import { defineComponent, getTemplate } from '../lib/vue-helpers.js';
 import { useAppState } from '../store/app.store.js';
 import { useMapStore } from '../store/map.store.js';
@@ -19,21 +19,6 @@ export const SVGCanvasHost = defineComponent(
     let tileLayer;
     let objectLayer;
     let cancelRunCanvas;
-    // const selectionBox = getTileSelector(objectLayer);
-    
-    const routine1 = (dt, now) => {
-      console.warn('routine 1', dt, now)
-    }
-    
-    const render = (dt, now) => {
-      console.warn('render', dt, now)
-    }
-    
-    const loopEngine = new AudioClockLoop({
-      routines: [routine1],
-      render,
-    })
-    // loopEngine.start()
     
     const handleRunningToggle = () => {
       isRunning.value = !isRunning.value;
@@ -47,16 +32,21 @@ export const SVGCanvasHost = defineComponent(
       try {
         if (mapId.value) {
           await mapStore.setCurrentMapById(mapId.value);
-          
-          if (cancelRunCanvas) {
-            cancelRunCanvas()
-          }
-          
-          cancelRunCanvas = runCanvas(mapId.value);
-          
+          cancelRunCanvas = await runCanvas(mapId.value);
         }
       } catch (e) {
         console.warn('Svg host error run canvas: ', e)
+      }
+    });
+    
+    onBeforeUnmount(async () => {
+      try {
+        if (cancelRunCanvas) {
+          cancelRunCanvas()
+        }
+      } catch (e) {
+        console.warn('ERROR SHUTTING DOWN CANVAS')
+        console.error(e)
       }
     });
     
