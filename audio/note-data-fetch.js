@@ -5,7 +5,7 @@ const noteDataURL = 'https://raw.githubusercontent.com/Hamilsauce/guitar-tab/ref
 // const noteDataURL = 'https://raw.githubusercontent.com/Hamilsauce/hamilsauce.github.io/refs/heads/master/note-data-with-midi.json'
 
 const { notes: responseNotes } = (await (await fetch(noteDataURL)).json()) //.filter(_=>_.id);
-console.log('responseNotes', responseNotes)
+// console.log('responseNotes', responseNotes)
 
 export const NoteData = responseNotes
   .map(({ note, name, ...rest }, i) => ({

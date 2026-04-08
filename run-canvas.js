@@ -11,7 +11,7 @@ import { frameRate } from './lib/frame-rate.js';
 import { major7, getScaleNotes, getChordNotes, pitchToFrequency } from './MUSIC_THEORY_FUNCTIONS.js';
 import { ContextMenu } from './canvas/ContextMenu.js';
 import { ref, computed, watch, toValue } from 'vue';
-import { useMapStore } from '../store/map.store.js';
+import { useMapStore } from './store/map.store.js';
 
 const { sleep, rxjs } = ham;
 const { fromEvent } = rxjs;
