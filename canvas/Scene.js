@@ -5,60 +5,60 @@ import { TileLayer } from './TileLayer.js';
 
 export class Scene extends CanvasObject {
   #layers = new Map();
-  
+
   constructor(context, layers = [], options = {}) {
     super(context, 'layer', {
       id: 'scene',
       ...options,
     });
-    
+
     layers.forEach(l => {
       this.addLayer(l)
     })
   }
-  
+
   // --- Layer Management ---
-  
+
   addLayer(layerModel) {
     if (!layerModel?.id) {
       throw new Error('Layer must have an id');
     }
-    
+
     layerModel.name = layerModel.name ?? layerModel.id
 
     const layer = layerModel.name === 'tile' ? new TileLayer(this.context, { ...layerModel, transforms: DEFAULT_TRANSFORMS }) :
       new SceneLayer(this.context, layerModel.name, { ...layerModel, transforms: DEFAULT_TRANSFORMS })
-    
+
     this.#layers.set(layer.name, layer);
-    
+
     // DOM attachment
     this.dom.append(layer.dom);
     layer.show();
     return layer;
   }
-  
+
   removeLayer(layerOrId) {
     const id = typeof layerOrId === 'string' ?
       layerOrId :
       layerOrId?.id;
-    
+
     const layer = this.#layers.get(id);
     if (!layer) return;
-    
+
     this.#layers.delete(id);
     layer.destroy();
   }
-  
+
   getLayer(id) {
     return this.#layers.get(id);
   }
-  
+
   get layers() {
     return [...this.#layers.values()];
   }
-  
+
   // --- Utilities ---
-  
+
   clear() {
     this.layers.forEach(layer => this.removeLayer(layer));
   }
@@ -71,9 +71,9 @@ export class Scene extends CanvasObject {
       }
     });
   }
-  
+
   // --- Render hook (optional) ---
-  
+
   render() {
     // Scene itself usually doesn’t render anything,
     // but this keeps consistency with CanvasObject API
