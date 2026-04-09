@@ -1,22 +1,15 @@
-import getGraph, { TILE_TYPE_INDEX, getChordToneDegreeFromDir, getDirectionFromPoints } from './lib/graph.model.js';
+import getGraph from './lib/graph.model.js';
 import { SVGCanvas } from './canvas/SVGCanvas.js';
 import { getTileSelector } from 'https://hamilsauce.github.io/svg-range-selector/tile-selector.js';
 import { initMapControls } from './ui/map-selection.js';
-import { scheduleOscillator, AudioNote, audioEngine } from './audio/index.js';
-import ham from 'https://hamilsauce.github.io/hamhelper/hamhelper1.0.0.js';
+import { audioEngine } from './audio/index.js';
 import { useAppState } from './store/app.store.js';
 import { AudioClockLoop } from './lib/loop-engine.js';
 import { frameRate } from './lib/frame-rate.js';
-import { major7, getScaleNotes, getChordNotes, pitchToFrequency } from './MUSIC_THEORY_FUNCTIONS.js';
+import { getScaleNotes, getChordNotes, pitchToFrequency } from './MUSIC_THEORY_FUNCTIONS.js';
 import { ContextMenu } from './canvas/ContextMenu.js';
-import { ref, computed, watch, toValue } from 'vue';
+import { watch, toValue } from 'vue';
 import { useMapStore } from './store/map.store.js';
-
-const { sleep, rxjs } = ham;
-
-function getRandomInt(max = 4) {
-  return Math.floor(Math.random() * max);
-}
 
 const useTemplate = (templateName, options = {}) => {
   const el = document.querySelector(`[data-template="${templateName}"]`).cloneNode(true);
@@ -79,15 +72,6 @@ const createEdgeLine = (pt1, pt2) => {
   return line;
 };
 
-const fireAudioNote = (freq, vel, dur = 2) => (new AudioNote(audioEngine.ctx)
-  .at(audioEngine.now)
-  .frequencyHz(freq)
-  .duration(dur)
-  .velocity(vel).play()
-  // .at(audioEngine.currentTime+0.1)
-  // .velocity(0.005).play()
-);
-
 export const runCanvas = async (mapId) => {
   let graph;
   let canvasEl;
@@ -146,8 +130,6 @@ export const runCanvas = async (mapId) => {
     return range;
   };
 
-  let audioNote1; // = (new AudioNote(audioEngine));
-
   contextMenu = contextMenu ?? new ContextMenu(svgCanvas);
   contextMenu.disableItem('copy');
   objectLayerObj.add(contextMenu ?? new ContextMenu(svgCanvas)).dom;
@@ -174,8 +156,7 @@ export const runCanvas = async (mapId) => {
     });
 
     svgCanvas.scene.getLayer('tile').loadTileSet({ width, height, nodes, startNode });
-    const _actor1 = svgCanvas.scene.getLayer('object').get('actor1');
-    _actor1?.translateTo(startNode.x, startNode.y);
+    actor1.resetTraversal(startNode);
     svgCanvas.layers.surface.setAttribute('transform', `translate(${Math.floor((graph.width + 2) / 2) - 0.3}, ${Math.floor((graph.height + 2) / 2) - 0.25})`);
     svgCanvas.layers.surface.querySelector('#surface-map-name').setAttribute('transform', `translate(0, ${-((graph.height / 2)) - 3}) scale(0.4)`);
   });
@@ -196,7 +177,6 @@ export const runCanvas = async (mapId) => {
   //! end bindings
 
 
-  let isMoving = false;
   let isSelectingLinkTile = false;
   let selectedTileBeingLinked = null;
 
@@ -244,12 +224,23 @@ export const runCanvas = async (mapId) => {
 
   const toTone = (x, y, deg, arp) => getTileTone(x, y, deg, arp);
 
-  let goalNode;
+  actor1.configure({
+    graph,
+    loop: loopEngine,
+    audioContext: audioEngine.ctx,
+    getTone: toTone,
+    onCurrentNode: (node) => setCurrentNode(node.data()),
+  });
 
-  let TRAVERSAL_GEN = graph.traverseHybrid(
-    graph.startNode,
-    () => goalNode
-  );
+  const unsubscribeActorMapLink = actor1.on('actor:map-link', async ({ linkedMapId }) => {
+    await selectMapById(linkedMapId);
+  });
+
+  const removeFrameRateRoutine = loopEngine.addRoutine((dt) => {
+    setFrameRate(frameRate(dt * 1000));
+  });
+
+  loopEngine.start();
 
   const blurContextMenu = (e) => {
     const edgeLines = [...objectLayer.querySelectorAll('.edge-line')];
@@ -267,7 +258,6 @@ export const runCanvas = async (mapId) => {
     }
   };
 
-  let hasSetTraversalRoutine = false;
   const handleTileClick = async ({ type, detail }) => {
     if (!isRunning.value) return;
 
@@ -283,192 +273,16 @@ export const runCanvas = async (mapId) => {
       return;
     }
 
-    goalNode = graph.getNodeByAddress(detail.id);
+    const goalNode = graph.getNodeByAddress(detail.id);
 
     if (!goalNode || !goalNode.isTraversable) {
       console.warn('NO GOAL OR GOAL NOT TRAVERSABLE. Early return');
-      console.warn(goalNode.id, goalNode.isTraversable);
+      console.warn(goalNode?.id, goalNode?.isTraversable);
 
       return;
     }
 
-    let currentNode = goalNode;
-    let linkedMapId = currentNode.linkedMap;
-
-    graph.findAny({
-      isPathNode: true,
-      current: true,
-      active: true,
-      selected: true,
-    }).forEach(_ => _.update({
-      isPathNode: false,
-      current: false,
-      active: false,
-      selected: false,
-    }));
-
-    currentNode.update({
-      current: true,
-      active: true,
-    });
-
-    let pointer = 0;
-    let curr = currentNode;
-    let prev = curr;
-
-    isMoving = true;
-    actor1.update({ moving: isMoving });
-
-    if (isMoving) {
-      let shouldPreVel = false;
-      let shouldPreVels = [0, 1, 0];
-      let preVelIndex = 0;
-      let prevDir;
-
-      const getNextPreVelIndex = () => {
-        preVelIndex = preVelIndex >= shouldPreVels.length - 1 ? 0 : preVelIndex + 1;
-        return preVelIndex;
-      };
-
-      let dtSum = 0;
-
-      const traverseMap = async (dt, currentTime) => {
-        dtSum += dt;
-        if (dtSum <= 0.1) {
-          return;
-        }
-
-        setFrameRate(frameRate(dt * 1000));
-
-        dtSum = 0;
-
-        try {
-          curr = TRAVERSAL_GEN.next().value;
-          setCurrentNode(curr.data());
-          prev = currentNode;
-          currentNode = curr;
-
-          if (prev && prev.id === curr.id) return;
-          actor1.update({ moving: isMoving });
-
-          if (prev && prev.tileType === 'teleport') {
-            actor1.update({ teleporting: false });
-          }
-
-          if (!curr) {
-            console.warn('no curr');
-            return;
-          } else {
-            const travelDir = getDirectionFromPoints(prev, curr);
-            const chordToneDegree = getChordToneDegreeFromDir(travelDir);
-
-            {
-              // AudioNote Block
-              try {
-                const vel = pointer % 2 === 0 ? 0.2 : 0.4;
-                let freq = toTone(curr.x, curr.y, chordToneDegree);
-
-                if (!audioNote1) {
-                  audioNote1 = fireAudioNote(freq, vel);
-                }
-
-                else if (curr.tileType === 'teleport') {
-
-                  audioNote1.stop(0.015);
-
-                  freq = major7(toTone(curr.x, curr.y, chordToneDegree))[getRandomInt(4)];
-
-                  audioNote1 = fireAudioNote(freq, vel);
-                }
-                else if (prevDir === travelDir) {
-                  audioNote1 = audioNote1;
-                }
-                else {
-                  audioNote1.stop(0.2);
-                  audioNote1 = fireAudioNote(freq, vel);
-                }
-                prevDir = travelDir;
-
-                // audioNote1 = fireAudioNote(freq, vel);
-              } catch (e) {
-                console.error(`no audio note for you: ${e}`);
-              }
-            }
-
-            actor1.update({ x: curr.x, y: curr.y });
-
-            const isLink = curr.tileType === 'map-link' || curr.tileType === 'start' && !!curr.linkedMap;
-            linkedMapId = curr.linkedMap;
-
-            if (linkedMapId && isLink) {
-              isMoving = false;
-              actor1.update({ moving: isMoving });
-
-              loopEngine.pause();
-
-              await selectMapById(linkedMapId);
-              TRAVERSAL_GEN.return();
-              TRAVERSAL_GEN = graph.traverseHybrid(
-                graph.startNode,
-                () => goalNode
-              );
-
-              return;
-            }
-
-            curr.update({ isPathNode: true });
-
-            pointer++;
-
-            if (curr.id === goalNode.id) {
-              curr.update({ active: true, current: true });
-              console.warn('----- GOAL FOUND -----');
-            }
-
-            if (curr.tileType === 'teleport') {
-              actor1.update({ teleporting: true });
-
-              if (curr.id === currentNode.id) {
-                curr.update({ active: false, current: false });
-
-              }
-
-              actor1.update({ x: curr.x, y: curr.y });
-
-              curr.update({ active: false, current: false });
-
-              await sleep(10);
-              shouldPreVel = !shouldPreVel;
-              actor1.update({ teleporting: false });
-
-            }
-
-            const reachedGoal = goalNode && currentNode.id === goalNode.id;
-
-            if (reachedGoal) {
-              isMoving = false;
-              actor1.update({ moving: isMoving });
-
-              loopEngine.pause();
-            }
-          }
-
-        } catch (e) {
-          console.error(e);
-          isMoving = false;
-          actor1.update({ moving: isMoving });
-
-          loopEngine.pause();
-        }
-      };
-
-      if (!hasSetTraversalRoutine) {
-        hasSetTraversalRoutine = true;
-        loopEngine.addRoutine(traverseMap);
-      }
-
-      loopEngine.start();
-    }
+    actor1.travelTo(goalNode);
   };
 
   const handleEditTileClick = async (targetNode) => {
@@ -596,8 +410,10 @@ export const runCanvas = async (mapId) => {
   });
 
   return () => {
+    unsubscribeActorMapLink();
+    actor1.destroy();
     loopEngine.destroy();
-    TRAVERSAL_GEN.return();
+    removeFrameRateRoutine();
     unsubscribeMapLoad();
     unsubscribeNodeUpdate();
     unwatch();

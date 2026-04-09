@@ -1,6 +1,7 @@
 import ham from 'ham';
 import { createCustomEvent } from '../lib/create-event.js';
 import { CanvasObject, DefaultCanvasObjectOptions } from './CanvasObject.js';
+import { CanvasActor } from './CanvasActor.js';
 import { initHueRoto } from '../lib/hue-rotato.js';
 import { Scene } from '../canvas/Scene.js';
 import { TileObject } from '../canvas/TileObject.js';
@@ -216,10 +217,14 @@ export class SVGCanvas extends EventTarget {
 
   createObject(type, model = {}) {
     if (type === 'tile') {
-      return this.createTileObject.bind(this)(model);
+      return new TileObject(this, { id: model.id ?? model.address, model });
     }
 
-    const cObj = new CanvasObject(this, type, { model });
+    if (type === 'actor') {
+      return new CanvasActor(this, { id: model.id, model });
+    }
+
+    const cObj = new CanvasObject(this, type, { id: model.id, model });
 
     return cObj;
   }
@@ -237,11 +242,6 @@ export class SVGCanvas extends EventTarget {
       id: null,
     };
     console.warn(model);
-
-    // const t = new TileObject(this, {
-    //   // id: node.id,
-    //   model,
-    // });
 
     return t;
   }
