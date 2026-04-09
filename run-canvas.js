@@ -245,10 +245,10 @@ export const runCanvas = async (mapId) => {
     
   });
   const unsubscribeActorMove = actor1.on('actor:move', async ({ point, prevPoint }) => {
-    const prev = graph.getNodeAtPoint(prevPoint)
-    const curr = graph.getNodeAtPoint(point)
-    prev.update({ current: false })
-    curr.update({ current: true })
+    // const prev = graph.getNodeAtPoint(prevPoint)
+    // const curr = graph.getNodeAtPoint(point)
+    // prev.update({ selected: false })
+    // curr.update({ selected: true })
     
   });
   

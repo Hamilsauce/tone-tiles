@@ -48,7 +48,7 @@
   ry: 5;
 }
 
-.tile[data-tile-type=map-link]>*{
+.tile[data-tile-type=map-link]>* {
   fill: #1DEDAE;
   rx: 0.5;
   ry: 0.5;
@@ -72,11 +72,15 @@
 .tile[data-active=true]>* {
   fill: #E218EF !important;
   /* stroke: #14CC3A; */
+  transition: 0.25s ease !important;
+
+  
 }
 
 .tile[data-current=true]>* {
   fill: #4D7E2A;
   stroke: #FDFDFD;
+
 }
 
 .tile[data-active=true][data-is-path-node=false] text {
