@@ -1,99 +1,151 @@
 import { Subject } from 'rxjs';
+import {
+  distinctUntilChanged,
+  filter,
+  groupBy,
+  map,
+  share,
+} from 'rxjs/operators';
 
-export class ToneTilesRuntime {
+const now = () => {
+  if (typeof performance !== 'undefined' && typeof performance.now === 'function') {
+    return performance.now();
+  }
+
+  return Date.now();
+};
+
+export class Runtime {
   constructor() {
-    // --- Subsystems ---
-    this.graph = null;
-    this.traversal = null;
-    this.audio = null;
-    this.renderer = null;
-    this.loop = null;
-    
-    // --- Event ingress (subjects) ---
-    this.events = {
-      nodeUpdate$: new Subject(),
-      objectMove$: new Subject(),
-      actorStep$: new Subject(),
-      tick$: new Subject(),
+    this.event$ = new Subject();
+    this.#channels = new Map();
+    this.#teardowns = [];
+  }
+
+  #channels;
+  #teardowns;
+
+  dispatch(action = {}) {
+    const event = this.#normalizeAction(action);
+
+    this.event$.next(event);
+
+    return event;
+  }
+
+  connectEmitter(emitter, eventMap = {}) {
+    if (!emitter || typeof emitter.on !== 'function') {
+      throw new TypeError('Runtime.connectEmitter requires an emitter with an on(eventName, handler) method');
+    }
+
+    const disconnectors = Object.entries(eventMap).map(([eventName, createAction]) => {
+      if (typeof createAction !== 'function') {
+        throw new TypeError(`Runtime.connectEmitter expected an action creator for "${eventName}"`);
+      }
+
+      const handler = (payload = {}) => {
+        this.dispatch(createAction(payload));
+      };
+
+      const teardown = emitter.on(eventName, handler);
+
+      if (typeof teardown === 'function') {
+        this.#teardowns.push(teardown);
+        return teardown;
+      }
+
+      if (typeof emitter.off === 'function') {
+        const off = () => emitter.off(eventName, handler);
+        this.#teardowns.push(off);
+        return off;
+      }
+
+      if (teardown && typeof teardown.unsubscribe === 'function') {
+        const unsubscribe = () => teardown.unsubscribe();
+        this.#teardowns.push(unsubscribe);
+        return unsubscribe;
+      }
+
+      return null;
+    });
+
+    return () => {
+      disconnectors.forEach(disconnect => disconnect?.());
+      this.#teardowns = this.#teardowns.filter(teardown => !disconnectors.includes(teardown));
     };
-    
-    // --- Subscriptions (for cleanup) ---
-    this._subscriptions = [];
-    
-    this.informationSuperHighway = combineLatest(
-      ...Object.values(this.events),
-      (nodeUpdate, objectMove, actorStep) => ({ nodeUpdate, objectMove, actorStep })
+  }
+
+  channel(type) {
+    if (!this.#channels.has(type)) {
+      const shared$ = this.event$.pipe(
+        filter(event => event.type === type),
+        share(),
+      );
+
+      this.#channels.set(type, shared$);
+    }
+
+    return this.#channels.get(type);
+  }
+
+  fromChannel(type, options = {}) {
+    const { map: mapPayload, filter: filterPayload, distinct } = options;
+
+    let stream$ = this.channel(type).pipe(
+      map(event => event.payload),
     );
-    
+
+    if (typeof mapPayload === 'function') {
+      stream$ = stream$.pipe(map(mapPayload));
+    }
+
+    if (typeof filterPayload === 'function') {
+      stream$ = stream$.pipe(filter(filterPayload));
+    }
+
+    if (typeof distinct === 'function') {
+      stream$ = stream$.pipe(distinctUntilChanged(distinct));
+    }
+
+    return stream$.pipe(share());
   }
-  
-  init({ graph, traversal, audio, renderer, loop }) {
-    this.graph = graph;
-    this.traversal = traversal;
-    this.audio = audio;
-    this.renderer = renderer;
-    this.loop = loop;
-    
-    this.#wireEmitters();
-    this.#setupPipelines();
+
+  groupedByType() {
+    return this.event$.pipe(groupBy(event => event.type));
   }
-  
-  start() {
-    this.loop.start();
+
+  destroy() {
+    this.#teardowns.forEach(teardown => teardown?.());
+    this.#teardowns = [];
+    this.#channels.clear();
+    this.event$.complete();
   }
-  
-  stop() {
-    this.loop.stop();
-    this._subscriptions.forEach(sub => sub.unsubscribe());
+
+  #normalizeAction(action) {
+    if (!action || typeof action !== 'object') {
+      throw new TypeError('Runtime.dispatch requires an action object');
+    }
+
+    if (typeof action.type !== 'string' || action.type.length === 0) {
+      throw new TypeError('Runtime.dispatch requires action.type to be a non-empty string');
+    }
+
+    return {
+      type: action.type,
+      payload: this.#normalizePayload(action.payload),
+      t: typeof action.t === 'number' ? action.t : now(),
+    };
   }
-  
-  // -------------------------
-  // INTERNALS
-  // -------------------------
-  
-  #wireEmitters() {
-    // Graph → streams
-    this.graph.on('node:update', e => {
-      this.events.nodeUpdate$.next(e);
-    });
-    
-    this.graph.on('object:move', e => {
-      this.events.objectMove$.next(e);
-    });
-    
-    // Traversal → streams
-    this.traversal.on('actor:step', e => {
-      this.events.actorStep$.next(e);
-    });
-    
-    // Loop → streams
-    this.loop.onTick(t => {
-      this.events.tick$.next(t);
-    });
-  }
-  
-  #setupPipelines() {
-    const { actorStep$, tick$ } = this.events;
-    
-    // --- Example: drive traversal from loop ---
-    this._subscriptions.push(
-      tick$.subscribe(() => {
-        this.traversal.step();
-      })
-    );
-    
-    // --- Example: actor movement → audio ---
-    this._subscriptions.push(
-      actorStep$.subscribe(e => {
-        this.audio.playStep(e);
-      })
-    );
-    
-    // --- Example: actor movement → rendering ---
-    this._subscriptions.push(
-      actorStep$.subscribe(e => {
-        this.renderer.updateActor(e);
-      })
-    );
+
+  #normalizePayload(payload) {
+    if (!payload || typeof payload !== 'object') {
+      return {};
+    }
+
+    return payload;
   }
 }
+
+export class ToneTilesRuntime extends Runtime {}
+
+export default Runtime;
