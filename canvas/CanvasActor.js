@@ -19,7 +19,7 @@ const getRandomInt = (max = 4) => {
 
 const fireAudioNote = (audioContext, freq, vel, dur = 2) => {
   if (!audioContext || !freq) return null;
-
+  
   return new AudioNote(audioContext)
     .at(audioContext.currentTime)
     .frequencyHz(freq)
@@ -30,7 +30,6 @@ const fireAudioNote = (audioContext, freq, vel, dur = 2) => {
 
 export class CanvasActor extends CanvasObject {
   #graph = null;
-  #loop = null;
   #removeRoutine = null;
   #traversalGen = null;
   #goalNode = null;
@@ -45,40 +44,40 @@ export class CanvasActor extends CanvasObject {
   #onGoal = () => {};
   #isStepping = false;
   #idleReason = null;
-
+  
   constructor(ctx, options = DefaultCanvasObjectOptions) {
     const model = {
       ...DefaultCanvasActorModel,
       ...(options.model ?? {}),
     };
-
+    
     super(ctx, 'actor', {
       ...options,
       model,
     });
-
+    
     this.stepTraversal = this.stepTraversal.bind(this);
   }
-
+  
   get currentNode() { return this.#currentNode; }
-
+  
   get currentPoint() {
     return this.#currentNode?.point ?? this.point;
   }
-
+  
   get goalNode() { return this.#goalNode; }
-
+  
   get goalPoint() {
     return this.#goalNode?.point ?? null;
   }
-
+  
   get point() {
     return CanvasPoint.from(this.model);
   }
-
+  
   configure({
     graph,
-    loop,
+    addRoutine,
     audioContext,
     getTone,
     onCurrentNode,
@@ -87,36 +86,35 @@ export class CanvasActor extends CanvasObject {
     if (graph) {
       this.#graph = graph;
     }
-
-    if (loop && loop !== this.#loop) {
+    
+    if (addRoutine) {
       this.#removeRoutine?.();
-      this.#loop = loop;
-      this.#removeRoutine = this.#loop.addRoutine(this.stepTraversal);
+      this.#removeRoutine = addRoutine(this.stepTraversal);
     }
-
+    
     if (audioContext) {
       this.#audioContext = audioContext;
     }
-
+    
     if (typeof getTone === 'function') {
       this.#getTone = getTone;
     }
-
+    
     if (typeof onCurrentNode === 'function') {
       this.#onCurrentNode = onCurrentNode;
     }
-
+    
     if (typeof onGoal === 'function') {
       this.#onGoal = onGoal;
     }
-
+    
     return this;
   }
-
+  
   resetTraversal(startNode = this.#graph?.startNode) {
     this.#traversalGen?.return?.();
     this.#stopAudio(0.05);
-
+    
     this.#goalNode = null;
     this.#dtSum = 0;
     this.#pointer = 0;
@@ -124,7 +122,7 @@ export class CanvasActor extends CanvasObject {
     this.#isStepping = false;
     this.#idleReason = null;
     this.#currentNode = startNode ?? null;
-
+    
     if (this.#graph && this.#currentNode) {
       this.#traversalGen = this.#graph.traversePoints(
         this.#currentNode,
@@ -133,7 +131,7 @@ export class CanvasActor extends CanvasObject {
     } else {
       this.#traversalGen = null;
     }
-
+    
     if (this.#currentNode) {
       this.update({
         x: this.#currentNode.x,
@@ -141,111 +139,107 @@ export class CanvasActor extends CanvasObject {
         moving: false,
         teleporting: false,
       });
-
+      
       this.#onCurrentNode(this.#currentNode);
     }
-
+    
     return this;
   }
-
+  
   travelTo(goalNode) {
     if (!goalNode || !goalNode.isTraversable) {
       return false;
     }
-
-    if (!this.#graph || !this.#loop) {
-      throw new Error('CanvasActor must be configured with graph and loop before travel');
+    
+    if (!this.#graph) {
+      throw new Error('CanvasActor must be configured with graph before travel');
     }
-
+    
     if (!this.#traversalGen || !this.#currentNode) {
       this.resetTraversal(this.#graph.startNode);
     }
-
+    
     this.#clearTraversalState();
     this.#goalNode = goalNode;
     this.#idleReason = null;
     this.update({ moving: true, teleporting: false });
+    
     this.emit('actor:travel', {
       actor: this,
       goalNode,
       goalPoint: goalNode.point,
     });
-    this.#loop.start();
-
+    
     return true;
   }
-
-  stop({ pauseLoop = false, audioFade = 0.2 } = {}) {
+  
+  stop({ audioFade = 0.2 } = {}) {
     this.update({ moving: false, teleporting: false });
     this.#goalNode = null;
     this.#dtSum = 0;
     this.#idleReason = null;
     this.#stopAudio(audioFade);
-
-    if (pauseLoop) {
-      this.#loop?.pause();
-    }
-
+    
     this.emit('actor:stop', {
       actor: this,
       currentNode: this.#currentNode,
       currentPoint: this.currentPoint,
     });
-
+    
     return this;
   }
-
+  
   async stepTraversal(dt, currentTime) {
     if (!this.#traversalGen || !this.#goalNode) {
       return;
     }
-
+    
     this.#dtSum += dt;
     if (this.#dtSum <= 0.1 || this.#isStepping) {
       return;
     }
-
+    
     this.#dtSum = 0;
     this.#isStepping = true;
-
+    
     try {
       const prev = this.#currentNode;
       const prevPoint = prev?.point ?? this.currentPoint;
       const currPoint = this.#traversalGen.next().value;
-
+      
       if (!currPoint) {
         this.#enterIdle('no-node');
         return;
       }
-
+      
       const curr = this.#graph?.getNodeByPoint(currPoint);
-
+      
       if (!curr) {
         this.#enterIdle('missing-node');
         return;
       }
-
+      
       this.#currentNode = curr;
       this.#onCurrentNode(curr);
-
+      
       if (prevPoint?.equals(currPoint)) {
         this.#enterIdle('same-node');
         return;
       }
-
+      
       this.#idleReason = null;
-
+      
       if (prev && prev.tileType === 'teleport') {
         this.update({ teleporting: false });
       }
-
+      
       this.#playStepTone(prev, curr);
       this.update({
         x: curr.x,
         y: curr.y,
         moving: true,
       });
-
+      
       this.emit('actor:move', {
         actor: this,
         prevNode: prev,
@@ -253,10 +247,10 @@ export class CanvasActor extends CanvasObject {
         prevPoint,
         point: currPoint,
       });
-
+      
       const isLink = curr.tileType === 'map-link' || (curr.tileType === 'start' && !!curr.linkedMap);
       const linkedMapId = curr.linkedMap;
-
+      
       if (linkedMapId && isLink) {
         this.stop();
         this.emit('actor:map-link', {
@@ -265,15 +259,16 @@ export class CanvasActor extends CanvasObject {
           point: currPoint,
           linkedMapId,
         });
-
+        
         return;
       }
-
+      
       curr.update({ isPathNode: true });
       this.#pointer++;
-
+      
       if (this.#goalNode && curr.id === this.#goalNode.id) {
-        curr.update({ active: true, current: true });
+        // curr.update({ active: true, current: true });
+        
         this.emit('actor:goal', {
           actor: this,
           node: curr,
@@ -285,7 +280,7 @@ export class CanvasActor extends CanvasObject {
         this.stop();
         return;
       }
-
+      
       if (curr.tileType === 'teleport') {
         this.update({ teleporting: true });
         curr.update({ active: false, current: false });
@@ -294,7 +289,7 @@ export class CanvasActor extends CanvasObject {
           node: curr,
           point: currPoint,
         });
-
+        
         await sleep(10);
         this.update({ teleporting: false });
       }
@@ -305,19 +300,19 @@ export class CanvasActor extends CanvasObject {
       this.#isStepping = false;
     }
   }
-
+  
   destroy() {
     this.#traversalGen?.return?.();
     this.#removeRoutine?.();
     this.#removeRoutine = null;
     this.#stopAudio(0.05);
-
+    
     return super.destroy();
   }
-
+  
   #clearTraversalState() {
     if (!this.#graph) return;
-
+    
     this.#graph.nodes
       .filter(node => {
         const data = node.data();
@@ -331,23 +326,23 @@ export class CanvasActor extends CanvasObject {
         });
       });
   }
-
+  
   #playStepTone(prev, curr) {
     if (!this.#audioContext) return;
-
+    
     const travelDir = getDirectionFromPoints(prev?.point ?? prev, curr?.point ?? curr);
     const chordToneDegree = getChordToneDegreeFromDir(travelDir);
     const vel = this.#pointer % 2 === 0 ? 0.2 : 0.4;
     let freq = this.#getTone(curr.x, curr.y, chordToneDegree);
-
+    
     if (!freq) return;
-
+    
     if (!this.#audioNote) {
       this.#audioNote = fireAudioNote(this.#audioContext, freq, vel);
       this.#prevDir = travelDir;
       return;
     }
-
+    
     if (curr.tileType === 'teleport') {
       this.#audioNote.stop(0.015);
       freq = major7(freq)[getRandomInt(4)];
@@ -355,29 +350,29 @@ export class CanvasActor extends CanvasObject {
       this.#prevDir = travelDir;
       return;
     }
-
+    
     if (this.#prevDir !== travelDir) {
       this.#audioNote.stop(0.2);
       this.#audioNote = fireAudioNote(this.#audioContext, freq, vel);
     }
-
+    
     this.#prevDir = travelDir;
   }
-
+  
   #stopAudio(time = 0.2) {
     this.#audioNote?.stop(time);
     this.#audioNote = null;
   }
-
+  
   #enterIdle(reason = 'idle') {
     if (this.model.moving) {
       this.update({ moving: false, teleporting: false });
     }
-
+    
     if (this.#idleReason === reason) {
       return;
     }
-
+    
     this.#idleReason = reason;
     this.emit('actor:idle', {
       actor: this,

@@ -70,8 +70,8 @@
 }
 
 .tile[data-active=true]>* {
-  fill: #BB1D1D;
-  stroke: #14CC3A;
+  fill: #E218EF !important;
+  /* stroke: #14CC3A; */
 }
 
 .tile[data-current=true]>* {
