@@ -228,7 +228,6 @@ export const runCanvas = async (mapId) => {
   actor1.configure({
     graph,
     addRoutine: loopEngine.addRoutine.bind(loopEngine),
-    // loop: loopEngine,
     audioContext: audioEngine.ctx,
     getTone: toTone,
     onCurrentNode: (node) => setCurrentNode(node.data()),
@@ -237,13 +236,12 @@ export const runCanvas = async (mapId) => {
   const unsubscribeActorMapLink = actor1.on('actor:map-link', async ({ linkedMapId }) => {
     await selectMapById(linkedMapId);
   });
+  
   const unsubscribeActorTravel = actor1.on('actor:travel', async ({ point, goalPoint }) => {
     const g = graph.getNodeAtPoint(goalPoint)
-    // const curr = graph.getNodeAtPoint(point)
     g.update({ active: true })
-    // curr.update({ current: true })
-    
   });
+  
   const unsubscribeActorMove = actor1.on('actor:move', async ({ point, prevPoint }) => {
     // const prev = graph.getNodeAtPoint(prevPoint)
     // const curr = graph.getNodeAtPoint(point)
@@ -300,6 +298,7 @@ export const runCanvas = async (mapId) => {
     if (!goalNode || !goalNode.isTraversable) {
       console.warn('NO GOAL OR GOAL NOT TRAVERSABLE. Early return');
       console.warn(goalNode?.id, goalNode?.isTraversable);
+      actor1.stop();
       
       return;
     }
@@ -367,6 +366,10 @@ export const runCanvas = async (mapId) => {
     
     return;
   };
+  
+  svgCanvas.addEventListener('surface:click', (e) => {
+    actor1.stop();
+  });
   
   svgCanvas.addEventListener('tile:click', (e) => {
     e.preventDefault();
