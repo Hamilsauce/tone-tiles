@@ -1,27 +1,65 @@
 export class CanvasPoint {
-  #self = new DOMPoint();
-  
+  #x = 0;
+  #y = 0;
+
   constructor(x = 0, y = 0) {
-    this.#self.x = x;
-    this.#self.y = y;
+    this.#x = Number(x);
+    this.#y = Number(y);
   }
-  
-  get x() { return this.#self.x }
-  get y() { return this.#self.y }
-  
+
+  static from(value) {
+    if (value instanceof CanvasPoint) {
+      return value;
+    }
+
+    if (!value || value.x === undefined || value.y === undefined) {
+      return new CanvasPoint();
+    }
+
+    return new CanvasPoint(value.x, value.y);
+  }
+
+  get x() { return this.#x; }
+
+  get y() { return this.#y; }
+
+  get key() {
+    return `${this.x}_${this.y}`;
+  }
+
+  equals(other) {
+    if (!other) return false;
+
+    const point = CanvasPoint.from(other);
+    return this.x === point.x && this.y === point.y;
+  }
+
+  clone() {
+    return new CanvasPoint(this.x, this.y);
+  }
+
+  toJSON() {
+    return {
+      x: this.x,
+      y: this.y,
+    };
+  }
+
   toDOMPoint() {
-    return this.#self
+    return new DOMPoint(this.x, this.y);
   }
-  
+
   transform(matrix) {
-    const p = this.#self.matrixTransform(matrix)
-    return new CanvasPoint(p.x, p.y)
+    const p = this.toDOMPoint().matrixTransform(matrix);
+    return new CanvasPoint(p.x, p.y);
   }
-  
+
   lerp(to, t) {
+    const point = CanvasPoint.from(to);
+
     return new CanvasPoint(
-      this.x + (to.x - this.x) * t,
-      this.y + (to.y - this.y) * t
-    )
+      this.x + (point.x - this.x) * t,
+      this.y + (point.y - this.y) * t
+    );
   }
 }

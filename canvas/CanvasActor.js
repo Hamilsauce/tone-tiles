@@ -1,4 +1,5 @@
 import { CanvasObject, DefaultCanvasObjectOptions } from './CanvasObject.js';
+import { CanvasPoint } from './CanvasPoint.js';
 import { AudioNote } from '../audio/AudioNote.js';
 import { getChordToneDegreeFromDir, getDirectionFromPoints } from '../lib/graph.model.js';
 import { major7 } from '../MUSIC_THEORY_FUNCTIONS.js';
@@ -61,7 +62,19 @@ export class CanvasActor extends CanvasObject {
 
   get currentNode() { return this.#currentNode; }
 
+  get currentPoint() {
+    return this.#currentNode?.point ?? this.point;
+  }
+
   get goalNode() { return this.#goalNode; }
+
+  get goalPoint() {
+    return this.#goalNode?.point ?? null;
+  }
+
+  get point() {
+    return CanvasPoint.from(this.model);
+  }
 
   configure({
     graph,
@@ -113,7 +126,7 @@ export class CanvasActor extends CanvasObject {
     this.#currentNode = startNode ?? null;
 
     if (this.#graph && this.#currentNode) {
-      this.#traversalGen = this.#graph.traverseHybrid(
+      this.#traversalGen = this.#graph.traversePoints(
         this.#currentNode,
         () => this.#goalNode
       );
@@ -152,7 +165,11 @@ export class CanvasActor extends CanvasObject {
     this.#goalNode = goalNode;
     this.#idleReason = null;
     this.update({ moving: true, teleporting: false });
-    this.emit('actor:travel', { actor: this, goalNode });
+    this.emit('actor:travel', {
+      actor: this,
+      goalNode,
+      goalPoint: goalNode.point,
+    });
     this.#loop.start();
 
     return true;
@@ -172,6 +189,7 @@ export class CanvasActor extends CanvasObject {
     this.emit('actor:stop', {
       actor: this,
       currentNode: this.#currentNode,
+      currentPoint: this.currentPoint,
     });
 
     return this;
@@ -192,17 +210,25 @@ export class CanvasActor extends CanvasObject {
 
     try {
       const prev = this.#currentNode;
-      const curr = this.#traversalGen.next().value;
+      const prevPoint = prev?.point ?? this.currentPoint;
+      const currPoint = this.#traversalGen.next().value;
+
+      if (!currPoint) {
+        this.#enterIdle('no-node');
+        return;
+      }
+
+      const curr = this.#graph?.getNodeByPoint(currPoint);
 
       if (!curr) {
-        this.#enterIdle('no-node');
+        this.#enterIdle('missing-node');
         return;
       }
 
       this.#currentNode = curr;
       this.#onCurrentNode(curr);
 
-      if (prev && prev.id === curr.id) {
+      if (prevPoint?.equals(currPoint)) {
         this.#enterIdle('same-node');
         return;
       }
@@ -224,6 +250,8 @@ export class CanvasActor extends CanvasObject {
         actor: this,
         prevNode: prev,
         node: curr,
+        prevPoint,
+        point: currPoint,
       });
 
       const isLink = curr.tileType === 'map-link' || (curr.tileType === 'start' && !!curr.linkedMap);
@@ -234,6 +262,7 @@ export class CanvasActor extends CanvasObject {
         this.emit('actor:map-link', {
           actor: this,
           node: curr,
+          point: currPoint,
           linkedMapId,
         });
 
@@ -249,6 +278,8 @@ export class CanvasActor extends CanvasObject {
           actor: this,
           node: curr,
           goalNode: this.#goalNode,
+          point: currPoint,
+          goalPoint: this.goalPoint,
         });
         this.#onGoal(curr);
         this.stop();
@@ -261,6 +292,7 @@ export class CanvasActor extends CanvasObject {
         this.emit('actor:teleport', {
           actor: this,
           node: curr,
+          point: currPoint,
         });
 
         await sleep(10);
@@ -303,7 +335,7 @@ export class CanvasActor extends CanvasObject {
   #playStepTone(prev, curr) {
     if (!this.#audioContext) return;
 
-    const travelDir = getDirectionFromPoints(prev, curr);
+    const travelDir = getDirectionFromPoints(prev?.point ?? prev, curr?.point ?? curr);
     const chordToneDegree = getChordToneDegreeFromDir(travelDir);
     const vel = this.#pointer % 2 === 0 ? 0.2 : 0.4;
     let freq = this.#getTone(curr.x, curr.y, chordToneDegree);
@@ -351,6 +383,8 @@ export class CanvasActor extends CanvasObject {
       actor: this,
       node: this.#currentNode,
       goalNode: this.#goalNode,
+      point: this.currentPoint,
+      goalPoint: this.goalPoint,
       reason,
     });
   }
