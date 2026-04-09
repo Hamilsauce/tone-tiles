@@ -2,11 +2,12 @@ import getGraph from './lib/graph.model.js';
 import { SVGCanvas } from './canvas/SVGCanvas.js';
 import { getTileSelector } from 'https://hamilsauce.github.io/svg-range-selector/tile-selector.js';
 import { initMapControls } from './ui/map-selection.js';
-import { audioEngine } from './audio/index.js';
 import { useAppState } from './store/app.store.js';
-import { AudioClockLoop } from './lib/loop-engine.js';
 import { frameRate } from './lib/frame-rate.js';
-import { getScaleNotes, getChordNotes, pitchToFrequency } from './MUSIC_THEORY_FUNCTIONS.js';
+
+import { AudioClockLoop } from './lib/loop-engine.js';
+import { audioEngine } from './audio/index.js';
+import audioNote1 from './audio/fire-audio-note1.js'
 import { ContextMenu } from './canvas/ContextMenu.js';
 import { watch, toValue } from 'vue';
 import { useMapStore } from './store/map.store.js';
@@ -175,63 +176,25 @@ export const runCanvas = async (mapId) => {
   }, { immediate: true });
   
   
-  //! end bindings
   
   
   let isSelectingLinkTile = false;
   let selectedTileBeingLinked = null;
   
-  const harmonicCxt = {
-    root: 'C4',
-    scale: 'major',
-    octave: 4,
-    notes: getScaleNotes('C4', 'major'),
-    chordNotes: getChordNotes('C4', 'major'),
-  };
-  
-  const getTileDegree = (x, scaleLength) => {
-    return harmonicCxt.notes[x % scaleLength].pitchClass;
-  };
-  
-  const getTileOctave = (y, scaleLength) => {
-    return Math.floor(y / scaleLength) + harmonicCxt.octave;
-  };
-  
-  function getScaleDegree(x, y, arp) {
-    return arp ? (x + y) % harmonicCxt.chordNotes.length : (x + y) % harmonicCxt.notes.length;
-  }
-  
-  const getTileTone = (x, y, degree, arp = false) => {
-    const deg = degree ?? getScaleDegree(x, y, arp);
-    
-    const pitch = arp ? harmonicCxt.chordNotes[deg] : harmonicCxt.notes[deg];
-    return pitchToFrequency(pitch.pitch);
-  };
-  
-  const getDynamicTone = (x, y, dir = 1) => {
-    const mod = y > 5 ? -2 : 0;
-    
-    const pitchClass = getTileDegree(x, harmonicCxt.notes.length);
-    const octave = getTileOctave(Math.min(y, 5), harmonicCxt.notes.length);
-    
-    const pitch = `${pitchClass}${octave + dir}`;
-    
-    return pitchToFrequency(pitch);
-  };
-  
-  const _toTone = (x, y, deg) => (x % 2 && y % 2) ?
-    getDynamicTone(x, y, 0) :
-    getTileTone(x, y, deg, true);
-  
-  const toTone = (x, y, deg, arp) => getTileTone(x, y, deg, arp);
-  
   actor1.configure({
     graph,
     addRoutine: loopEngine.addRoutine.bind(loopEngine),
-    audioContext: audioEngine.ctx,
-    getTone: toTone,
     onCurrentNode: (node) => setCurrentNode(node.data()),
   });
+  
+  const unsubscribeSelectionBox = selectionBox.on('selection', ({ type, points, ...range }) => {
+    const { start, end } = range;
+    
+    selectedRange = graph.getRange({ type, points, ...range });
+    
+    contextMenu.update({ x: start.x, y: start.y - 2 }).show();
+  });
+  
   
   const unsubscribeActorMapLink = actor1.on('actor:map-link', async ({ linkedMapId }) => {
     await selectMapById(linkedMapId);
@@ -243,16 +206,20 @@ export const runCanvas = async (mapId) => {
   });
   
   const unsubscribeActorMove = actor1.on('actor:move', async ({ point, prevPoint }) => {
-    // const prev = graph.getNodeAtPoint(prevPoint)
-    // const curr = graph.getNodeAtPoint(point)
-    // prev.update({ selected: false })
-    // curr.update({ selected: true })
+    // need to separate Actor Model from canvas object
+    // have actor1 model emit this, and then 
     
+    // scene.layers.object.get('actor1').update()
+    const node = graph.getNodeAtPoint(point)
+    
+    audioNote1(node)
   });
   
   const removeFrameRateRoutine = loopEngine.addRoutine((dt) => {
     setFrameRate(frameRate(dt * 1000));
   });
+  
+  //! end bindings
   
   loopEngine.start();
   
@@ -302,8 +269,6 @@ export const runCanvas = async (mapId) => {
       
       return;
     }
-    // goalNode.update({ active: true })
-    // goalNode.update({ active: true })
     
     actor1.travelTo(goalNode);
   };
@@ -421,23 +386,10 @@ export const runCanvas = async (mapId) => {
     };
   });
   
-  let hasSetListener = false;
-  
-  selectionBox.on('selection', ({ type, points, ...range }) => {
-    const { start, end } = range;
-    
-    selectedRange = graph.getRange({ type, points, ...range });
-    
-    contextMenu.update({ x: start.x, y: start.y - 2 }).show();
-    
-    if (!hasSetListener) {
-      selectionBox.dom.addEventListener('dblclick', e => {});
-    }
-    
-  });
   
   return () => {
     unsubscribeActorMapLink();
+    unsubscribeSelectionBox();
     actor1.destroy();
     loopEngine.destroy();
     removeFrameRateRoutine();

@@ -52,7 +52,7 @@ export const SVGCanvasHost = defineComponent(
     
     watch(mapId, async (id, prev) => {
       if (id && id !== prev) {
-        // await mapStore.setCurrentMapById(id);
+        await mapStore.setCurrentMapById(id);
       }
     });
     

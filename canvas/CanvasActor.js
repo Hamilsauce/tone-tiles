@@ -1,8 +1,5 @@
 import { CanvasObject, DefaultCanvasObjectOptions } from './CanvasObject.js';
 import { CanvasPoint } from './CanvasPoint.js';
-import { AudioNote } from '../audio/AudioNote.js';
-import { getChordToneDegreeFromDir, getDirectionFromPoints } from '../lib/graph.model.js';
-import { major7 } from '../MUSIC_THEORY_FUNCTIONS.js';
 
 const DefaultCanvasActorModel = {
   x: 0,
@@ -13,21 +10,6 @@ const DefaultCanvasActorModel = {
 
 const sleep = (ms = 0) => new Promise(resolve => setTimeout(resolve, ms));
 
-const getRandomInt = (max = 4) => {
-  return Math.floor(Math.random() * max);
-};
-
-const fireAudioNote = (audioContext, freq, vel, dur = 2) => {
-  if (!audioContext || !freq) return null;
-  
-  return new AudioNote(audioContext)
-    .at(audioContext.currentTime)
-    .frequencyHz(freq)
-    .duration(dur)
-    .velocity(vel)
-    .play();
-};
-
 export class CanvasActor extends CanvasObject {
   #graph = null;
   #removeRoutine = null;
@@ -35,11 +17,6 @@ export class CanvasActor extends CanvasObject {
   #goalNode = null;
   #currentNode = null;
   #dtSum = 0;
-  #pointer = 0;
-  #prevDir = null;
-  #audioContext = null;
-  #audioNote = null;
-  #getTone = () => null;
   #onCurrentNode = () => {};
   #onGoal = () => {};
   #isStepping = false;
@@ -78,8 +55,6 @@ export class CanvasActor extends CanvasObject {
   configure({
     graph,
     addRoutine,
-    audioContext,
-    getTone,
     onCurrentNode,
     onGoal,
   } = {}) {
@@ -90,14 +65,6 @@ export class CanvasActor extends CanvasObject {
     if (addRoutine) {
       this.#removeRoutine?.();
       this.#removeRoutine = addRoutine(this.stepTraversal);
-    }
-    
-    if (audioContext) {
-      this.#audioContext = audioContext;
-    }
-    
-    if (typeof getTone === 'function') {
-      this.#getTone = getTone;
     }
     
     if (typeof onCurrentNode === 'function') {
@@ -113,12 +80,9 @@ export class CanvasActor extends CanvasObject {
   
   resetTraversal(startNode = this.#graph?.startNode) {
     this.#traversalGen?.return?.();
-    this.#stopAudio(0.05);
     
     this.#goalNode = null;
     this.#dtSum = 0;
-    this.#pointer = 0;
-    this.#prevDir = null;
     this.#isStepping = false;
     this.#idleReason = null;
     this.#currentNode = startNode ?? null;
@@ -173,12 +137,11 @@ export class CanvasActor extends CanvasObject {
     return true;
   }
   
-  stop({ audioFade = 0.2 } = {}) {
+  stop() {
     this.update({ moving: false, teleporting: false });
     this.#goalNode = null;
     this.#dtSum = 0;
     this.#idleReason = null;
-    this.#stopAudio(audioFade);
     
     this.emit('actor:stop', {
       actor: this,
@@ -233,7 +196,7 @@ export class CanvasActor extends CanvasObject {
         this.update({ teleporting: false });
       }
       
-      this.#playStepTone(prev, curr);
+      // this.#playStepTone(prev, curr);
       this.update({
         x: curr.x,
         y: curr.y,
@@ -264,11 +227,8 @@ export class CanvasActor extends CanvasObject {
       }
       
       curr.update({ isPathNode: true });
-      this.#pointer++;
       
       if (this.#goalNode && curr.id === this.#goalNode.id) {
-        // curr.update({ active: true, current: true });
-        
         this.emit('actor:goal', {
           actor: this,
           node: curr,
@@ -305,7 +265,6 @@ export class CanvasActor extends CanvasObject {
     this.#traversalGen?.return?.();
     this.#removeRoutine?.();
     this.#removeRoutine = null;
-    this.#stopAudio(0.05);
     
     return super.destroy();
   }
@@ -325,43 +284,6 @@ export class CanvasActor extends CanvasObject {
           active: false,
         });
       });
-  }
-  
-  #playStepTone(prev, curr) {
-    if (!this.#audioContext) return;
-    
-    const travelDir = getDirectionFromPoints(prev?.point ?? prev, curr?.point ?? curr);
-    const chordToneDegree = getChordToneDegreeFromDir(travelDir);
-    const vel = this.#pointer % 2 === 0 ? 0.2 : 0.4;
-    let freq = this.#getTone(curr.x, curr.y, chordToneDegree);
-    
-    if (!freq) return;
-    
-    if (!this.#audioNote) {
-      this.#audioNote = fireAudioNote(this.#audioContext, freq, vel);
-      this.#prevDir = travelDir;
-      return;
-    }
-    
-    if (curr.tileType === 'teleport') {
-      this.#audioNote.stop(0.015);
-      freq = major7(freq)[getRandomInt(4)];
-      this.#audioNote = fireAudioNote(this.#audioContext, freq, vel);
-      this.#prevDir = travelDir;
-      return;
-    }
-    
-    if (this.#prevDir !== travelDir) {
-      this.#audioNote.stop(0.2);
-      this.#audioNote = fireAudioNote(this.#audioContext, freq, vel);
-    }
-    
-    this.#prevDir = travelDir;
-  }
-  
-  #stopAudio(time = 0.2) {
-    this.#audioNote?.stop(time);
-    this.#audioNote = null;
   }
   
   #enterIdle(reason = 'idle') {
