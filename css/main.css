@@ -232,7 +232,7 @@ body {
  */
 .edge-line>line {
   stroke: #0006FFC9;
-  stroke-width: 0.075;
+  stroke-width: 0.25;
   filter: brightness(1.4) drop-shadow(0 0 0.035px #3B3B3B73);
 }
 

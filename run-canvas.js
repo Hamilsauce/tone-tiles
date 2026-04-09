@@ -4,7 +4,6 @@ import { getTileSelector } from 'https://hamilsauce.github.io/svg-range-selector
 import { initMapControls } from './ui/map-selection.js';
 import { useAppState } from './store/app.store.js';
 import { frameRate } from './lib/frame-rate.js';
-
 import { AudioClockLoop } from './lib/loop-engine.js';
 import { audioEngine } from './audio/index.js';
 import audioNote1 from './audio/fire-audio-note1.js'
@@ -286,19 +285,25 @@ export const runCanvas = async (mapId) => {
         // TODO: Make lines into Canvad Object
         const line = createEdgeLine(targetNode, target);
         
+        objectLayer.append(line);
+        
         line.addEventListener('pointermove', e => {
           e.stopPropagation();
           e.preventDefault();
+          console.warn('isSelectingLinkTile', isSelectingLinkTile)
+          // if (isSelectingLinkTile) { // && selected === true) {
+          const newPoint = domPoint(line.parentElement, e.clientX, e.clientY);
+          // const newPoint = domPoint(svgCanvas.scene.dom, e.clientX, e.clientY);
+          const [endX, endY] = computeArrowEndpoint(
+            [targetNode.x + 0.5, newPoint.y + 0.5],
+            [targetNode.x + 0.5, newPoint.y + 0.5]
+          );
           
-          if (isSelectingLinkTile && selected === true) {
-            const newPoint = domPoint(line.parentElement, e.clientX, e.clientY);
-            
-            line.firstElementChild.setAttribute('x2', newPoint.x);
-            line.firstElementChild.setAttribute('y2', newPoint.y);
-          }
+          line.firstElementChild.setAttribute('x2', Math.round(newPoint.x));
+          line.firstElementChild.setAttribute('y2', Math.round(newPoint.y));
+          // }
         });
         
-        objectLayer.append(line);
       }
       
       contextMenu.show();
