@@ -1,32 +1,31 @@
 .actor {
-  fill: #00A7FF;
+  fill: #238BC1;
   stroke: #000000;
   stroke-width: 0.05px;
   pointer-events: none;
-  filter: invert(1);
-  transition: 0.15s ease-out;
+  filter: hue-rotate(200deg ) invert(1);
+  transition: 0.15s ease-out; 
+
   /* transform-origin: center center; */
   .actor-eye {
     fill: #FFFFFF
   }
-
+  
   .actor-mouth {
     stroke: #000000
   }
 }
 
 .actor[data-moving=false],
-.actor[data-moving=false] * {
-
-}
+.actor[data-moving=false] * {}
 
 .actor[data-moving=true][data-teleporting=false],
-.actor[data-moving=true][data-teleporting=false]> *{
+.actor[data-moving=true][data-teleporting=false]>* {
   /* fill: #38DD17; */
   /* scale: 0.75  */
   /* transition: 0.15s ease-out; */
   /* stroke-width: 0.00px; */
-
+  
 }
 
 .actor[data-teleporting=false],
@@ -35,7 +34,7 @@
 }
 
 .actor[data-teleporting=true],
-.actor[data-teleporting=true]  {
+.actor[data-teleporting=true] {
   /* fill: #783BC1; */
   r: 0.01;
   stroke-width: 0.00px;
