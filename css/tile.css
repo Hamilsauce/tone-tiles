@@ -15,10 +15,30 @@
   }
 }
 
-.tile {
+/* .tile {
   cursor: pointer;
   opacity: 1;
   transition: opacity 0.25s !important;
+  rx: 100;
+  ry: 100;
+  filter: invert(0);
+  transition: filter 1.25s !important;
+  
+} */
+
+.tile>* {
+  cursor: pointer;
+  opacity: 1;
+  /* transition: opacity 0.25s !important; */
+  rx: 100;
+  ry: 100;
+  fill: #FFFFFF7D;
+  stroke: #5F5F5F;
+  stroke-width: 0.025px;
+  
+  /* filter: invert(0); */
+  /* transition: 0.25s !important; */
+  
 }
 
 .map-link {
@@ -36,11 +56,11 @@
 }
 
 
-.tile>* {
+/* .tile>* {
   fill: #FFFFFF7D;
   stroke: #5F5F5F;
   stroke-width: 0.025px;
-}
+} */
 
 .tile[data-tile-type=map-link] {
   fill: #27ED1D;
@@ -73,14 +93,14 @@
   fill: #E218EF !important;
   /* stroke: #14CC3A; */
   transition: 0.25s ease !important;
-
+  
   
 }
 
 .tile[data-current=true]>* {
   fill: #4D7E2A;
   stroke: #FDFDFD;
-
+  
 }
 
 .tile[data-active=true][data-is-path-node=false] text {
@@ -88,7 +108,9 @@
 }
 
 .tile[data-highlight=true]>* {
-  fill: #9FFFF9;
+  fill: #9FFFF9D9;
+  transition: 0.5s ease;
+
 }
 
 .tile[data-highlight=true][data-is-path-node=false][data-tile-type=empty] text {
@@ -110,6 +132,15 @@
 .tile[data-selected=true]>* {
   stroke: #59595963;
   filter: hue-rotate(167deg);
+}
+
+.tile[data-occupied=true]>* {
+  /* stroke: #59595963; */
+  /* filter: invert(1); */
+  rx: 1;
+  ry: 1;
+  /* scale: 1.25; */
+  /* transition: 0.35s; */
 }
 
 /* .tile[data-linked-map=null],

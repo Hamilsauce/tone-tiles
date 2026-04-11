@@ -102,6 +102,9 @@ export const runCanvas = async (mapId) => {
   objectLayer = objectLayerObj.dom;
   selectionBox = getTileSelector(objectLayer);
   
+  let isSelectingLinkTile = false;
+  let selectedTileBeingLinked = null;
+  
   let selectedRange = [];
   let getSelectedRange = () => tileLayer.findAll({ selected: true });
   
@@ -140,6 +143,10 @@ export const runCanvas = async (mapId) => {
     type: 'actor',
     moving: false,
     teleporting: false,
+  }).configure({
+    graph,
+    addRoutine: loopEngine.addRoutine.bind(loopEngine),
+    // onCurrentNode: (node) => setCurrentNode(node.data()),
   });
   
   selectMapById = selectMapById ?? await initMapControls(graph, svgCanvas);
@@ -176,15 +183,11 @@ export const runCanvas = async (mapId) => {
   
   
   
-  
-  let isSelectingLinkTile = false;
-  let selectedTileBeingLinked = null;
-  
-  actor1.configure({
-    graph,
-    addRoutine: loopEngine.addRoutine.bind(loopEngine),
-    onCurrentNode: (node) => setCurrentNode(node.data()),
-  });
+  // actor1.configure({
+  //   graph,
+  //   addRoutine: loopEngine.addRoutine.bind(loopEngine),
+  //   onCurrentNode: (node) => setCurrentNode(node.data()),
+  // });
   
   const unsubscribeSelectionBox = selectionBox.on('selection', ({ type, points, ...range }) => {
     const { start, end } = range;
@@ -204,33 +207,40 @@ export const runCanvas = async (mapId) => {
     g.update({ active: true })
   });
   
-  const unsubscribeActorMove = actor1.on('actor:move', async ({ point, prevPoint }) => {
+  const unsubscribeActorMove = actor1.on('actor:move', async ({ id, point, prevPoint }) => {
     // need to separate Actor Model from canvas object
     // have actor1 model emit this, and then 
     
     // scene.layers.object.get('actor1').update()
     const node = graph.getNodeAtPoint(point)
+    // on('actor:move', ({ actorId, from, to }) => {
+    // const fromNode = this.getNodeAt(from);
+    // const toNode = this.getNodeAt(to);
+    
+    graph.moveObject(id, point, prevPoint)// fromNode, toNode);
+    // });
+    setCurrentNode(node.data());
     
     audioNote1(node)
   });
   
-  const removeFrameRateRoutine = loopEngine.addRoutine((dt) => {
-    setFrameRate(frameRate(dt * 1000));
-  });
+  // const removeFrameRateRoutine = loopEngine.addRoutine((dt) => {
+  //   setFrameRate(frameRate(dt * 1000));
+  // });
   
-  //! end bindings
+  //! end 1bindings
   
   loopEngine.start();
   
   const blurContextMenu = (e) => {
     const edgeLines = [...objectLayer.querySelectorAll('.edge-line')];
-    
+    console.warn('edgeLines', edgeLines)
     edgeLines.forEach(el => {
       el.remove();
     });
     
     if (contextMenu.isVisible) {
-      deselectRange();
+      // deselectRange();
       selectionBox.remove();
       
       contextMenu.hide();
@@ -240,7 +250,7 @@ export const runCanvas = async (mapId) => {
   
   const handleTileClick = async ({ type, detail }) => {
     if (!isRunning.value) return;
-    
+    console.warn('contextMenu.isVisible', contextMenu.isVisible)
     if (contextMenu.isVisible) {
       blurContextMenu();
       return;
@@ -272,8 +282,46 @@ export const runCanvas = async (mapId) => {
     actor1.travelTo(goalNode);
   };
   
+  // const handleLineDrag = async (e) => {
+  //   e.stopPropagation();
+  //   e.preventDefault();
+  
+  //   const newPoint = domPoint(svgCanvas.scene.dom, e.clientX, e.clientY);
+  //   selectedTileBeingLinked = targetNode;
+  
+  //   line.firstElementChild.setAttribute('x2', Math.floor(newPoint.x) + 0.5);
+  //   line.firstElementChild.setAttribute('y2', Math.floor(newPoint.y) + 0.5);
+  // }
+  
+  // const handleLineDrag = async (e) => {
+  //   e.stopPropagation();
+  //   e.preventDefault();
+  
+  //   const newPoint = domPoint(svgCanvas.scene.dom, e.clientX, e.clientY);
+  //   selectedTileBeingLinked = targetNode;
+  
+  //   line.firstElementChild.setAttribute('x2', Math.floor(newPoint.x) + 0.5);
+  //   line.firstElementChild.setAttribute('y2', Math.floor(newPoint.y) + 0.5);
+  // }
+  
+  // const handleLineDragEnd = async (e) => {
+  //   e.stopPropagation();
+  //   e.preventDefault();
+  
+  //   const newPoint = domPoint(line.parentElement, e.clientX, e.clientY);
+  //   const node = graph.getNodeAtPoint({ x: Math.floor(newPoint.x), y: Math.floor(newPoint.y) })
+  //   // node.update({ active: true })
+  //   line.firstElementChild.setAttribute('x2', node.x + 0.5);
+  //   line.firstElementChild.setAttribute('y2', node.y + 0.5);
+  
+  //   handleTileLinkSelect({ node }) //: { x: node.x, y: node.y } })
+  
+  
+  // }
+  
   const handleEditTileClick = async (targetNode) => {
     if (!targetNode) {
+      console.warn('handleEditTileClick !targetnode', )
       blurContextMenu();
       return;
     }
@@ -282,7 +330,7 @@ export const runCanvas = async (mapId) => {
     
     if (tileType === 'teleport') {
       if (target) {
-        // TODO: Make lines into Canvad Object
+        // TODO: Make lines into Canvas Object
         const line = createEdgeLine(targetNode, target);
         
         objectLayer.append(line);
@@ -290,20 +338,28 @@ export const runCanvas = async (mapId) => {
         line.addEventListener('pointermove', e => {
           e.stopPropagation();
           e.preventDefault();
-          console.warn('isSelectingLinkTile', isSelectingLinkTile)
-          // if (isSelectingLinkTile) { // && selected === true) {
-          const newPoint = domPoint(line.parentElement, e.clientX, e.clientY);
-          // const newPoint = domPoint(svgCanvas.scene.dom, e.clientX, e.clientY);
-          const [endX, endY] = computeArrowEndpoint(
-            [targetNode.x + 0.5, newPoint.y + 0.5],
-            [targetNode.x + 0.5, newPoint.y + 0.5]
-          );
+          console.warn('line')
+          const newPoint = domPoint(svgCanvas.scene.dom, e.clientX, e.clientY);
+          selectedTileBeingLinked = targetNode;
           
-          line.firstElementChild.setAttribute('x2', Math.round(newPoint.x));
-          line.firstElementChild.setAttribute('y2', Math.round(newPoint.y));
-          // }
+          line.firstElementChild.setAttribute('x2', Math.floor(newPoint.x) + 0.5);
+          line.firstElementChild.setAttribute('y2', Math.floor(newPoint.y) + 0.5);
         });
         
+        line.addEventListener('pointerup', e => {
+          e.stopPropagation();
+          e.preventDefault();
+          
+          
+          const newPoint = domPoint(line.parentElement, e.clientX, e.clientY);
+          const node = graph.getNodeAtPoint({ x: Math.floor(newPoint.x), y: Math.floor(newPoint.y) })
+          // node.update({ active: true })
+          line.firstElementChild.setAttribute('x2', node.x + 0.5);
+          line.firstElementChild.setAttribute('y2', node.y + 0.5);
+          
+          handleTileLinkSelect({ node })
+          blurContextMenu() //: { x: node.x, y: node.y } })
+        });
       }
       
       contextMenu.show();
@@ -315,12 +371,10 @@ export const runCanvas = async (mapId) => {
     targetNode.update({ selected: true });
     
     selectionBox.insertAt({ x: targetNode.x, y: targetNode.y });
-    
-    svgCanvas.addEventListener('tile:click', blurContextMenu);
   };
   
   const handleTileLinkSelect = (e) => {
-    const nodeToLink = graph.getNodeAtPoint({ ...e.detail });
+    const nodeToLink = e.node ?? graph.getNodeAtPoint({ ...e.detail });
     
     const node = selectedTileBeingLinked;
     
@@ -347,8 +401,9 @@ export const runCanvas = async (mapId) => {
     
     const targetNode = graph.getNodeByAddress(e.detail.id);
     if (isSelectingLinkTile) {
-      handleTileLinkSelect(e);
+      // handleTileLinkSelect(e);
     } else if (isRunning.value) {
+      blurContextMenu()
       handleTileClick(e);
     } else {
       handleEditTileClick(targetNode);
@@ -397,7 +452,7 @@ export const runCanvas = async (mapId) => {
     unsubscribeSelectionBox();
     actor1.destroy();
     loopEngine.destroy();
-    removeFrameRateRoutine();
+    // removeFrameRateRoutine();
     unsubscribeMapLoad();
     unsubscribeNodeUpdate();
     unwatch();

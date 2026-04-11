@@ -17,7 +17,6 @@ export class CanvasActor extends CanvasObject {
   #goalNode = null;
   #currentNode = null;
   #dtSum = 0;
-  #onCurrentNode = () => {};
   #onGoal = () => {};
   #isStepping = false;
   #idleReason = null;
@@ -34,6 +33,12 @@ export class CanvasActor extends CanvasObject {
     });
     
     this.stepTraversal = this.stepTraversal.bind(this);
+    // console.warn('this.transforms', Object.entries(this.transforms.transforms).map(([k, v]) => [k, v.type]))
+
+setTimeout(() => {
+this.scaleTo(0.5)
+this.translateTo(0.25)
+console.log(' ',);}, 1000)
   }
   
   get currentNode() { return this.#currentNode; }
@@ -55,7 +60,6 @@ export class CanvasActor extends CanvasObject {
   configure({
     graph,
     addRoutine,
-    onCurrentNode,
     onGoal,
   } = {}) {
     if (graph) {
@@ -65,10 +69,6 @@ export class CanvasActor extends CanvasObject {
     if (addRoutine) {
       this.#removeRoutine?.();
       this.#removeRoutine = addRoutine(this.stepTraversal);
-    }
-    
-    if (typeof onCurrentNode === 'function') {
-      this.#onCurrentNode = onCurrentNode;
     }
     
     if (typeof onGoal === 'function') {
@@ -97,14 +97,14 @@ export class CanvasActor extends CanvasObject {
     }
     
     if (this.#currentNode) {
+      this.transforms.scaleTo(1)
+      
       this.update({
         x: this.#currentNode.x,
         y: this.#currentNode.y,
         moving: false,
         teleporting: false,
       });
-      
-      this.#onCurrentNode(this.#currentNode);
     }
     
     return this;
@@ -139,6 +139,8 @@ export class CanvasActor extends CanvasObject {
   
   stop() {
     this.update({ moving: false, teleporting: false });
+    this.transforms.scaleTo(1)
+    
     this.#goalNode = null;
     this.#dtSum = 0;
     this.#idleReason = null;
@@ -183,7 +185,6 @@ export class CanvasActor extends CanvasObject {
       }
       
       this.#currentNode = curr;
-      this.#onCurrentNode(curr);
       
       if (prevPoint?.equals(currPoint)) {
         this.#enterIdle('same-node');
@@ -196,12 +197,12 @@ export class CanvasActor extends CanvasObject {
         this.update({ teleporting: false });
       }
       
-      // this.#playStepTone(prev, curr);
       this.update({
         x: curr.x,
         y: curr.y,
         moving: true,
       });
+      this.transforms.scaleTo(0.7)
       
       this.emit('actor:move', {
         actor: this,
@@ -289,6 +290,8 @@ export class CanvasActor extends CanvasObject {
   #enterIdle(reason = 'idle') {
     if (this.model.moving) {
       this.update({ moving: false, teleporting: false });
+      this.transforms.scaleTo(1)
+      
     }
     
     if (this.#idleReason === reason) {

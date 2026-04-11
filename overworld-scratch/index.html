@@ -8,31 +8,35 @@
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
   <meta name="apple-mobile-web-app-title" content="Hamilsauce" />
   <link rel="manifest" href="/site.webmanifest" />
-  
+
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:ital,wght@0,300;0,400;0,700;1,400&display=swap"
+    rel="stylesheet">
   <title>Tone Tiles</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/rxjs/7.3.0/rxjs.umd.min.js" integrity="sha512-y3JTS47nnpKORJX8Jn1Rlm+QgRIIZHtu3hWxal0e81avPrqUH48yk+aCi+gprT0RMAcpYa0WCkapxe+bpBHD6g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <link rel="stylesheet" href="./css/util.css" />
-  <link rel="stylesheet" href="./css/main.css" />
-  <link rel="stylesheet" href="./css/minimap.css" />
-  <link rel="stylesheet" href="./css/app.css" />
-  <link rel="stylesheet" href="./css/tile.css" />
-  <link rel="stylesheet" href="./css/actor.css" />
-  <link rel="stylesheet" href="./css/toolbar.css" />
-  
-  <link rel="stylesheet" href="./css/app-footer.css" />
-  <link rel="stylesheet" href="./css/app-header.css" />
-  <link rel="stylesheet" href="./css/app-map-creation.css" />
-  <link rel="stylesheet" href="./css/app-map-list-view.css" />
-  <link rel="stylesheet" href="./css/app-map-props-view.css" />
-  <link rel="stylesheet" href="./css/app-splash-view.css" />
-  <link rel="stylesheet" href="./css/debug-panel.css" />
-  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/rxjs/7.3.0/rxjs.umd.min.js"
+    integrity="sha512-y3JTS47nnpKORJX8Jn1Rlm+QgRIIZHtu3hWxal0e81avPrqUH48yk+aCi+gprT0RMAcpYa0WCkapxe+bpBHD6g=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <link rel="stylesheet" href="../css/util.css" />
+  <link rel="stylesheet" href="../css/main.css" />
+  <link rel="stylesheet" href="../css/minimap.css" />
+  <link rel="stylesheet" href="../css/app.css" />
+  <link rel="stylesheet" href="../css/tile.css" />
+  <link rel="stylesheet" href="../css/actor.css" />
+  <link rel="stylesheet" href="../css/toolbar.css" />
+
+  <link rel="stylesheet" href="../css/app-footer.css" />
+  <link rel="stylesheet" href="../css/app-header.css" />
+  <link rel="stylesheet" href="../css/app-map-creation.css" />
+  <link rel="stylesheet" href="../css/app-map-list-view.css" />
+  <link rel="stylesheet" href="../css/app-map-props-view.css" />
+  <link rel="stylesheet" href="../css/app-splash-view.css" />
+  <link rel="stylesheet" href="../css/debug-panel.css" />
+
 </head>
 
 <body>
@@ -50,12 +54,12 @@
   </script>
   <script src="https://www.gstatic.com/firebasejs/12.0.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore-compat.js"></script>
-  
+
   <script type="text/javascript" charset="utf-8">
     const SVG_NS = 'http://www.w3.org/2000/svg';
   </script>
-  <script src="./main.js" type="module"></script>
-  
+  <script src="../main.js" type="module"></script>
+
   <template data-component="app">
     <div id="app" class="gradient">
       <app-header v-if="shouldDisplay"></app-header>
@@ -64,7 +68,7 @@
       <app-floating-menu _v-if="shouldDisplay"></app-floating-menu>
     </div>
   </template>
-  
+
   <!-- <template data-component="debug-panel">
     <div class="debug-panel">
       <template v-if="tile">
@@ -96,26 +100,33 @@
       <div v-else class="empty">no tile</div>
     </div>
   </template> -->
-  
+
   <template data-component="app-floating-menu">
-    <div id="app-floating-menu" ref="floatingMenuRef" :class="{ expanded: displayState === 'expanded', debug:isDebugMode  }" _:class="{ debug:isDebugMode }" top="300px" left="200px">
-      <div v-if="displayState === 'collapsed'" @click.stop="handleDisplayChange('expanded')" id="app-floating-menu-collapsed">
-        <svg id="menu-icon" width="40" height="40" viewBox="-0 -0 36 36" preserveAspectRatio="xMidYMid meet" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
-          <path fill="#FFFFFF" d="M 11.7 20H11.3L10.9 17.4C9.7 17.2 8.7 16.5 7.9 15.6L5.5 16.6L4.7 15.3L6.8 13.7C6.4 12.5 6.4 11.3 6.8 10.1L4.7 8.7L5.5 7.4L7.9 8.4C8.7 7.5 9.7 6.9 10.9 6.6L11.2 4H12.7L13.1 6.6C14.3 6.8 15.4 7.5 16.1 8.4L18.5 7.4L19.3 8.7L17.2 10.2C17.4 10.8 17.5 11.4 17.5 12H18C18.5 12 19 12.1 19.5 12.2V12L19.4 11L21.5 9.4C21.7 9.2 21.7 9 21.6 8.8L19.6 5.3C19.5 5 19.3 5 19 5L16.5 6C16 5.6 15.4 5.3 14.8 5L14.4 2.3C14.5 2.2 14.2 2 14 2H10C9.8 2 9.5 2.2 9.5 2.4L9.1 5.1C8.5 5.3 8 5.7 7.4 6L5 5C4.7 5 4.5 5 4.3 5.3L2.3 8.8C2.2 9 2.3 9.2 2.5 9.4L4.6 11L4.5 12L4.6 13L2.5 14.7C2.3 14.9 2.3 15.1 2.4 15.3L4.4 18.8C4.5 19 4.7 19 5 19L7.5 18C8 18.4 8.6 18.7 9.2 19L9.6 21.7C9.6 21.9 9.8 22.1 10.1 22.1H12.6C12.1 21.4 11.9 20.7 11.7 20M16 12.3V12C16 9.8 14.2 8 12 8S8 9.8 8 12C8 14.2 9.8 16 12 16C12.7 14.3 14.2 12.9 16 12.3M10 12C10 10.9 10.9 10 12 10S14 10.9 14 12 13.1 14 12 14 10 13.1 10 12M18 14.5V13L15.8 15.2L18 17.4V16C19.4 16 20.5 17.1 20.5 18.5C20.5 18.9 20.4 19.3 20.2 19.6L21.3 20.7C22.5 18.9 22 16.4 20.2 15.2C19.6 14.7 18.8 14.5 18 14.5M18 21C16.6 21 15.5 19.9 15.5 18.5C15.5 18.1 15.6 17.7 15.8 17.4L14.7 16.3C13.5 18.1 14 20.6 15.8 21.8C16.5 22.2 17.2 22.5 18 22.5V24L20.2 21.8L18 19.5V21Z">
+    <div id="app-floating-menu" ref="floatingMenuRef"
+      :class="{ expanded: displayState === 'expanded', debug:isDebugMode  }" _:class="{ debug:isDebugMode }" top="300px"
+      left="200px">
+      <div v-if="displayState === 'collapsed'" @click.stop="handleDisplayChange('expanded')"
+        id="app-floating-menu-collapsed">
+        <svg id="menu-icon" width="40" height="40" viewBox="-0 -0 36 36" preserveAspectRatio="xMidYMid meet"
+          xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+          <path fill="#FFFFFF"
+            d="M 11.7 20H11.3L10.9 17.4C9.7 17.2 8.7 16.5 7.9 15.6L5.5 16.6L4.7 15.3L6.8 13.7C6.4 12.5 6.4 11.3 6.8 10.1L4.7 8.7L5.5 7.4L7.9 8.4C8.7 7.5 9.7 6.9 10.9 6.6L11.2 4H12.7L13.1 6.6C14.3 6.8 15.4 7.5 16.1 8.4L18.5 7.4L19.3 8.7L17.2 10.2C17.4 10.8 17.5 11.4 17.5 12H18C18.5 12 19 12.1 19.5 12.2V12L19.4 11L21.5 9.4C21.7 9.2 21.7 9 21.6 8.8L19.6 5.3C19.5 5 19.3 5 19 5L16.5 6C16 5.6 15.4 5.3 14.8 5L14.4 2.3C14.5 2.2 14.2 2 14 2H10C9.8 2 9.5 2.2 9.5 2.4L9.1 5.1C8.5 5.3 8 5.7 7.4 6L5 5C4.7 5 4.5 5 4.3 5.3L2.3 8.8C2.2 9 2.3 9.2 2.5 9.4L4.6 11L4.5 12L4.6 13L2.5 14.7C2.3 14.9 2.3 15.1 2.4 15.3L4.4 18.8C4.5 19 4.7 19 5 19L7.5 18C8 18.4 8.6 18.7 9.2 19L9.6 21.7C9.6 21.9 9.8 22.1 10.1 22.1H12.6C12.1 21.4 11.9 20.7 11.7 20M16 12.3V12C16 9.8 14.2 8 12 8S8 9.8 8 12C8 14.2 9.8 16 12 16C12.7 14.3 14.2 12.9 16 12.3M10 12C10 10.9 10.9 10 12 10S14 10.9 14 12 13.1 14 12 14 10 13.1 10 12M18 14.5V13L15.8 15.2L18 17.4V16C19.4 16 20.5 17.1 20.5 18.5C20.5 18.9 20.4 19.3 20.2 19.6L21.3 20.7C22.5 18.9 22 16.4 20.2 15.2C19.6 14.7 18.8 14.5 18 14.5M18 21C16.6 21 15.5 19.9 15.5 18.5C15.5 18.1 15.6 17.7 15.8 17.4L14.7 16.3C13.5 18.1 14 20.6 15.8 21.8C16.5 22.2 17.2 22.5 18 22.5V24L20.2 21.8L18 19.5V21Z">
           </path>
         </svg>
       </div>
-      <div v-if="displayState === 'expanded'" @click.stop="handleDisplayChange('collapsed')" id="app-floating-menu-expanded">
+      <div v-if="displayState === 'expanded'" @click.stop="handleDisplayChange('collapsed')"
+        id="app-floating-menu-expanded">
         <div id="floating-menu-expanded-top">
           <div id="floating-menu-actions">
-            <input @click.stop="handlePanelButtonClick" type="button" name="toggle-debug-panel" id="toggle-debug-panel" :value="displayMode" />
+            <input @click.stop="handlePanelButtonClick" type="button" name="toggle-debug-panel" id="toggle-debug-panel"
+              :value="displayMode" />
           </div>
         </div>
         <!-- <router-view name="panel"></router-view> -->
-        
+
         <div id="floating-menu-body">
           <app-map-list v-if="isListMode" :display-mode="'compact'"></app-map-list>
-          
+
           <div v-if="isDebugMode" class="debug-panel">
             <template v-if="tile">
               <div class="k">id</div>
@@ -128,7 +139,7 @@
               <div class="v" :class="{ changed: changed.y }">{{ currentNode.y }}</div>
               <div class="k">address</div>
               <div class="v" :class="{ changed: changed.address }">{{ currentNode.address }}</div>
-              
+
               <div class="k">target</div>
               <div class="v" :class="{ changed: changed.target }">
                 <span v-if="currentNode.target">
@@ -136,16 +147,16 @@
                 </span>
                 <span v-else>—</span>
               </div>
-              
+
               <div class="k">active</div>
               <div class="v" :class="{ changed: changed.active }">{{ currentNode.active }}</div>
               <div class="k">linkedMapId</div>
               <div class="v" :class="{ changed: changed.linkedMapId }">{{ currentNode.linkedMapId || '—' }}</div>
             </template>
-            
+
             <div v-else class="empty">no tile</div>
           </div>
-          
+
           <!-- <div id="floating-menu-debug">
             <div class="kv">
               <template v-for="(val, key) in map">
@@ -159,12 +170,12 @@
               <input :value="mapName" @change="handleMapNameChange" id="map-name" type="text" _class="field__input" placeholder="No Map" maxlength="80" _v-model="mapName" />
             </div>
           </div> -->
-          
+
         </div>
       </div>
     </div>
   </template>
-  
+
   <template data-component="app-header">
     <header v-if="shouldDisplay" id="app-header">
       <div id="app-header-inner">
@@ -174,7 +185,7 @@
           </div>
           <!-- <h2>tone tiles</h2> -->
         </div>
-        
+
         <div id="app-header-right-top">
           <div id="header-actions" class="container">
             <button id="header-map-list-button" @click="handleChangeMap" class="file-button" type="button">to map
@@ -183,15 +194,16 @@
             <button id="save-map" class="file-button" type="button">Save</button>
           </div>
         </div>
-        
+
         <div id="app-header-right-bottom">
           <label for="map-name">Current:</label>
-          <input :value="mapName" @change="handleMapNameChange" id="map-name" type="text" _class="field__input" placeholder="No Map" maxlength="80" _v-model="mapName" />
+          <input :value="mapName" @change="handleMapNameChange" id="map-name" type="text" _class="field__input"
+            placeholder="No Map" maxlength="80" _v-model="mapName" />
         </div>
       </div>
     </header>
   </template>
-  
+
   <template data-component="app-map-list-view">
     <div id="app-map-list-view" :class="{ compact: isCompact }" @click="handleListClick">
       <div id="map-list-view-top">
@@ -200,13 +212,15 @@
           <input @click="handleNewMap" type="button" name="create-map" id="create-map" value="create" />
         </div>
       </div>
-      
+
       <ul id="map-list-view-list">
-        <app-map-list-item :display-mode @map-item-click="handleMapClick" @map-item-select="handleMapSelect" @map-item-edit="handleMapEdit" v-for="map in mapList" :key="map.id" :map="map" :selected-id="selectedId"></app-map-list-item>
+        <app-map-list-item :display-mode @map-item-click="handleMapClick" @map-item-select="handleMapSelect"
+          @map-item-edit="handleMapEdit" v-for="map in mapList" :key="map.id" :map="map"
+          :selected-id="selectedId"></app-map-list-item>
       </ul>
     </div>
   </template>
-  
+
   <template data-component="app-map-list-item">
     <li class="map-list-item" :class="{ editing: isSelected}" @click="handleClick" @contextmenu="handleSelect">
       <div class="map-name">
@@ -226,7 +240,7 @@
       </div>
     </li>
   </template>
-  
+
   <template data-component="app-map-props-view">
     <div id="app-map-props-view" @click="handleListClick">
       <div id="map-props-view-top">
@@ -236,7 +250,7 @@
           <input type="button" name="delete-button" id="delete-button" value="delete" @click="handleDeleteClick" />
         </div>
       </div>
-      
+
       <div id="map-props-view-list">
         <div class="map-author">
           creator: {{ map.meta.author ?? 'Unknown' }}
@@ -248,7 +262,7 @@
           size: {{ `${map.width}x${map.height}` }}
         </div>
       </div>
-      
+
       <div id="map-props-view-stats">
         <div class="map-barrier">barrier: {{ mapStats.barrier }}</div>
         <div class="map-teleport">teleport: {{ mapStats.teleport }}</div>
@@ -256,21 +270,25 @@
         <div class="map-empty">empty: {{ mapStats.empty }}</div>
         <div class="map-total">total: {{ mapStats.total }}</div>
         <router-view name="panel"></router-view>
-        
+
       </div>
     </div>
   </template>
-  
+
   <template data-component="svg-canvas-host">
     <div id="svg-canvas-host">
-      <svg @_dblclick="centerViewport" id="canvas" class="gradient" width="412" _height="681" viewBox="0 0 19 22" preserveAspectRatio="xMinYMid meet" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+      <svg @_dblclick="centerViewport" id="canvas" class="gradient" width="412" _height="681" viewBox="0 0 19 22"
+        preserveAspectRatio="xMinYMid meet" xmlns:xlink="http://www.w3.org/1999/xlink"
+        xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <g data-template="context-menu" class="context-menu-container" pointer-events="auto" data-show-actions="false" data-show="false" transform="translate(0,0) rotate(0) scale(0.05)">
-            <foreignObject class="context-menu-foreignobject" pointer-events="auto" x="0" y="0" width="200" height="30" _transform="translate(0,0) rotate(0) scale(1)">
+          <g data-template="context-menu" class="context-menu-container" pointer-events="auto" data-show-actions="false"
+            data-show="false" transform="translate(0,0) rotate(0) scale(0.05)">
+            <foreignObject class="context-menu-foreignobject" pointer-events="auto" x="0" y="0" width="200" height="30"
+              _transform="translate(0,0) rotate(0) scale(1)">
               <div xmlns="http://www.w3.org/1999/xhtml" class="context-menu" data-show-actions="false">
                 <ul class="context-menu-list">
                   <li data-value="copy" data-type="clipboard">copy</li>
-                  
+
                   <li data-value="barrier" data-type="tile-type">barrier</li>
                   <li data-value="empty" data-type="tile-type">empty</li>
                   <li data-value="start" data-type="tile-type">start</li>
@@ -280,71 +298,67 @@
               </div>
             </foreignObject>
           </g>
-          
-          <marker id="edge-line-arrow" viewBox="0 0 10 10" refX="2.5" refY="2.5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+
+          <marker id="edge-line-arrow" viewBox="0 0 10 10" refX="2.5" refY="2.5" markerWidth="6" markerHeight="6"
+            orient="auto-start-reverse">
             <path d="M 0 0 L 5 2.5 L 0 5 z" _fill="#00000090" />
           </marker>
-          
-          <g data-template="edge-line" class="edge-line" id="" data-x="0" data-y="0" transform="translate(0,0) rotate(0) scale(1)">
-            <line class="edge-line-arrow-path" x1="0" y1="0" x2="1" y2="1" marker-end="url(#edge-line-arrow)" transform="translate(0,0) rotate(0) scale(1)" />
+
+          <g data-template="edge-line" class="edge-line" id="" data-x="0" data-y="0"
+            transform="translate(0,0) rotate(0) scale(1)">
+            <line class="edge-line-arrow-path" x1="0" y1="0" x2="1" y2="1" marker-end="url(#edge-line-arrow)"
+              transform="translate(0,0) rotate(0) scale(1)" />
             <circle cx="1" cy="1" r="0.25" fill="#FFFFFF00" transform="translate(0,0) rotate(0) scale(1)" />
           </g>
-          
-          
+
+
           <g data-template="layer" class="layer" id="" data-z="0" transform="translate(0,0) rotate(0) scale(1)"> </g>
-          
+
           <rect id="tile-rect" width="1" height="1"></rect>
           <circle id="map-link" r="0.5" width="0.5" height="0.5"></circle>
-          
-          <g data-template="tile" data-tile-type="empty" data-x="0" data-y="0" data-current="false" data-active="false" data-is-path-node="false" transform="translate(0,0)" class="tile" id="">
+
+          <g data-template="tile" data-tile-type="empty" data-x="0" data-y="0" data-current="false" data-active="false"
+            data-is-path-node="false" transform="translate(0,0)" class="tile" id="">
             <use href="#tile-rect"></use>
           </g>
-          
+
           <!-- <g data-template="map-link" data-tile-type="empty" data-x="0" data-y="0" data-current="false" data-active="false" data-is-path-node="false" transform="translate(0,0) rotate(0) scale(1)" class="map-link" id="">
             <use href="#map-link"></use>
             <text class="linked-map-name" _dominant-baseline="" text-anchor="middle" transform="translate(0,0) rotate(0) scale(0.2)">
               n/a
             </text>
           </g> -->
-          
-          <g data-template="actor2" id="" data-x="0" data-y="0" data-teleporting="false" class="actor" transform="translate(0,0) rotate(0) scale(1)">
-            <circle cx="0.25" cy="0.25" r="0.2" transform="translate(0,0) rotate(0) scale(1)" />
-            <circle cx="0.75" cy="0.75" r="0.2" transform="translate(0,0) rotate(0) scale(1)" />
-            <circle cx="0.5" cy="0.5" r="0.3" transform="translate(0,0) rotate(0) scale(1)" />
+
+          <g data-template="actor" id="" data-x="0" data-y="0" data-teleporting="false" class="actor"
+            transform="translate(0,0) rotate(0) scale(1)">
+            <circle cx="0.5" cy="0.5" r="0.4" transform="translate(0,0) rotate(0) scale(1)" />
           </g>
-          
-          <g data-template="actor" id="" data-x="0" data-y="0" data-teleporting="false" class="actor" transform="translate(0,0) rotate(0) scale(1)">
-            <circle class="actor-body" cx="0.5" cy="0.5" r="0.4" transform="translate(0,0) rotate(0) scale(1)" />
-            
-            <circle class="actor-eye" cx="0.35" cy="0.32" r="0.1" transform="translate(0,0) rotate(0) scale(1)" />
-            <circle class="actor-eye" cx="0.65" cy="0.35" r="0.1" transform="translate(0,0) rotate(0) scale(1)" />
-            <line class="actor-mouth" x1="0.35" y1="0.67" x2="0.65" y2="0.63" _marker-end="url(#edge-line-arrow)" transform="translate(0,0) rotate(0) scale(1)" />
-            
-          </g>
-          
-          
+
+
         </defs>
-        
+
         <g id="viewport" ref="canvasViewportRef" transform="matrix(1 0 0 1 0 0)">
-          
+
           <g id="surface-layer" data-type="layer" data-name="surface" transform="translate(-0,-0) rotate(0) scale(1)">
             <rect id="surface" x="-100" y="-100" rx="0" ry="0" width="200" height="200"></rect>
-            <line class="axis-line" x1="-100" y1="0" x2="100" y2="0" _marker-end="url(#edge-line-arrow)" transform="translate(0,0) rotate(0) scale(1)" />
-            <line class="axis-line" x1="0" y1="-100" x2="0" y2="100" _marker-end="url(#edge-line-arrow)" transform="translate(0,0) rotate(0) scale(1)" />
+            <line class="axis-line" x1="-100" y1="0" x2="100" y2="0" _marker-end="url(#edge-line-arrow)"
+              transform="translate(0,0) rotate(0) scale(1)" />
+            <line class="axis-line" x1="0" y1="-100" x2="0" y2="100" _marker-end="url(#edge-line-arrow)"
+              transform="translate(0,0) rotate(0) scale(1)" />
             <g id="surface-map-name" transform="translate(0,0) rotate(0) scale(0.45)">
               <text id="map-name-text" _dominant-baseline="hanging" text-anchor="middle">
                 {{ map.name }}
               </text>
             </g>
-            
+
           </g>
-          
+
           <!-- <g id="scene" transform="translate(0,0) rotate(0) scale(1)">
             <g id="tile-layer" transform="translate(-0,-0) rotate(0) scale(1)"></g>
             <g id="object-layer" transform="translate(0.5,0.5) rotate(0) scale(1)"></g>
           </g> -->
         </g>
-        
+
         <!-- <g id="minimap" data-x="0" data-y="0" transform="translate(13, 19) rotate(0) scale(1)">
           <rect id="minimap-surface" x="0" y="0" rx="0" ry="0" width="5.7" height="6.6"></rect>
           <use href="#scene" transform="translate(0,0) rotate(0) scale(0.3)"></use>
@@ -352,16 +366,16 @@
       </svg>
     </div>
   </template>
-  
+
   <template data-component="app-body">
     <section id="app-body">
       <svg-canvas-host></svg-canvas-host>
     </section>
   </template>
-  
+
   <template data-component="app-splash-view">
     <section ref="foregroundRef" id="app-splash-view" @click="handleClick" :class="{ fade: fade }">
-      
+
       <div id="app-splash-background"></div>
       <div id="app-splash-foreground">
         <div id="app-splash-overlay">TONE TILES</div>
@@ -370,7 +384,7 @@
       <div id="app-splash-hamilsauce-link">
         <a href="https://hamilsauce.github.io/">HAMILSAUCE</a>
       </div>
-      
+
       <!-- <div id="app-splash-foreground">
         ⬜⬜⬜⬜⬜⬜⬜
         ⬜⬛⬛⬛⬛⬛⬜
@@ -382,7 +396,7 @@
       </div> -->
     </section>
   </template>
-  
+
   <template data-component="app-footer">
     <footer id="app-footer" v-if="shouldDisplay">
       <div id="app-footer-top">
@@ -398,24 +412,29 @@
         </div>
         <div class="scroll-fader"></div>
       </div>
-      
+
       <div id="app-footer-bottom">
         <app-toolbar></app-toolbar>
       </div>
     </footer>
   </template>
-  
+
   <template data-component="app-toolbar">
     <div id="app-toolbar">
       <div id="tools" :class="{ deactivated: isRunning }">
-        <div id="app-run-toggle" :class="{ activated: !isRunning }" @click="handleClick" class="tool-label" data-active="false" data-tool-group="run">
+        <div id="app-run-toggle" :class="{ activated: !isRunning }" @click="handleClick" class="tool-label"
+          data-active="false" data-tool-group="run">
           <!-- USE V IF TO TOGGLE -->
-          <svg v-if="!isRunning" class="tool-label-icon" id="play-icon" width="24" height="24" viewBox="2 2 20 20" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-            <path fill="#FFFFFF" d="M 10,16.5V7.5L16,12M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z">
+          <svg v-if="!isRunning" class="tool-label-icon" id="play-icon" width="24" height="24" viewBox="2 2 20 20"
+            xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+            <path fill="#FFFFFF"
+              d="M 10,16.5V7.5L16,12M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z">
             </path>
           </svg>
-          <svg v-if="isRunning" class="tool-label-icon" id="pause-icon" width="24" height="24" viewBox="2 2 20 20" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-            <path fill="#FFFFFF" d="M 13,16V8H15V16H13M9,16V8H11V16H9M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4Z">
+          <svg v-if="isRunning" class="tool-label-icon" id="pause-icon" width="24" height="24" viewBox="2 2 20 20"
+            xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+            <path fill="#FFFFFF"
+              d="M 13,16V8H15V16H13M9,16V8H11V16H9M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4Z">
             </path>
           </svg>
         </div>
@@ -428,10 +447,10 @@
       </div>
     </div>
   </template>
-  
+
   <template data-component="app-map-creation">
     <section id="app-map-creation" class="map-create">
-      
+
       <!-- Header -->
       <header class="map-create__header">
         <div class="map-create__titlewrap">
@@ -440,84 +459,88 @@
             Set the basics. You can resize later in Map Settings.
           </p>
         </div>
-        
+
         <div class="map-create__actions">
           <button @click="handleCancel" type="button" class="btn btn--ghost">
             Cancel
           </button>
-          
+
           <button type="submit" form="map-create-form" class="btn btn--primary" :disabled="!isValid">
             Create map
           </button>
         </div>
       </header>
-      
+
       <!-- Body -->
       <div class="map-create__body">
-        
-        <form id="map-create-form" class="map-create__form" autocomplete="off" novalidate @submit.prevent="handleCreate">
-          
+
+        <form id="map-create-form" class="map-create__form" autocomplete="off" novalidate
+          @submit.prevent="handleCreate">
+
           <!-- Name -->
           <div class="field">
             <label class="field__label" for="map-name">Name</label>
-            <input id="map-name" type="text" class="field__input" placeholder="e.g. Cat Town – West Gate" maxlength="80" v-model="name" />
+            <input id="map-name" type="text" class="field__input" placeholder="e.g. Cat Town – West Gate" maxlength="80"
+              v-model="name" />
             <div class="field__hint">
               Optional. If blank, we’ll generate one.
             </div>
           </div>
-          
+
           <!-- Presets -->
           <fieldset class="fieldset">
             <legend class="fieldset__legend">Preset</legend>
-            
+
             <div class="preset-row">
               <button type="button" class="chip" :aria-pressed="preset === 'small'" @click="applyPreset('small')">
                 Small
               </button>
-              
+
               <button type="button" class="chip" :aria-pressed="preset === 'medium'" @click="applyPreset('medium')">
                 Medium
               </button>
-              
+
               <button type="button" class="chip" :aria-pressed="preset === 'large'" @click="applyPreset('large')">
                 Large
               </button>
-              
+
               <button type="button" class="chip chip--ghost" :aria-pressed="preset === 'custom'">
                 Custom
               </button>
             </div>
-            
+
             <div class="fieldset__hint">
               Presets set width and height. You can fine-tune below.
             </div>
           </fieldset>
-          
+
           <!-- Dimensions -->
           <fieldset class="fieldset">
             <legend class="fieldset__legend">Dimensions</legend>
-            
+
             <div class="grid-2">
               <div class="field">
                 <label class="field__label" for="map-width">
                   Width (tiles)
                 </label>
-                <input id="map-width" type="number" class="field__input" min="4" max="256" step="1" v-model.number="width" />
+                <input id="map-width" type="number" class="field__input" min="4" max="256" step="1"
+                  v-model.number="width" />
               </div>
-              
+
               <div class="field">
                 <label class="field__label" for="map-height">
                   Height (tiles)
                 </label>
-                <input id="map-height" type="number" class="field__input" min="4" max="256" step="1" v-model.number="height" />
+                <input id="map-height" type="number" class="field__input" min="4" max="256" step="1"
+                  v-model.number="height" />
               </div>
             </div>
           </fieldset>
-          
+
           <!-- Initialize -->
           <fieldset class="fieldset">
             <legend class="fieldset__legend">Initialize</legend>
-            
+
             <div class="grid-2">
               <label class="radio">
                 <input type="radio" value="empty" v-model="initFill" />
@@ -526,7 +549,7 @@
                   All tiles start empty.
                 </span>
               </label>
-              
+
               <label class="radio">
                 <input type="radio" value="barrier" v-model="initFill" />
                 <span class="radio__label">Barrier border</span>
@@ -535,9 +558,9 @@
                 </span>
               </label>
             </div>
-            
+
             <div class="divider"></div>
-            
+
             <div class="grid-2">
               <div class="field">
                 <label class="field__label" for="map-start">
@@ -551,7 +574,7 @@
                   <option value="none">None</option>
                 </select>
               </div>
-              
+
               <div class="field">
                 <label class="field__label" for="map-exit">
                   Exit
@@ -565,7 +588,7 @@
                 </select>
               </div>
             </div>
-            
+
             <label class="check">
               <input type="checkbox" v-model="openInEditor" />
               <span class="check__label">
@@ -573,49 +596,49 @@
               </span>
             </label>
           </fieldset>
-          
+
           <!-- Mobile footer -->
           <div class="map-create__footer">
             <button type="submit" class="btn btn--primary btn--full" :disabled="!isValid">
               Create map
             </button>
-            
+
             <button @click="handleCancel" type="button" class="btn btn--ghost btn--full">
               Cancel
             </button>
           </div>
         </form>
-        
+
         <!-- Preview -->
         <aside class="map-create__preview">
           <div class="card">
             <div class="card__header">
               <h3 class="card__title">Summary</h3>
             </div>
-            
+
             <div class="card__content">
               <dl class="kv">
                 <div class="kv__row">
                   <dt>Name</dt>
                   <dd>{{ name || 'Untitled' }}</dd>
                 </div>
-                
+
                 <div class="kv__row">
                   <dt>Grid</dt>
                   <dd>{{ width }} × {{ height }}</dd>
                 </div>
-                
+
                 <div class="kv__row">
                   <dt>Init</dt>
                   <dd>{{ initFill }}</dd>
                 </div>
-                
+
                 <div class="kv__row">
                   <dt>Start → Exit</dt>
                   <dd>{{ startPlacement }} → {{ exitPlacement }}</dd>
                 </div>
               </dl>
-              
+
               <div class="note">
                 Tip: resizing later should prompt an anchor (expand right/down/center).
               </div>
@@ -625,7 +648,7 @@
       </div>
     </section>
   </template>
-  
+
 </body>
 
 </html>

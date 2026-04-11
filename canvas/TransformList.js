@@ -47,17 +47,17 @@ export class TransformList {
   #self = null;
   #canvas = null;
   #transforms = null;
-
+  
   constructor(svgCanvas, element, transforms = DEFAULT_TRANSFORMS) {
     this.#canvas = svgCanvas;
     this.#self = (element.dom ?? element).transform.baseVal;
     this.init(transforms);
   };
-
+  
   init(transforms = []) {
     transforms.forEach(({ type, values }, i) => {
       const t = this.createTransform(type, ...(values || []))
-
+      
       if (i === 0) {
         this.#self.initialize(t);
       }
@@ -66,18 +66,18 @@ export class TransformList {
       }
     });
   }
-
+  
   getMatrixAt(index = 0) {
     const { a, b, c, d, e, f } = index < this.#self.numberOfItems ? this.#self.getItem(index).matrix : null;
-
+    
     return [a, b, c, d, e, f].some(_ => isNaN(_)) ? null : { a, b, c, d, e, f, }
   }
-
+  
   createTransform(typeName, ...values) {
     typeName = typeName.toLowerCase();
-
+    
     const t = (this.#canvas.dom ?? this.#canvas).createSVGTransform();
-
+    
     switch (typeName) {
       case 'translate': {
         t.setTranslate(...values);
@@ -93,54 +93,54 @@ export class TransformList {
       }
       default: {}
     }
-
+    
     return t;
   }
-
+  
   consolidate() {
     return this.#self.consolidate();
   }
-
+  
   translateTo(x = 0, y = 0) {
     const translate = this.getItem(TransformIndexMap.translate);
-
+    
     translate.setTranslate(x, y);
-
+    
     return this;
   }
-
+  
   rotateTo(deg = 0, x = 0, y = 0) {
     const rotate = this.getItem(TransformIndexMap.rotate);
     rotate.setRotate(deg, x, y);
-
+    
     return this;
   }
-
-  scaleTo(x = 1, y = 1) {
+  
+  scaleTo(x = 1, y) {
     const scale = this.getItem(TransformIndexMap.scale);
     if (y) {
       scale.setScale(x, y);
     } else {
-      scale.setScale(x);
+      scale.setScale(x, x);
     }
-
+    
     return this;
   }
-
+  
   insert(transform, beforeIndex) {
     if (!beforeIndex) {
       this.#self.appendItem(transform)
     } else {
       this.#self.insertItemBefore(transform, beforeIndex)
     }
-
+    
     return this;
   }
-
+  
   getItem(index) {
     return this.#self.getItem(index)
   }
-
+  
   get transforms() {
     return {
       translate: this.getItem(TransformIndexMap.translate),
@@ -148,24 +148,24 @@ export class TransformList {
       scale: this.getItem(TransformIndexMap.scale),
     }
   }
-
+  
   get transformItems() { return [...this.#self] };
-
+  
   get translation() {
     const { e, f } = this.getMatrixAt(TransformIndexMap.translate)
-
+    
     return { x: roundTwo(e), y: roundTwo(f) }
   }
-
+  
   get rotation() {
     const { b, c } = this.getMatrixAt(TransformIndexMap.rotate)
-
+    
     return { x: roundTwo(b), y: roundTwo(c) }
   }
-
+  
   get scale() {
     const { a, d } = this.getMatrixAt(TransformIndexMap.scale)
-
+    
     return { x: roundTwo(a), y: roundTwo(d) }
   }
 }
