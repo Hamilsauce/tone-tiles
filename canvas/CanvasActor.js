@@ -34,11 +34,12 @@ export class CanvasActor extends CanvasObject {
     
     this.stepTraversal = this.stepTraversal.bind(this);
     // console.warn('this.transforms', Object.entries(this.transforms.transforms).map(([k, v]) => [k, v.type]))
-
-setTimeout(() => {
-this.scaleTo(0.5)
-this.translateTo(0.25)
-console.log(' ',);}, 1000)
+    
+    setTimeout(() => {
+      // this.scaleTo(0.5)
+      // this.translateTo(0.25)
+      console.log(' ', );
+    }, 1000)
   }
   
   get currentNode() { return this.#currentNode; }
@@ -97,7 +98,7 @@ console.log(' ',);}, 1000)
     }
     
     if (this.#currentNode) {
-      this.transforms.scaleTo(1)
+      // this.transforms.scaleTo(1)
       
       this.update({
         x: this.#currentNode.x,

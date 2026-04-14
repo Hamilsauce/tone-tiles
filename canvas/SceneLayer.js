@@ -25,8 +25,8 @@ export class SceneLayer extends CanvasObject {
 			console.warn('obj', obj)
 			throw new Error('No object type in layer add');
 		}
-		
 		const cObj = obj instanceof CanvasObject ? obj : this.context.createObject(obj.type, obj)
+		
 		
 		this.#objects.set(cObj.id, cObj);
 		this.dom.appendChild(cObj.dom);

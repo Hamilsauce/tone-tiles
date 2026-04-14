@@ -313,13 +313,13 @@
             <circle cx="0.5" cy="0.5" r="0.3" transform="translate(0,0) rotate(0) scale(1)" />
           </g>
           
-          <g data-template="actor" id="" data-x="0" data-y="0" data-teleporting="false" class="actor" transform="translate(0,0) rotate(0) scale(1)">
-            <circle class="actor-body" cx="0.5" cy="0.5" r="0.4" transform="translate(0,0) rotate(0) scale(1)" />
-            
-            <circle class="actor-eye" cx="0.35" cy="0.32" r="0.1" transform="translate(0,0) rotate(0) scale(1)" />
-            <circle class="actor-eye" cx="0.65" cy="0.35" r="0.1" transform="translate(0,0) rotate(0) scale(1)" />
-            <line class="actor-mouth" x1="0.35" y1="0.67" x2="0.65" y2="0.63" _marker-end="url(#edge-line-arrow)" transform="translate(0,0) rotate(0) scale(1)" />
-            
+          <g data-template="actor" id="" data-x="0" data-y="0" data-teleporting="false" class="actor" transform="translate(0,0) rotate(0,0,0) scale(1 1)">
+            <g class="actor-inner" transform="translate(0.5,0.5) rotate(0,0, 0) scale(0.8 0.8)">
+              <circle class="actor-body" cx="0.0" cy="0.0" r="0.5" transform="translate(0.0,0.0) rotate(0,0,0) scale(1)" />
+              <circle class="actor-eye" cx="0.0" cy="0.0" r="0.15" transform="translate(-0.2,-0.2) rotate(0) scale(1)" />
+              <circle class="actor-eye" cx="0.0" cy="0.0" r="0.1" transform="translate(0.2,-0.22) rotate(0) scale(1)" />
+              <line class="actor-mouth" x1="-0.2" y1="0.2" x2="0.2" y2="0.15" _marker-end="url(#edge-line-arrow)" transform="translate(0,0) rotate(0) scale(1)" />
+            </g>
           </g>
           
           

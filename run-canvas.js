@@ -139,10 +139,17 @@ export const runCanvas = async (mapId) => {
   objectLayerObj.add(contextMenu ?? new ContextMenu(svgCanvas)).dom;
   
   const actor1 = objectLayerObj.add({
-    id: 'actor1',
     type: 'actor',
-    moving: false,
-    teleporting: false,
+    model: {
+      id: 'actor1',
+      moving: false,
+      teleporting: false,
+    },
+    transforms: [
+      { type: 'translate', values: [0, 0], position: 0 },
+      { type: 'rotate', values: [0, 0, 0], position: 1 },
+      { type: 'scale', values: [1, 1], position: 2 },
+    ],
   }).configure({
     graph,
     addRoutine: loopEngine.addRoutine.bind(loopEngine),
@@ -211,16 +218,10 @@ export const runCanvas = async (mapId) => {
     // need to separate Actor Model from canvas object
     // have actor1 model emit this, and then 
     
-    // scene.layers.object.get('actor1').update()
+    graph.moveObject(id, point, prevPoint) // fromNode, toNode);
+    
     const node = graph.getNodeAtPoint(point)
-    // on('actor:move', ({ actorId, from, to }) => {
-    // const fromNode = this.getNodeAt(from);
-    // const toNode = this.getNodeAt(to);
-    
-    graph.moveObject(id, point, prevPoint)// fromNode, toNode);
-    // });
     setCurrentNode(node.data());
-    
     audioNote1(node)
   });
   

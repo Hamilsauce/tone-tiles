@@ -110,7 +110,6 @@
 .tile[data-highlight=true]>* {
   fill: #9FFFF9D9;
   transition: 1.1s ease;
-
 }
 
 .tile[data-highlight=true][data-is-path-node=false][data-tile-type=empty] text {
