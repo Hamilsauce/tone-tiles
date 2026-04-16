@@ -108,8 +108,10 @@
 }
 
 .tile[data-highlight=true]>* {
-  fill: #9FFFF9D9;
-  transition: 1.1s ease;
+  /* fill: #9FFFF9D9; */
+  /* transition: 1.1s ease; */
+  animation: lightFade 3s forwards;
+
 }
 
 .tile[data-highlight=true][data-is-path-node=false][data-tile-type=empty] text {
@@ -149,6 +151,39 @@
   pointer-events: none !important;
   filter: saturate(0.4) brightness(0.7);
 } */
+
+@keyframes lightFade {
+  0% {
+    /* fill: #FFFFFF7D; */
+  }
+  
+  /* 8% {
+    fill: #46C2F4BF;
+    filter: hue-rotate(0deg);
+    fill: #FFFFFF96;
+  
+  } */
+  
+  /* 15% {
+  fill: #46C2F43D;
+  filter: hue-rotate(0deg);
+  filter: hue-rotate(-240deg);
+  fill: #FFFFFFB0;
+  
+  } */
+  
+  50% {
+    /* filter: hue-rotate(0deg); */
+    fill: #FFFFFF45;
+    /* filter: hue-rotate(-240deg); */
+
+
+  }
+  
+  100% {
+    /* fill: #FFFFFF7D; */
+  }
+}
 
 @keyframes yellowToOriginal {
   0% {}

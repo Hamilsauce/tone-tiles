@@ -6,7 +6,7 @@ window.loadLogs = loadLogs;
 export class TileLayer extends SceneLayer {
   #name = null;
   cancelSub;
-  #rows = new Map();
+  #rows;
   
   constructor(ctx, options = {}) {
     const { objects, ...opts } = options;
@@ -73,27 +73,6 @@ export class TileLayer extends SceneLayer {
     });
   }
   
-  addRow(y) {
-    const rowId = `row_${y}`;
-    
-    if (this.#rows.has(rowId)) {
-      return this.#rows.get(rowId)
-    }
-    
-    // const cObj = new TileObject(this.context, { id: node.id, model: node.data() });
-    
-    const rowObj = this.context.createObject('group', { id: rowId, model: { y, x: 0 } });
-    this.#rows.set(rowId, rowObj)
-    this.dom.appendChild(rowObj.dom);
-    
-    return rowObj;
-  }
-  
-  getRow(y) {
-    const rowId = `row_${y}`;
-    return this.#rows.get(rowId) ?? null;
-  }
-  
   add(node) {
     if (node.type !== 'tile') {
       throw new Error('No object type in layer add');
@@ -101,11 +80,7 @@ export class TileLayer extends SceneLayer {
     
     const cObj = new TileObject(this.context, { id: node.id, model: node.data() });
     
-    this.objects.set(cObj.id, cObj);
-    
-    const row = this.getRow(cObj.y) ?? this.addRow(cObj.y);
-    
-    row.appendDOM(cObj)
+    this.objects.set(node.id, cObj);
     this.dom.appendChild(cObj.dom);
     
     cObj.update();

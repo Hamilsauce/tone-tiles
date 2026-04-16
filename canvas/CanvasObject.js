@@ -204,6 +204,11 @@ export class CanvasObject extends EventEmitter {
     return this;
   }
   
+  appendDOM(obj) {
+    this.dom.append(obj.dom)
+    return this;
+  }
+  
   getEl(selector = '') { return this.dom.querySelector(selector); }
   
   getEls(selector = '') { return [...this.dom.querySelectorAll(selector)]; }
