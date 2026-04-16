@@ -221,8 +221,23 @@ export const runCanvas = async (mapId) => {
     graph.moveObject(id, point, prevPoint) // fromNode, toNode);
     
     const node = graph.getNodeAtPoint(point)
+    const neighbors = graph.getNeighbors(node)
+    
     setCurrentNode(node.data());
     audioNote1(node)
+ 
+    let cnt = 0
+    for (const [, neighbor] of neighbors) {
+      cnt++
+      
+      setTimeout(() => {
+        neighbor.update({ highlight: true })
+        
+        setTimeout(() => {
+          neighbor.update({ highlight: false })
+        }, 3000)
+      }, 0 + (300 * cnt))
+    }
   });
   
   // const removeFrameRateRoutine = loopEngine.addRoutine((dt) => {

@@ -110,7 +110,8 @@
 .tile[data-highlight=true]>* {
   /* fill: #9FFFF9D9; */
   /* transition: 1.1s ease; */
-  animation: lightFade 3s forwards;
+  animation: lightFade 2s backwards;
+  /* animation: yellowToOriginal 2s backwards; */
 
 }
 
@@ -172,9 +173,21 @@
   
   } */
   
-  50% {
+  10% {
     /* filter: hue-rotate(0deg); */
-    fill: #FFFFFF45;
+    fill: #FFFFFFCC;
+    /* fill: #FFFFFF38; */
+
+    /* filter: hue-rotate(-240deg); */
+
+
+  }
+
+  25% {
+    /* filter: hue-rotate(0deg); */
+    fill: #FFFFFF38;
+    /* fill: #FFFFFFCC; */
+
     /* filter: hue-rotate(-240deg); */
 
 
