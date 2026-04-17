@@ -1,4 +1,4 @@
-import getGraph from './lib/graph.model.js';
+import getGraph, { getDirectionFromPoints } from './lib/graph.model.js';
 import { SVGCanvas } from './canvas/SVGCanvas.js';
 import { getTileSelector } from 'https://hamilsauce.github.io/svg-range-selector/tile-selector.js';
 import { initMapControls } from './ui/map-selection.js';
@@ -213,21 +213,28 @@ export const runCanvas = async (mapId) => {
     const g = graph.getNodeAtPoint(goalPoint)
     g.update({ active: true })
   });
-  
+  let neighborIndex = 0
   const unsubscribeActorMove = actor1.on('actor:move', async ({ id, point, prevPoint }) => {
     // need to separate Actor Model from canvas object
     // have actor1 model emit this, and then 
     
     graph.moveObject(id, point, prevPoint) // fromNode, toNode);
-    
+    const dir = getDirectionFromPoints(point, prevPoint)
     const node = graph.getNodeAtPoint(point)
-    const neighbors = graph.getNeighbors(node)
+    let _neighbors = [...graph.getNeighbors(node).values()]
+    // console.warn('_neighbors', _neighbors)
+    let n1 = _neighbors.slice(0, neighborIndex)
+    let n2 = _neighbors.slice(neighborIndex)
+    const neighbors = [...n1, ...n2]
+    neighborIndex = neighborIndex >= 3 ? 0 : neighborIndex + 1
     
     setCurrentNode(node.data());
     audioNote1(node)
- 
+    if (dir === 'up' || dir === 'left') {
+      neighbors.reverse()
+    }
     let cnt = 0
-    for (const [, neighbor] of neighbors) {
+    for (const neighbor of neighbors) {
       cnt++
       
       setTimeout(() => {
@@ -236,9 +243,11 @@ export const runCanvas = async (mapId) => {
         setTimeout(() => {
           neighbor.update({ highlight: false })
         }, 3000)
-      }, 0 + (300 * cnt))
+      }, 0 + (100 * cnt))
     }
+    
   });
+  
   
   // const removeFrameRateRoutine = loopEngine.addRoutine((dt) => {
   //   setFrameRate(frameRate(dt * 1000));
