@@ -1,4 +1,5 @@
 import ham from 'ham';
+import { rxjs } from 'rxjs';
 import { createCustomEvent } from '../lib/create-event.js';
 import { CanvasObject, DefaultCanvasObjectOptions } from './CanvasObject.js';
 import { CanvasActor } from './CanvasActor.js';
@@ -8,8 +9,8 @@ import { TileObject } from '../canvas/TileObject.js';
 
 const { getPanZoom, template, utils, download, TwoWayMap } = ham;
 
-const { fromEvent, } = rxjs;
-const { map, tap } = rxjs.operators;
+const { fromEvent, operators } = rxjs;
+const { map, tap } = operators;
 let hasInitViewBox = false;
 
 export class SVGCanvas extends EventTarget {

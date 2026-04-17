@@ -15,7 +15,7 @@ export class Model {
 		const { id, type, properties, emitCallback } = options
 		this.#id = id;
 		this.#type = type;
-		this.#properties = {...properties};
+		this.#properties = { ...properties };
 		this.#emit = emitCallback;
 	}
 	
