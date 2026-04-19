@@ -51,7 +51,7 @@ export class AudioNote {
     this._gain.gain.linearRampToValueAtTime(0.0001, this.currentTime + time); // fade-out
     // this._osc.frequency.exponentialRampToValueAtTime(freq * 0.97, this.currentTime + time + 0.15); // fade-out
     
-    const stopTime = this.currentTime + time + 0.2;
+    const stopTime = this.currentTime + time + 0.0;
     
     this._osc.stop(stopTime);
     
@@ -73,22 +73,22 @@ export class AudioNote {
     this.#toneMode = this.#toneMode === 'perc' ? 'soft' : 'perc'
     
     osc.type = this.type;
-    osc.frequency.setValueAtTime(frequency+10, startTime);
-    osc.frequency.linearRampToValueAtTime(frequency, startTime + 0.1); // fade-out
-    
+    osc.frequency.setValueAtTime(frequency + 5, startTime);
+    osc.frequency.linearRampToValueAtTime(frequency, startTime + 0.01); // fade-out
+
     if (this.#toneMode === 'soft') {
       gain.gain.setValueAtTime(0.0, startTime);
-      velocity += 0.005
+      velocity += 0.0065
     }
     
-    gain.gain.linearRampToValueAtTime(velocity, startTime + 0.025); // quick fade-in
+    gain.gain.linearRampToValueAtTime(velocity, startTime + 0.05); // quick fade-in
     gain.gain.linearRampToValueAtTime(0.0, startTime + durationTime); // fade-out
     
     osc.connect(gain);
     gain.connect(audioCtx.destination);
     
     osc.start(startTime);
-    osc.stop(startTime + durationTime);
+    // osc.stop(startTime + durationTime);
     this._osc = osc;
     this._gain = gain;
     

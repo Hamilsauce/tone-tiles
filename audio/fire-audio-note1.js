@@ -24,7 +24,7 @@ const harmonicCxt = {
 let audioNote1; // = (new AudioNote(audioEngine));
 
 
-const fireAudioNote = (freq, vel, dur = 1) => (new AudioNote(audioEngine.ctx)
+const fireAudioNote = (freq, vel, dur = 1) => (new AudioNote(audioEngine.ctx, {type: 'sine'})
   .at(audioEngine.now)
   .frequencyHz(freq)
   .duration(dur)
@@ -100,7 +100,7 @@ const doAudioNote = (currentNode, options = DefaultDoAudioNoteOptions) => {
   const chordToneDegree = getChordToneDegreeFromDir(travelDir);
   
   try {
-    const vel = pointer % 2 === 0 ? 0.2 : 0.4;
+    const vel = pointer % 2 === 0 ? 0.3 : 0.4;
     let freq = toTone({ x: curr.x, y: curr.y, degree: chordToneDegree });
     
     if (!audioNote1) {
