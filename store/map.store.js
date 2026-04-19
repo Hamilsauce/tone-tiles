@@ -1,7 +1,7 @@
 import { storeMaps, storeMap, updateMap, loadMap, loadMaps, clearMaps, loadMapIndex } from '../map.service.js';
 
 import { ref, computed, watch, reactive } from 'vue';
-import { MAP_DOC_TEMPLATE } from '../maps.js';
+import { MAP_DOC_TEMPLATE } from './maps.js';
 
 const currentMap = ref({
   tileData: {},

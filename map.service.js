@@ -1,5 +1,5 @@
 import { mapSyncHelpers, dbAdd, dbGet, dbGetAll, dbUpdate, getFields, dbDelete } from './firestore.js';
-import { maps, mapStorageFormatter } from './maps.js';
+import { maps, mapStorageFormatter } from './store/maps.js';
 
 const { collection, doc, writeBatch, db, deleteField } = mapSyncHelpers;
 
@@ -47,7 +47,7 @@ export const storeMap = async (mapToStore) => {
       ...formatted,
       id,
       linkedMaps: formatted.linkedMaps ?? {},
-    }//, { merge: true }
+    } //, { merge: true }
   );
   
   batch.set(

@@ -24,7 +24,7 @@ const harmonicCxt = {
 let audioNote1; // = (new AudioNote(audioEngine));
 
 
-const fireAudioNote = (freq, vel, dur = 2) => (new AudioNote(audioEngine.ctx)
+const fireAudioNote = (freq, vel, dur = 1) => (new AudioNote(audioEngine.ctx)
   .at(audioEngine.now)
   .frequencyHz(freq)
   .duration(dur)
@@ -47,11 +47,25 @@ function getScaleDegree(x, y, arp) {
   return arp ? (x + y) % harmonicCxt.chordNotes.length : (x + y) % harmonicCxt.notes.length;
 }
 
-const getTileTone = (x, y, degree, arp = false) => {
+const getTileTone = ({ x, y, degree, arp = false, octaveMod }) => {
   const deg = degree ?? getScaleDegree(x, y, arp);
   
-  const pitch = arp ? harmonicCxt.chordNotes[deg] : harmonicCxt.notes[deg];
-  return pitchToFrequency(pitch.pitch);
+  const {
+    pitch,
+    pitchClass,
+    octave,
+    sharp,
+    flat
+  } = harmonicCxt.notes[Math.max(deg, 0)]
+  // arp ? harmonicCxt.chordNotes[deg] : harmonicCxt.notes[deg];
+  if (octaveMod) {
+    const pClassResolved = sharp ?? flat ?? pitchClass
+    const finalPitch = `${pClassResolved}${octave+octaveMod}`
+    const chord = getChordNotes(finalPitch, 'major')
+    const note = harmonicCxt.chordNotes[getRandomInt(4)]
+    return note.frequency
+  }
+  return pitchToFrequency(pitch)
 };
 
 const getDynamicTone = (x, y, dir = 1) => {
@@ -65,16 +79,20 @@ const getDynamicTone = (x, y, dir = 1) => {
   return pitchToFrequency(pitch);
 };
 
-const _toTone = (x, y, deg) => (x % 2 && y % 2) ?
+const _toTone = (x, y, degree) => (x % 2 && y % 2) ?
   getDynamicTone(x, y, 0) :
-  getTileTone(x, y, deg, true);
+  // getTileTone(x, y, deg, true);
+  getTileTone({ x, y, degree, arp: true, octaveMod })
 
-const toTone = (x, y, deg, arp) => getTileTone(x, y, deg, arp);
+const toTone = ({ x, y, degree, arp, octaveMod = 0 }) => getTileTone({ x, y, degree, arp, octaveMod });
+
+const DefaultDoAudioNoteOptions = {
+  forceNewNote: false,
+}
 
 
-
-const doAudioNote = (currentNode) => {
-  // AudioNote Block
+const doAudioNote = (currentNode, options = DefaultDoAudioNoteOptions) => {
+  const { forceNewNote } = options;
   curr = currentNode;
   prev = prev ?? curr;
   
@@ -83,17 +101,21 @@ const doAudioNote = (currentNode) => {
   
   try {
     const vel = pointer % 2 === 0 ? 0.2 : 0.4;
-    let freq = toTone(curr.x, curr.y, chordToneDegree);
+    let freq = toTone({ x: curr.x, y: curr.y, degree: chordToneDegree });
     
     if (!audioNote1) {
       audioNote1 = fireAudioNote(freq, vel);
     }
     
+    if (forceNewNote) {
+      audioNote1.stop(0.2)
+      audioNote1 = fireAudioNote(freq, vel);
+    }
+    
     else if (curr.tileType === 'teleport') {
-      
       audioNote1.stop(0.015)
       
-      freq = major7(toTone(curr.x, curr.y, chordToneDegree))[getRandomInt(4)];
+      freq = major7(toTone({ x: curr.x, y: curr.y, degree: chordToneDegree, octaveMod: 1 }))[getRandomInt(4)];
       
       audioNote1 = fireAudioNote(freq, vel);
     }

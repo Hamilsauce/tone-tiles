@@ -16,6 +16,7 @@ export class CanvasActor extends CanvasObject {
   #traversalGen = null;
   #goalNode = null;
   #currentNode = null;
+  #point = null;
   #dtSum = 0;
   #onGoal = () => {};
   #isStepping = false;
@@ -43,6 +44,8 @@ export class CanvasActor extends CanvasObject {
   }
   
   get currentNode() { return this.#currentNode; }
+  // get point() { return this.#point; }
+  get point() { return this.#currentNode.point; }
   
   get currentPoint() {
     return this.#currentNode?.point ?? this.point;
@@ -54,9 +57,9 @@ export class CanvasActor extends CanvasObject {
     return this.#goalNode?.point ?? null;
   }
   
-  get point() {
-    return CanvasPoint.from(this.model);
-  }
+  // get point() {
+  //   return CanvasPoint.from(this.model);
+  // }
   
   configure({
     graph,
@@ -133,6 +136,7 @@ export class CanvasActor extends CanvasObject {
       actor: this,
       goalNode,
       goalPoint: goalNode.point,
+      point: this.currentPoint,
     });
     
     return true;
@@ -186,6 +190,7 @@ export class CanvasActor extends CanvasObject {
       }
       
       this.#currentNode = curr;
+      this.#point = currPoint;
       
       if (prevPoint?.equals(currPoint)) {
         this.#enterIdle('same-node');
@@ -204,13 +209,13 @@ export class CanvasActor extends CanvasObject {
         moving: true,
       });
       this.transforms.scaleTo(0.7)
-      
+
       this.emit('actor:move', {
         actor: this,
         prevNode: prev,
         node: curr,
         prevPoint,
-        point: currPoint,
+        point: this.currentPoint,
       });
       
       const isLink = curr.tileType === 'map-link' || (curr.tileType === 'start' && !!curr.linkedMap);

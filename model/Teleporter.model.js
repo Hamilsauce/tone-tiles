@@ -1,6 +1,6 @@
 import { SpatialModel } from './Spatial.model.js';
 
-export class ActorModel extends SpatialModel {
+export class TeleporterModel extends SpatialModel {
   constructor() {
     super({})
   };

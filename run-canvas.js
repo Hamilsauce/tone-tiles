@@ -210,8 +210,13 @@ export const runCanvas = async (mapId) => {
   });
   
   const unsubscribeActorTravel = actor1.on('actor:travel', async ({ point, goalPoint }) => {
-    const g = graph.getNodeAtPoint(goalPoint)
-    g.update({ active: true })
+    
+    const curr = graph.getNodeAtPoint(point)
+    const goal = graph.getNodeAtPoint(goalPoint)
+    goal.update({ active: true });
+    
+    audioNote1(curr, { forceNewNote: true })
+    
   });
   let neighborIndex = 0
   const unsubscribeActorMove = actor1.on('actor:move', async ({ id, point, prevPoint }) => {
@@ -221,27 +226,38 @@ export const runCanvas = async (mapId) => {
     graph.moveObject(id, point, prevPoint) // fromNode, toNode);
     const dir = getDirectionFromPoints(point, prevPoint)
     const node = graph.getNodeAtPoint(point)
-    let _neighbors = [...graph.getNeighbors(node).values()]
-    // console.warn('_neighbors', _neighbors)
+    let _neighbors = [...graph.getNeighbors(node).entries()]
     let n1 = _neighbors.slice(0, neighborIndex)
     let n2 = _neighbors.slice(neighborIndex)
+    
     const neighbors = [...n1, ...n2]
     neighborIndex = neighborIndex >= 3 ? 0 : neighborIndex + 1
     
+    // console.warn('dir', dir)
     setCurrentNode(node.data());
     audioNote1(node)
+    
     if (dir === 'up' || dir === 'left') {
       neighbors.reverse()
     }
+    
     let cnt = 0
-    for (const neighbor of neighbors) {
+    
+    for (const [nDir, neighbor] of neighbors) {
       cnt++
+      // console.warn('node.id, nDir', node.id, nDir)
+      // console.warn(dir === nDir)
       
       setTimeout(() => {
-        neighbor.update({ highlight: true })
+        const propKey = dir !== nDir ? 'isPathNode' : 'highlight'
+        neighbor.update({
+          [propKey]: true
+        })
         
         setTimeout(() => {
-          neighbor.update({ highlight: false })
+          neighbor.update({
+            [propKey]: false
+          })
         }, 3000)
       }, 0 + (100 * cnt))
     }
@@ -307,16 +323,6 @@ export const runCanvas = async (mapId) => {
     actor1.travelTo(goalNode);
   };
   
-  // const handleLineDrag = async (e) => {
-  //   e.stopPropagation();
-  //   e.preventDefault();
-  
-  //   const newPoint = domPoint(svgCanvas.scene.dom, e.clientX, e.clientY);
-  //   selectedTileBeingLinked = targetNode;
-  
-  //   line.firstElementChild.setAttribute('x2', Math.floor(newPoint.x) + 0.5);
-  //   line.firstElementChild.setAttribute('y2', Math.floor(newPoint.y) + 0.5);
-  // }
   
   // const handleLineDrag = async (e) => {
   //   e.stopPropagation();

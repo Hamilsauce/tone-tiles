@@ -1,4 +1,6 @@
-export class GraphNode extends EventEmitter {
+import { SpatialModel } from './Spatial.model.js';
+
+export class GraphNode extends SpatialModel {
 	#data = {
 		type: 'tile',
 		id: null,
@@ -23,7 +25,7 @@ export class GraphNode extends EventEmitter {
 	#context;
 	
 	constructor(context, data = {}) {
-		super();
+		super({});
 		this.#context = context;
 		this.update(createNodeData(data));
 	}
