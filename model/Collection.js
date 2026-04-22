@@ -4,7 +4,6 @@ import { rxjs } from 'rxjs';
 const { fromEvent, operators, Subject } = rxjs;
 const { map, tap, filter, shareReplay, distinctUntilChanged } = operators;
 export class Collection {
-  #registry = new Map();
   #models = new Map();
   #registry;
   #input$ = new Subject();
