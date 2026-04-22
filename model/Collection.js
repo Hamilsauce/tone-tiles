@@ -74,7 +74,6 @@ export class Collection {
   connect(eventType = null) {
     return this.#output$.asObservable()
       .pipe(
-        tap(event => console.log('collection event', event)),
         filter(({ type }) => eventType ? type.includes(eventType) : true),
         // map(selectorFn),
         distinctUntilChanged( /* TODO Put something good here */),
@@ -84,7 +83,6 @@ export class Collection {
 
   // gives models a safe way to emit into collection
   emit(event) {
-    console.warn('coll event', event);
     this.#input$.next(event);
     return this;
   }
