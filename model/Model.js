@@ -2,7 +2,7 @@ export const DefaultModelOptions = {
 	type: '',
 	id: '',
 	properties: {},
-	emitCallback,
+	emitCallback: null,
 };
 
 export class Model {

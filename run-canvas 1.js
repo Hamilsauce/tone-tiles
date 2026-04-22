@@ -183,17 +183,25 @@ export const runCanvas = async (mapId) => {
   //   tileLayer.applyNodePatch(payload);
   // });
   
-  const graphUpdates$ = graphModel.output$
-    .pipe(
-      map(x => x),
-      tap(x => console.log('graphModel', x)),
+  const graphLoad$ = graphModel.output$.pipe(
+      filter(({type}) => type === 'map:load'),
+      tap(x => console.log('graphModel graphLoad$: ', x)),
       tap(x => {
         tileLayer.applyNodePatch(x);
-
       })
     );
   
-  graphUpdates$.subscribe()
+  const nodeUpdates$ = graphModel.output$.pipe(
+      filter(({type}) => type === 'node:update'),
+      tap(x => console.log('graphModel nodeUpdates$: ', x)),
+      tap(x => {
+        tileLayer.applyNodePatch(x);
+      })
+    );
+  
+  nodeUpdates$.subscribe()
+
+  nodeUpdates$.subscribe()
   
   const unwatch = watch(mapStore.currentMap, (newMap, oldMap) => {
     if (!newMap.id) return;

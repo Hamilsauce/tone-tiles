@@ -2,7 +2,7 @@ import { ref, watch, onBeforeUnmount, computed, toValue, onMounted } from 'vue'
 import { defineComponent, getTemplate } from '../lib/vue-helpers.js';
 import { useAppState } from '../store/app.store.js';
 import { useMapStore } from '../store/map.store.js';
-import { runCanvas } from '../run-canvas.js';
+import { runCanvas } from '../run-canvas 1.js';
 import { AudioClockLoop } from '../lib/loop-engine.js'
 import { router, route } from '../router/router.js'
 
