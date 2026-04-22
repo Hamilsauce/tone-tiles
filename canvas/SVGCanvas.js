@@ -163,7 +163,6 @@ export class SVGCanvas extends EventTarget {
         e.stopImmediatePropagation();
         e.preventDefault();
         const { type, target, clientX, clientY } = e;
-        console.warn('[ PRE EVENT ]: ', type, target, clientX, clientY);
 
         const layerDOM = target.closest('[data-type="layer"]');
         const layerName = layerDOM.dataset.name;
@@ -172,7 +171,7 @@ export class SVGCanvas extends EventTarget {
         const isTile = !!target.closest('.tile');
         const x = Math.floor(point.x);
         const y = Math.floor(point.y);
-        console.warn({ layerDOM, layerName, point, isTile, x, y });
+
         return {
           type: `${layerName}:${type}`,
           detail: {

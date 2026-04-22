@@ -175,7 +175,6 @@ export const runCanvas = async (mapId) => {
   const unsubscribeMapLoad = graphModel.connect('map:load')
     .subscribe(e => {
       const { width, height, nodes, startNode } = e.data;
-      console.warn('e', e.data);
       selectionBox.setBounds({
         minX: 0,
         minY: 0,
