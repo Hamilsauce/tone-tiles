@@ -1,74 +1,95 @@
 import { Model } from '../model/Model.js';
+import { ModelRegistry } from '../core/types/model-registry.js';
 import { rxjs } from 'rxjs';
 const { fromEvent, operators, Subject } = rxjs;
-
-
+const { map, tap, filter, shareReplay, distinctUntilChanged } = operators;
 export class Collection {
   #models = new Map();
-  
-  // internal input (models push here)
+  #registry;
   #input$ = new Subject();
-  
-  // exposed output (downstream systems subscribe here)
   #output$ = new Subject();
-  
-  // constructor() {
-  //   this.#wire();
-  // }
-  constructor({ registry = new Map() } = {}) {
+
+  constructor({ registry = ModelRegistry } = {}) {
     this.#registry = registry;
+    this.#wire();
   }
-  
+
   create(type, options) {
     const ModelClass = this.#registry.get(type);
-    
     if (!ModelClass) {
       throw new Error(`Unknown model type: ${type}`);
     }
-    
+
     const model = new ModelClass({
       ...options,
       emitCallback: this.#createEmitter(),
     });
-    
+
     this.add(model);
     return model;
   }
-  // --- Public API ---
-  
+
+  get registry() {
+    return this.#registry;
+  }
+
   get output$() {
     return this.#output$.asObservable();
   }
-  
+
   add(model) {
     this.#models.set(model.id, model);
   }
-  
+
   remove(id) {
     this.#models.delete(id);
   }
-  
+
+  clear() {
+    this.#models.clear();
+  }
+
   get(id) {
     return this.#models.get(id);
   }
-  
+
+  has(id) {
+    return this.#models.has(id);
+  }
+
   getAll() {
     return this.#models;
   }
-  
-  // factory helper so models get the emit function
+
   createModel(ModelClass, options) {
     const model = new Model({
       ...options,
       emitCallback: this.#createEmitter(),
     });
-    
+
     this.add(model);
     return model;
   }
-  
+
+  connect(eventType = null) {
+    return this.#output$.asObservable()
+      .pipe(
+        filter(({ type }) => eventType ? type.includes(eventType) : true),
+        // map(selectorFn),
+        distinctUntilChanged( /* TODO Put something good here */),
+        shareReplay({ bufferSize: 1, refCount: true })
+      );
+  }
+
+  // gives models a safe way to emit into collection
+  emit(event) {
+    console.warn('coll event', event);
+    this.#input$.next(event);
+    return this;
+  }
+
   // --- Internal wiring ---
-  
+
   #wire() {
     this.#input$.subscribe((event) => {
       // pass-through for now
@@ -76,8 +97,7 @@ export class Collection {
       this.#output$.next(event);
     });
   }
-  
-  // gives models a safe way to emit into collection
+
   #createEmitter() {
     return (event) => {
       this.#input$.next(event);

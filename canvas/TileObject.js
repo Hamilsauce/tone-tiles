@@ -11,7 +11,7 @@ export class TileObject extends CanvasObject {
     
     const node = options.model;
     // options.model = node.data();
-    options.id = node.address;
+    options.id = node.id ?? node.address;
     
     super(ctx, 'tile', options);
     

@@ -12,111 +12,115 @@ const isvalid = v1 !== undefined && v2 !== undefined;
 const { template, utils, download } = ham;
 
 export const TILE_TYPE_INDEX = [
-	'empty',
-	'barrier',
-	'start',
-	'goal',
-	'teleport',
+  'empty',
+  'barrier',
+  'start',
+  'goal',
+  'teleport',
 ];
 export const TileTypeMap = {
-	empty: 'empty',
-	barrier: 'barrier',
-	start: 'start',
-	goal: 'goal',
-	teleport: 'teleport',
+  empty: 'empty',
+  barrier: 'barrier',
+  start: 'start',
+  goal: 'goal',
+  teleport: 'teleport',
 };
 
 const TileTypes = TILE_TYPE_INDEX.reduce((acc, curr, i) => {
-	return { ...acc, [curr]: i };
+  return { ...acc, [curr]: i };
 }, {});
 
 const DIRECTIONS = new Map([
-	['up', { x: 0, y: -1 }],
-	['down', { x: 0, y: 1 }],
-	['left', { x: -1, y: 0 }],
-	['right', { x: 1, y: 0 }],
+  ['up', { x: 0, y: -1 }],
+  ['down', { x: 0, y: 1 }],
+  ['left', { x: -1, y: 0 }],
+  ['right', { x: 1, y: 0 }],
 ]);
 
 const DIR_LOOKUP = new Map(
-	[...DIRECTIONS.entries()].map(([name, { x, y }]) => [
-		`${x}_${y}`,
-		name
-	])
+  [...DIRECTIONS.entries()].map(([name, { x, y }]) => [
+    `${x}_${y}`,
+    name
+  ])
 );
 
 const DIRECTION_CHORD_TONE = new Map([
-	['up', 0],
-	['down', 2],
-	['left', 4],
-	['right', 6],
+  ['up', 0],
+  ['down', 2],
+  ['left', 4],
+  ['right', 6],
 ]);
 
 export const getChordToneDegreeFromDir = (dir) => {
-	return DIRECTION_CHORD_TONE.get(dir);
+  return DIRECTION_CHORD_TONE.get(dir);
 };
 
 export const getLinkCoords = (dir = 'n', { width, height }) => {
-	let x, y;
-	
-	if (dir.toLowerCase() === 'n') {
-		x = Math.floor(width / 2);
-		y = -1;
-	}
-	
-	if (dir.toLowerCase() === 'e') {
-		y = Math.floor(height / 2);
-		x = width;
-	}
-	
-	if (dir.toLowerCase() === 's') {
-		x = Math.floor(width / 2);
-		y = height;
-	}
-	
-	if (dir.toLowerCase() === 'w') {
-		x = -1;
-		y = Math.floor(height / 2);
-	}
-	
-	return { x, y };
+  let x, y;
+
+  if (dir.toLowerCase() === 'n') {
+    x = Math.floor(width / 2);
+    y = -1;
+  }
+
+  if (dir.toLowerCase() === 'e') {
+    y = Math.floor(height / 2);
+    x = width;
+  }
+
+  if (dir.toLowerCase() === 's') {
+    x = Math.floor(width / 2);
+    y = height;
+  }
+
+  if (dir.toLowerCase() === 'w') {
+    x = -1;
+    y = Math.floor(height / 2);
+  }
+
+  return { x, y };
 };
 
 export const getDirectionFromPoints = (p1, p2) => {
-	if (!p1 || !p2) return null;
-	
-	const dx = p2.x - p1.x;
-	const dy = p2.y - p1.y;
-	
-	return DIR_LOOKUP.get(`${dx}_${dy}`) || null;
+  if (!p1 || !p2) return null;
+
+  const dx = p2.x - p1.x;
+  const dy = p2.y - p1.y;
+
+  return DIR_LOOKUP.get(`${dx}_${dy}`) || null;
 };
 
 const DETAULT_TILE_DATA = {
-	type: 'tile',
-	id: null,
-	tileType: null,
-	current: false,
-	active: false,
-	address: null,
-	x: null,
-	y: null,
-	isPathNode: false,
-	isVisited: false,
-	linkedNodeAddress: null,
-	linkedMap: null,
-	target: null,
-	selected: false,
-	isLink: false,
-	dir: null,
+  type: 'tile',
+  id: null,
+  tileType: null,
+  current: false,
+  active: false,
+  address: null,
+  x: null,
+  y: null,
+  isPathNode: false,
+  isVisited: false,
+  linkedNodeAddress: null,
+  linkedMap: null,
+  target: null,
+  selected: false,
+  isLink: false,
+  dir: null,
 };
 
 const createNodeData = (overrides = {}) => {
-	const { point } = overrides;
-	return {
-		...DETAULT_TILE_DATA,
-		...overrides,
-		id: `${point.x}_${point.y}`,
-		// id: `${x}_${y}`,
-	};
+  const point = overrides.point ?? { x: overrides.x ?? 0, y: overrides.y ?? 0 };
+  const address = `${point.x}_${point.y}`;
+  return {
+    ...DETAULT_TILE_DATA,
+    ...overrides,
+    point,
+    x: overrides.x ?? point.x,
+    y: overrides.y ?? point.y,
+    id: overrides.id ?? address,
+    address: overrides.address ?? address,
+  };
 };
 
 const TRAVERSABLE_TILE_TYPES = ['empty', 'start', 'end', 'teleport', 'map-link'];
@@ -266,631 +270,623 @@ const TRAVERSABLE_TILE_TYPES = ['empty', 'start', 'end', 'teleport', 'map-link']
 // }
 
 export class Neighbor {
-	#node = null;
-	#visited = false;
-	
-	constructor(node, visited = false) {
-		this.#node = node;
-		this.#visited = visited;
-	}
-	
-	get node() { return this.#node; }
-	
-	get visited() { return this.#visited; }
-	
-	visit() {
-		this.#visited = true;
-	}
+  #node = null;
+  #visited = false;
+
+  constructor(node, visited = false) {
+    this.#node = node;
+    this.#visited = visited;
+  }
+
+  get node() { return this.#node; }
+
+  get visited() { return this.#visited; }
+
+  visit() {
+    this.#visited = true;
+  }
 }
 
 export class Graph extends Collection {
-	#id = null;
-	#name = 'Untitled';
-	#meta = {};
-	#width = 0;
-	#height = 0;
-	#nodeData = new Map(); // tileData
-	// #nodes = new Map();
-	#edges = new Map();
-	#objectIndex = new Map();
-	#linkedMaps = {};
-	#goalNode;
-	#startNode;
-	
-	constructor(map = []) {
-		super();
-		
-		if (map && map.length) {
-			this.fromMap(map);
-		}
-		
-		// this.on('node:update', ({ id, patch }) => {
-		// 	if (patch.x || patch.y) {
-		
-		// 	}
-		// 	setTimeout(() => {
-		// 		neighbor.update({ highlight: true })
-		
-		// 		setTimeout(() => {
-		// 			neighbor.update({ highlight: false })
-		// 		}, 50 + (50 * cnt))
-		// 	}, 0 + (25 * cnt))
-		// })
-	}
-	
-	get id() { return this.#id; }
-	
-	get width() { return this.#width; }
-	
-	get height() { return this.#height; }
-	
-	get name() { return this.#name; }
-	
-	set name(v) { this.#name = v; }
-	
-	get nodes() { return [...this.getAll().values()]; }
-	
-	get startNode() {
-		const n = this.#startNode ?? this.nodes.find(n => this.previousMapId ? n.linkedMap === this.previousMapId : n.tileType === 'start');
-		return n ?? this.getNodeByAddress('0_0');
-	}
-	
-	get goalNode() { return this.#goalNode ?? this.nodes.find(n => n.tileType === 'goal'); }
-	
-	get targetNode() { return this.nodes.find(n => n.tileType === 'target'); }
-	
-	// clear() {
-	// 	this.#nodes.clear();
-	// }
-	
-	setGoal(pt) {
-		this.#goalNode = this.getNodeByAddress(this.pointToAddress(pt));
-		return this;
-	}
-	
-	setStart(pt) {
-		this.#startNode = this.getNodeByAddress(this.pointToAddress(pt));
-		return this;
-	}
-	
-	pointToAddress({ x, y }) {
-		return `${x}_${y}`;
-	}
-	
-	addressToPoint(address = '') {
-		const [x, y] = (address.includes(',') ? address.split(',') : address.split('_')).map(_ => +_);
-		return new CanvasPoint(x, y);
-	}
-	
-	getNodeByAddress(address) {
-		return this.get(address);
-	}
-	
-	findNode(cb = () => {}) {
-		return this.nodes.find(cb);
-	}
-	
-	findNodes(cb = () => {}) {
-		return this.nodes.filter(cb);
-	}
-	
-	findAll(attributeMap = {}) {
-		const entries = Object.entries(attributeMap);
-		
-		return [...this.nodes.values()].filter((n) => {
-			return entries.every(([k, v]) => n.hasProp(k) && n[k] === v);
-		});
-	}
-	
-	findAny(attributeMap = {}) {
-		const entries = Object.entries(attributeMap);
-		
-		return [...this.nodes.values()].filter((n) => {
-			return entries.some(([k, v]) => n.hasProp(k) && n[k] === v);
-		});
-	}
-	
-	getNodeAtPoint({ x, y }) {
-		return this.getNodeByAddress(this.pointToAddress({ x, y }));
-	}
-	
-	* traversePoints(start = this.startNode, getGoal = () => this.goalNode) {
-		for (const node of this.traverseHybrid(start, getGoal)) {
-			yield node?.point ?? null;
-		}
-	}
-	
-	moveObject(id, point) {
-		const fromId = this.#objectIndex.get(id)
-		const fromNode = this.getNodeByAddress(fromId)
-		const toNode = this.getNodeAtPoint(point)
-		
-		if (fromNode) {
-			fromNode.deleteObject(id) //objects.delete(id);
-		}
-		
-		if (toNode) {
-			toNode.addObject(id) //objects.delete(id);
-			
-		}
-		
-		this.#objectIndex.set(id, toNode?.id);
-		
-		this.emit('graph:object-move', {
-			id,
-			from: fromNode?.id,
-			to: toNode?.id,
-		});
-	}
-	
-	pathToDirections(path = []) {
-		const dirs = [];
-		
-		for (let i = 1; i < path.length; i++) {
-			const prev = path[i - 1];
-			const curr = path[i];
-			
-			let dir = getDirectionFromPoints(prev, curr);
-			
-			if (!dir) {
-				const entry = [...this.getNeighbors(prev).entries()]
-					.find(([_, n]) => n === curr);
-				
-				dir = entry?.[0] ?? null;
-			}
-			
-			if (!dir) {
-				console.error('FAILED TO RESOLVE DIRECTION', prev, curr);
-				continue;
-			}
-			
-			dirs.push(dir);
-		}
-		
-		return dirs;
-	};
-	
-	* traverseHybrid(start = this.startNode, getGoal = () => this.goalNode) {
-		let current = start;
-		let goal = getGoal();
-		
-		let path = this.getPath(current, goal) || [];
-		let dirs = this.pathToDirections(path);
-		let i = 0;
-		
-		while (true) {
-			const nextGoal = getGoal();
-			// 🔁 replan if goal changes
-			if (nextGoal !== goal) {
-				goal = nextGoal;
-				path = this.getPath(current, goal) || [];
-				dirs = this.pathToDirections(path);
-				i = 0;
-			}
-			
-			if (path.length && path[path.length - 1] !== goal) {
-				console.warn('PATH DOES NOT REACH GOAL', {
-					current: current.address,
-					goal: goal?.address,
-					last: path[path.length - 1]?.address
-				});
-			}
-			
-			// 🧭 no more directions → idle at current
-			if (i >= dirs.length) {
-				yield current;
-				continue;
-			}
-			
-			const dir = dirs[i++];
-			
-			// 🛑 guard
-			if (!dir) {
-				yield current;
-				continue;
-			}
-			
-			const next = this.getNeighbor(current, dir);
-			
-			// 🔁 fallback if world changed
-			if (!next) {
-				path = this.getPath(current, goal) || [];
-				dirs = this.pathToDirections(path);
-				i = 0;
-				continue;
-			}
-			
-			current = next;
-			yield current;
-		}
-	}
-	
-	getRange({ type, points, start, end }, updateFn) {
-		let range = [];
-		
-		if (type === 'line') {
-			range = points.map(this.getNodeAtPoint.bind(this));
-			return range;
-		}
-		
-		for (let x = start.x; x < end.x; x++) {
-			for (let y = start.y; y < end.y; y++) {
-				const node = this.getNodeAtPoint({ x, y });
-				range.push(node);
-			}
-		}
-		
-		return range;
-	}
-	
-	getNeighbor(node, dirName = '') {
-		if (dirName === 'remote') {
-			const tele = this.getNodeAtPoint({
-				x: node.target.x,
-				y: node.target.y,
-			});
-			
-			return tele;
-		}
-		
-		if (!DIRECTIONS.get(dirName)) {
-			return node;
-		}
-		const { x, y } = DIRECTIONS.get(dirName);
-		
-		const n = this.getNodeAtPoint({
-			x: node.x + x,
-			y: node.y + y,
-		});
-		
-		if (!n || !n.isTraversable) return null;
-		
-		return n;
-	}
-	
-	getNeighbors(node) {
-		const neighborMap = [...DIRECTIONS.keys()]
-			.reduce((map, name, i) => {
-				return node && this.getNeighbor(node, name) ? map.set(name, this.getNeighbor(node, name)) : map;
-			}, new Map());
-		
-		if (node.tileType === 'teleport' && node.target) {
-			neighborMap.set('remote', this.getNeighbor(node, 'remote'));
-		}
-		
-		return neighborMap;
-	}
-	
-	getUnvisitedNeighbors(node, visited) {
-		return [...this.getNeighbors(node).entries()]
-			.filter(([_, n]) => n && !visited.has(n));
-	}
-	
-	getPath(start = this.startNode, goal) {
-		return this.bfsShortestPath(start, goal);
-	}
-	
-	bfsShortestPath(start, goal) {
-		const queue = [
-			[start]
-		];
-		const visited = new Set();
-		
-		while (queue.length > 0) {
-			const path = queue.shift();
-			const node = path[path.length - 1];
-			
-			if (node === goal) return path;
-			
-			if (!visited.has(node)) {
-				visited.add(node);
-				
-				let neighbors = [...this.getNeighbors(node).entries()]
-					.filter(([_, n]) => n && !visited.has(n));
-				
-				// teleport behavior (safe, no global state)
-				if (node.tileType === 'teleport' && node.linkedNodeAddress) {
-					const remote = neighbors.find(([dir]) => dir === 'remote');
-					if (remote) neighbors = [remote];
-				}
-				
-				// let cnt = 0
-				for (const [, neighbor] of neighbors) {
-					// cnt++
-					queue.push([...path, neighbor]);
-					
-				}
-			}
-		}
-		
-		return null;
-	}
-	
-	toLinkedList(lastNode) {
-		let pointer = 0;
-		let curr = lastNode;
-		let path = [];
-		
-		while (curr) {
-			let previous = curr.previous;
-			if (previous) {
-				previous.next = curr;
-				delete curr.previous;
-			}
-			curr = previous;
-		}
-		
-		return curr;
-	};
-	
-	pathToQueue(lastNode) {
-		let pointer = 0;
-		let curr = lastNode;
-		let path = [];
-		
-		while (curr) {
-			let previous = curr.previous;
-			path.push(curr);
-			curr = previous;
-		}
-		
-		path.reverse();
-		curr = path[pointer];
-	};
-	
-	resetPath() {
-		this.findAny({
-			isVisited: true,
-			isPathNode: true,
-		}).forEach((n, i) => {
-			n.update({
-				isVisited: false,
-				isPathNode: false,
-			});
-		});
-	}
-	
-	fromStoredMap({
-		name,
-		tileData,
-		tiles: tileChars,
-		width,
-		height
-	}) {
-		this.clear();
-		this.name = name;
-		this.#width = width;
-		this.#height = height;
-		
-		map.forEach((row, rowNumber) => {
-			row.forEach((typeId, columnNumber) => {
-				const tileType = TILE_TYPE_INDEX[typeId];
-				const modelClass = this.registry.get(ModelTypes.NODE)
-				
-				
-				const node = this.create(ModelTypes.NODE, createNodeData({
-					point: {
-						x: columnNumber,
-						y: rowNumber,
-					},
-					properties: {
-						selected: false,
-						tileType: TILE_TYPE_INDEX[typeId],
-					},
-				}))
-				// const node = new GraphNode(this, {
-				// 	point: {
-				// 		x: columnNumber,
-				// 		y: rowNumber,
-				// 	},
-				// 	properties: {
-				// 		selected: false,
-				// 		tileType: TILE_TYPE_INDEX[typeId],
-				// 	},
-				// });
-				
-				// this.#nodes.set(node.address, node);
-			});
-		});
-	}
-	
-	fromMap(map = {}) {
-		console.warn('fromMap', map)
-		this.clear();
-		
-		let rows;
-		this.previousMapId = this.#id ?? this.previousMapId;
-		
-		if (!Array.isArray(map)) {
-			this.#height = map.height;
-			this.#width = map.width;
-			this.name = map.name;
-			this.#id = map.id;
-			this.#meta = map.meta;
-			this.#linkedMaps = map.linkedMaps || {};
-			this.#nodeData = new Map(Object.entries(map.tileData));
-			
-			if (Array.isArray(map.tiles)) {
-				const temprows = [...(map.tiles)];
-				
-				rows = new Array(this.height).fill(null)
-					.map(_ => new Array(this.width).fill(null))
-					.map(_ => temprows.splice(0, this.width));
-			} else {
-				rows = new Array(this.height).fill(null).map(_ => new Array(this.width).fill(null));
-			}
-		} else {
-			rows = map;
-			this.#height = rows.length;
-			this.#width = rows[0].length;
-		}
-		
-		let hasStart = false;
-		
-		rows.forEach((row, rowNumber) => {
-			row.forEach((typeId, columnNumber) => {
-				const address = `${columnNumber}_${rowNumber}`;
-				const tileDetail = this.#nodeData.get(address);
-				
-				let tileType = tileDetail ? tileDetail.tileType : TILE_TYPE_INDEX[typeId] ?? TileTypeMap.empty;
-				tileType = tileType === 'start' && this.previousMapId ? TileTypeMap.empty : tileType;
-				hasStart = tileType === 'start';
-				const target = tileDetail?.target ?? 0;
-				
-				const data = createNodeData({
-					tileType,
-					x: columnNumber,
-					y: rowNumber,
-					point: {
-						x: columnNumber,
-						y: rowNumber,
-					},
-					selected: false,
-					target: tileDetail?.target ?? null,
-				});
-				
-				if (this.has(address)) {
-					this.get(address).update(data);
-				} else {
-					// const node = new GraphNode(this, data);
-					const node = this.create(ModelTypes.NODE, data)
-					console.log('node', node)
-					// this.#nodes.set(node.address, node);
-				}
-			});
-		});
-		
-		Object.entries(this.#linkedMaps).forEach(([dir, linkedMap], i) => {
-			const { x, y } = getLinkCoords(dir, { width: this.#width, height: this.#height });
-			const node = this.create(ModelTypes.NODE, createNodeData({
-				tileType: linkedMap === this.previousMapId ? 'start' : 'map-link', // 'map-link',
-				linkedMap,
-				x,
-				y,
-				point: { x, y },
-				selected: false,
-				isLink: true,
-				dir,
-			}));
-			
-			// const node = new GraphNode(this, {
-			// 	tileType: linkedMap === this.previousMapId ? 'start' : 'map-link', // 'map-link',
-			// 	linkedMap,
-			// 	x,
-			// 	y,
-			// 	selected: false,
-			// 	isLink: true,
-			// 	dir,
-			// });
-			
-			hasStart = node.tileType === 'start';
-			
-			// this.#nodes.set(node.address, node);
-		});
-		
-		if (!hasStart) {
-			// this.get('0_0').tileType = 'start';
-		}
-		
-		this.emit({
-			type: 'map:load',
-			data: {
-				name: this.#name,
-				width: this.#width,
-				height: this.#height,
-				startNode: this.startNode,
-				nodes: [...this.nodes],
-			},
-		});
-		
-		
-		// this.emit('map:load', {
-		// 	type: 'map:load',
-		// 	data: {
-		// 		name: this.#name,
-		// 		width: this.#width,
-		// 		height: this.#height,
-		// 		startNode: this.startNode,
-		// 		nodes: [...this.nodes],
-		// 	},
-		// });
-	}
-	
-	toStorageFormat() {
-		const DO_NOT_SAVE = ['empty', 'map-link'];
-		
-		const output = [...this.nodes].reduce((out, { tileType, target, address }, i) => {
-			if (tileType && !DO_NOT_SAVE.includes(tileType)) {
-				const data = { tileType };
-				
-				if (tileType === 'teleport') {
-					data.target = target;
-				}
-				
-				out.tileData[address] = data;
-			}
-			
-			return out;
-		}, {
-			width: this.width,
-			height: this.height,
-			tileData: {},
-			meta: { ...this.#meta, updated: Date.now() },
-			name: this.#name,
-			id: this.#id,
-			updated: Date.now(),
-		});
-		
-		return output;
-	}
-	
-	toMap(formatAsCharMatrix = true) {
-		const output = new Array(this.height).fill(null).map(_ => new Array(this.width).fill(null));
-		
-		// [...this.nodes].forEach(([addressKey, node], i) => {
-		[...this.nodes].forEach((node, i) => {
-			const addressKey = node.id
-			const [x, y] = (addressKey.includes(',') ? addressKey.split(',').map(_ => +_) : addressKey.split('_')).map(_ => +_);
-			output[y][x] = formatAsCharMatrix ? TileTypes[node.tileType] : node;
-		});
-		
-		const outputJSON = JSON.stringify(output);
-		
-		return outputJSON;
-	}
-	
-	toJSON() {
-		return {
-			name: this.#name,
-			id: this.#id,
-			startNode: this.#startNode,
-			goalNode: this.#goalNode,
-			nodes: this.nodes,
-			width: this.#width,
-			height: this.#height,
-			nodeData: this.#nodeData,
-			linkedMaps: this.#linkedMaps,
-		};
-	}
-	
-	async snapState(filename) {
-		const state = JSON.stringify(this, null, 2);
-		
-		await navigator.clipboard.writeText(state);
-		
-		download('tone-tiles-graph-state.json', state);
-	}
+  #id = null;
+  #name = 'Untitled';
+  #meta = {};
+  #width = 0;
+  #height = 0;
+  #nodeData = new Map(); // tileData
+  // #nodes = new Map();
+  #edges = new Map();
+  #objectIndex = new Map();
+  #linkedMaps = {};
+  #goalNode;
+  #startNode;
+
+  constructor(map = []) {
+    super();
+
+    if (map && map.length) {
+      this.fromMap(map);
+    }
+
+    // this.on('node:update', ({ id, patch }) => {
+    // 	if (patch.x || patch.y) {
+
+    // 	}
+    // 	setTimeout(() => {
+    // 		neighbor.update({ highlight: true })
+
+    // 		setTimeout(() => {
+    // 			neighbor.update({ highlight: false })
+    // 		}, 50 + (50 * cnt))
+    // 	}, 0 + (25 * cnt))
+    // })
+  }
+
+  get id() { return this.#id; }
+
+  get width() { return this.#width; }
+
+  get height() { return this.#height; }
+
+  get name() { return this.#name; }
+
+  set name(v) { this.#name = v; }
+
+  get nodes() { return [...this.getAll().values()]; }
+
+  get startNode() {
+    const n = this.#startNode ?? this.nodes.find(n => this.previousMapId ? n.linkedMap === this.previousMapId : n.tileType === 'start');
+    return n ?? this.getNodeByAddress('0_0');
+  }
+
+  get goalNode() { return this.#goalNode ?? this.nodes.find(n => n.tileType === 'goal'); }
+
+  get targetNode() { return this.nodes.find(n => n.tileType === 'target'); }
+
+  // clear() {
+  // 	this.#nodes.clear();
+  // }
+
+  setGoal(pt) {
+    this.#goalNode = this.getNodeByAddress(this.pointToAddress(pt));
+    return this;
+  }
+
+  setStart(pt) {
+    this.#startNode = this.getNodeByAddress(this.pointToAddress(pt));
+    return this;
+  }
+
+  pointToAddress({ x, y }) {
+    return `${x}_${y}`;
+  }
+
+  addressToPoint(address = '') {
+    const [x, y] = (address.includes(',') ? address.split(',') : address.split('_')).map(_ => +_);
+    return new CanvasPoint(x, y);
+  }
+
+  getNodeByAddress(address) {
+    return this.get(address);
+  }
+
+  findNode(cb = () => { }) {
+    return this.nodes.find(cb);
+  }
+
+  findNodes(cb = () => { }) {
+    return this.nodes.filter(cb);
+  }
+
+  findAll(attributeMap = {}) {
+    const entries = Object.entries(attributeMap);
+
+    return [...this.nodes.values()].filter((n) => {
+      return entries.every(([k, v]) => n.hasProp(k) && n[k] === v);
+    });
+  }
+
+  findAny(attributeMap = {}) {
+    const entries = Object.entries(attributeMap);
+
+    return [...this.nodes.values()].filter((n) => {
+      return entries.some(([k, v]) => n.hasProp(k) && n[k] === v);
+    });
+  }
+
+  getNodeAtPoint({ x, y }) {
+    return this.getNodeByAddress(this.pointToAddress({ x, y }));
+  }
+
+  * traversePoints(start = this.startNode, getGoal = () => this.goalNode) {
+    for (const node of this.traverseHybrid(start, getGoal)) {
+      yield node?.point ?? null;
+    }
+  }
+
+  moveObject(id, point) {
+    const fromId = this.#objectIndex.get(id);
+    const fromNode = this.getNodeByAddress(fromId);
+    const toNode = this.getNodeAtPoint(point);
+
+    if (fromNode) {
+      fromNode.deleteObject(id); //objects.delete(id);
+    }
+
+    if (toNode) {
+      toNode.addObject(id); //objects.delete(id);
+
+    }
+
+    this.#objectIndex.set(id, toNode?.id);
+
+    this.emit('graph:object-move', {
+      id,
+      from: fromNode?.id,
+      to: toNode?.id,
+    });
+  }
+
+  pathToDirections(path = []) {
+    const dirs = [];
+
+    for (let i = 1; i < path.length; i++) {
+      const prev = path[i - 1];
+      const curr = path[i];
+
+      let dir = getDirectionFromPoints(prev, curr);
+
+      if (!dir) {
+        const entry = [...this.getNeighbors(prev).entries()]
+          .find(([_, n]) => n === curr);
+
+        dir = entry?.[0] ?? null;
+      }
+
+      if (!dir) {
+        console.error('FAILED TO RESOLVE DIRECTION', prev, curr);
+        continue;
+      }
+
+      dirs.push(dir);
+    }
+
+    return dirs;
+  };
+
+  * traverseHybrid(start = this.startNode, getGoal = () => this.goalNode) {
+    let current = start;
+    let goal = getGoal();
+
+    let path = this.getPath(current, goal) || [];
+    let dirs = this.pathToDirections(path);
+    let i = 0;
+
+    while (true) {
+      const nextGoal = getGoal();
+      // :repeat: replan if goal changes
+      if (nextGoal !== goal) {
+        goal = nextGoal;
+        path = this.getPath(current, goal) || [];
+        dirs = this.pathToDirections(path);
+        i = 0;
+      }
+
+      if (path.length && path[path.length - 1] !== goal) {
+        console.warn('PATH DOES NOT REACH GOAL', {
+          current: current.address,
+          goal: goal?.address,
+          last: path[path.length - 1]?.address
+        });
+      }
+
+      // :compass: no more directions → idle at current
+      if (i >= dirs.length) {
+        yield current;
+        continue;
+      }
+
+      const dir = dirs[i++];
+
+      // :octagonal_sign: guard
+      if (!dir) {
+        yield current;
+        continue;
+      }
+
+      const next = this.getNeighbor(current, dir);
+
+      // :repeat: fallback if world changed
+      if (!next) {
+        path = this.getPath(current, goal) || [];
+        dirs = this.pathToDirections(path);
+        i = 0;
+        continue;
+      }
+
+      current = next;
+      yield current;
+    }
+  }
+
+  getRange({ type, points, start, end }, updateFn) {
+    let range = [];
+
+    if (type === 'line') {
+      range = points.map(this.getNodeAtPoint.bind(this));
+      return range;
+    }
+
+    for (let x = start.x; x < end.x; x++) {
+      for (let y = start.y; y < end.y; y++) {
+        const node = this.getNodeAtPoint({ x, y });
+        range.push(node);
+      }
+    }
+
+    return range;
+  }
+
+  getNeighbor(node, dirName = '') {
+    if (dirName === 'remote') {
+      const tele = this.getNodeAtPoint({
+        x: node.target.x,
+        y: node.target.y,
+      });
+
+      return tele;
+    }
+
+    if (!DIRECTIONS.get(dirName)) {
+      return node;
+    }
+    const { x, y } = DIRECTIONS.get(dirName);
+
+    const n = this.getNodeAtPoint({
+      x: node.x + x,
+      y: node.y + y,
+    });
+
+    if (!n || !n.isTraversable) return null;
+
+    return n;
+  }
+
+  getNeighbors(node) {
+    const neighborMap = [...DIRECTIONS.keys()]
+      .reduce((map, name, i) => {
+        return node && this.getNeighbor(node, name) ? map.set(name, this.getNeighbor(node, name)) : map;
+      }, new Map());
+
+    if (node.tileType === 'teleport' && node.target) {
+      neighborMap.set('remote', this.getNeighbor(node, 'remote'));
+    }
+
+    return neighborMap;
+  }
+
+  getUnvisitedNeighbors(node, visited) {
+    return [...this.getNeighbors(node).entries()]
+      .filter(([_, n]) => n && !visited.has(n));
+  }
+
+  getPath(start = this.startNode, goal) {
+    return this.bfsShortestPath(start, goal);
+  }
+
+  bfsShortestPath(start, goal) {
+    const queue = [
+      [start]
+    ];
+    const visited = new Set();
+
+    while (queue.length > 0) {
+      const path = queue.shift();
+      const node = path[path.length - 1];
+
+      if (node === goal) return path;
+
+      if (!visited.has(node)) {
+        visited.add(node);
+
+        let neighbors = [...this.getNeighbors(node).entries()]
+          .filter(([_, n]) => n && !visited.has(n));
+
+        // teleport behavior (safe, no global state)
+        if (node.tileType === 'teleport' && node.linkedNodeAddress) {
+          const remote = neighbors.find(([dir]) => dir === 'remote');
+          if (remote) neighbors = [remote];
+        }
+
+        // let cnt = 0
+        for (const [, neighbor] of neighbors) {
+          // cnt++
+          queue.push([...path, neighbor]);
+
+        }
+      }
+    }
+
+    return null;
+  }
+
+  toLinkedList(lastNode) {
+    let pointer = 0;
+    let curr = lastNode;
+    let path = [];
+
+    while (curr) {
+      let previous = curr.previous;
+      if (previous) {
+        previous.next = curr;
+        delete curr.previous;
+      }
+      curr = previous;
+    }
+
+    return curr;
+  };
+
+  pathToQueue(lastNode) {
+    let pointer = 0;
+    let curr = lastNode;
+    let path = [];
+
+    while (curr) {
+      let previous = curr.previous;
+      path.push(curr);
+      curr = previous;
+    }
+
+    path.reverse();
+    curr = path[pointer];
+  };
+
+  resetPath() {
+    this.findAny({
+      isVisited: true,
+      isPathNode: true,
+    }).forEach((n, i) => {
+      n.update({
+        isVisited: false,
+        isPathNode: false,
+      });
+    });
+  }
+
+  fromStoredMap({
+    name,
+    tileData,
+    tiles: tileChars,
+    width,
+    height
+  }) {
+    this.clear();
+    this.name = name;
+    this.#width = width;
+    this.#height = height;
+
+    map.forEach((row, rowNumber) => {
+      row.forEach((typeId, columnNumber) => {
+        const tileType = TILE_TYPE_INDEX[typeId];
+        const modelClass = this.registry.get(ModelTypes.NODE);
+
+
+        const node = this.create(ModelTypes.NODE, {
+          properties: createNodeData({
+            point: {
+              x: columnNumber,
+              y: rowNumber,
+            },
+            properties: {
+              selected: false,
+              tileType: TILE_TYPE_INDEX[typeId],
+            },
+          })
+        });
+      });
+    });
+  }
+
+  fromMap(map = {}) {
+    this.clear();
+
+    let rows;
+    this.previousMapId = this.#id ?? this.previousMapId;
+
+    if (!Array.isArray(map)) {
+      this.#height = map.height;
+      this.#width = map.width;
+      this.name = map.name;
+      this.#id = map.id;
+      this.#meta = map.meta;
+      this.#linkedMaps = map.linkedMaps || {};
+      this.#nodeData = new Map(Object.entries(map.tileData));
+
+      if (Array.isArray(map.tiles)) {
+        const temprows = [...(map.tiles)];
+
+        rows = new Array(this.height).fill(null)
+          .map(_ => new Array(this.width).fill(null))
+          .map(_ => temprows.splice(0, this.width));
+      } else {
+        rows = new Array(this.height).fill(null).map(_ => new Array(this.width).fill(null));
+      }
+    } else {
+      rows = map;
+      this.#height = rows.length;
+      this.#width = rows[0].length;
+    }
+
+    let hasStart = false;
+
+    rows.forEach((row, rowNumber) => {
+      row.forEach((typeId, columnNumber) => {
+        const address = `${columnNumber}_${rowNumber}`;
+        const tileDetail = this.#nodeData.get(address);
+
+        let tileType = tileDetail ? tileDetail.tileType : TILE_TYPE_INDEX[typeId] ?? TileTypeMap.empty;
+        tileType = tileType === 'start' && this.previousMapId ? TileTypeMap.empty : tileType;
+        hasStart = tileType === 'start';
+        const target = tileDetail?.target ?? 0;
+
+        const data = createNodeData({
+          tileType,
+          x: columnNumber,
+          y: rowNumber,
+          point: {
+            x: columnNumber,
+            y: rowNumber,
+          },
+          selected: false,
+          target: tileDetail?.target ?? null,
+        });
+
+        if (this.has(address)) {
+          this.get(address).update(data);
+        } else {
+          // const node = new GraphNode(this, data);
+          const node = this.create(ModelTypes.NODE, { properties: data });
+          console.log('node', node);
+          // this.#nodes.set(node.address, node);
+        }
+      });
+    });
+
+    Object.entries(this.#linkedMaps).forEach(([dir, linkedMap], i) => {
+      const { x, y } = getLinkCoords(dir, { width: this.#width, height: this.#height });
+
+      const properties = createNodeData({
+        tileType: linkedMap === this.previousMapId ? 'start' : 'map-link', // 'map-link',
+        linkedMap,
+        x,
+        y,
+        point: { x, y },
+        selected: false,
+        isLink: true,
+        dir,
+      });
+
+      const node = this.create(ModelTypes.NODE, { properties });
+
+      // const node = new GraphNode(this, {
+      // 	tileType: linkedMap === this.previousMapId ? 'start' : 'map-link', // 'map-link',
+      // 	linkedMap,
+      // 	x,
+      // 	y,
+      // 	selected: false,
+      // 	isLink: true,
+      // 	dir,
+      // });
+
+      hasStart = node.tileType === 'start';
+
+      // this.#nodes.set(node.address, node);
+    });
+
+    if (!hasStart) {
+      // this.get('0_0').tileType = 'start';
+    }
+
+    this.emit({
+      type: 'map:load',
+      data: {
+        name: this.#name,
+        width: this.#width,
+        height: this.#height,
+        startNode: this.startNode,
+        nodes: [...this.nodes],
+      },
+    });
+
+
+    // this.emit('map:load', {
+    // 	type: 'map:load',
+    // 	data: {
+    // 		name: this.#name,
+    // 		width: this.#width,
+    // 		height: this.#height,
+    // 		startNode: this.startNode,
+    // 		nodes: [...this.nodes],
+    // 	},
+    // });
+  }
+
+  toStorageFormat() {
+    const DO_NOT_SAVE = ['empty', 'map-link'];
+
+    const output = [...this.nodes].reduce((out, { tileType, target, address }, i) => {
+      if (tileType && !DO_NOT_SAVE.includes(tileType)) {
+        const data = { tileType };
+
+        if (tileType === 'teleport') {
+          data.target = target;
+        }
+
+        out.tileData[address] = data;
+      }
+
+      return out;
+    }, {
+      width: this.width,
+      height: this.height,
+      tileData: {},
+      meta: { ...this.#meta, updated: Date.now() },
+      name: this.#name,
+      id: this.#id,
+      updated: Date.now(),
+    });
+
+    return output;
+  }
+
+  toMap(formatAsCharMatrix = true) {
+    const output = new Array(this.height).fill(null).map(_ => new Array(this.width).fill(null));
+
+    // [...this.nodes].forEach(([addressKey, node], i) => {
+    [...this.nodes].forEach((node, i) => {
+      const addressKey = node.id;
+      const [x, y] = (addressKey.includes(',') ? addressKey.split(',').map(_ => +_) : addressKey.split('_')).map(_ => +_);
+      output[y][x] = formatAsCharMatrix ? TileTypes[node.tileType] : node;
+    });
+
+    const outputJSON = JSON.stringify(output);
+
+    return outputJSON;
+  }
+
+  toJSON() {
+    return {
+      name: this.#name,
+      id: this.#id,
+      startNode: this.#startNode,
+      goalNode: this.#goalNode,
+      nodes: this.nodes,
+      width: this.#width,
+      height: this.#height,
+      nodeData: this.#nodeData,
+      linkedMaps: this.#linkedMaps,
+    };
+  }
+
+  async snapState(filename) {
+    const state = JSON.stringify(this, null, 2);
+
+    await navigator.clipboard.writeText(state);
+
+    download('tone-tiles-graph-state.json', state);
+  }
 }
 
 
 let graph;
 
 const getGraph = () => {
-	if (graph) {
-		return graph;
-	}
-	
-	return graph = new Graph();
+  if (graph) {
+    return graph;
+  }
+
+  return graph = new Graph();
 };
 
 export default getGraph;
