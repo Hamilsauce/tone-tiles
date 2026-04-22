@@ -1,5 +1,6 @@
 import { TileObject } from './TileObject.js';
 import { SceneLayer } from './SceneLayer.js';
+import { projectNodePatchToRenderPatch, projectNodeToTileModel } from '../core/projections/node-to-tile.projector.js';
 const loadLogs = [];
 window.loadLogs = loadLogs;
 
@@ -25,8 +26,12 @@ export class TileLayer extends SceneLayer {
     return this.#name;
   }
 
-  applyNodePatch({ id, data }) {
-    if (this.objects.has(id)) this.get(id).update(data);
+  applyRenderPatch({ id, model }) {
+    if (this.objects.has(id)) this.get(id).update(model);
+  };
+
+  applyNodePatch(nodeUpdate) {
+    this.applyRenderPatch(projectNodePatchToRenderPatch(nodeUpdate));
   };
 
   getRange({ start, end }) {
@@ -61,8 +66,10 @@ export class TileLayer extends SceneLayer {
 
   loadTiles(nodes) {
     nodes.forEach((newNode, i) => {
+      const tileModel = projectNodeToTileModel(newNode);
+
       if (this.objects.has(newNode.id)) {
-        this.load(newNode.id, newNode.data());
+        this.load(newNode.id, tileModel);
       } else {
         this.add(newNode);
       }
@@ -75,6 +82,8 @@ export class TileLayer extends SceneLayer {
     if (this.#rows.has(rowId)) {
       return this.#rows.get(rowId)
     }
+
+    // const cObj = new TileObject(this.context, { id: node.id, model: node.data() });
 
     const rowObj = this.context.createObject('group', { id: rowId, model: { y, x: 0 } });
     this.#rows.set(rowId, rowObj)
@@ -89,11 +98,14 @@ export class TileLayer extends SceneLayer {
   }
 
   add(node) {
-    if (node.type !== 'tile') {
-      throw new Error('No object type in layer add');
-    }
+    // if (node.type !== 'tile') {
+    //   throw new Error('No object type in layer add');
+    // }
 
-    const cObj = new TileObject(this.context, { id: node.id, model: node.data() });
+    const cObj = new TileObject(this.context, {
+      id: node.id,
+      model: projectNodeToTileModel(node),
+    });
 
     this.objects.set(cObj.id, cObj);
 

@@ -1,4 +1,4 @@
-import { reactive, computed, toValue, ref, watch, onMounted } from 'vue'
+import { reactive, computed, toValue, toRaw, ref, watch, onMounted } from 'vue'
 import { defineComponent, getTemplate } from '../lib/vue-helpers.js';
 import { AppMapList } from '../ui/app-map-list/AppMapList.js'
 // import ham from 'ham';
@@ -62,14 +62,9 @@ export const AppFloatingMenu = defineComponent(
 			}
 		})
 
-		watch(changed, (t) => {
-			// t = toValue(t)
-			// console.warn(t)
-		})
-
 		watch(appStore.currentNode, (t) => {
 			t = toValue(t)
-			prev.value = t ? JSON.parse(JSON.stringify(t)) : null
+			prev.value = t ? JSON.parse(JSON.stringify(toRaw(t))) : null
 		}, { deep: true })
 
 
