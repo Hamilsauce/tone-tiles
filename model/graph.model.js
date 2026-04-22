@@ -1,6 +1,8 @@
 import ham from 'ham';
 import { EventEmitter } from 'https://hamilsauce.github.io/hamhelper/event-emitter.js';
 import { CanvasPoint } from '../canvas/CanvasPoint.js';
+import { Collection } from '../model/Collection.js';
+import { ModelTypes } from '../core/types/model.types.js';
 
 const v1 = undefined;
 const v2 = undefined;
@@ -78,6 +80,7 @@ export const getLinkCoords = (dir = 'n', { width, height }) => {
 	
 	return { x, y };
 };
+
 export const getDirectionFromPoints = (p1, p2) => {
 	if (!p1 || !p2) return null;
 	
@@ -107,157 +110,160 @@ const DETAULT_TILE_DATA = {
 };
 
 const createNodeData = (overrides = {}) => {
+	const { point } = overrides;
 	return {
 		...DETAULT_TILE_DATA,
 		...overrides,
+		id: `${point.x}_${point.y}`,
+		// id: `${x}_${y}`,
 	};
 };
 
 const TRAVERSABLE_TILE_TYPES = ['empty', 'start', 'end', 'teleport', 'map-link'];
 
 
-export class GraphNode extends EventEmitter {
-	#data = {
-		type: 'tile',
-		id: null,
-		tileType: null,
-		x: null,
-		y: null,
-		address: null,
-		target: null,
-		current: false,
-		active: false,
-		isPathNode: false,
-		isVisited: false,
-		linkedNodeAddress: null,
-		linkedMap: null,
-		selected: false,
-		isLink: false,
-		dir: null,
-		highlight: false,
-	};
-	
-	objects = new Set();
-	#context;
-	
-	constructor(context, data = {}) {
-		super();
-		this.#context = context;
-		this.update(createNodeData(data));
-	}
-	
-	get id() { return `${this.x}_${this.y}`; }
-	
-	get type() { return this.#data.type; }
-	
-	get _data() { return this.#data; }
-	
-	get linkedMap() { return this.#data.linkedMap; }
-	
-	get current() { return this.#data.current; }
-	
-	get active() { return this.#data.active; }
-	
-	get selected() { return this.#data.selected; }
-	
-	get tileType() { return this.#data.tileType; }
-	
-	set tileType(v) { this.#data.tileType = v; }
-	
-	get isTraversable() { return TRAVERSABLE_TILE_TYPES.includes(this.#data.tileType); }
-	
-	get address() { return `${this.x}_${this.y}`; }
-	
-	get x() { return this.#data.x; }
-	
-	get y() { return this.#data.y; }
-	
-	get point() { return new CanvasPoint(this.x, this.y); }
-	
-	get linkedNodeAddress() { return this.#data.target ? [this.#data.target.x, this.#data.target.y].join('_') : null; }
-	
-	get target() { return this.#data.target; }
-	
-	set target(v) { this.#data.target = v; }
-	
-	get isOccupied() { return !!this.objects.size; }
-	
-	// GraphNode model
-	update(attributeMap = {}) {
-		const patch = Object.entries(attributeMap).reduce((ptch, [k, v]) => {
-			const modelV = this.#data[k];
-			const isValid = !(v === undefined || modelV === undefined);
-			
-			if (isValid && v !== modelV) {
-				ptch = ptch ?? {};
-				this.#data[k] = v;
-				ptch[k] = v;
-			} else if (!isValid) {
-				console.error(`[Graph Node ${this.id}] invalid Model patch: ${k}: ${v}`);
-			}
-			
-			return ptch;
-		}, null);
-		
-		if (!patch) return;
-		
-		this.#context.emit(
-			'node:update', {
-				id: this.id,
-				data: patch,
-			});
-		
-		return this;
-	}
-	
-	addObject(id) {
-		this.objects.add(id)
-		
-		this.#context.emit(
-			'node:update', {
-				id: this.id,
-				data: { occupied: this.isOccupied },
-			});
-	}
-	
-	deleteObject(id) {
-		this.objects.delete(id)
-		
-		this.#context.emit(
-			'node:update', {
-				id: this.id,
-				data: { occupied: this.isOccupied },
-			});
-	}
-	
-	hasProp(key) {
-		return this.#data[key] !== undefined;
-	}
-	
-	linkToNode({ x, y }) {
-		this.#data.target = { x, y };
-	}
-	
-	toJSON() {
-		return { ...this.#data, objects: [...this.objects] };
-	}
-	
-	data() {
-		const { objects, ...res } = this.toJSON();
-		
-		Object.entries(res).forEach(([k, v]) => {
-			if ([undefined].includes(v)) {
-				delete res[k];
-			}
-		});
-		
-		res.id = this.id;
-		res.address = this.address;
-		res.occupied = this.isOccupied
-		
-		return res;
-	}
-}
+// export class GraphNode extends EventEmitter {
+// 	#data = {
+// 		type: 'tile',
+// 		id: null,
+// 		tileType: null,
+// 		x: null,
+// 		y: null,
+// 		address: null,
+// 		target: null,
+// 		current: false,
+// 		active: false,
+// 		isPathNode: false,
+// 		isVisited: false,
+// 		linkedNodeAddress: null,
+// 		linkedMap: null,
+// 		selected: false,
+// 		isLink: false,
+// 		dir: null,
+// 		highlight: false,
+// 	};
+
+// 	objects = new Set();
+// 	#context;
+
+// 	constructor(context, data = {}) {
+// 		super();
+// 		this.#context = context;
+// 		this.update(createNodeData(data));
+// 	}
+
+// 	get id() { return `${this.x}_${this.y}`; }
+
+// 	get type() { return this.#data.type; }
+
+// 	get _data() { return this.#data; }
+
+// 	get linkedMap() { return this.#data.linkedMap; }
+
+// 	get current() { return this.#data.current; }
+
+// 	get active() { return this.#data.active; }
+
+// 	get selected() { return this.#data.selected; }
+
+// 	get tileType() { return this.#data.tileType; }
+
+// 	set tileType(v) { this.#data.tileType = v; }
+
+// 	get isTraversable() { return TRAVERSABLE_TILE_TYPES.includes(this.#data.tileType); }
+
+// 	get address() { return `${this.x}_${this.y}`; }
+
+// 	get x() { return this.#data.x; }
+
+// 	get y() { return this.#data.y; }
+
+// 	get point() { return new CanvasPoint(this.x, this.y); }
+
+// 	get linkedNodeAddress() { return this.#data.target ? [this.#data.target.x, this.#data.target.y].join('_') : null; }
+
+// 	get target() { return this.#data.target; }
+
+// 	set target(v) { this.#data.target = v; }
+
+// 	get isOccupied() { return !!this.objects.size; }
+
+// 	// GraphNode model
+// 	update(attributeMap = {}) {
+// 		const patch = Object.entries(attributeMap).reduce((ptch, [k, v]) => {
+// 			const modelV = this.#data[k];
+// 			const isValid = !(v === undefined || modelV === undefined);
+
+// 			if (isValid && v !== modelV) {
+// 				ptch = ptch ?? {};
+// 				this.#data[k] = v;
+// 				ptch[k] = v;
+// 			} else if (!isValid) {
+// 				console.error(`[Graph Node ${this.id}] invalid Model patch: ${k}: ${v}`);
+// 			}
+
+// 			return ptch;
+// 		}, null);
+
+// 		if (!patch) return;
+
+// 		this.#context.emit(
+// 			'node:update', {
+// 				id: this.id,
+// 				data: patch,
+// 			});
+
+// 		return this;
+// 	}
+
+// 	addObject(id) {
+// 		this.objects.add(id)
+
+// 		this.#context.emit(
+// 			'node:update', {
+// 				id: this.id,
+// 				data: { occupied: this.isOccupied },
+// 			});
+// 	}
+
+// 	deleteObject(id) {
+// 		this.objects.delete(id)
+
+// 		this.#context.emit(
+// 			'node:update', {
+// 				id: this.id,
+// 				data: { occupied: this.isOccupied },
+// 			});
+// 	}
+
+// 	hasProp(key) {
+// 		return this.#data[key] !== undefined;
+// 	}
+
+// 	linkToNode({ x, y }) {
+// 		this.#data.target = { x, y };
+// 	}
+
+// 	toJSON() {
+// 		return { ...this.#data, objects: [...this.objects] };
+// 	}
+
+// 	data() {
+// 		const { objects, ...res } = this.toJSON();
+
+// 		Object.entries(res).forEach(([k, v]) => {
+// 			if ([undefined].includes(v)) {
+// 				delete res[k];
+// 			}
+// 		});
+
+// 		res.id = this.id;
+// 		res.address = this.address;
+// 		res.occupied = this.isOccupied
+
+// 		return res;
+// 	}
+// }
 
 export class Neighbor {
 	#node = null;
@@ -277,14 +283,14 @@ export class Neighbor {
 	}
 }
 
-export class Graph extends EventEmitter {
+export class Graph extends Collection {
 	#id = null;
 	#name = 'Untitled';
 	#meta = {};
 	#width = 0;
 	#height = 0;
 	#nodeData = new Map(); // tileData
-	#nodes = new Map();
+	// #nodes = new Map();
 	#edges = new Map();
 	#objectIndex = new Map();
 	#linkedMaps = {};
@@ -322,7 +328,7 @@ export class Graph extends EventEmitter {
 	
 	set name(v) { this.#name = v; }
 	
-	get nodes() { return [...this.#nodes.values()]; }
+	get nodes() { return [...this.getAll().values()]; }
 	
 	get startNode() {
 		const n = this.#startNode ?? this.nodes.find(n => this.previousMapId ? n.linkedMap === this.previousMapId : n.tileType === 'start');
@@ -333,9 +339,9 @@ export class Graph extends EventEmitter {
 	
 	get targetNode() { return this.nodes.find(n => n.tileType === 'target'); }
 	
-	clear() {
-		this.#nodes.clear();
-	}
+	// clear() {
+	// 	this.#nodes.clear();
+	// }
 	
 	setGoal(pt) {
 		this.#goalNode = this.getNodeByAddress(this.pointToAddress(pt));
@@ -357,11 +363,7 @@ export class Graph extends EventEmitter {
 	}
 	
 	getNodeByAddress(address) {
-		return this.#nodes.get(address);
-	}
-	
-	getNodeByPoint(point) {
-		return this.getNodeAtPoint(point);
+		return this.get(address);
 	}
 	
 	findNode(cb = () => {}) {
@@ -376,7 +378,7 @@ export class Graph extends EventEmitter {
 		const entries = Object.entries(attributeMap);
 		
 		return [...this.nodes.values()].filter((n) => {
-			return entries.every(([k, v]) => n.hasProp(k) === v);
+			return entries.every(([k, v]) => n.hasProp(k) && n[k] === v);
 		});
 	}
 	
@@ -384,7 +386,7 @@ export class Graph extends EventEmitter {
 		const entries = Object.entries(attributeMap);
 		
 		return [...this.nodes.values()].filter((n) => {
-			return entries.some(([k, v]) => n.hasProp(k) === v);
+			return entries.some(([k, v]) => n.hasProp(k) && n[k] === v);
 		});
 	}
 	
@@ -409,6 +411,7 @@ export class Graph extends EventEmitter {
 		
 		if (toNode) {
 			toNode.addObject(id) //objects.delete(id);
+			
 		}
 		
 		this.#objectIndex.set(id, toNode?.id);
@@ -654,7 +657,7 @@ export class Graph extends EventEmitter {
 		width,
 		height
 	}) {
-		this.#nodes.clear();
+		this.clear();
 		this.name = name;
 		this.#width = width;
 		this.#height = height;
@@ -662,21 +665,38 @@ export class Graph extends EventEmitter {
 		map.forEach((row, rowNumber) => {
 			row.forEach((typeId, columnNumber) => {
 				const tileType = TILE_TYPE_INDEX[typeId];
+				const modelClass = this.registry.get(ModelTypes.NODE)
 				
-				const node = new GraphNode(this, {
-					tileType: TILE_TYPE_INDEX[typeId],
-					x: columnNumber,
-					y: rowNumber,
-					selected: false,
-				});
 				
-				this.#nodes.set(node.address, node);
+				const node = this.create(ModelTypes.NODE, createNodeData({
+					point: {
+						x: columnNumber,
+						y: rowNumber,
+					},
+					properties: {
+						selected: false,
+						tileType: TILE_TYPE_INDEX[typeId],
+					},
+				}))
+				// const node = new GraphNode(this, {
+				// 	point: {
+				// 		x: columnNumber,
+				// 		y: rowNumber,
+				// 	},
+				// 	properties: {
+				// 		selected: false,
+				// 		tileType: TILE_TYPE_INDEX[typeId],
+				// 	},
+				// });
+				
+				// this.#nodes.set(node.address, node);
 			});
 		});
 	}
 	
 	fromMap(map = {}) {
-		this.#nodes.clear();
+		console.warn('fromMap', map)
+		this.clear();
 		
 		let rows;
 		this.previousMapId = this.#id ?? this.previousMapId;
@@ -721,54 +741,85 @@ export class Graph extends EventEmitter {
 					tileType,
 					x: columnNumber,
 					y: rowNumber,
+					point: {
+						x: columnNumber,
+						y: rowNumber,
+					},
 					selected: false,
 					target: tileDetail?.target ?? null,
 				});
 				
-				if (this.#nodes.has(address)) {
-					this.#nodes.get(address).update(data);
+				if (this.has(address)) {
+					this.get(address).update(data);
 				} else {
-					const node = new GraphNode(this, data);
-					this.#nodes.set(node.address, node);
+					// const node = new GraphNode(this, data);
+					const node = this.create(ModelTypes.NODE, data)
+					console.log('node', node)
+					// this.#nodes.set(node.address, node);
 				}
 			});
 		});
 		
 		Object.entries(this.#linkedMaps).forEach(([dir, linkedMap], i) => {
 			const { x, y } = getLinkCoords(dir, { width: this.#width, height: this.#height });
-			
-			const node = new GraphNode(this, {
+			const node = this.create(ModelTypes.NODE, createNodeData({
 				tileType: linkedMap === this.previousMapId ? 'start' : 'map-link', // 'map-link',
 				linkedMap,
 				x,
 				y,
+				point: { x, y },
 				selected: false,
 				isLink: true,
 				dir,
-			});
+			}));
+			
+			// const node = new GraphNode(this, {
+			// 	tileType: linkedMap === this.previousMapId ? 'start' : 'map-link', // 'map-link',
+			// 	linkedMap,
+			// 	x,
+			// 	y,
+			// 	selected: false,
+			// 	isLink: true,
+			// 	dir,
+			// });
 			
 			hasStart = node.tileType === 'start';
 			
-			this.#nodes.set(node.address, node);
+			// this.#nodes.set(node.address, node);
 		});
 		
 		if (!hasStart) {
-			this.#nodes.get('0_0').tileType = 'start';
+			// this.get('0_0').tileType = 'start';
 		}
 		
-		this.emit('map:load', {
-			name: this.#name,
-			width: this.#width,
-			height: this.#height,
-			startNode: this.startNode,
-			nodes: [...this.#nodes.values()],
+		this.emit({
+			type: 'map:load',
+			data: {
+				name: this.#name,
+				width: this.#width,
+				height: this.#height,
+				startNode: this.startNode,
+				nodes: [...this.nodes],
+			},
 		});
+		
+		
+		// this.emit('map:load', {
+		// 	type: 'map:load',
+		// 	data: {
+		// 		name: this.#name,
+		// 		width: this.#width,
+		// 		height: this.#height,
+		// 		startNode: this.startNode,
+		// 		nodes: [...this.nodes],
+		// 	},
+		// });
 	}
 	
 	toStorageFormat() {
 		const DO_NOT_SAVE = ['empty', 'map-link'];
 		
-		const output = [...this.#nodes.values()].reduce((out, { tileType, target, address }, i) => {
+		const output = [...this.nodes].reduce((out, { tileType, target, address }, i) => {
 			if (tileType && !DO_NOT_SAVE.includes(tileType)) {
 				const data = { tileType };
 				
@@ -796,7 +847,9 @@ export class Graph extends EventEmitter {
 	toMap(formatAsCharMatrix = true) {
 		const output = new Array(this.height).fill(null).map(_ => new Array(this.width).fill(null));
 		
-		[...this.#nodes].forEach(([addressKey, node], i) => {
+		// [...this.nodes].forEach(([addressKey, node], i) => {
+		[...this.nodes].forEach((node, i) => {
+			const addressKey = node.id
 			const [x, y] = (addressKey.includes(',') ? addressKey.split(',').map(_ => +_) : addressKey.split('_')).map(_ => +_);
 			output[y][x] = formatAsCharMatrix ? TileTypes[node.tileType] : node;
 		});

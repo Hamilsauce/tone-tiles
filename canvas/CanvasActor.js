@@ -182,7 +182,7 @@ export class CanvasActor extends CanvasObject {
         return;
       }
       
-      const curr = this.#graph?.getNodeByPoint(currPoint);
+      const curr = this.#graph?.getNodeAtPoint(currPoint);
       
       if (!curr) {
         this.#enterIdle('missing-node');
@@ -209,7 +209,7 @@ export class CanvasActor extends CanvasObject {
         moving: true,
       });
       this.transforms.scaleTo(0.7)
-
+      
       this.emit('actor:move', {
         actor: this,
         prevNode: prev,

@@ -2,6 +2,7 @@ import ham from 'ham';
 import { EventEmitter } from 'https://hamilsauce.github.io/hamhelper/event-emitter.js';
 import { TransformList, DEFAULT_TRANSFORMS } from './TransformList.js';
 import { SVGCanvas } from './SVGCanvas.js';
+import { CanvasPoint } from './CanvasPoint.js';
 import { GraphNode } from '../lib/graph.model.js';
 const { utils } = ham;
 
@@ -33,6 +34,7 @@ export class CanvasObject extends EventEmitter {
     y: null,
     pointerEvents: true,
     unload: false,
+    point: { x: null, y: null }
   };
   #x = null;
   #y = null;
@@ -41,6 +43,7 @@ export class CanvasObject extends EventEmitter {
   #self;
   #transformList;
   #subscriptions = new Map();
+  #point = { x: null, y: null }
   
   constructor(context = new SVGCanvas(), type = '', options) {
     super();
@@ -48,7 +51,7 @@ export class CanvasObject extends EventEmitter {
     
     this.#context = context;
     this.#type = type;
-    Object.assign(this.#model, model);
+    Object.assign(this.#model, this.#normalizeSpatialPatch(model));
     
     this.#id = id ?? `${type}${utils.uuid()}`;
     
@@ -66,13 +69,19 @@ export class CanvasObject extends EventEmitter {
   
   get model() { return this.#model; }
   
-  get x() { return this.#model.x; }
+  get x() { return this.#model.point?.x ?? this.#model.x; }
   
-  set x(v) { this.#model.x = v; }
+  set x(v) {
+    this.#model.x = v;
+    this.#model.point = new CanvasPoint(v, this.y ?? 0);
+  }
   
-  get y() { return this.#model.y; }
+  get y() { return this.#model.point?.y ?? this.#model.y; }
   
-  set y(v) { this.#model.y = v; }
+  set y(v) {
+    this.#model.y = v;
+    this.#model.point = new CanvasPoint(this.x ?? 0, v);
+  }
   
   get data() { return this.dom.dataset; }
   
@@ -153,8 +162,10 @@ export class CanvasObject extends EventEmitter {
   }
   
   update(attributeMap = {}) {
-    for (const key in attributeMap) {
-      const v = attributeMap[key];
+    const normalizedPatch = this.#normalizeSpatialPatch(attributeMap);
+
+    for (const key in normalizedPatch) {
+      const v = normalizedPatch[key];
       const modelV = this.#model[key];
       const hasChanged = v !== modelV;
       const isValid = !(v === undefined || modelV === undefined);
@@ -173,7 +184,8 @@ export class CanvasObject extends EventEmitter {
   
   render() {
     this.translateTo(this.x, this.y);
-    Object.assign(this.data, this.model);
+    const { point, ...model } = this.model;
+    Object.assign(this.data, model, { x: this.x, y: this.y });
     
     if (this.#hide === true) {
       this.data.hide = true;
@@ -207,6 +219,22 @@ export class CanvasObject extends EventEmitter {
   appendDOM(obj) {
     this.dom.append(obj.dom)
     return this;
+  }
+
+  #normalizeSpatialPatch(source = {}) {
+    const basePoint = this.#model.point ?? new CanvasPoint(this.#model.x ?? 0, this.#model.y ?? 0);
+    const pointSource = source.point ?? {
+      x: source.x ?? basePoint.x,
+      y: source.y ?? basePoint.y,
+    };
+    const point = CanvasPoint.from(pointSource);
+
+    return {
+      ...source,
+      point,
+      x: point.x,
+      y: point.y,
+    };
   }
   
   getEl(selector = '') { return this.dom.querySelector(selector); }

@@ -1,6 +1,8 @@
-import { Model } from './Model';
-import { Point } from '..core/spatial/Point';
-import { EventKinds } from '../core/types/event.types.js';
+import { Model } from './Model.js';
+// import { Point } from '../core/spatial/Point.js';
+import { EventTypes } from '../core/types/event.types.js';
+import { CanvasPoint } from '../canvas/CanvasPoint.js';
+const Point = CanvasPoint;
 
 export class SpatialModel extends Model {
 	#point;
@@ -42,9 +44,9 @@ export class SpatialModel extends Model {
 		
 		this.#point = normalized;
 		
-		this.#emit({
+		this.emit({
 			type: this.type,
-			kind: EventKinds.UPDATE,
+			kind: EventTypes.UPDATE,
 			payload: {
 				id: this.id,
 				point: normalized,
