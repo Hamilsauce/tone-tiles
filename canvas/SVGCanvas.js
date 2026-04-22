@@ -131,7 +131,6 @@ export class SVGCanvas extends EventTarget {
       tap(e => {
         e.preventDefault();
         e.stopPropagation();
-        // e.stopImmediatePropagation();
       }),
       map(({ type, target, clientX, clientY }) => {
         const layerDOM = target.closest('[data-type="layer"]');
@@ -163,7 +162,6 @@ export class SVGCanvas extends EventTarget {
         e.stopImmediatePropagation();
         e.preventDefault();
         const { type, target, clientX, clientY } = e;
-        console.warn('[ PRE EVENT ]: ', type, target, clientX, clientY);
 
         const layerDOM = target.closest('[data-type="layer"]');
         const layerName = layerDOM.dataset.name;
@@ -172,7 +170,7 @@ export class SVGCanvas extends EventTarget {
         const isTile = !!target.closest('.tile');
         const x = Math.floor(point.x);
         const y = Math.floor(point.y);
-        console.warn({ layerDOM, layerName, point, isTile, x, y });
+
         return {
           type: `${layerName}:${type}`,
           detail: {
@@ -184,7 +182,7 @@ export class SVGCanvas extends EventTarget {
       }),
       map(({ type, detail }) => createCustomEvent(type, detail)),
       tap((event) => this.dispatchEvent(event)),
-      tap((evt) => { console.warn('[ CANVAS EVEVENT ]: ', evt.type); }),
+      // tap((evt) => { console.warn('[ CANVAS EVEVENT ]: ', evt.type); }),
     );
 
     this.toggleScroll = this.#toggleScroll.bind(this);
@@ -296,7 +294,6 @@ export class SVGCanvas extends EventTarget {
       linkedMap,
       id: null,
     };
-    console.warn(model);
 
     return t;
   }
