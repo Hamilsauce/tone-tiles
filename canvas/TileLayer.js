@@ -1,6 +1,6 @@
 import { TileObject } from './TileObject.js';
 import { SceneLayer } from './SceneLayer.js';
-import { projectNodePatchToTilePatch, projectNodeToTileModel } from '../core/projections/node-to-tile.projector.js';
+import { projectNodePatchToRenderPatch, projectNodeToTileModel } from '../core/projections/node-to-tile.projector.js';
 const loadLogs = [];
 window.loadLogs = loadLogs;
 
@@ -26,12 +26,12 @@ export class TileLayer extends SceneLayer {
     return this.#name;
   }
 
-  applyTilePatch({ id, model }) {
+  applyRenderPatch({ id, model }) {
     if (this.objects.has(id)) this.get(id).update(model);
   };
 
   applyNodePatch(nodeUpdate) {
-    this.applyTilePatch(projectNodePatchToTilePatch(nodeUpdate));
+    this.applyRenderPatch(projectNodePatchToRenderPatch(nodeUpdate));
   };
 
   getRange({ start, end }) {

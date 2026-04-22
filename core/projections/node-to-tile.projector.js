@@ -1,5 +1,5 @@
 import { CanvasPoint } from '../../canvas/CanvasPoint.js';
-import { NodeUpdated, TilePatched } from '../actions/tile.actions.js';
+import { NodeUpdated } from '../actions/node.actions.js';
 
 const normalizeNodeSource = (nodeOrSnapshot = {}) => {
   const source = typeof nodeOrSnapshot?.data === 'function' ?
@@ -29,7 +29,7 @@ export const projectNodeToTileModel = (nodeOrSnapshot = {}) => {
   return model;
 };
 
-export const projectNodePatchToTilePatch = (nodeUpdate = {}) => {
+export const projectNodePatchToRenderPatch = (nodeUpdate = {}) => {
   const action = nodeUpdate.type === 'node:update' ?
     NodeUpdated(nodeUpdate) :
     NodeUpdated({
@@ -46,8 +46,8 @@ export const projectNodePatchToTilePatch = (nodeUpdate = {}) => {
     }) :
     data;
 
-  return TilePatched({
+  return {
     id: action.id,
     model,
-  });
+  };
 };

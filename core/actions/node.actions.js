@@ -7,8 +7,3 @@ export const NodeUpdated = createAction('node:update', {
   id: isString,
   data: isObject,
 });
-
-export const TilePatched = createAction('tile:patch', {
-  id: isString,
-  model: isObject,
-});

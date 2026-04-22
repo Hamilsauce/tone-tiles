@@ -12,7 +12,7 @@ import { ContextMenu } from './canvas/ContextMenu.js';
 import { watch, toValue } from 'vue';
 import { useMapStore } from './store/map.store.js';
 import { rxjs } from 'rxjs';
-import { projectNodePatchToTilePatch } from './core/projections/node-to-tile.projector.js';
+import { projectNodePatchToRenderPatch } from './core/projections/node-to-tile.projector.js';
 
 const { fromEvent, operators } = rxjs;
 const { map, tap, filter, shareReplay, distinctUntilChanged } = operators;
@@ -190,9 +190,9 @@ export const runCanvas = async (mapId) => {
 
   const unsubscribeNodeUpdates = graphModel.connect('node:update')
     .pipe(
-      map(projectNodePatchToTilePatch),
-      tap(action => {
-        tileLayer.applyTilePatch(action);
+      map(projectNodePatchToRenderPatch),
+      tap(renderPatch => {
+        tileLayer.applyRenderPatch(renderPatch);
       })
     ).subscribe();
 
@@ -228,7 +228,9 @@ export const runCanvas = async (mapId) => {
     audioNote1(curr, { forceNewNote: true });
 
   });
+
   let neighborIndex = 0;
+
   const unsubscribeActorMove = actor1.on('actor:move', async ({ id, point, prevPoint }) => {
     // need to separate Actor Model from canvas object
     // have actor1 model emit this, and then
