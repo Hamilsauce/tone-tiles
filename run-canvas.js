@@ -187,23 +187,6 @@ export const runCanvas = async (mapId) => {
       svgCanvas.layers.surface.setAttribute('transform', `translate(${Math.floor((graphModel.width + 2) / 2) - 0.3}, ${Math.floor((graphModel.height + 2) / 2) - 0.25})`);
       svgCanvas.layers.surface.querySelector('#surface-map-name').setAttribute('transform', `translate(0, ${-((graphModel.height / 2)) - 3}) scale(0.4)`);
     });
-  // const unsubscribeMapLoad = graphModel.on('map:load', async ({ width, height, nodes, startNode }) => {
-  //   selectionBox.setBounds({
-  //     minX: 0,
-  //     minY: 0,
-  //     maxX: graphModel.width,
-  //     maxY: graphModel.height
-  //   });
-
-  //   svgCanvas.scene.getLayer('tile').loadTileSet({ width, height, nodes, startNode });
-  //   actor1.resetTraversal(startNode);
-  //   svgCanvas.layers.surface.setAttribute('transform', `translate(${Math.floor((graph.width + 2) / 2) - 0.3}, ${Math.floor((graph.height + 2) / 2) - 0.25})`);
-  //   svgCanvas.layers.surface.querySelector('#surface-map-name').setAttribute('transform', `translate(0, ${-((graph.height / 2)) - 3}) scale(0.4)`);
-  // });
-
-  // const unsubscribeNodeUpdate = graph.on('node:update', async (payload) => {
-  //   tileLayer.applyNodePatch(payload);
-  // });
 
   const unsubscribeNodeUpdates = graphModel.connect('node:update')
     .pipe(
@@ -222,14 +205,6 @@ export const runCanvas = async (mapId) => {
     graphModel.fromMap(mapData);
   }, { immediate: true });
 
-
-
-  // actor1.configure({
-  //   graph,
-  //   addRoutine: loopEngine.addRoutine.bind(loopEngine),
-  //   onCurrentNode: (node) => setCurrentNode(node.data()),
-  // });
-
   const unsubscribeSelectionBox = selectionBox.on('selection', ({ type, points, ...range }) => {
     const { start, end } = range;
 
@@ -247,8 +222,7 @@ export const runCanvas = async (mapId) => {
 
     const curr = graphModel.getNodeAtPoint(point);
     const goal = graphModel.getNodeAtPoint(goalPoint);
-    // const curr = graph.getNodeAtPoint(point)
-    // const goal = graph.getNodeAtPoint(goalPoint)
+
     goal.update({ active: true });
 
     audioNote1(curr, { forceNewNote: true });

@@ -62,11 +62,6 @@ export const AppFloatingMenu = defineComponent(
 			}
 		})
 
-		watch(changed, (t) => {
-			// t = toValue(t)
-			// console.warn(t)
-		})
-
 		watch(appStore.currentNode, (t) => {
 			t = toValue(t)
 			prev.value = t ? JSON.parse(JSON.stringify(toRaw(t))) : null
