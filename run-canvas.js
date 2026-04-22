@@ -12,6 +12,7 @@ import { ContextMenu } from './canvas/ContextMenu.js';
 import { watch, toValue } from 'vue';
 import { useMapStore } from './store/map.store.js';
 import { rxjs } from 'rxjs';
+import { projectNodePatchToTilePatch } from './core/projections/node-to-tile.projector.js';
 
 const { fromEvent, operators } = rxjs;
 const { map, tap, filter, shareReplay, distinctUntilChanged } = operators;
@@ -207,9 +208,9 @@ export const runCanvas = async (mapId) => {
 
   const unsubscribeNodeUpdates = graphModel.connect('node:update')
     .pipe(
-      tap(x => console.log('graphModel', x)),
-      tap(x => {
-        tileLayer.applyNodePatch(x);
+      map(projectNodePatchToTilePatch),
+      tap(action => {
+        tileLayer.applyTilePatch(action);
       })
     ).subscribe();
 
