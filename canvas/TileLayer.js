@@ -26,10 +26,6 @@ export class TileLayer extends SceneLayer {
     return this.#name;
   }
 
-  // get rows() {
-  //   return th
-  // }
-
   applyTilePatch({ id, model }) {
     if (this.objects.has(id)) this.get(id).update(model);
   };

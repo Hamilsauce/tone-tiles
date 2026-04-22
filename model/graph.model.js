@@ -420,7 +420,8 @@ export class Graph extends Collection {
 
     this.#objectIndex.set(id, toNode?.id);
 
-    this.emit('graph:object-move', {
+    this.emit( {
+      type: 'object:move',
       id,
       from: fromNode?.id,
       to: toNode?.id,
@@ -745,10 +746,7 @@ export class Graph extends Collection {
         if (this.has(address)) {
           this.get(address).update(data);
         } else {
-          // const node = new GraphNode(this, data);
           const node = this.create(ModelTypes.NODE, { properties: data });
-          console.log('node', node);
-          // this.#nodes.set(node.address, node);
         }
       });
     });
@@ -769,23 +767,11 @@ export class Graph extends Collection {
 
       const node = this.create(ModelTypes.NODE, { properties });
 
-      // const node = new GraphNode(this, {
-      // 	tileType: linkedMap === this.previousMapId ? 'start' : 'map-link', // 'map-link',
-      // 	linkedMap,
-      // 	x,
-      // 	y,
-      // 	selected: false,
-      // 	isLink: true,
-      // 	dir,
-      // });
-
       hasStart = node.tileType === 'start';
-
-      // this.#nodes.set(node.address, node);
     });
 
     if (!hasStart) {
-      // this.get('0_0').tileType = 'start';
+      this.get('0_0').tileType = 'start';
     }
 
     this.emit({
