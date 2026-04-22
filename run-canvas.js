@@ -245,7 +245,7 @@ export const runCanvas = async (mapId) => {
     const neighbors = [...n1, ...n2];
     neighborIndex = neighborIndex >= 3 ? 0 : neighborIndex + 1;
 
-    // console.warn('dir', dir)
+    console.warn('dir', dir)
     setCurrentNode(node.data());
     audioNote1(node);
 
