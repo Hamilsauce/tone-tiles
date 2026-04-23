@@ -47,10 +47,10 @@ export class CanvasActor extends CanvasObject {
     super.update(patch);
     this.#ticker = this.#ticker === 0 ? 1 : 0;
     if (this.#ticker === 0) {
-      this.rotateTo(20, 0.5, 0.5);
+      this.rotateTo(45, 0.5, 0.5);
     }
     else {
-      this.rotateTo(-20, 0.5, 0.5);
+      this.rotateTo(-45, 0.5, 0.5);
 
     }
   }
