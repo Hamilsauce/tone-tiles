@@ -1,5 +1,6 @@
 import { SpatialModel } from './Spatial.model.js';
-import { CanvasPoint } from '../canvas/CanvasPoint.js';
+import { Point } from "../core/Point.js";
+
 import ham from 'ham';
 const { sleep } = ham;
 import {
@@ -53,7 +54,7 @@ export class ActorModel extends SpatialModel {
       properties,
     });
 
-    this.#goalPoint = properties.goalPoint ? CanvasPoint.from(properties.goalPoint) : null;
+    this.#goalPoint = properties.goalPoint ? Point.from(properties.goalPoint) : null;
     this.stepTraversal = this.stepTraversal.bind(this);
   }
 
@@ -116,7 +117,7 @@ export class ActorModel extends SpatialModel {
   }
 
   setGoalPoint(goalPoint = null) {
-    this.#goalPoint = goalPoint ? CanvasPoint.from(goalPoint) : null;
+    this.#goalPoint = goalPoint ? Point.from(goalPoint) : null;
     this.properties.goalPoint = this.#goalPoint;
     return this;
   }
@@ -164,7 +165,7 @@ export class ActorModel extends SpatialModel {
     if (!candidate) return null;
     if (typeof candidate === 'object' && 'tileType' in candidate) return candidate;
 
-    return this.#world.getNodeAtPoint?.(CanvasPoint.from(candidate)) ?? null;
+    return this.#world.getNodeAtPoint?.(Point.from(candidate)) ?? null;
   }
 
   requestMoveCommit(point, prevPoint) {
@@ -352,24 +353,24 @@ export class ActorModel extends SpatialModel {
   emitActorTravel(payload = {}) {
     return this.#emitActorAction(ActorTravel, {
       ...payload,
-      point: CanvasPoint.from(payload.point ?? this.point),
-      goalPoint: CanvasPoint.from(payload.goalPoint ?? this.goalPoint),
+      point: Point.from(payload.point ?? this.point),
+      goalPoint: Point.from(payload.goalPoint ?? this.goalPoint),
     });
   }
 
   emitActorMove(payload = {}) {
     return this.#emitActorAction(ActorMove, {
       ...payload,
-      point: CanvasPoint.from(payload.point ?? this.point),
-      prevPoint: CanvasPoint.from(payload.prevPoint ?? this.point),
+      point: Point.from(payload.point ?? this.point),
+      prevPoint: Point.from(payload.prevPoint ?? this.point),
     });
   }
 
   emitActorIdle(reason = 'idle', payload = {}) {
     return this.#emitActorAction(ActorIdle, {
       ...payload,
-      point: CanvasPoint.from(payload.point ?? this.point),
-      goalPoint: payload.goalPoint ? CanvasPoint.from(payload.goalPoint) : this.goalPoint,
+      point: Point.from(payload.point ?? this.point),
+      goalPoint: payload.goalPoint ? Point.from(payload.goalPoint) : this.goalPoint,
       reason,
     });
   }
@@ -377,29 +378,29 @@ export class ActorModel extends SpatialModel {
   emitActorGoal(payload = {}) {
     return this.#emitActorAction(ActorGoal, {
       ...payload,
-      point: CanvasPoint.from(payload.point ?? this.point),
-      goalPoint: CanvasPoint.from(payload.goalPoint ?? this.goalPoint),
+      point: Point.from(payload.point ?? this.point),
+      goalPoint: Point.from(payload.goalPoint ?? this.goalPoint),
     });
   }
 
   emitActorMapLink(payload = {}) {
     return this.#emitActorAction(ActorMapLink, {
       ...payload,
-      point: CanvasPoint.from(payload.point ?? this.point),
+      point: Point.from(payload.point ?? this.point),
     });
   }
 
   emitActorTeleport(payload = {}) {
     return this.#emitActorAction(ActorTeleport, {
       ...payload,
-      point: CanvasPoint.from(payload.point ?? this.point),
+      point: Point.from(payload.point ?? this.point),
     });
   }
 
   emitActorStop(payload = {}) {
     return this.#emitActorAction(ActorStop, {
       ...payload,
-      point: CanvasPoint.from(payload.point ?? this.point),
+      point: Point.from(payload.point ?? this.point),
     });
   }
 
@@ -423,8 +424,8 @@ export class ActorModel extends SpatialModel {
     this.#idleReason = reason;
     this.setIdleReason(reason);
     this.emitActorIdle(reason, {
-      node: this.#currentNode,
-      goalNode: this.#goalNode,
+      // node: this.#currentNode,
+      // goalNode: this.#goalNode,
       point: this.currentPoint,
       goalPoint: this.goalPoint,
     });
