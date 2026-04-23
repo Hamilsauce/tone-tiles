@@ -92,6 +92,8 @@ export class CanvasObject extends EventEmitter {
   get type() { return this.#type; }
   
   get id() { return this.#id; }
+
+  get point() { return this.#model.point; }
   
   get layer() { return this.dom.closest('g.layer'); }
   
@@ -163,7 +165,7 @@ export class CanvasObject extends EventEmitter {
   
   update(attributeMap = {}) {
     const normalizedPatch = this.#normalizeSpatialPatch(attributeMap);
-
+    
     for (const key in normalizedPatch) {
       const v = normalizedPatch[key];
       const modelV = this.#model[key];
@@ -220,7 +222,7 @@ export class CanvasObject extends EventEmitter {
     this.dom.append(obj.dom)
     return this;
   }
-
+  
   #normalizeSpatialPatch(source = {}) {
     const basePoint = this.#model.point ?? new CanvasPoint(this.#model.x ?? 0, this.#model.y ?? 0);
     const pointSource = source.point ?? {
@@ -228,7 +230,7 @@ export class CanvasObject extends EventEmitter {
       y: source.y ?? basePoint.y,
     };
     const point = CanvasPoint.from(pointSource);
-
+    
     return {
       ...source,
       point,

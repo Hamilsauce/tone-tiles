@@ -82,7 +82,7 @@
 }
 
 .tile[data-is-path-node=true]>* {
-  animation: yellowToOriginal 5s forwards;
+  animation: yellowToOriginal 3.5s forwards;
 }
 
 .tile[data-tile-type=start]>* {
@@ -110,7 +110,7 @@
 .tile[data-highlight=true]>* {
   /* fill: #9FFFF9D9; */
   /* transition: 1.1s ease; */
-  animation: lightFade 2s backwards;
+  animation: lightFade 2s forwards;
   /* animation: yellowToOriginal 2s backwards; */
 
 }
