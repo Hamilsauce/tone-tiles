@@ -103,9 +103,9 @@ export class CanvasActor extends CanvasObject {
     // console.warn('this.#currentRotation', this.#currentRotation)
     this.#ticker = this.#ticker === 0 ? 1 : 0;
     this.phase = (this.phase + 1) % 4;
-  let _angles  = angles
+    let _angles = angles
     if (this.#travelDir === 'left' || this.#travelDir === 'left') {
-    _angles = [...angles].reverse()  
+      _angles = [...angles].reverse()
     }
     const angle = turnDegree === 0 ? _angles[this.phase] : 0;
     // this.rotateTo(rotation + angle, 0.5, 0.5);

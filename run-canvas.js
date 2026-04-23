@@ -160,6 +160,16 @@ export const runCanvas = async (mapId) => {
     },
   });
   
+  const darkSun = objectLayerObj.add({
+    id: 'dark1',
+    type: 'dark-sun',
+    model: {},
+    transforms: [
+      { type: 'translate', values: [0, 0], position: 0 },
+      { type: 'rotate', values: [0, 0.5, 0.5], position: 1 },
+      { type: 'scale', values: [1, 1], position: 2 },
+    ],
+  })
   const actor1 = objectLayerObj.add({
     id: actor1Model.id,
     type: 'actor',
@@ -169,9 +179,11 @@ export const runCanvas = async (mapId) => {
       { type: 'rotate', values: [0, 0.5, 0.5], position: 1 },
       { type: 'scale', values: [1, 1], position: 2 },
     ],
-  }).configure({
+  })
+  .configure({
     model: actor1Model,
   });
+  
   actor1Model
     .bindWorld({
       getStartNode: () => graphModel.startNode,

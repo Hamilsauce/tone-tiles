@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<!-- Created with PainterSVG V3.92 -->
+
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:psvg="http://www.paintersvg.com/namespace.html" id="svg" width="1" height="1" viewBox="0 0 1 1">
+  <defs></defs>
+  <g psvg:layer="layer1">
+    <g id="group4" transform="matrix(1,0,0,1,0,-0.0001)">
+      <path id="path2" d=" M 0.5,0.2502 C 0.3138,0.2502 0.1614,0.3626 0.1614,0.5 0.1614,0.6374 0.3138,0.7498 0.5,0.7498 0.6862,0.7498 0.8386,0.6374 0.8386,0.5 0.8386,0.3626 0.6862,0.2502 0.5,0.2502 Z" style="fill:#3232D8;fill-opacity:1;stroke:#000000;stroke-width:0.05;stroke-opacity:1;stroke-linecap:butt;stroke-miterlimit:4;stroke-dashoffset:0;" />
+      <path d=" M 0.175,0.5 C 0.2438,0.5 0.3,0.5562 0.3,0.625 0.3,0.6938 0.2438,0.75 0.175,0.75 0.1062,0.75 0.05,0.6938 0.05,0.625 0.05,0.5562 0.1062,0.5 0.175,0.5 Z" style="fill:#3232D8;fill-opacity:1;stroke:#000000;stroke-width:0.05;stroke-opacity:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dashoffset:0;" />
+      <path d=" M 0.825,0.5 C 0.7562,0.5 0.7,0.5562 0.7,0.625 0.7,0.6938 0.7562,0.75 0.825,0.75 0.8937,0.75 0.95,0.6938 0.95,0.625 0.95,0.5562 0.8937,0.5 0.825,0.5 Z" style="fill:#3232D8;fill-opacity:1;stroke:#000000;stroke-width:0.05;stroke-opacity:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dashoffset:0;" />
+    </g>
+  </g>
+</svg>

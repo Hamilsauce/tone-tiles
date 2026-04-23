@@ -6,29 +6,30 @@
   /* filter: hue-rotate(200deg) invert(1); */
   filter: drop-shadow(0 0 0.1px #000000);
   transition: 0.15s ease-out;
-
+  
   /* transform-origin: center center; */
   .actor-eye {
     fill: #FFFFFF
   }
-
+  
   .actor-mouth {
     stroke: #000000;
     stroke-width: 0.075;
-
+    
   }
- 
+  
   .actor-arm {
     fill: #3B5F89;
     /* stroke: #7C7C7C; */
     /* stroke-width: 0.035; */
-
+    
   }
+  
   .actor-head {
     fill: #3B4889;
     /* stroke: #7C7C7C; */
     /* stroke-width: 0.035; */
-
+    
   }
 }
 
@@ -42,7 +43,7 @@
   /* transition: 0.15s ease-out; */
   /* stroke-width: 0.00px; */
   filter: contrast(2) hue-rotate(25deg) invert(1) !important;
-
+  
 }
 
 .actor[data-teleporting=false],
@@ -55,7 +56,19 @@
   /* fill: #783BC1; */
   r: 0.01;
   stroke-width: 0.00px;
-
+  
   filter: blur(5px) !important;
+  
+}
 
+.dark-sun {
+  fill: url(#lineargradient1);
+  fill-opacity: 1;
+  stroke: #890D0D;
+  stroke-width: 0.02;
+  stroke-opacity: 1;
+  stroke-linecap: butt;
+  stroke-linejoin: round;
+  stroke-miterlimit: 4;
+  stroke-dashoffset: 0;
 }
