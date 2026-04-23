@@ -104,7 +104,8 @@ export class CanvasActor extends CanvasObject {
     this.#ticker = this.#ticker === 0 ? 1 : 0;
     this.phase = (this.phase + 1) % 4;
     let _angles = angles
-    if (this.#travelDir === 'left' || this.#travelDir === 'left') {
+  
+  if (this.#travelDir === 'left' || this.#travelDir === 'left') {
       _angles = [...angles].reverse()
     }
     const angle = turnDegree === 0 ? _angles[this.phase] : 0;

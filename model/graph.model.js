@@ -321,7 +321,7 @@ export class Graph extends Collection {
     
     while (true) {
       const nextGoal = getGoal();
-      // :repeat: replan if goal changes
+      // replan if goal changes
       if (nextGoal !== goal) {
         goal = nextGoal;
         path = this.getPath(current, goal) || [];
@@ -337,7 +337,7 @@ export class Graph extends Collection {
         });
       }
       
-      // :compass: no more directions → idle at current
+      //no more directions → idle at current
       if (i >= dirs.length) {
         yield current;
         continue;
@@ -345,7 +345,7 @@ export class Graph extends Collection {
       
       const dir = dirs[i++];
       
-      // :octagonal_sign: guard
+      // guard
       if (!dir) {
         yield current;
         continue;
@@ -353,7 +353,7 @@ export class Graph extends Collection {
       
       const next = this.getNeighbor(current, dir);
       
-      // :repeat: fallback if world changed
+      // fallback if world changed
       if (!next) {
         path = this.getPath(current, goal) || [];
         dirs = this.pathToDirections(path);

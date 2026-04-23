@@ -211,11 +211,11 @@ export const runCanvas = async (mapId) => {
       
       svgCanvas.scene.getLayer('tile').loadTileSet({ width, height, nodes, startNode });
       actor1Model.resetTraversal(startNode);
-      actor1.update({
-        point: startNode.point,
-        moving: false,
-        teleporting: false,
-      });
+      // actor1.update({
+      //   point: startNode.point,
+      //   moving: false,
+      //   teleporting: false,
+      // });
       actor1Model.requestMoveCommit(startNode.point);
       svgCanvas.layers.surface.setAttribute('transform', `translate(${Math.floor((graphModel.width + 2) / 2) - 0.3}, ${Math.floor((graphModel.height + 2) / 2) - 0.25})`);
       svgCanvas.layers.surface.querySelector('#surface-map-name').setAttribute('transform', `translate(0, ${-((graphModel.height / 2)) - 3}) scale(0.4)`);
