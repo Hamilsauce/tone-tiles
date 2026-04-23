@@ -32,31 +32,49 @@ export class SpatialModel extends Model {
     return this.#point.y;
   }
 
-  // --- core spatial ops ---
-
-  setPoint(nextPoint, meta) {
+  syncPoint(nextPoint) {
     const prev = this.#point;
-
     const normalized = nextPoint instanceof Point ?
       nextPoint :
-      new Point(nextPoint.x, nextPoint.y);
+      new Point(nextPoint?.x ?? 0, nextPoint?.y ?? 0);
 
-    if (prev.x === normalized.x && prev.y === normalized.y) {
-      return; // no-op
+    if (prev?.x === normalized.x && prev?.y === normalized.y) {
+      return null;
     }
 
     this.#point = normalized;
+    this.properties.point = normalized;
+
+    if ('x' in this.properties) this.properties.x = normalized.x;
+    if ('y' in this.properties) this.properties.y = normalized.y;
+
+    return {
+      prevPoint: prev,
+      point: normalized,
+    };
+  }
+
+  // --- core spatial ops ---
+
+  setPoint(nextPoint, meta) {
+    const result = this.syncPoint(nextPoint);
+
+    if (!result) {
+      return this;
+    }
 
     this.emit({
       type: this.type,
       kind: EventTypes.UPDATE,
       payload: {
         id: this.id,
-        point: normalized,
-        prevPoint: prev,
+        point: result.point,
+        prevPoint: result.prevPoint,
       },
       meta,
     });
+
+    return this;
   }
 
   translate(dx, dy, meta) {

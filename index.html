@@ -8,7 +8,7 @@
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
   <meta name="apple-mobile-web-app-title" content="Hamilsauce" />
   <link rel="manifest" href="/site.webmanifest" />
-  
+
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
@@ -24,7 +24,7 @@
   <link rel="stylesheet" href="./css/tile.css" />
   <link rel="stylesheet" href="./css/actor.css" />
   <link rel="stylesheet" href="./css/toolbar.css" />
-  
+
   <link rel="stylesheet" href="./css/app-footer.css" />
   <link rel="stylesheet" href="./css/app-header.css" />
   <link rel="stylesheet" href="./css/app-map-creation.css" />
@@ -32,7 +32,7 @@
   <link rel="stylesheet" href="./css/app-map-props-view.css" />
   <link rel="stylesheet" href="./css/app-splash-view.css" />
   <link rel="stylesheet" href="./css/debug-panel.css" />
-  
+
 </head>
 
 <body>
@@ -51,12 +51,12 @@
   </script>
   <script src="https://www.gstatic.com/firebasejs/12.0.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore-compat.js"></script>
-  
+
   <script type="text/javascript" charset="utf-8">
     const SVG_NS = 'http://www.w3.org/2000/svg';
   </script>
   <script src="./main.js" type="module"></script>
-  
+
   <template data-component="app">
     <div id="app" class="gradient">
       <app-header v-if="shouldDisplay"></app-header>
@@ -65,7 +65,7 @@
       <app-floating-menu _v-if="shouldDisplay"></app-floating-menu>
     </div>
   </template>
-  
+
   <!-- <template data-component="debug-panel">
     <div class="debug-panel">
       <template v-if="tile">
@@ -97,7 +97,7 @@
       <div v-else class="empty">no tile</div>
     </div>
   </template> -->
-  
+
   <template data-component="app-floating-menu">
     <div id="app-floating-menu" ref="floatingMenuRef" :class="{ expanded: displayState === 'expanded', debug:isDebugMode  }" _:class="{ debug:isDebugMode }" top="300px" left="200px">
       <div v-if="displayState === 'collapsed'" @click.stop="handleDisplayChange('expanded')" id="app-floating-menu-collapsed">
@@ -113,10 +113,10 @@
           </div>
         </div>
         <!-- <router-view name="panel"></router-view> -->
-        
+
         <div id="floating-menu-body">
           <app-map-list v-if="isListMode" :display-mode="'compact'"></app-map-list>
-          
+
           <div v-if="isDebugMode" class="debug-panel">
             <template v-if="tile">
               <div class="k">id</div>
@@ -129,7 +129,7 @@
               <div class="v" :class="{ changed: changed.y }">{{ currentNode.y }}</div>
               <div class="k">address</div>
               <div class="v" :class="{ changed: changed.address }">{{ currentNode.address }}</div>
-              
+
               <div class="k">target</div>
               <div class="v" :class="{ changed: changed.target }">
                 <span v-if="currentNode.target">
@@ -137,16 +137,16 @@
                 </span>
                 <span v-else>—</span>
               </div>
-              
+
               <div class="k">active</div>
               <div class="v" :class="{ changed: changed.active }">{{ currentNode.active }}</div>
               <div class="k">linkedMapId</div>
               <div class="v" :class="{ changed: changed.linkedMapId }">{{ currentNode.linkedMapId || '—' }}</div>
             </template>
-            
+
             <div v-else class="empty">no tile</div>
           </div>
-          
+
           <!-- <div id="floating-menu-debug">
             <div class="kv">
               <template v-for="(val, key) in map">
@@ -160,12 +160,12 @@
               <input :value="mapName" @change="handleMapNameChange" id="map-name" type="text" _class="field__input" placeholder="No Map" maxlength="80" _v-model="mapName" />
             </div>
           </div> -->
-          
+
         </div>
       </div>
     </div>
   </template>
-  
+
   <template data-component="app-header">
     <header v-if="shouldDisplay" id="app-header">
       <div id="app-header-inner">
@@ -175,7 +175,7 @@
           </div>
           <!-- <h2>tone tiles</h2> -->
         </div>
-        
+
         <div id="app-header-right-top">
           <div id="header-actions" class="container">
             <button id="header-map-list-button" @click="handleChangeMap" class="file-button" type="button">to map
@@ -184,7 +184,7 @@
             <button id="save-map" class="file-button" type="button">Save</button>
           </div>
         </div>
-        
+
         <div id="app-header-right-bottom">
           <label for="map-name">Current:</label>
           <input :value="mapName" @change="handleMapNameChange" id="map-name" type="text" _class="field__input" placeholder="No Map" maxlength="80" _v-model="mapName" />
@@ -192,7 +192,7 @@
       </div>
     </header>
   </template>
-  
+
   <template data-component="app-map-list-view">
     <div id="app-map-list-view" :class="{ compact: isCompact }" @click="handleListClick">
       <div id="map-list-view-top">
@@ -201,13 +201,13 @@
           <input @click="handleNewMap" type="button" name="create-map" id="create-map" value="create" />
         </div>
       </div>
-      
+
       <ul id="map-list-view-list">
         <app-map-list-item :display-mode @map-item-click="handleMapClick" @map-item-select="handleMapSelect" @map-item-edit="handleMapEdit" v-for="map in mapList" :key="map.id" :map="map" :selected-id="selectedId"></app-map-list-item>
       </ul>
     </div>
   </template>
-  
+
   <template data-component="app-map-list-item">
     <li class="map-list-item" :class="{ editing: isSelected}" @click="handleClick" @contextmenu="handleSelect">
       <div class="map-name">
@@ -227,7 +227,7 @@
       </div>
     </li>
   </template>
-  
+
   <template data-component="app-map-props-view">
     <div id="app-map-props-view" @click="handleListClick">
       <div id="map-props-view-top">
@@ -237,7 +237,7 @@
           <input type="button" name="delete-button" id="delete-button" value="delete" @click="handleDeleteClick" />
         </div>
       </div>
-      
+
       <div id="map-props-view-list">
         <div class="map-author">
           creator: {{ map.meta.author ?? 'Unknown' }}
@@ -249,7 +249,7 @@
           size: {{ `${map.width}x${map.height}` }}
         </div>
       </div>
-      
+
       <div id="map-props-view-stats">
         <div class="map-barrier">barrier: {{ mapStats.barrier }}</div>
         <div class="map-teleport">teleport: {{ mapStats.teleport }}</div>
@@ -257,11 +257,11 @@
         <div class="map-empty">empty: {{ mapStats.empty }}</div>
         <div class="map-total">total: {{ mapStats.total }}</div>
         <router-view name="panel"></router-view>
-        
+
       </div>
     </div>
   </template>
-  
+
   <template data-component="svg-canvas-host">
     <div id="svg-canvas-host">
       <svg @_dblclick="centerViewport" id="canvas" class="gradient" width="412" _height="681" viewBox="0 0 19 22" preserveAspectRatio="xMinYMid meet" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
@@ -271,7 +271,7 @@
               <div xmlns="http://www.w3.org/1999/xhtml" class="context-menu" data-show-actions="false">
                 <ul class="context-menu-list">
                   <li data-value="copy" data-type="clipboard">copy</li>
-                  
+
                   <li data-value="barrier" data-type="tile-type">barrier</li>
                   <li data-value="empty" data-type="tile-type">empty</li>
                   <li data-value="start" data-type="tile-type">start</li>
@@ -281,54 +281,54 @@
               </div>
             </foreignObject>
           </g>
-          
+
           <marker id="edge-line-arrow" viewBox="0 0 10 10" refX="2.5" refY="2.5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
             <path d="M 0 0 L 5 2.5 L 0 5 z" _fill="#00000090" />
           </marker>
-          
+
           <g data-template="edge-line" class="edge-line" id="" data-x="0" data-y="0" transform="translate(0,0) rotate(0) scale(1)">
             <line class="edge-line-arrow-path" x1="0" y1="0" x2="1" y2="1" marker-end="url(#edge-line-arrow)" transform="translate(0,0) rotate(0) scale(1)" />
             <circle cx="1" cy="1" r="0.25" fill="#FFFFFF00" transform="translate(0,0) rotate(0) scale(1)" />
           </g>
-          
-          
+
+
           <g data-template="layer" class="layer" id="" data-z="0" transform="translate(0,0) rotate(0) scale(1)"> </g>
           <g data-template="group" data-x="0" data-y="0" class="group" data-type="group" id="" data-z="0" transform="translate(0,0) rotate(0) scale(1)"> </g>
-          
+
           <rect id="tile-rect" width="1" height="1"></rect>
           <circle id="map-link" r="0.5" width="0.5" height="0.5"></circle>
-          
+
           <g data-template="tile" data-type="tile" data-tile-type="empty" data-x="0" data-y="0" data-current="false" data-active="false" data-is-path-node="false" transform="translate(0,0)" class="tile" id="">
             <use href="#tile-rect"></use>
           </g>
-          
+
           <!-- <g data-template="map-link" data-tile-type="empty" data-x="0" data-y="0" data-current="false" data-active="false" data-is-path-node="false" transform="translate(0,0) rotate(0) scale(1)" class="map-link" id="">
             <use href="#map-link"></use>
             <text class="linked-map-name" _dominant-baseline="" text-anchor="middle" transform="translate(0,0) rotate(0) scale(0.2)">
               n/a
             </text>
           </g> -->
-          
+
           <g data-template="actor2" id="" data-x="0" data-y="0" data-teleporting="false" class="actor" transform="translate(0,0) rotate(0) scale(1)">
             <circle cx="0.25" cy="0.25" r="0.2" transform="translate(0,0) rotate(0) scale(1)" />
             <circle cx="0.75" cy="0.75" r="0.2" transform="translate(0,0) rotate(0) scale(1)" />
             <circle cx="0.5" cy="0.5" r="0.3" transform="translate(0,0) rotate(0) scale(1)" />
           </g>
-          
+
           <g data-template="actor" id="" data-x="0" data-y="0" data-teleporting="false" class="actor" transform="translate(0,0) rotate(0,0,0) scale(1 1)">
             <g class="actor-inner" transform="translate(0.5,0.5) rotate(0,0, 0) scale(0.8 0.8)">
-              <circle class="actor-body" cx="0.0" cy="0.0" r="0.5" transform="translate(0.0,0.0) rotate(0,0,0) scale(1)" />
-              <circle class="actor-eye" cx="0.0" cy="0.0" r="0.15" transform="translate(-0.2,-0.2) rotate(0) scale(1)" />
+              <circle class="actor-body" cx="0.0" cy="0.0" r="0.5" transform="translate(0.0,0.0) rotate(0,0,0) scale(0.9 1)" />
+              <circle class="actor-eye" cx="0.0" cy="0.0" r="0.125" transform="translate(-0.2,-0.2) rotate(0) scale(1.1 1)" />
               <circle class="actor-eye" cx="0.0" cy="0.0" r="0.1" transform="translate(0.2,-0.22) rotate(0) scale(1)" />
               <line class="actor-mouth" x1="-0.2" y1="0.2" x2="0.2" y2="0.15" _marker-end="url(#edge-line-arrow)" transform="translate(0,0) rotate(0) scale(1)" />
             </g>
           </g>
-          
-          
+
+
         </defs>
-        
+
         <g id="viewport" ref="canvasViewportRef" transform="matrix(1 0 0 1 0 0)">
-          
+
           <g id="surface-layer" data-type="layer" data-name="surface" transform="translate(-0,-0) rotate(0) scale(1)">
             <rect id="surface" x="-100" y="-100" rx="0" ry="0" width="200" height="200"></rect>
             <line class="axis-line" x1="-100" y1="0" x2="100" y2="0" _marker-end="url(#edge-line-arrow)" transform="translate(0,0) rotate(0) scale(1)" />
@@ -338,15 +338,15 @@
                 {{ map.name }}
               </text>
             </g>
-            
+
           </g>
-          
+
           <!-- <g id="scene" transform="translate(0,0) rotate(0) scale(1)">
             <g id="tile-layer" transform="translate(-0,-0) rotate(0) scale(1)"></g>
             <g id="object-layer" transform="translate(0.5,0.5) rotate(0) scale(1)"></g>
           </g> -->
         </g>
-        
+
         <!-- <g id="minimap" data-x="0" data-y="0" transform="translate(13, 19) rotate(0) scale(1)">
           <rect id="minimap-surface" x="0" y="0" rx="0" ry="0" width="5.7" height="6.6"></rect>
           <use href="#scene" transform="translate(0,0) rotate(0) scale(0.3)"></use>
@@ -354,16 +354,16 @@
       </svg>
     </div>
   </template>
-  
+
   <template data-component="app-body">
     <section id="app-body">
       <svg-canvas-host></svg-canvas-host>
     </section>
   </template>
-  
+
   <template data-component="app-splash-view">
     <section ref="foregroundRef" id="app-splash-view" @click="handleClick" :class="{ fade: fade }">
-      
+
       <div id="app-splash-background"></div>
       <div id="app-splash-foreground">
         <div id="app-splash-overlay">TONE TILES</div>
@@ -372,7 +372,7 @@
       <div id="app-splash-hamilsauce-link">
         <a href="https://hamilsauce.github.io/">HAMILSAUCE</a>
       </div>
-      
+
       <!-- <div id="app-splash-foreground">
         ⬜⬜⬜⬜⬜⬜⬜
         ⬜⬛⬛⬛⬛⬛⬜
@@ -384,7 +384,7 @@
       </div> -->
     </section>
   </template>
-  
+
   <template data-component="app-footer">
     <footer id="app-footer" v-if="shouldDisplay">
       <div id="app-footer-top">
@@ -400,13 +400,13 @@
         </div>
         <div class="scroll-fader"></div>
       </div>
-      
+
       <div id="app-footer-bottom">
         <app-toolbar></app-toolbar>
       </div>
     </footer>
   </template>
-  
+
   <template data-component="app-toolbar">
     <div id="app-toolbar">
       <div id="tools" :class="{ deactivated: isRunning }">
@@ -430,10 +430,10 @@
       </div>
     </div>
   </template>
-  
+
   <template data-component="app-map-creation">
     <section id="app-map-creation" class="map-create">
-      
+
       <!-- Header -->
       <header class="map-create__header">
         <div class="map-create__titlewrap">
@@ -442,23 +442,23 @@
             Set the basics. You can resize later in Map Settings.
           </p>
         </div>
-        
+
         <div class="map-create__actions">
           <button @click="handleCancel" type="button" class="btn btn--ghost">
             Cancel
           </button>
-          
+
           <button type="submit" form="map-create-form" class="btn btn--primary" :disabled="!isValid">
             Create map
           </button>
         </div>
       </header>
-      
+
       <!-- Body -->
       <div class="map-create__body">
-        
+
         <form id="map-create-form" class="map-create__form" autocomplete="off" novalidate @submit.prevent="handleCreate">
-          
+
           <!-- Name -->
           <div class="field">
             <label class="field__label" for="map-name">Name</label>
@@ -467,38 +467,38 @@
               Optional. If blank, we’ll generate one.
             </div>
           </div>
-          
+
           <!-- Presets -->
           <fieldset class="fieldset">
             <legend class="fieldset__legend">Preset</legend>
-            
+
             <div class="preset-row">
               <button type="button" class="chip" :aria-pressed="preset === 'small'" @click="applyPreset('small')">
                 Small
               </button>
-              
+
               <button type="button" class="chip" :aria-pressed="preset === 'medium'" @click="applyPreset('medium')">
                 Medium
               </button>
-              
+
               <button type="button" class="chip" :aria-pressed="preset === 'large'" @click="applyPreset('large')">
                 Large
               </button>
-              
+
               <button type="button" class="chip chip--ghost" :aria-pressed="preset === 'custom'">
                 Custom
               </button>
             </div>
-            
+
             <div class="fieldset__hint">
               Presets set width and height. You can fine-tune below.
             </div>
           </fieldset>
-          
+
           <!-- Dimensions -->
           <fieldset class="fieldset">
             <legend class="fieldset__legend">Dimensions</legend>
-            
+
             <div class="grid-2">
               <div class="field">
                 <label class="field__label" for="map-width">
@@ -506,7 +506,7 @@
                 </label>
                 <input id="map-width" type="number" class="field__input" min="4" max="256" step="1" v-model.number="width" />
               </div>
-              
+
               <div class="field">
                 <label class="field__label" for="map-height">
                   Height (tiles)
@@ -515,11 +515,11 @@
               </div>
             </div>
           </fieldset>
-          
+
           <!-- Initialize -->
           <fieldset class="fieldset">
             <legend class="fieldset__legend">Initialize</legend>
-            
+
             <div class="grid-2">
               <label class="radio">
                 <input type="radio" value="empty" v-model="initFill" />
@@ -528,7 +528,7 @@
                   All tiles start empty.
                 </span>
               </label>
-              
+
               <label class="radio">
                 <input type="radio" value="barrier" v-model="initFill" />
                 <span class="radio__label">Barrier border</span>
@@ -537,9 +537,9 @@
                 </span>
               </label>
             </div>
-            
+
             <div class="divider"></div>
-            
+
             <div class="grid-2">
               <div class="field">
                 <label class="field__label" for="map-start">
@@ -553,7 +553,7 @@
                   <option value="none">None</option>
                 </select>
               </div>
-              
+
               <div class="field">
                 <label class="field__label" for="map-exit">
                   Exit
@@ -567,7 +567,7 @@
                 </select>
               </div>
             </div>
-            
+
             <label class="check">
               <input type="checkbox" v-model="openInEditor" />
               <span class="check__label">
@@ -575,49 +575,49 @@
               </span>
             </label>
           </fieldset>
-          
+
           <!-- Mobile footer -->
           <div class="map-create__footer">
             <button type="submit" class="btn btn--primary btn--full" :disabled="!isValid">
               Create map
             </button>
-            
+
             <button @click="handleCancel" type="button" class="btn btn--ghost btn--full">
               Cancel
             </button>
           </div>
         </form>
-        
+
         <!-- Preview -->
         <aside class="map-create__preview">
           <div class="card">
             <div class="card__header">
               <h3 class="card__title">Summary</h3>
             </div>
-            
+
             <div class="card__content">
               <dl class="kv">
                 <div class="kv__row">
                   <dt>Name</dt>
                   <dd>{{ name || 'Untitled' }}</dd>
                 </div>
-                
+
                 <div class="kv__row">
                   <dt>Grid</dt>
                   <dd>{{ width }} × {{ height }}</dd>
                 </div>
-                
+
                 <div class="kv__row">
                   <dt>Init</dt>
                   <dd>{{ initFill }}</dd>
                 </div>
-                
+
                 <div class="kv__row">
                   <dt>Start → Exit</dt>
                   <dd>{{ startPlacement }} → {{ exitPlacement }}</dd>
                 </div>
               </dl>
-              
+
               <div class="note">
                 Tip: resizing later should prompt an anchor (expand right/down/center).
               </div>
@@ -627,7 +627,7 @@
       </div>
     </section>
   </template>
-  
+
 </body>
 
 </html>

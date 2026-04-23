@@ -1,5 +1,6 @@
 import getGraph, { getDirectionFromPoints } from './lib/graph.model.js';
 import getGraphModel from './model/graph.model.js';
+import { EntityCollection } from './model/EntityCollection.js';
 import { SVGCanvas } from './canvas/SVGCanvas.js';
 import { getTileSelector } from 'https://hamilsauce.github.io/svg-range-selector/tile-selector.js';
 import { initMapControls } from './ui/map-selection.js';
@@ -15,7 +16,7 @@ import { rxjs } from 'rxjs';
 import { projectNodePatchToRenderPatch } from './core/projections/node-to-tile.projector.js';
 
 const { fromEvent, operators } = rxjs;
-const { map, tap, filter, shareReplay, distinctUntilChanged } = operators;
+const { map, tap, filter } = operators;
 
 
 const useTemplate = (templateName, options = {}) => {
@@ -82,6 +83,7 @@ const createEdgeLine = (pt1, pt2) => {
 export const runCanvas = async (mapId) => {
   let graph;
   let graphModel;
+  let entityCollection;
   let canvasEl;
   let svgCanvas;
   let sceneObj;
@@ -102,6 +104,7 @@ export const runCanvas = async (mapId) => {
 
   graph = getGraph();
   graphModel = getGraphModel();
+  entityCollection = new EntityCollection(); // getEntities();
 
   canvasEl = document.querySelector('#canvas');
   svgCanvas = new SVGCanvas(canvasEl);
@@ -147,23 +150,36 @@ export const runCanvas = async (mapId) => {
   contextMenu.disableItem('copy');
   objectLayerObj.add(contextMenu ?? new ContextMenu(svgCanvas)).dom;
 
-  const actor1 = objectLayerObj.add({
-    type: 'actor',
-    model: {
-      id: 'actor1',
+  if (entityCollection.has('actor1')) {
+    entityCollection.remove('actor1');
+  }
+
+  const actor1Model = entityCollection.createActor({
+    id: 'actor1',
+    properties: {
       moving: false,
       teleporting: false,
+      point: { x: 0, y: 0 },
     },
+  });
+
+  const actor1 = objectLayerObj.add({
+    id: actor1Model.id,
+    type: 'actor',
+    model: actor1Model.data(),
     transforms: [
       { type: 'translate', values: [0, 0], position: 0 },
       { type: 'rotate', values: [0, 0, 0], position: 1 },
       { type: 'scale', values: [1, 1], position: 2 },
     ],
   }).configure({
-    // graph,
     graph: graphModel,
     addRoutine: loopEngine.addRoutine.bind(loopEngine),
-    // onCurrentNode: (node) => setCurrentNode(node.data()),
+  });
+  const emitActorEvent = (type, payload = {}) => entityCollection.emit({
+    type,
+    id: actor1Model.id,
+    ...payload,
   });
 
   selectMapById = selectMapById ?? await initMapControls(graphModel, svgCanvas);
@@ -184,6 +200,12 @@ export const runCanvas = async (mapId) => {
 
       svgCanvas.scene.getLayer('tile').loadTileSet({ width, height, nodes, startNode });
       actor1.resetTraversal(startNode);
+      actor1Model.update({
+        point: startNode.point,
+        moving: false,
+        teleporting: false,
+      });
+      graphModel.moveObject(actor1Model.id, startNode.point);
       svgCanvas.layers.surface.setAttribute('transform', `translate(${Math.floor((graphModel.width + 2) / 2) - 0.3}, ${Math.floor((graphModel.height + 2) / 2) - 0.25})`);
       svgCanvas.layers.surface.querySelector('#surface-map-name').setAttribute('transform', `translate(0, ${-((graphModel.height / 2)) - 3}) scale(0.4)`);
     });
@@ -214,72 +236,136 @@ export const runCanvas = async (mapId) => {
   });
 
 
-  const unsubscribeActorMapLink = actor1.on('actor:map-link', async ({ linkedMapId }) => {
-    await selectMapById(linkedMapId);
+  const unsubscribeActorTravelBridge = actor1.on('actor:travel', ({ point, goalPoint, goalNode, actor }) => {
+    actor1Model.update({
+      point,
+      moving: true,
+      teleporting: false,
+    });
+
+    emitActorEvent('actor:travel', {
+      actorId: actor1Model.id,
+      point,
+      goalPoint,
+      goalNode,
+      actor,
+    });
   });
 
-  const unsubscribeActorTravel = actor1.on('actor:travel', async ({ point, goalPoint }) => {
+  const unsubscribeActorMoveBridge = actor1.on('actor:move', ({ prevNode, node, prevPoint, point, actor }) => {
+    actor1Model.update({
+      point,
+      moving: true,
+      teleporting: false,
+    });
 
-    const curr = graphModel.getNodeAtPoint(point);
-    const goal = graphModel.getNodeAtPoint(goalPoint);
-
-    goal.update({ active: true });
-
-    audioNote1(curr, { forceNewNote: true });
-
+    emitActorEvent('actor:move', {
+      actorId: actor1Model.id,
+      prevNode,
+      node,
+      prevPoint,
+      point,
+      actor,
+    });
   });
+
+  const unsubscribeActorMapLinkBridge = actor1.on('actor:map-link', ({ node, point, linkedMapId, actor }) => {
+    actor1Model.update({
+      point,
+      moving: false,
+      teleporting: false,
+    });
+
+    emitActorEvent('actor:map-link', {
+      actorId: actor1Model.id,
+      node,
+      point,
+      linkedMapId,
+      actor,
+    });
+  });
+
+  const unsubscribeActorStopBridge = actor1.on('actor:stop', ({ currentNode, currentPoint, actor }) => {
+    actor1Model.update({
+      point: currentPoint,
+      moving: false,
+      teleporting: false,
+    });
+
+    emitActorEvent('actor:stop', {
+      actorId: actor1Model.id,
+      currentNode,
+      currentPoint,
+      actor,
+    });
+  });
+
+  const unsubscribeActorMapLink = entityCollection.connect('actor:map-link')
+    .pipe(filter(({ id }) => id === actor1Model.id))
+    .subscribe(async ({ linkedMapId }) => {
+      console.warn('map link event', { linkedMapId });
+      await selectMapById(linkedMapId);
+    });
+
+  const unsubscribeActorTravel = entityCollection.connect('actor:travel')
+    .pipe(filter(({ id }) => id === actor1Model.id))
+    .subscribe(async ({ point, goalPoint }) => {
+
+      const curr = graphModel.getNodeAtPoint(point);
+      const goal = graphModel.getNodeAtPoint(goalPoint);
+
+      goal.update({ active: true });
+
+      audioNote1(curr, { forceNewNote: true });
+
+    });
 
   let neighborIndex = 0;
 
-  const unsubscribeActorMove = actor1.on('actor:move', async ({ id, point, prevPoint }) => {
-    // need to separate Actor Model from canvas object
-    // have actor1 model emit this, and then
+  const unsubscribeActorMove = entityCollection.connect('actor:move')
+    .pipe(filter(({ id }) => id === actor1Model.id))
+    .subscribe(async ({ id, point, prevPoint }) => {
+      // need to separate Actor Model from canvas object
+      // have actor1 model emit this, and then
+console.warn('actor move event', { id, point, prevPoint });
+      graphModel.moveObject(id, point, prevPoint);
+      const dir = getDirectionFromPoints(point, prevPoint);
+      const node = graphModel.getNodeAtPoint(point);
+      let _neighbors = [...graphModel.getNeighbors(node).entries()];
+      let n1 = _neighbors.slice(0, neighborIndex);
+      let n2 = _neighbors.slice(neighborIndex);
 
-    graphModel.moveObject(id, point, prevPoint); // fromNode, toNode);
-    const dir = getDirectionFromPoints(point, prevPoint);
-    const node = graphModel.getNodeAtPoint(point);
-    let _neighbors = [...graphModel.getNeighbors(node).entries()];
-    let n1 = _neighbors.slice(0, neighborIndex);
-    let n2 = _neighbors.slice(neighborIndex);
+      const neighbors = [...n1, ...n2];
+      neighborIndex = neighborIndex >= 3 ? 0 : neighborIndex + 1;
 
-    const neighbors = [...n1, ...n2];
-    neighborIndex = neighborIndex >= 3 ? 0 : neighborIndex + 1;
+      console.warn('dir', dir);
+      setCurrentNode(node.data());
+      audioNote1(node);
 
-    console.warn('dir', dir)
-    setCurrentNode(node.data());
-    audioNote1(node);
+      if (dir === 'up' || dir === 'left') {
+        neighbors.reverse();
+      }
 
-    if (dir === 'up' || dir === 'left') {
-      neighbors.reverse();
-    }
+      let cnt = 0;
 
-    let cnt = 0;
-
-    for (const [nDir, neighbor] of neighbors) {
-      cnt++;
-      // console.warn('node.id, nDir', node.id, nDir)
-      // console.warn(dir === nDir)
-
-      setTimeout(() => {
-        const propKey = dir !== nDir ? 'isPathNode' : 'highlight';
-        neighbor.update({
-          [propKey]: true
-        });
+      for (const [nDir, neighbor] of neighbors) {
+        cnt++;
 
         setTimeout(() => {
+          const propKey = dir !== nDir ? 'isPathNode' : 'highlight';
           neighbor.update({
-            [propKey]: false
+            [propKey]: true
           });
-        }, 3000);
-      }, 0 + (100 * cnt));
-    }
 
-  });
+          setTimeout(() => {
+            neighbor.update({
+              [propKey]: false
+            });
+          }, 3000);
+        }, 0 + (100 * cnt));
+      }
 
-
-  // const removeFrameRateRoutine = loopEngine.addRoutine((dt) => {
-  //   setFrameRate(frameRate(dt * 1000));
-  // });
+    });
 
   //! end 1bindings
 
@@ -293,7 +379,6 @@ export const runCanvas = async (mapId) => {
     });
 
     if (contextMenu.isVisible) {
-      // deselectRange();
       selectionBox.remove();
 
       contextMenu.hide();
@@ -303,7 +388,7 @@ export const runCanvas = async (mapId) => {
 
   const handleTileClick = async ({ type, detail }) => {
     if (!isRunning.value) return;
-    console.warn('contextMenu.isVisible', contextMenu.isVisible);
+
     if (contextMenu.isVisible) {
       blurContextMenu();
       return;
@@ -322,7 +407,6 @@ export const runCanvas = async (mapId) => {
       // prevGoal.update({ active: false })
     }
 
-    // const goalNode = graph.getNodeByAddress(detail.id);
     const goalNode = graphModel.getNodeByAddress(detail.id);
 
     if (!goalNode || !goalNode.isTraversable) {
@@ -336,32 +420,6 @@ export const runCanvas = async (mapId) => {
     actor1.travelTo(goalNode);
   };
 
-
-  // const handleLineDrag = async (e) => {
-  //   e.stopPropagation();
-  //   e.preventDefault();
-
-  //   const newPoint = domPoint(svgCanvas.scene.dom, e.clientX, e.clientY);
-  //   selectedTileBeingLinked = targetNode;
-
-  //   line.firstElementChild.setAttribute('x2', Math.floor(newPoint.x) + 0.5);
-  //   line.firstElementChild.setAttribute('y2', Math.floor(newPoint.y) + 0.5);
-  // }
-
-  // const handleLineDragEnd = async (e) => {
-  //   e.stopPropagation();
-  //   e.preventDefault();
-
-  //   const newPoint = domPoint(line.parentElement, e.clientX, e.clientY);
-  //   const node = graph.getNodeAtPoint({ x: Math.floor(newPoint.x), y: Math.floor(newPoint.y) })
-  //   // node.update({ active: true })
-  //   line.firstElementChild.setAttribute('x2', node.x + 0.5);
-  //   line.firstElementChild.setAttribute('y2', node.y + 0.5);
-
-  //   handleTileLinkSelect({ nod fe }) //: { x: node.x, y: node.y } })
-
-
-  // }
 
   const handleEditTileClick = async (targetNode) => {
     if (!targetNode) {
@@ -402,7 +460,7 @@ export const runCanvas = async (mapId) => {
           line.firstElementChild.setAttribute('y2', node.y + 0.5);
 
           handleTileLinkSelect({ node });
-          blurContextMenu(); //: { x: node.x, y: node.y } })
+          blurContextMenu();
         });
       }
 
@@ -493,15 +551,21 @@ export const runCanvas = async (mapId) => {
 
   return () => {
     unsubscribeActorMapLink();
+    unsubscribeActorMapLinkBridge();
+    unsubscribeActorMoveBridge();
+    unsubscribeActorStopBridge();
+    unsubscribeActorTravelBridge();
     unsubscribeSelectionBox();
     actor1.destroy();
     loopEngine.destroy();
-    // removeFrameRateRoutine();
     unsubscribeMapLoad();
-    unsubscribeNodeUpdate();
+    unsubscribeNodeUpdates();
+    unsubscribeActorMove();
+    unsubscribeActorTravel();
     unwatch();
     svgCanvas.destroy();
     svgCanvas = null;
+    entityCollection.remove(actor1Model.id);
     graphModel.clear();
     window.graph = undefined;
     console.warn('RUNCANVAS : CANCEL');

@@ -1,6 +1,6 @@
-import { Collection } from './Collection.js';
 import { ModelRegistry } from '../core/types/model-registry.js';
 import { ModelTypes } from '../core/types/model.types.js';
+import { Collection } from '../model/Collection.js';
 
 const ENTITY_TYPE_NAMES = new Map([
   [ModelTypes.ACTOR, 'actor'],
