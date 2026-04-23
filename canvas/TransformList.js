@@ -47,6 +47,7 @@ export class TransformList {
   #self = null;
   #canvas = null;
   #transforms = null;
+  #rotation = { deg: 0, x: 0, y: 0 };
   
   constructor(svgCanvas, element, transforms = DEFAULT_TRANSFORMS) {
     this.#canvas = svgCanvas;
@@ -56,6 +57,11 @@ export class TransformList {
   
   init(transforms = []) {
     transforms.forEach(({ type, values }, i) => {
+      if (type?.toLowerCase() === 'rotate') {
+        const [deg = 0, x = 0, y = 0] = values || [];
+        this.#rotation = { deg, x, y };
+      }
+
       const t = this.createTransform(type, ...(values || []))
       
       if (i === 0) {
@@ -111,6 +117,7 @@ export class TransformList {
   
   rotateTo(deg = 0, x = 0, y = 0) {
     const rotate = this.getItem(TransformIndexMap.rotate);
+    this.#rotation = { deg, x, y };
     rotate.setRotate(deg, x, y);
     
     return this;
@@ -158,9 +165,11 @@ export class TransformList {
   }
   
   get rotation() {
-    const { b, c } = this.getMatrixAt(TransformIndexMap.rotate)
-    
-    return { x: roundTwo(b), y: roundTwo(c) }
+    return {
+      deg: roundTwo(this.#rotation.deg),
+      x: roundTwo(this.#rotation.x),
+      y: roundTwo(this.#rotation.y),
+    }
   }
   
   get scale() {
