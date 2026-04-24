@@ -47,7 +47,7 @@ const createNodeData = (overrides = {}) => {
   };
 };
 
-export class Graph extends Collection {
+class Graph extends Collection {
   #id = null;
   #name = 'Untitled';
   #meta = {};
@@ -602,6 +602,14 @@ const getGraph = () => {
   }
 
   return graph = new Graph();
+};
+
+export const getTraversal = () => {
+  if (!graph) {
+    getGraph()
+  }
+
+  return graph.traversePoints.bind(graph)
 };
 
 export default getGraph;
