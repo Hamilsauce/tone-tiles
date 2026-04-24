@@ -1,6 +1,6 @@
 import { audioEngine } from '../audio/index.js';
 import { getScaleNotes, getChordNotes, pitchToFrequency } from '../MUSIC_THEORY_FUNCTIONS.js';
-import { getChordToneDegreeFromDir, getDirectionFromPoints } from '../lib/graph.model.js';
+import { getChordToneDegreeFromDir, getDirectionFromPoints } from '../core/spatial/utils.js';
 import { AudioNote } from '../audio/AudioNote.js';
 import { major7 } from '../MUSIC_THEORY_FUNCTIONS.js';
 
@@ -49,7 +49,7 @@ function getScaleDegree(x, y, arp) {
 
 const getTileTone = ({ x, y, degree, arp = false, octaveMod }) => {
   const deg = degree ?? getScaleDegree(x, y, arp);
-  
+
   const {
     pitch,
     pitchClass,
@@ -70,12 +70,12 @@ const getTileTone = ({ x, y, degree, arp = false, octaveMod }) => {
 
 const getDynamicTone = (x, y, dir = 1) => {
   const mod = y > 5 ? -2 : 0;
-  
+
   const pitchClass = getTileDegree(x, harmonicCxt.notes.length);
   const octave = getTileOctave(Math.min(y, 5), harmonicCxt.notes.length);
-  
+
   const pitch = `${pitchClass}${octave + dir}`;
-  
+
   return pitchToFrequency(pitch);
 };
 
@@ -95,28 +95,28 @@ const doAudioNote = (currentNode, options = DefaultDoAudioNoteOptions) => {
   const { forceNewNote } = options;
   curr = currentNode;
   prev = prev ?? curr;
-  
+
   const travelDir = getDirectionFromPoints(prev, curr);
   const chordToneDegree = getChordToneDegreeFromDir(travelDir);
-  
+
   try {
     const vel = pointer % 2 === 0 ? 0.3 : 0.4;
     let freq = toTone({ x: curr.x, y: curr.y, degree: chordToneDegree });
-    
+
     if (!audioNote1) {
       audioNote1 = fireAudioNote(freq, vel);
     }
-    
+
     if (forceNewNote) {
       audioNote1.stop(0.2)
       audioNote1 = fireAudioNote(freq, vel);
     }
-    
+
     else if (curr.tileType === 'teleport') {
       audioNote1.stop(0.015)
-      
+
       freq = major7(toTone({ x: curr.x, y: curr.y, degree: chordToneDegree, octaveMod: 1 }))[getRandomInt(4)];
-      
+
       audioNote1 = fireAudioNote(freq, vel);
     }
     else if (prevDir === travelDir) {
@@ -126,10 +126,10 @@ const doAudioNote = (currentNode, options = DefaultDoAudioNoteOptions) => {
       audioNote1.stop(0.2)
       audioNote1 = fireAudioNote(freq, vel);
     }
-    
+
     prevDir = travelDir;
     prev = curr;
-    
+
     pointer++;
     // audioNote1 = fireAudioNote(freq, vel);
   } catch (e) {

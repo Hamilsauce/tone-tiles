@@ -1,21 +1,18 @@
 import { Model } from './Model.js';
-// import { Point } from '../core/spatial/Point.js';
+import { Point } from '../core/spatial/Point.js';
 import { EventTypes } from '../core/types/event.types.js';
-import { CanvasPoint } from '../canvas/CanvasPoint.js';
-const Point = CanvasPoint;
 
 export class SpatialModel extends Model {
   #point;
 
   constructor({ point, ...rest }) {
-    const initialPoint = point ?? rest.properties?.point;
-    const properties = {
-      ...rest.properties,
-      point: initialPoint instanceof Point ? initialPoint : new Point(initialPoint?.x ?? 0, initialPoint?.y ?? 0),
-    };
-    super({ ...rest, properties });
+    if (!(Point.isPoint(point) || Point.isPointLike(point))) {
+      throw new Error(`SpatialModel requires a valid point: ${JSON.stringify(point)}`);
+    }
 
-    this.#point = properties.point;
+    super({ ...rest });
+
+    this.#point = Point.from(point);
   }
 
   // --- getters ---
