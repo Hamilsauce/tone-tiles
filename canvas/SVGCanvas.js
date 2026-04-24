@@ -4,7 +4,7 @@ import { createCustomEvent } from '../lib/create-event.js';
 import { CanvasObject, DefaultCanvasObjectOptions } from './CanvasObject.js';
 import { CanvasActor } from './CanvasActor.js';
 import { initHueRoto } from '../lib/hue-rotato.js';
-import { Scene } from '../canvas/Scene.js';
+import { CanvasScene } from '../canvas/CanvasScene.js';
 import { TileObject } from '../canvas/TileObject.js';
 
 const { getPanZoom, template, utils, download, TwoWayMap } = ham;
@@ -27,7 +27,6 @@ export class SVGCanvas extends EventTarget {
   constructor(svg) {
     super();
 
-
     this.#self = svg;
     this.hueRotato = initHueRoto(this.#self);
 
@@ -40,7 +39,7 @@ export class SVGCanvas extends EventTarget {
     this.minimap = this.dom.querySelector('#minimap');
 
 
-    this.#scene = new Scene(this, [
+    this.#scene = new CanvasScene(this, [
       {
         name: 'tile',
         id: 'tile-layer',
@@ -134,6 +133,9 @@ export class SVGCanvas extends EventTarget {
       }),
       map(({ type, target, clientX, clientY }) => {
         const layerDOM = target.closest('[data-type="layer"]');
+
+        if (!layerDOM) return null;
+
         const layerName = layerDOM.dataset.name;
 
         const point = this.domPoint(clientX, clientY);
@@ -151,6 +153,7 @@ export class SVGCanvas extends EventTarget {
           }
         };
       }),
+      filter(e => !!e),
       map(({ type, detail }) => createCustomEvent(type, detail)),
       tap((event) => this.dispatchEvent(event)),
       // tap((evt) => { console.warn(`[ CANVAS EVENT ] ${evt.type}: `); }),

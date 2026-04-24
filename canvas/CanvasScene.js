@@ -3,7 +3,7 @@ import { DEFAULT_TRANSFORMS } from './TransformList.js';
 import { SceneLayer } from './SceneLayer.js';
 import { TileLayer } from './TileLayer.js';
 
-export class Scene extends CanvasObject {
+export class CanvasScene extends CanvasObject {
   #layers = new Map();
 
   constructor(context, layers = [], options = {}) {
