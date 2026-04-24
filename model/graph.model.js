@@ -341,10 +341,26 @@ class Graph extends Collection {
           if (remote) neighbors = [remote];
         }
 
-        // let cnt = 0
+        let cnt = 0;
         for (const [, neighbor] of neighbors) {
           // cnt++
           queue.push([...path, neighbor]);
+
+          cnt++;
+
+          setTimeout(() => {
+            console.log('highlighting neighbor', neighbor.address);
+            // const propKey = dir !== nDir ? 'highlight' : 'highlight';
+            neighbor.update({
+              ['highlight']: true
+            });
+
+            setTimeout(() => {
+              neighbor.update({
+                ['highlight']: false
+              });
+            }, 3000);
+          }, 0 + (100 * cnt));
 
         }
       }
@@ -606,10 +622,20 @@ const getGraph = () => {
 
 export const getTraversal = () => {
   if (!graph) {
-    getGraph()
+    getGraph();
   }
 
-  return graph.traversePoints.bind(graph)
+  return (startPoint = graph.startNode?.point, getGoalPoint = () => graph.goalNode?.point) => {
+    const startNode = graph.getNodeAtPoint(startPoint);
+
+    return graph.traversePoints(
+      startNode,
+      () => {
+        const goalPoint = getGoalPoint?.();
+        return goalPoint ? graph.getNodeAtPoint(goalPoint) : null;
+      }
+    );
+  };
 };
 
 export default getGraph;

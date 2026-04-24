@@ -9,6 +9,6 @@ import {
 
 export const ModelRegistry = new Map([
   [ModelTypes.ACTOR, ActorModel],
-  [ModelTypes.NODE, GraphNodeModel],
   [ModelTypes.TELEPORTER, TeleporterModel],
+  [ModelTypes.NODE, GraphNodeModel],
 ]);

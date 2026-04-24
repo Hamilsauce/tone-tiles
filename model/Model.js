@@ -22,7 +22,6 @@ export class Model {
     this.#type = type ?? properties?.type ?? null;
     this.#properties = { ...properties };
     this.#emit = emitCallback;
-    this.update();
   }
 
   get id() { return this.#id; }
@@ -56,7 +55,7 @@ export class Model {
     }
 
     // instantiate event or push raw data to stream?
-    this.#emit({
+    this.#emit?.({
       type: `${this.#type}:update`,
       id: this.id,
       data: patch,

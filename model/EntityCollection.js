@@ -70,20 +70,20 @@ export class EntityCollection extends Collection {
   #normalizeEntityOptions(type, options = {}) {
     const typeName = options.type ?? options.properties?.type ?? ENTITY_TYPE_NAMES.get(type) ?? 'entity';
     const point = options.point ?? options.properties?.point ?? { x: 0, y: 0 };
+    const properties = { ...(options.properties ?? {}) };
+    delete properties.point;
     const id = options.id ?? options.properties?.id ?? createEntityId(typeName);
-    const properties = {
-      ...(options.properties ?? {}),
-      id,
-      type: typeName,
-      point,
-    };
 
     return {
       ...options,
       id,
       type: typeName,
       point,
-      properties,
+      properties: {
+        ...properties,
+        id,
+        type: typeName,
+      },
     };
   }
 }

@@ -13,6 +13,8 @@ export class SpatialModel extends Model {
     super({ ...rest });
 
     this.#point = Point.from(point);
+
+    this.toJSON = this.toJSON.bind(this);
   }
 
   // --- getters ---
@@ -40,10 +42,6 @@ export class SpatialModel extends Model {
     }
 
     this.#point = normalized;
-    this.properties.point = normalized;
-
-    if ('x' in this.properties) this.properties.x = normalized.x;
-    if ('y' in this.properties) this.properties.y = normalized.y;
 
     return {
       prevPoint: prev,
@@ -84,5 +82,12 @@ export class SpatialModel extends Model {
   // optional but useful
   setXY(x, y, meta) {
     this.setPoint(new Point(x, y), meta);
+  }
+
+  toJSON() {
+    return {
+      ...super.toJSON(),
+      point: this.point,
+    };
   }
 }

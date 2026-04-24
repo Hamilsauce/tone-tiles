@@ -32,7 +32,7 @@ export const TileTypes = TILE_TYPE_INDEX.reduce((acc, curr) => {
   return { ...acc, [key]: curr };
 }, {});
 
-const DETAULT_TILE_DATA = {
+const DEFAULT_TILE_DATA = {
 	type: 'tile',
 	id: null,
 	tileType: null,
@@ -53,7 +53,7 @@ const DETAULT_TILE_DATA = {
 
 const createNodeData = (overrides = {}) => {
 	return {
-		...DETAULT_TILE_DATA,
+		...DEFAULT_TILE_DATA,
 		...overrides,
 	};
 };

@@ -2,9 +2,13 @@ import { CanvasPoint } from '../../canvas/CanvasPoint.js';
 import { NodeUpdated } from '../actions/node.actions.js';
 
 const normalizeNodeSource = (nodeOrSnapshot = {}) => {
-  const source = typeof nodeOrSnapshot?.data === 'function' ?
+  const rawSource = typeof nodeOrSnapshot?.data === 'function' ?
     nodeOrSnapshot.data() :
     nodeOrSnapshot;
+  const source = {
+    ...(rawSource.properties ?? {}),
+    ...rawSource,
+  };
 
   const point = CanvasPoint.from(source.point ?? {
     x: source.x ?? 0,
@@ -37,7 +41,10 @@ export const projectNodePatchToRenderPatch = (nodeUpdate = {}) => {
       data: nodeUpdate.data ?? nodeUpdate,
     });
 
-  const { properties, ...data } = action.data ?? {};
+  const data = {
+    ...(action.data?.properties ?? {}),
+    ...(action.data ?? {}),
+  };
   const hasSpatialData = data.point || data.x !== undefined || data.y !== undefined;
   const model = hasSpatialData ?
     projectNodeToTileModel({
