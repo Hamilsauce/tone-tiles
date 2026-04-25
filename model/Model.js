@@ -14,7 +14,7 @@ export class Model {
   constructor(options = DefaultModelOptions) {
     const { id, type, properties, emitCallback } = options;
 
-    if ([id, type, emitCallback].includes(undefined)) {
+    if ([id, type, emitCallback, properties].includes(undefined)) {
       throw new Error(`Model requires id, type, and emitCallback: ${JSON.stringify(options)}`);
     }
 

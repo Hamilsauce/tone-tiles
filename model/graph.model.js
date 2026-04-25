@@ -1,6 +1,6 @@
 import ham from 'ham';
 import { EventEmitter } from 'https://hamilsauce.github.io/hamhelper/event-emitter.js';
-import { Point } from '../core/Point.js';
+import { Point } from '../core/spatial/Point.js';
 import { Collection } from '../model/Collection.js';
 import { ModelTypes } from '../core/types/model.types.js';
 

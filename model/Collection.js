@@ -25,6 +25,10 @@ export class Collection {
       emitCallback: this.#createEmitter(),
     });
 
+    if (type !== 'node') {
+      console.warn('model created', type);
+    }
+
     this.add(model);
     return model;
   }
@@ -74,6 +78,7 @@ export class Collection {
   connect(eventType = null) {
     return this.#output$.asObservable()
       .pipe(
+        tap(event => console.log(`[Collection] event: ${event.type}`, event)),
         filter(({ type }) => eventType ? type.includes(eventType) : true),
         // map(selectorFn),
         distinctUntilChanged( /* TODO Put something good here */),

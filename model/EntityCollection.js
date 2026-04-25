@@ -35,7 +35,7 @@ export class EntityCollection extends Collection {
   createEntity(type, options = {}) {
     const entity = super.create(type, this.#normalizeEntityOptions(type, options));
 
-    this.emit({
+    super.emit({
       type: 'entity:create',
       id: entity.id,
       data: entity.data(),

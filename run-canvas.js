@@ -86,7 +86,6 @@ export const runCanvas = async (mapId) => {
   let svgCanvas;
   let sceneObj;
   let tileLayer;
-  let objectLayerObj;
   let objectLayer;
   let selectionBox;
   let contextMenu;
@@ -107,9 +106,8 @@ export const runCanvas = async (mapId) => {
   svgCanvas = new SVGCanvas(canvasEl);
   sceneObj = svgCanvas.scene;
   tileLayer = sceneObj.getLayer('tile');
-  objectLayerObj = sceneObj.getLayer('object');
-  objectLayer = objectLayerObj.dom;
-  selectionBox = getTileSelector(objectLayer);
+  objectLayer = sceneObj.getLayer('object');
+  selectionBox = getTileSelector(objectLayer.dom);
 
   let isSelectingLinkTile = false;
   let selectedTileBeingLinked = null;
@@ -145,13 +143,14 @@ export const runCanvas = async (mapId) => {
 
   contextMenu = contextMenu ?? new ContextMenu(svgCanvas);
   contextMenu.disableItem('copy');
-  objectLayerObj.add(contextMenu ?? new ContextMenu(svgCanvas)).dom;
+  objectLayer.add(contextMenu ?? new ContextMenu(svgCanvas)).dom;
 
   if (entityCollection.has('actor1')) {
     entityCollection.remove('actor1');
   }
 
   const actor1Model = entityCollection.createActor({
+    type: 'actor',
     id: 'actor1',
     properties: {
       moving: false,
@@ -160,7 +159,7 @@ export const runCanvas = async (mapId) => {
     },
   });
 
-  const darkSun = objectLayerObj.add({
+  const darkSun = objectLayer.add({
     id: 'dark1',
     type: 'dark-sun',
     model: {},
@@ -169,31 +168,31 @@ export const runCanvas = async (mapId) => {
       { type: 'rotate', values: [0, 0.5, 0.5], position: 1 },
       { type: 'scale', values: [1, 1], position: 2 },
     ],
-  })
-  const actor1 = objectLayerObj.add({
-    id: actor1Model.id,
-    type: 'actor',
-    model: actor1Model.data(),
-    transforms: [
-      { type: 'translate', values: [0, 0], position: 0 },
-      { type: 'rotate', values: [0, 0.5, 0.5], position: 1 },
-      { type: 'scale', values: [1, 1], position: 2 },
-    ],
-  })
-  .configure({
-    model: actor1Model,
   });
+  // const actor1 = objectLayer.add({
+  //   id: actor1Model.id,
+  //   type: 'actor',
+  //   model: actor1Model.data(),
+  //   transforms: [
+  //     { type: 'translate', values: [0, 0], position: 0 },
+  //     { type: 'rotate', values: [0, 0.5, 0.5], position: 1 },
+  //     { type: 'scale', values: [1, 1], position: 2 },
+  //   ],
+  // })
+    // .configure({
+    //   model: actor1Model,
+    // });
 
-  actor1Model
-    .bindWorld({
-      getStartPoint: () => graphModel.startNode?.point,
-      getPointState: (point) => {
-        const node = graphModel.getNodeAtPoint(point);
-        return node ? { ...node.properties, point: node.point, id: node.id, isTraversable: node.isTraversable } : null;
-      },
-      traversePoints: graphModel.traversePoints.bind(graphModel),
-    })
-    .bindLoop(loopEngine.addRoutine.bind(loopEngine));
+  // actor1Model;
+  // .bindWorld({
+  //   getStartPoint: () => graphModel.startNode?.point,
+  //   getPointState: (point) => {
+  //     const node = graphModel.getNodeAtPoint(point);
+  //     return node ? { ...node.properties, point: node.point, id: node.id, isTraversable: node.isTraversable } : null;
+  //   },
+  //   traversePoints: graphModel.traversePoints.bind(graphModel),
+  // })
+  // .bindLoop(loopEngine.addRoutine.bind(loopEngine));
 
   selectMapById = selectMapById ?? await initMapControls(graphModel, svgCanvas);
 
@@ -201,27 +200,46 @@ export const runCanvas = async (mapId) => {
 
   //! start binding
 
-  const unsubscribeMapLoad = graphModel.connect('map:load')
-    .subscribe(e => {
-      const { width, height, nodes, startNode } = e.data;
-      selectionBox.setBounds({
-        minX: 0,
-        minY: 0,
-        maxX: graphModel.width,
-        maxY: graphModel.height
-      });
-
-      svgCanvas.scene.getLayer('tile').loadTileSet({ width, height, nodes, startNode });
-      actor1Model.resetTraversal(startNode?.point);
-      // actor1.update({
-      //   point: startNode.point,
-      //   moving: false,
-      //   teleporting: false,
-      // });
-      graphModel.moveObject(actor1Model.id, startNode.point);
-      svgCanvas.layers.surface.setAttribute('transform', `translate(${Math.floor((graphModel.width + 2) / 2) - 0.3}, ${Math.floor((graphModel.height + 2) / 2) - 0.25})`);
-      svgCanvas.layers.surface.querySelector('#surface-map-name').setAttribute('transform', `translate(0, ${-((graphModel.height / 2)) - 3}) scale(0.4)`);
+  const unsubscribeEntityCreate = entityCollection.connect('entity:create').subscribe(e => {
+    console.warn('entity create event', e);
+    objectLayer.add({
+      id: e.id,
+      type: 'actor',
+      model: e.properties,
+      transforms: [
+        { type: 'translate', values: [0, 0], position: 0 },
+        { type: 'rotate', values: [0, 0.5, 0.5], position: 1 },
+        { type: 'scale', values: [1, 1], position: 2 },
+      ],
     });
+  });
+
+  const unsubscribeMapLoad = graphModel.connect('map:load').subscribe(e => {
+    const { width, height, nodes, startNode } = e.data;
+    selectionBox.setBounds({
+      minX: 0,
+      minY: 0,
+      maxX: graphModel.width,
+      maxY: graphModel.height
+    });
+
+    svgCanvas.scene.getLayer('tile').loadTileSet({ width, height, nodes, startNode });
+    actor1Model.resetTraversal(startNode?.point);
+    // actor1.update({
+    //   point: startNode.point,
+    //   moving: false,
+    //   teleporting: false,
+    // });
+    entityCollection.get('actor1').update({
+      point: startNode.point,
+      moving: false,
+      teleporting: false,
+    });
+
+    graphModel.moveObject(actor1Model.id, startNode.point);
+    svgCanvas.layers.surface.setAttribute('transform', `translate(${Math.floor((graphModel.width + 2) / 2) - 0.3}, ${Math.floor((graphModel.height + 2) / 2) - 0.25})`);
+    svgCanvas.layers.surface.querySelector('#surface-map-name').setAttribute('transform', `translate(0, ${-((graphModel.height / 2)) - 3}) scale(0.4)`);
+  });
 
   const unsubscribeNodeUpdates = graphModel.connect('node:update')
     .pipe(
@@ -252,7 +270,7 @@ export const runCanvas = async (mapId) => {
     .pipe(filter(({ id }) => id === actor1Model.id))
     .subscribe((event) => {
       if (event.type === 'actor:update') {
-        const currRotate = actor1.transforms.rotation
+        const currRotate = actor1.transforms.rotation;
         // console.warn('actor update event', { event, currRotate });
         actor1.update(event.data);
 
@@ -281,7 +299,7 @@ export const runCanvas = async (mapId) => {
 
         graphModel
           .findAll({ active: true })
-          .forEach(_ => _.update({ active: false }))
+          .forEach(_ => _.update({ active: false }));
 
 
       }
@@ -359,7 +377,7 @@ export const runCanvas = async (mapId) => {
   loopEngine.start();
 
   const blurContextMenu = (e) => {
-    const edgeLines = [...objectLayer.querySelectorAll('.edge-line')];
+    const edgeLines = [...objectLayer.dom.querySelectorAll('.edge-line')];
     console.warn('edgeLines', edgeLines);
     edgeLines.forEach(el => {
       el.remove();
@@ -410,7 +428,7 @@ export const runCanvas = async (mapId) => {
 
   const handleEditTileClick = async (targetNode) => {
     if (!targetNode) {
-      console.warn('handleEditTileClick !targetnode', );
+      console.warn('handleEditTileClick !targetnode',);
       blurContextMenu();
       return;
     }
@@ -422,7 +440,7 @@ export const runCanvas = async (mapId) => {
         // TODO: Make lines into Canvas Object
         const line = createEdgeLine(targetNode, target);
 
-        objectLayer.append(line);
+        objectLayer.dom.append(line);
 
         line.addEventListener('pointermove', e => {
           e.stopPropagation();

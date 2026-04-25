@@ -46,8 +46,9 @@ export class Point {
   // --- static helpers ---
 
   static from(obj) {
-    if (obj instanceof Point) return obj;
-    return new Point(obj.x, obj.y);
+    if (Point.isPoint(obj)) return obj;
+    if (Point.isPointLike(obj)) return new Point(obj.x, obj.y);
+    return new Point();
   }
 
   static isPoint(obj) {
