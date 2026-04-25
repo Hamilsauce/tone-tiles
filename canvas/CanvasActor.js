@@ -74,7 +74,7 @@ export class CanvasActor extends CanvasObject {
   }
 
   get currentPoint() {
-    return this.#entityModel?.currentPoint ?? this.model.point;
+    return this.#entityModel?.currentPoint ?? this.point;
   }
 
   get goalNode() {

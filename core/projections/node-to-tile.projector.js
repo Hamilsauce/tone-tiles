@@ -45,7 +45,10 @@ export const projectNodePatchToRenderPatch = (nodeUpdate = {}) => {
     ...(action.data?.properties ?? {}),
     ...(action.data ?? {}),
   };
-  const hasSpatialData = data.point || data.x !== undefined || data.y !== undefined;
+  const hasSpatialData =
+    (data.point?.x != null && data.point?.y != null) ||
+    data.x != null ||
+    data.y != null;
   const model = hasSpatialData ?
     projectNodeToTileModel({
       id: action.id,
