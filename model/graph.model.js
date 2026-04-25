@@ -342,15 +342,13 @@ class Graph extends Collection {
         }
 
         let cnt = 0;
+
         for (const [, neighbor] of neighbors) {
-          // cnt++
           queue.push([...path, neighbor]);
 
           cnt++;
 
           setTimeout(() => {
-            console.log('highlighting neighbor', neighbor.address);
-            // const propKey = dir !== nDir ? 'highlight' : 'highlight';
             neighbor.update({
               ['highlight']: true
             });
@@ -359,7 +357,7 @@ class Graph extends Collection {
               neighbor.update({
                 ['highlight']: false
               });
-            }, 3000);
+            }, 2000);
           }, 0 + (100 * cnt));
 
         }
