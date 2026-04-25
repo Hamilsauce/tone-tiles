@@ -186,10 +186,12 @@ export const runCanvas = async (mapId) => {
 
   actor1Model
     .bindWorld({
-      getStartNode: () => graphModel.startNode,
-      getNodeAtPoint: graphModel.getNodeAtPoint.bind(graphModel),
+      getStartPoint: () => graphModel.startNode?.point,
+      getPointState: (point) => {
+        const node = graphModel.getNodeAtPoint(point);
+        return node ? { ...node.properties, point: node.point, id: node.id, isTraversable: node.isTraversable } : null;
+      },
       traversePoints: graphModel.traversePoints.bind(graphModel),
-      moveObject: graphModel.moveObject.bind(graphModel),
     })
     .bindLoop(loopEngine.addRoutine.bind(loopEngine));
 
@@ -210,13 +212,13 @@ export const runCanvas = async (mapId) => {
       });
 
       svgCanvas.scene.getLayer('tile').loadTileSet({ width, height, nodes, startNode });
-      actor1Model.resetTraversal(startNode);
+      actor1Model.resetTraversal(startNode?.point);
       // actor1.update({
       //   point: startNode.point,
       //   moving: false,
       //   teleporting: false,
       // });
-      actor1Model.requestMoveCommit(startNode.point);
+      graphModel.moveObject(actor1Model.id, startNode.point);
       svgCanvas.layers.surface.setAttribute('transform', `translate(${Math.floor((graphModel.width + 2) / 2) - 0.3}, ${Math.floor((graphModel.height + 2) / 2) - 0.25})`);
       svgCanvas.layers.surface.querySelector('#surface-map-name').setAttribute('transform', `translate(0, ${-((graphModel.height / 2)) - 3}) scale(0.4)`);
     });
@@ -313,7 +315,7 @@ export const runCanvas = async (mapId) => {
       // need to separate Actor Model from canvas object
       // have actor1 model emit this, and then
       // console.warn('actor move event', { id, point, prevPoint });
-      actor1Model.requestMoveCommit(point, prevPoint);
+      graphModel.moveObject(actor1Model.id, point, prevPoint);
       const dir = getDirectionFromPoints(point, prevPoint);
       const node = graphModel.getNodeAtPoint(point);
       let _neighbors = [...graphModel.getNeighbors(node).entries()];
@@ -402,7 +404,7 @@ export const runCanvas = async (mapId) => {
       return;
     }
 
-    actor1Model.travelTo(goalNode);
+    actor1Model.travelTo(goalNode.point);
   };
 
 
