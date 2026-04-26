@@ -13,7 +13,8 @@ import {
 
 const DefaultTraverserOptions = {
   point: { x: 0, y: 0 },
-  moving: false,
+  isMoving: false,
+  isTraversing: false,
   teleporting: false,
   idleReason: null,
   goalPoint: null,
@@ -30,14 +31,14 @@ export class TraverserModel extends SpatialModel {
   #dtSum = 0;
   #stepInterval = 0.1;
   #isStepping = false;
-  #step = null;
+  // #step = null;
 
   constructor(options = DefaultTraverserOptions) {
     super(options);
     createTraversal = getTraversal();
-    this.#traversalGen = getTraversal(this.point, () => this.goalPoint);
+    this.#traversalGen = createTraversal(this.point, () => this.goalPoint);
     this.#stepInterval = options.stepInterval ?? 0.1;
-    this.#step = this.step.bind(this);
+    this.step = this.#step.bind(this);
     this.stop = this.#stopTraversal.bind(this);
     this.resetTraversal = this.#resetTraversal.bind(this);
   }
@@ -52,6 +53,14 @@ export class TraverserModel extends SpatialModel {
 
   get isMoving() {
     return !!this.properties.isMoving;
+  }
+
+  get isTraversing() {
+    return !!this.properties.isTraversing;
+  }
+
+  get currentPoint() {
+    return this.point;
   }
 
   get idleReason() {
@@ -85,7 +94,7 @@ export class TraverserModel extends SpatialModel {
   travelTo(goalPoint) {
     const goal = toPoint(goalPoint);
 
-    this.#setGoalPoint(goal);
+    this.setGoalPoint(goal);
     this.#idleReason = null;
     this.update({ idleReason: null });
 
@@ -96,14 +105,14 @@ export class TraverserModel extends SpatialModel {
     return true;
   }
 
-  #setGoalPoint(goalPoint = null) {
+  setGoalPoint(goalPoint = null) {
     this.#goalPoint = goalPoint ? Point.from(goalPoint) : null;
     this.properties.goalPoint = this.#goalPoint;
     return this;
   }
 
   #clearGoalPoint() {
-    return this.#setGoalPoint(null);
+    return this.setGoalPoint(null);
   }
 
   #setIdleReason(reason = null) {
@@ -164,7 +173,7 @@ export class TraverserModel extends SpatialModel {
     return this;
   }
 
-  async step(dt = 0) {
+  async #step(dt = 0) {
     if (!this.goalPoint) {
       return;
     }
@@ -209,9 +218,9 @@ export class TraverserModel extends SpatialModel {
         this.#handleTraversalIdle('no-point');
         return;
       }
-
       if (this.currentPoint?.equals?.(nextPoint)) {
-        this.#handleTraversalIdle('same-point');
+        // The graph traversal yields the current/start point first.
+        // Consume that no-op step without translating it into an idle lifecycle event.
         return;
       }
 

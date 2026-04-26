@@ -33,6 +33,9 @@ export class ActorModel extends TraverserModel {
     });
   }
 
+  onGoal() {
+    console.warn('actor goal reached', { id: this.id, point: this.point, goalPoint: this.goalPoint });
+  }
   emitActorTravel(payload = {}) {
     return this.#emitActorAction(ActorTravel, {
       ...payload,

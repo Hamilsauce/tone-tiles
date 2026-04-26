@@ -44,10 +44,15 @@ export class EntityCollection extends Collection {
     return entity;
   }
 
+
   createActor(options = {}) {
     return this.createEntity(ModelTypes.ACTOR, options);
   }
 
+  createDarkSun(options = {}) {
+    console.warn('creating dark sun with options', options);
+    return this.createEntity(ModelTypes.DARKSUN, options);
+  }
   createTeleporter(options = {}) {
     return this.createEntity(ModelTypes.TELEPORTER, options);
   }

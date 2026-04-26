@@ -46,7 +46,6 @@ const angles = [0, -45, 0, 45]
 
 
 export class CanvasActor extends CanvasObject {
-  #entityModel = null;
   #ticker = 0;
   #travelDir = 'down';
   #currentRotation = 0;
@@ -65,33 +64,13 @@ export class CanvasActor extends CanvasObject {
     this.phase = 0;
   }
 
-  get entityModel() {
-    return this.#entityModel;
-  }
-
-  get currentNode() {
-    return this.#entityModel?.currentNode ?? null;
-  }
-
-  get currentPoint() {
-    return this.#entityModel?.currentPoint ?? this.point;
-  }
-
-  get goalNode() {
-    return this.#entityModel?.goalNode ?? null;
-  }
-
-  get goalPoint() {
-    return this.#entityModel?.goalPoint ?? null;
-  }
-
   update(patch) {
-    const prev = this.point;
+    const prev = { x: this.x, y: this.y };
     const prevDir = this.#travelDir;
 
     super.update(patch);
 
-    const curr = this.point;
+    const curr = { x: this.x, y: this.y };
 
     this.#travelDir = getDirectionFromPoints(prev, curr) ?? this.#travelDir ?? 'down';
 
@@ -112,25 +91,5 @@ export class CanvasActor extends CanvasObject {
     // this.rotateTo(rotation + angle, 0.5, 0.5);
 
     this.rotateTo(this.#currentRotation + angle, 0.5, 0.5);
-  }
-
-  configure({ model } = {}) {
-    if (model) {
-      this.#entityModel = model;
-    }
-
-    return this;
-  }
-
-  resetTraversal(startNode) {
-    return this.#entityModel?.resetTraversal(startNode);
-  }
-
-  travelTo(goalNode) {
-    return this.#entityModel?.travelTo(goalNode);
-  }
-
-  stop() {
-    return this.#entityModel?.stop();
   }
 }

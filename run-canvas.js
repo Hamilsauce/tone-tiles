@@ -87,6 +87,7 @@ export const runCanvas = async (mapId) => {
   let sceneObj;
   let tileLayer;
   let objectLayer;
+  let actor1;
   let selectionBox;
   let contextMenu;
   let selectMapById;
@@ -100,7 +101,7 @@ export const runCanvas = async (mapId) => {
   const { isRunning, setCurrentNode } = useAppState();
 
   graphModel = getGraphModel();
-  entityCollection = new EntityCollection(); // getEntities();
+  entityCollection = new EntityCollection();
 
   canvasEl = document.querySelector('#canvas');
   svgCanvas = new SVGCanvas(canvasEl);
@@ -149,7 +150,29 @@ export const runCanvas = async (mapId) => {
     entityCollection.remove('actor1');
   }
 
-  const actor1Model = entityCollection.createActor({
+  const unsubscribeEntityCreate = entityCollection.connect('entity:create').subscribe(e => {
+    console.warn('entity create event', e);
+    const canvasEntity = objectLayer.add({
+      id: e.id,
+      type: e.data?.type ?? 'actor',
+      model: {
+        ...e.data,
+        x: e.data?.point?.x ?? e.data?.x ?? 0,
+        y: e.data?.point?.y ?? e.data?.y ?? 0,
+      },
+      transforms: [
+        { type: 'translate', values: [0, 0], position: 0 },
+        { type: 'rotate', values: [0, 0.5, 0.5], position: 1 },
+        { type: 'scale', values: [1, 1], position: 2 },
+      ],
+    });
+
+    if (e.id === 'actor1') {
+      actor1 = canvasEntity;
+    }
+  });
+
+  entityCollection.createActor({
     type: 'actor',
     id: 'actor1',
     properties: {
@@ -158,6 +181,27 @@ export const runCanvas = async (mapId) => {
       point: { x: 0, y: 0 },
     },
   });
+  entityCollection.createDarkSun({
+    type: 'dark-sun',
+    id: 'darksun1',
+    properties: {
+      moving: false,
+      teleporting: false,
+      point: { x: 0, y: 0 },
+    },
+  });
+
+  // entityCollection.createEntity('dark-sun', {
+  //   type: 'dark-sun',
+  //   id: 'darksun1',
+  //   properties: {
+  //     moving: false,
+  //     point: { x: 0, y: 0 },
+  //   },
+  // });
+
+  loopEngine.addRoutine(entityCollection.get('actor1').step);
+  loopEngine.addRoutine(entityCollection.get('darksun1').step);
 
   const darkSun = objectLayer.add({
     id: 'dark1',
@@ -169,50 +213,12 @@ export const runCanvas = async (mapId) => {
       { type: 'scale', values: [1, 1], position: 2 },
     ],
   });
-  // const actor1 = objectLayer.add({
-  //   id: actor1Model.id,
-  //   type: 'actor',
-  //   model: actor1Model.data(),
-  //   transforms: [
-  //     { type: 'translate', values: [0, 0], position: 0 },
-  //     { type: 'rotate', values: [0, 0.5, 0.5], position: 1 },
-  //     { type: 'scale', values: [1, 1], position: 2 },
-  //   ],
-  // })
-    // .configure({
-    //   model: actor1Model,
-    // });
-
-  // actor1Model;
-  // .bindWorld({
-  //   getStartPoint: () => graphModel.startNode?.point,
-  //   getPointState: (point) => {
-  //     const node = graphModel.getNodeAtPoint(point);
-  //     return node ? { ...node.properties, point: node.point, id: node.id, isTraversable: node.isTraversable } : null;
-  //   },
-  //   traversePoints: graphModel.traversePoints.bind(graphModel),
-  // })
-  // .bindLoop(loopEngine.addRoutine.bind(loopEngine));
 
   selectMapById = selectMapById ?? await initMapControls(graphModel, svgCanvas);
 
   svgCanvas.setCanvasDimensions({ width: innerWidth, height: innerHeight });
 
   //! start binding
-
-  const unsubscribeEntityCreate = entityCollection.connect('entity:create').subscribe(e => {
-    console.warn('entity create event', e);
-    objectLayer.add({
-      id: e.id,
-      type: 'actor',
-      model: e.properties,
-      transforms: [
-        { type: 'translate', values: [0, 0], position: 0 },
-        { type: 'rotate', values: [0, 0.5, 0.5], position: 1 },
-        { type: 'scale', values: [1, 1], position: 2 },
-      ],
-    });
-  });
 
   const unsubscribeMapLoad = graphModel.connect('map:load').subscribe(e => {
     const { width, height, nodes, startNode } = e.data;
@@ -224,13 +230,10 @@ export const runCanvas = async (mapId) => {
     });
 
     svgCanvas.scene.getLayer('tile').loadTileSet({ width, height, nodes, startNode });
+
+    const actor1Model = entityCollection.get('actor1');
     actor1Model.resetTraversal(startNode?.point);
-    // actor1.update({
-    //   point: startNode.point,
-    //   moving: false,
-    //   teleporting: false,
-    // });
-    entityCollection.get('actor1').update({
+    actor1Model.update({
       point: startNode.point,
       moving: false,
       teleporting: false,
@@ -249,7 +252,6 @@ export const runCanvas = async (mapId) => {
       })
     ).subscribe();
 
-
   const unwatch = watch(mapStore.currentMap, (newMap, oldMap) => {
     if (!newMap.id) return;
 
@@ -267,53 +269,47 @@ export const runCanvas = async (mapId) => {
   });
 
   const unsubscribeActorRender = entityCollection.connect('actor')
-    .pipe(filter(({ id }) => id === actor1Model.id))
+    .pipe(filter(({ id }) => id === 'actor1'))
     .subscribe((event) => {
-      if (event.type === 'actor:update') {
-        const currRotate = actor1.transforms.rotation;
-        // console.warn('actor update event', { event, currRotate });
-        actor1.update(event.data);
+      const actor1Model = entityCollection.get('actor1');
 
-        // if (event.data.moving === false) {
-        //   actor1.transforms.scaleTo(1);
-        // }
+      if (event.type === 'actor:update') {
+        if (!actor1) return;
+
+        const currRotate = actor1.transforms.rotation;
+        actor1.update({
+          ...event.data,
+          x: event.data?.point?.x ?? event.data?.x,
+          y: event.data?.point?.y ?? event.data?.y,
+        });
 
         return;
       }
-
       if (event.type === 'actor:move') {
-        actor1.update({ point: event.point });
-        // actor1.transforms.scaleTo(0.7);
+        if (!actor1) return;
+        actor1.update({ x: event.point.x, y: event.point.y });
         return;
       }
 
       if (event.type === 'actor:teleport') {
-        actor1.update({ point: event.point, teleporting: true });
+        if (!actor1) return;
+        actor1.update({ x: event.point.x, y: event.point.y, teleporting: true });
         return;
       }
 
       if (['actor:stop', 'actor:idle', 'actor:goal', 'actor:map-link'].includes(event.type)) {
-        actor1.update({ point: event.point ?? actor1Model.currentPoint });
-        // actor1.transforms.scaleTo(1);
-        // const node = graphModel.getNodeAtPoint(event.point);
+        if (!actor1) return;
+        const point = event.point ?? actor1Model.currentPoint;
+        actor1.update({ x: point.x, y: point.y });
 
         graphModel
           .findAll({ active: true })
           .forEach(_ => _.update({ active: false }));
-
-
       }
     });
 
-  const unsubscribeActorMapLink = entityCollection.connect('actor:map-link')
-    .pipe(filter(({ id }) => id === actor1Model.id))
-    .subscribe(async ({ linkedMapId }) => {
-      // console.warn('map link event', { linkedMapId });
-      await selectMapById(linkedMapId);
-    });
-
   const unsubscribeActorTravel = entityCollection.connect('actor:travel')
-    .pipe(filter(({ id }) => id === actor1Model.id))
+    .pipe(filter(({ id }) => id === 'actor1'))
     .subscribe(async ({ point, goalPoint }) => {
 
       const curr = graphModel.getNodeAtPoint(point);
@@ -327,15 +323,24 @@ export const runCanvas = async (mapId) => {
 
   let neighborIndex = 0;
 
-  const unsubscribeActorMove = entityCollection.connect('actor:move')
-    .pipe(filter(({ id }) => id === actor1Model.id))
+  const unsubscribeActorMove = entityCollection.connect('traversal:move')
     .subscribe(async ({ id, point, prevPoint }) => {
       // need to separate Actor Model from canvas object
       // have actor1 model emit this, and then
-      // console.warn('actor move event', { id, point, prevPoint });
-      graphModel.moveObject(actor1Model.id, point, prevPoint);
+      console.warn('actor move event', { id, point, prevPoint });
+      graphModel.moveObject(id, point, prevPoint);
       const dir = getDirectionFromPoints(point, prevPoint);
       const node = graphModel.getNodeAtPoint(point);
+      const entity = entityCollection.get(id);
+
+      if (node.linkedMap) {
+        const { linkedMap } = node;
+        await selectMapById(linkedMap);
+        entity.stop();
+      }
+
+      graphModel.moveObject(id, point, prevPoint);
+
       let _neighbors = [...graphModel.getNeighbors(node).entries()];
       let n1 = _neighbors.slice(0, neighborIndex);
       let n2 = _neighbors.slice(neighborIndex);
@@ -343,13 +348,10 @@ export const runCanvas = async (mapId) => {
       const neighbors = [...n1, ...n2];
       neighborIndex = neighborIndex >= 3 ? 0 : neighborIndex + 1;
 
-      // console.warn('dir', dir);
       setCurrentNode(node.data());
       audioNote1(node);
 
-      if (dir === 'up' || dir === 'left') {
-        // neighbors.reverse();
-      }
+      objectLayer.get(id)?.update({ point: node.point });
 
       let cnt = 0;
 
@@ -417,12 +419,12 @@ export const runCanvas = async (mapId) => {
     if (!goalNode || !goalNode.isTraversable) {
       console.warn('NO GOAL OR GOAL NOT TRAVERSABLE. Early return');
       console.warn(goalNode?.id, goalNode?.isTraversable);
-      actor1Model.stop();
+      entityCollection.get('actor1').stop();
 
       return;
     }
 
-    actor1Model.travelTo(goalNode.point);
+    entityCollection.get('actor1').travelTo(goalNode.point);
   };
 
 
@@ -460,7 +462,6 @@ export const runCanvas = async (mapId) => {
 
           const newPoint = domPoint(line.parentElement, e.clientX, e.clientY);
           const node = graphModel.getNodeAtPoint({ x: Math.floor(newPoint.x), y: Math.floor(newPoint.y) });
-          // node.update({ active: true })
           line.firstElementChild.setAttribute('x2', node.x + 0.5);
           line.firstElementChild.setAttribute('y2', node.y + 0.5);
 
@@ -499,7 +500,8 @@ export const runCanvas = async (mapId) => {
   };
 
   svgCanvas.addEventListener('surface:click', (e) => {
-    actor1Model.stop();
+    entityCollection.get('actor1').stop();
+    blurContextMenu();
   });
 
   svgCanvas.addEventListener('tile:click', (e) => {
@@ -555,11 +557,9 @@ export const runCanvas = async (mapId) => {
 
 
   return () => {
-    unsubscribeActorMapLink();
     unsubscribeActorRender();
     unsubscribeSelectionBox();
-    actor1Model.destroy();
-    actor1.destroy();
+    entityCollection.get('actor1')?.destroy();
     loopEngine.destroy();
     unsubscribeMapLoad();
     unsubscribeNodeUpdates();
@@ -568,7 +568,7 @@ export const runCanvas = async (mapId) => {
     unwatch();
     svgCanvas.destroy();
     svgCanvas = null;
-    entityCollection.remove(actor1Model.id);
+    entityCollection.remove('actor1');
     graphModel.clear();
     window.graph = undefined;
     console.warn('RUNCANVAS : CANCEL');

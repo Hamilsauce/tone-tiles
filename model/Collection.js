@@ -1,8 +1,8 @@
-import { Model } from '../model/Model.js';
 import { ModelRegistry } from '../core/types/model-registry.js';
 import { rxjs } from 'rxjs';
-const { fromEvent, operators, Subject } = rxjs;
-const { map, tap, filter, shareReplay, distinctUntilChanged } = operators;
+const { operators, Subject } = rxjs;
+const { filter, shareReplay, distinctUntilChanged } = operators;
+
 export class Collection {
   #models = new Map();
   #registry;
@@ -24,10 +24,6 @@ export class Collection {
       ...options,
       emitCallback: this.#createEmitter(),
     });
-
-    if (type !== 'node') {
-      console.warn('model created', type);
-    }
 
     this.add(model);
     return model;
@@ -66,7 +62,7 @@ export class Collection {
   }
 
   createModel(ModelClass, options) {
-    const model = new Model({
+    const model = new ModelClass({
       ...options,
       emitCallback: this.#createEmitter(),
     });
@@ -78,7 +74,6 @@ export class Collection {
   connect(eventType = null) {
     return this.#output$.asObservable()
       .pipe(
-        tap(event => console.log(`[Collection] event: ${event.type}`, event)),
         filter(({ type }) => eventType ? type.includes(eventType) : true),
         // map(selectorFn),
         distinctUntilChanged( /* TODO Put something good here */),
