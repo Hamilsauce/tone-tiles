@@ -60,8 +60,8 @@ class Graph extends Collection {
   #goalNode;
   #startNode;
   
-  constructor(map = []) {
-    super();
+  constructor(map = [], options = {}) {
+    super(options);
     
     if (map && map.length) {
       this.fromMap(map);
@@ -357,7 +357,7 @@ class Graph extends Collection {
           //   neighbor.update({
           //     ['highlight']: true
           //   });
-            
+          
           //   setTimeout(() => {
           //     neighbor.update({
           //       ['highlight']: false
@@ -615,15 +615,14 @@ class Graph extends Collection {
   }
 }
 
-
 let graph;
 
-const getGraph = () => {
+const getGraph = ({ loopEngine }) => {
   if (graph) {
     return graph;
   }
   
-  return graph = new Graph();
+  return graph = new Graph({ loopEngine });
 };
 
 export const getTraversal = () => {

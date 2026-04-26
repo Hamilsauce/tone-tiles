@@ -5,14 +5,17 @@ const { filter, tap, shareReplay, distinctUntilChanged } = operators;
 
 export class Collection {
   #models = new Map();
+  #routineUnsubs = new Map();
   #registry;
+  #loopEngine;
   #input$ = new Subject();
   #output$ = new Subject();
   
-  constructor({ registry = ModelRegistry } = {}) {
+  constructor({ registry = ModelRegistry, loopEngine } = {}) {
     this.#registry = registry;
+    this.#loopEngine = loopEngine;
     this.#wire();
-    this.subcnt = 0
+    this.subcnt = 0;
   }
   
   create(type, options) {
@@ -42,10 +45,18 @@ export class Collection {
   }
   
   add(model) {
+    if (model.step) {
+      this.#routineUnsubs.set(model.id, this.#loopEngine.addRoutine(model.step))
+    }
+    
     this.#models.set(model.id, model);
   }
   
   remove(id) {
+    if (this.#routineUnsubs.has(id)) {
+      this.#routineUnsubs.get(id)();
+    }
+    
     this.#models.delete(id);
   }
   

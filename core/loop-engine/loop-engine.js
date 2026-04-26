@@ -1,5 +1,8 @@
 import { useAppState } from '../../store/app.store.js';
 import { frameRate } from '../../lib/frame-rate.js';
+import { rxjs } from 'rxjs';
+const { Subject } = rxjs;
+const { shareReplay } = rxjs.operators;;
 
 export class AudioClockLoop {
 	#running = false;
@@ -10,6 +13,14 @@ export class AudioClockLoop {
 	
 	#routines = new Set();
 	#render;
+	#tick$ = new Subject();
+	
+	// tick$ = this.#tick$.asObservable();
+	// import { shareReplay } from 'rxjs/operators';
+	
+	tick$ = this.#tick$.pipe(
+		shareReplay(1)
+	);
 	
 	constructor({
 		audioContext = null,
@@ -62,7 +73,7 @@ export class AudioClockLoop {
 				this.#lastTime = now;
 				
 				dt = Math.min(Math.max(dt, 0), 0.1);
-				
+				this.#tick$.next({ dt, now });
 				this.appStore.setFrameRate(frameRate(dt * 1000));
 				// Clamp dt to avoid explosion after tab stalls
 				

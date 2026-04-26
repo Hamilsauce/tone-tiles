@@ -1,5 +1,6 @@
 import { getDirectionFromPoints } from './core/spatial/utils.js';
 import getGraphModel from './model/graph.model.js';
+import { SceneModel } from './model/index.js';
 import { EntityCollection } from './model/EntityCollection.js';
 import { SVGCanvas } from './canvas/SVGCanvas.js';
 import { getTileSelector } from 'https://hamilsauce.github.io/svg-range-selector/tile-selector.js';
@@ -11,9 +12,8 @@ import audioNote1 from './audio/fire-audio-note1.js';
 import { ContextMenu } from './canvas/ContextMenu.js';
 import { watch, toValue } from 'vue';
 import { useMapStore } from './store/map.store.js';
-import { rxjs } from 'rxjs';
 import { projectNodePatchToRenderPatch } from './core/projections/node-to-tile.projector.js';
-
+import { rxjs } from 'rxjs';
 const { operators } = rxjs;
 const { map, tap, filter } = operators;
 
@@ -82,6 +82,7 @@ const createEdgeLine = (pt1, pt2) => {
 export const runCanvas = async (mapId) => {
   let graphModel;
   let entityCollection;
+  let sceneModel;
   let canvasEl;
   let svgCanvas;
   let sceneObj;
@@ -91,17 +92,27 @@ export const runCanvas = async (mapId) => {
   let selectionBox;
   let contextMenu;
   let selectMapById;
+  
   const loopEngine = new LoopEngine({
     audioContext: audioEngine.ctx,
   });
   
   let mapStore = useMapStore();
-  
   mapId = mapId && mapId.value ? mapId.value : mapId;
   const { isRunning, setCurrentNode } = useAppState();
   
-  graphModel = getGraphModel();
-  entityCollection = new EntityCollection();
+  // TODO - Move into scene/init
+  graphModel = getGraphModel({ loopEngine });
+  entityCollection = new EntityCollection({ loopEngine });
+  
+  // will be init'd in run time when that happens
+  sceneModel = new SceneModel({
+    loopEngine,
+    inputs$: [
+      { name: 'graph', source$: graphModel.output$ },
+      { name: 'entity', source$: entityCollection.output$ },
+    ],
+  });
   
   canvasEl = document.querySelector('#canvas');
   svgCanvas = new SVGCanvas(canvasEl);
@@ -190,30 +201,6 @@ export const runCanvas = async (mapId) => {
       point: { x: 1, y: 0 },
     },
   });
-  
-  // entityCollection.createEntity('dark-sun', {
-  //   type: 'dark-sun',
-  //   id: 'darksun1',
-  //   properties: {
-  //     moving: false,
-  //     point: { x: 0, y: 0 },
-  //   },
-  // });
-  
-  loopEngine.addRoutine(entityCollection.get('actor1').step);
-  // loopEngine.addRoutine(entityCollection.get('darksun1').step);
-  
-  // const darkSun = objectLayer.add({
-  //   id: 'dark1',
-  //   type: 'dark-sun',
-  //   model: {},
-  //   transforms: [
-  //     { type: 'translate', values: [0, 0], position: 0 },
-  //     { type: 'rotate', values: [0, 0.5, 0.5], position: 1 },
-  //     { type: 'scale', values: [1, 1], position: 2 },
-  //   ],
-  // });
-  
   selectMapById = selectMapById ?? await initMapControls(graphModel, svgCanvas);
   
   svgCanvas.setCanvasDimensions({ width: innerWidth, height: innerHeight });
