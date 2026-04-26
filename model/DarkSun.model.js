@@ -57,7 +57,6 @@ export class DarkSunModel extends TraverserModel {
   stepWaypoint() {
     this.waypointIndex = (this.waypointIndex + 1) % this.#waypoints.length;
 
-    console.warn('stepping to next waypoint', { nextPoint: this.currentWaypoint });
     return this.currentWaypoint;
   }
 }

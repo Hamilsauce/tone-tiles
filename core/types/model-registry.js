@@ -12,5 +12,5 @@ export const ModelRegistry = new Map([
   [ModelTypes.ACTOR, ActorModel],
   [ModelTypes.TELEPORTER, TeleporterModel],
   [ModelTypes.NODE, GraphNodeModel],
-  [ModelTypes.DARK_SUN, DarkSunModel],
+  [ModelTypes.DARKSUN, DarkSunModel],
 ]);

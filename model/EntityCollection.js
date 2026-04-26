@@ -4,6 +4,7 @@ import { Collection } from '../model/Collection.js';
 
 const ENTITY_TYPE_NAMES = new Map([
   [ModelTypes.ACTOR, 'actor'],
+  [ModelTypes.DARKSUN, 'dark-sun'],
   [ModelTypes.TELEPORTER, 'teleporter'],
 ]);
 
@@ -51,7 +52,7 @@ export class EntityCollection extends Collection {
 
   createDarkSun(options = {}) {
     console.warn('creating dark sun with options', options);
-    return this.createEntity(ModelTypes.DARK_SUN, options);
+    return this.createEntity(ModelTypes.DARKSUN, options);
   }
   createTeleporter(options = {}) {
     return this.createEntity(ModelTypes.TELEPORTER, options);

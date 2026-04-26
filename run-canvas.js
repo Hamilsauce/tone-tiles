@@ -308,14 +308,11 @@ export const runCanvas = async (mapId) => {
       }
     });
 
-  const unsubscribeActorTravel = entityCollection.connect('actor:travel')
-    .pipe(filter(({ id }) => id === 'actor1'))
+  const unsubscribeActorTravel = entityCollection.connect('traversal:start')
+    .pipe(filter(({ id }) => id === 'darksun1'))
     .subscribe(async ({ point, goalPoint }) => {
 
       const curr = graphModel.getNodeAtPoint(point);
-      const goal = graphModel.getNodeAtPoint(goalPoint);
-
-      goal.update({ active: true });
 
       audioNote1(curr, { forceNewNote: true });
 
@@ -349,7 +346,10 @@ export const runCanvas = async (mapId) => {
       neighborIndex = neighborIndex >= 3 ? 0 : neighborIndex + 1;
 
       setCurrentNode(node.data());
-      audioNote1(node);
+
+      if (id === 'actor1') {
+        audioNote1(node);
+      }
 
       objectLayer.get(id)?.update({ point: node.point });
 

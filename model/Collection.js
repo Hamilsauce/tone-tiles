@@ -17,7 +17,10 @@ export class Collection {
   create(type, options) {
     const ModelClass = this.#registry.get(type);
     if (!ModelClass) {
-      throw new Error(`Unknown model type: ${type}`);
+      const typeLabel = typeof type === 'symbol'
+        ? (type.description ?? type.toString())
+        : String(type);
+      throw new Error(`Unknown model type: ${typeLabel}`);
     }
 
     const model = new ModelClass({
