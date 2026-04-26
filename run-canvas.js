@@ -546,11 +546,12 @@ export const runCanvas = async (mapId) => {
 
 
   return () => {
-    unsubscribeActorRender();
+    unsubscribeActorRender.unsubscribe();
     unsubscribeSelectionBox();
     entityCollection.get('actor1')?.destroy();
     loopEngine.destroy();
     unsubscribeMapLoad();
+    unsubscribeEntityCreate()
     unsubscribeNodeUpdates();
     unsubscribeActorMove();
     unsubscribeActorTravel();
