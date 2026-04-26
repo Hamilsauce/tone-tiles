@@ -27,7 +27,24 @@ export class TileLayer extends SceneLayer {
   }
   
   applyRenderPatch({ id, model }) {
-    if (this.objects.has(id)) this.get(id).update(model);
+    if (this.objects.has(id)) {
+      const t = this.get(id)
+      
+      t.update(model);
+      
+      // console.warn('t', t.y)
+      
+      // const r = this.getRow(t.y)
+      
+      // setTimeout(() => {
+      //   r.update({ start: true })
+        
+      //   setTimeout(() => {
+      //     r.update({ start: false })
+          
+      //   }, 200)
+      // }, 0)
+    }
   };
   
   applyNodePatch(nodeUpdate) {

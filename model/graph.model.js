@@ -326,6 +326,9 @@ class Graph extends Collection {
     ];
     const visited = new Set();
     
+    // const mod = 1
+    let cnt1 = 0
+    
     while (queue.length > 0) {
       const path = queue.shift();
       const node = path[path.length - 1];
@@ -344,27 +347,29 @@ class Graph extends Collection {
           if (remote) neighbors = [remote];
         }
         
-        let cnt = 0;
+        let cnt2 = 1;
         
-        for (const [, neighbor] of neighbors) {
+        for (const [dir, neighbor] of neighbors) {
           queue.push([...path, neighbor]);
           
-          cnt++;
           
-          setTimeout(() => {
-            neighbor.update({
-              ['highlight']: true
-            });
+          // setTimeout(() => {
+          //   neighbor.update({
+          //     ['highlight']: true
+          //   });
             
-            setTimeout(() => {
-              neighbor.update({
-                ['highlight']: false
-              });
-            }, 2000);
-          }, 0 + (100 * cnt));
+          //   setTimeout(() => {
+          //     neighbor.update({
+          //       ['highlight']: false
+          //     });
+          //   }, 1500);
+          // }, 0 + ((25 * cnt1)) + ((25 * cnt2)));
           
+          cnt2++;
         }
       }
+      
+      cnt1 = cnt1 >= 50 ? 0 : cnt1 + 0.5;
     }
     
     return null;
