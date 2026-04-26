@@ -203,16 +203,16 @@ export const runCanvas = async (mapId) => {
   loopEngine.addRoutine(entityCollection.get('actor1').step);
   loopEngine.addRoutine(entityCollection.get('darksun1').step);
 
-  const darkSun = objectLayer.add({
-    id: 'dark1',
-    type: 'dark-sun',
-    model: {},
-    transforms: [
-      { type: 'translate', values: [0, 0], position: 0 },
-      { type: 'rotate', values: [0, 0.5, 0.5], position: 1 },
-      { type: 'scale', values: [1, 1], position: 2 },
-    ],
-  });
+  // const darkSun = objectLayer.add({
+  //   id: 'dark1',
+  //   type: 'dark-sun',
+  //   model: {},
+  //   transforms: [
+  //     { type: 'translate', values: [0, 0], position: 0 },
+  //     { type: 'rotate', values: [0, 0.5, 0.5], position: 1 },
+  //     { type: 'scale', values: [1, 1], position: 2 },
+  //   ],
+  // });
 
   selectMapById = selectMapById ?? await initMapControls(graphModel, svgCanvas);
 
@@ -327,7 +327,7 @@ export const runCanvas = async (mapId) => {
     .subscribe(async ({ id, point, prevPoint }) => {
       // need to separate Actor Model from canvas object
       // have actor1 model emit this, and then
-      console.warn('actor move event', { id, point, prevPoint });
+      // console.warn('actor move event', { id, point, prevPoint });
       graphModel.moveObject(id, point, prevPoint);
       const dir = getDirectionFromPoints(point, prevPoint);
       const node = graphModel.getNodeAtPoint(point);

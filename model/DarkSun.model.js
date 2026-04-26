@@ -41,14 +41,17 @@ export class DarkSunModel extends TraverserModel {
 
     this.#waypoints = waypoints;
     this.waypointIndex = 0;
+    this.setGoalPoint(this.currentWaypoint);
   }
 
   get currentWaypoint() {
-    return Pointer.from(this.#waypoints[this.waypointIndex]);
+    return Point.from(this.#waypoints[this.waypointIndex]);
   }
 
   onGoal() {
-    this.setGoalPoint(this.stepWaypoint());
+    setTimeout(() => {
+      this.setGoalPoint(this.stepWaypoint());
+    }, 1000);
   }
 
   stepWaypoint() {

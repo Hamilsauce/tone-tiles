@@ -51,7 +51,7 @@ export class EntityCollection extends Collection {
 
   createDarkSun(options = {}) {
     console.warn('creating dark sun with options', options);
-    return this.createEntity(ModelTypes.DARKSUN, options);
+    return this.createEntity(ModelTypes.DARK_SUN, options);
   }
   createTeleporter(options = {}) {
     return this.createEntity(ModelTypes.TELEPORTER, options);

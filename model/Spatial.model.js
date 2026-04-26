@@ -34,7 +34,7 @@ export class SpatialModel extends Model {
   syncPoint(nextPoint) {
     const prev = this.#point;
     const normalized = Point.from(nextPoint);
-    console.warn({ prev, nextPoint, normalized });
+    // console.warn({ prev, nextPoint, normalized });
     // const normalized = nextPoint instanceof Point ?
     //   nextPoint :
     //   new Point(nextPoint?.x ?? 0, nextPoint?.y ?? 0);
