@@ -9,7 +9,7 @@ const DefaultDarkSunWaypoints = [
 ];
 
 const DefaultDarkSunProperties = {
-  type: 'actor',
+  type: 'dark-sun',
   id: null,
   point: { x: 0, y: 0 },
   moving: false,
@@ -22,76 +22,76 @@ export class DarkSunModel extends TraverserModel {
   #waypoints = [];
   #wait = 1000;
   #goalTimeout = null;
-
+  
   constructor({ waypoints = DefaultDarkSunWaypoints, ...options } = {}) {
     super({
       ...options,
       type: 'dark-sun'
     });
-
+    
     this.#waypoints = waypoints;
     this.waypointDirection = 1;
     this.waypointIndex = 0;
     this.setGoalPoint(this.currentWaypoint);
   }
-
+  
   get currentWaypoint() {
     return Point.from(this.#waypoints[this.waypointIndex]);
   }
-
+  
   onGoal() {
     clearTimeout(this.#goalTimeout);
     this.#goalTimeout = setTimeout(() => {
       this.setGoalPoint(this.stepWaypoint());
     }, this.#wait);
   }
-
+  
   stepWaypoint() {
     if (this.#waypoints.length <= 1) {
       this.waypointIndex = 0;
       return this.currentWaypoint;
     }
-
+    
     let nextIndex = this.waypointIndex + this.waypointDirection;
-
+    
     if (nextIndex < 0 || nextIndex >= this.#waypoints.length) {
       this.waypointDirection *= -1;
       nextIndex = this.waypointIndex + this.waypointDirection;
     }
-
+    
     this.waypointIndex = nextIndex;
-
+    
     return this.currentWaypoint;
   }
-
+  
   reverseCourse() {
     if (this.#waypoints.length <= 1) {
       return this;
     }
-
+    
     clearTimeout(this.#goalTimeout);
     this.#goalTimeout = null;
     this.waypointDirection *= -1;
-
+    
     let nextIndex = this.waypointIndex + this.waypointDirection;
-
+    
     if (nextIndex < 0 || nextIndex >= this.#waypoints.length) {
       this.waypointDirection *= -1;
       nextIndex = this.waypointIndex + this.waypointDirection;
     }
-
+    
     this.waypointIndex = nextIndex;
     this.setGoalPoint(this.currentWaypoint);
-
+    
     return this;
   }
-
+  
   destroy() {
     clearTimeout(this.#goalTimeout);
     this.#goalTimeout = null;
     return super.destroy();
   }
-
+  
   toJSON() {
     return {
       ...super.toJSON(),

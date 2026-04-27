@@ -295,15 +295,15 @@ export const runCanvas = async (mapId) => {
   
   const collisions$ = new Subject();
   
-  sceneModel.in({ name: 'collisions', source$: collisions$ });
+  // sceneModel.in({ name: 'collisions', source$: collisions$ });
   
   const unsubscribeDarkSunCollision = sceneModel.out({ type: 'collision:dark-sun' })
     .subscribe(async ({ darkSunId }) => {
       const ds = entityCollection.get(darkSunId)
       const dso = objectLayer.get(darkSunId)
       // console.warn('dso', {dso})
-    dso.toggle({ recoiling: true }, 200)
-  
+      dso.toggle({ recoiling: true }, 200)
+      
       
       audioNote1(null, {
         forceNewNote: true,
@@ -330,7 +330,8 @@ export const runCanvas = async (mapId) => {
       entityCollection.get(darkSunId)?.reverseCourse?.();
     });
   
-  const unsubscribeActorMove = entityCollection.out({ type: 'traversal:move' })
+  const unsubscribeActorMove = sceneModel.out({ type: 'traversal:move' })
+    .pipe(filter(({ id }) => id === 'actor1'))
     .subscribe(async ({ id, point, prevPoint }) => {
       // need to separate Actor Model from canvas object
       // have actor1 model emit this, and then
@@ -407,6 +408,92 @@ export const runCanvas = async (mapId) => {
           }, 3000);
         }, 0 + (100 * cnt));
       }
+      
+    });
+  
+  const unsubscribeDarkSunMove = sceneModel.out({ type: 'traversal:move' })
+    .pipe(filter(({ id }) => id === 'darksun1'))
+    .subscribe(async ({ id, point, prevPoint }) => {
+      // need to separate Actor Model from canvas object
+      // have actor1 model emit this, and then
+      
+      const dir = getDirectionFromPoints(point, prevPoint);
+      const node = graphModel.getNodeAtPoint(point);
+      const entity = entityCollection.get(id);
+      
+      graphModel.moveObject(id, point, prevPoint);
+      
+      if (node.objectCount > 1) {
+        let darkSunId = null;
+        let actorId = null;
+        
+        for (const objId of node.objectIds) {
+          const obj = entityCollection.get(objId);
+          
+          if (!darkSunId && obj?.type === 'dark-sun') {
+            darkSunId = objId;
+          }
+          
+          if (!actorId && obj?.type === 'actor') {
+            actorId = objId;
+          }
+        }
+        
+        if (darkSunId && actorId && [darkSunId, actorId].includes(id)) {
+          collisions$.next({
+            type: 'collision:dark-sun',
+            point,
+            node,
+            darkSunId,
+            actorId,
+          });
+        }
+      }
+      
+      objectLayer.get(id)?.update({ point: node.point });
+    });
+  
+  
+  const unsubscribeCollisions = sceneModel.out({ type: 'node:collision' })
+    // .pipe(filter(({ id }) => id === 'darksun1'))
+    .subscribe(async ({ id, data }) => {
+      const { newObjectId, point, objectIds } = data
+      const newOccupant = entityCollection.get(newObjectId)
+    
+      console.warn('COLLISIONS', { newObjectId, point, objectIds })
+    
+      if (!newOccupant || newOccupant.type !== 'dark-sun') {
+        return
+      }
+      
+      const dso = objectLayer.get(newObjectId)
+      // console.warn('dso', {dso})
+      dso.toggle({ recoiling: true }, 200)
+      
+      
+      audioNote1(null, {
+        forceNewNote: true,
+        frequency: 180,
+        velocity: 0.2,
+      });
+      
+      await sleep(25)
+      
+      audioNote1(null, {
+        forceNewNote: true,
+        frequency: 275,
+        velocity: 0.15,
+      });
+      
+      await sleep(25)
+      
+      audioNote1(null, {
+        forceNewNote: true,
+        frequency: 325,
+        velocity: 0.2,
+      });
+      
+      newOccupant?.reverseCourse?.();
       
     });
   
