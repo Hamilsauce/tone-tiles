@@ -14,7 +14,7 @@ import { watch, toValue } from 'vue';
 import { useMapStore } from './store/map.store.js';
 import { projectNodePatchToRenderPatch } from './core/projections/node-to-tile.projector.js';
 import { rxjs } from 'rxjs';
-const { operators } = rxjs;
+const { operators, Subject } = rxjs;
 const { map, tap, filter } = operators;
 
 
@@ -231,7 +231,7 @@ export const runCanvas = async (mapId) => {
     svgCanvas.layers.surface.querySelector('#surface-map-name').setAttribute('transform', `translate(0, ${-((graphModel.height / 2)) - 3}) scale(0.4)`);
   });
 
-  let rowcnt = 0
+  let rowcnt = 0;
 
   const unsubscribeNodeUpdates = graphModel.connect('node:update')
     .pipe(
@@ -310,6 +310,9 @@ export const runCanvas = async (mapId) => {
 
   let neighborIndex = 0;
 
+  const collisions$ = new Subject();
+  sceneModel.in({ name: 'collisions', source$: collisions$ });
+
   const unsubscribeActorMove = entityCollection.connect('traversal:move')
     .subscribe(async ({ id, point, prevPoint }) => {
       // need to separate Actor Model from canvas object
@@ -326,6 +329,22 @@ export const runCanvas = async (mapId) => {
       }
 
       graphModel.moveObject(id, point, prevPoint);
+
+
+      // I want the collision to be an event stream
+      if (node.objects.size > 1) {
+        const hasDarkSun = [...node.objects].some(objId => {
+
+          const obj = entityCollection.get(objId);
+          return objId.includes('dark-sun') || obj?.type === 'dark-sun';
+        });
+
+        if (hasDarkSun) {
+          collisions$.next({ type: 'collision:dark-sun', point, node, id });
+        }
+
+        console.warn('hasDarkSun, node with multiple objects', hasDarkSun, node.id, node.objects);
+      }
 
       let _neighbors = [...graphModel.getNeighbors(node).entries()];
       let n1 = _neighbors.slice(0, neighborIndex);
@@ -419,7 +438,7 @@ export const runCanvas = async (mapId) => {
 
   const handleEditTileClick = async (targetNode) => {
     if (!targetNode) {
-      console.warn('handleEditTileClick !targetnode', );
+      console.warn('handleEditTileClick !targetnode',);
       blurContextMenu();
       return;
     }
@@ -551,7 +570,7 @@ export const runCanvas = async (mapId) => {
     entityCollection.get('actor1')?.destroy();
     loopEngine.destroy();
     unsubscribeMapLoad();
-    unsubscribeEntityCreate()
+    unsubscribeEntityCreate();
     unsubscribeNodeUpdates();
     unsubscribeActorMove();
     unsubscribeActorTravel();
