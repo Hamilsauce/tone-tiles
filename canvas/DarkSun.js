@@ -1,6 +1,30 @@
 import { CanvasObject, DefaultCanvasObjectOptions } from './CanvasObject.js';
 import { getDirectionFromPoints } from '../core/spatial/utils.js';
 
+const directionPivot = {
+  up: {
+    down: -1,
+    left: -1,
+    right: 1
+  },
+  down: {
+    up: -1,
+    left: 1,
+    right: -1
+  },
+  left: {
+    up: 1,
+    down: -1,
+    right: -1
+  },
+  right: {
+    up: -1,
+    down: 1,
+    left: -1,
+  },
+}
+
+
 export class DarkSun extends CanvasObject {
   #ticker = 0;
   #travelDir = 'down';
@@ -24,14 +48,26 @@ export class DarkSun extends CanvasObject {
   }
   
   update(patch) {
+    if (patch && patch.point) {
+      const prevDir = this.#travelDir;
+      this.#travelDir = getDirectionFromPoints(this.point, patch.point) ?? this.#travelDir
+      
+      if (prevDir !== this.#travelDir) {
+        this.#rotationMod = directionPivot[prevDir][this.#travelDir]
+      }
+    }
+    
     super.update(patch);
     this.advanceRotation();
+    
+    return this
   }
   
   advanceRotation(dr) {
     const change = (dr ?? this.#rotationStep) * this.#rotationMod;
+    
     this.#rotation = this.#rotation + change;
-  
+    
     this.rotateTo(this.#rotation, 0.5, 0.5);
   }
 }
