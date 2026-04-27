@@ -474,7 +474,7 @@ export const runCanvas = async (mapId) => {
       audioNote1(null, {
         forceNewNote: true,
         frequency: 180,
-        velocity: 0.2,
+        velocity: 0.3,
       });
       
       await sleep(25)
