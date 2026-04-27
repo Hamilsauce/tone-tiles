@@ -32,6 +32,7 @@ const DefaultDarkSunProperties = {
 
 export class DarkSunModel extends TraverserModel {
   #waypoints = [];
+  #wait = 1000;
 
   constructor({ waypoints = DefaultDarkSunWaypoints, ...options } = {}) {
     super({
@@ -51,12 +52,21 @@ export class DarkSunModel extends TraverserModel {
   onGoal() {
     setTimeout(() => {
       this.setGoalPoint(this.stepWaypoint());
-    }, 1000);
+    }, this.#wait);
   }
 
   stepWaypoint() {
     this.waypointIndex = (this.waypointIndex + 1) % this.#waypoints.length;
 
     return this.currentWaypoint;
+  }
+
+  toJSON() {
+    return {
+      ...super.toJSON(),
+      waypoints: this.#waypoints,
+      wait: this.#wait,
+      waypointIndex: this.waypointIndex,
+    };
   }
 }
