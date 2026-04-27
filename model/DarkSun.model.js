@@ -1,17 +1,5 @@
 import { TraverserModel } from './Traverser.model.js';
 import { Point } from '../core/spatial/Point.js';
-import ham from 'ham';
-const { sleep } = ham;
-import {
-  ActorError,
-  ActorGoal,
-  ActorIdle,
-  ActorMapLink,
-  ActorMove,
-  ActorStop,
-  ActorTeleport,
-  ActorTravel,
-} from '../core/actions/actor.actions.js';
 
 const DefaultDarkSunWaypoints = [
   { x: 0, y: 0 },
@@ -33,6 +21,7 @@ const DefaultDarkSunProperties = {
 export class DarkSunModel extends TraverserModel {
   #waypoints = [];
   #wait = 1000;
+  #goalTimeout = null;
 
   constructor({ waypoints = DefaultDarkSunWaypoints, ...options } = {}) {
     super({
@@ -41,6 +30,7 @@ export class DarkSunModel extends TraverserModel {
     });
 
     this.#waypoints = waypoints;
+    this.waypointDirection = 1;
     this.waypointIndex = 0;
     this.setGoalPoint(this.currentWaypoint);
   }
@@ -50,15 +40,56 @@ export class DarkSunModel extends TraverserModel {
   }
 
   onGoal() {
-    setTimeout(() => {
+    clearTimeout(this.#goalTimeout);
+    this.#goalTimeout = setTimeout(() => {
       this.setGoalPoint(this.stepWaypoint());
     }, this.#wait);
   }
 
   stepWaypoint() {
-    this.waypointIndex = (this.waypointIndex + 1) % this.#waypoints.length;
+    if (this.#waypoints.length <= 1) {
+      this.waypointIndex = 0;
+      return this.currentWaypoint;
+    }
+
+    let nextIndex = this.waypointIndex + this.waypointDirection;
+
+    if (nextIndex < 0 || nextIndex >= this.#waypoints.length) {
+      this.waypointDirection *= -1;
+      nextIndex = this.waypointIndex + this.waypointDirection;
+    }
+
+    this.waypointIndex = nextIndex;
 
     return this.currentWaypoint;
+  }
+
+  reverseCourse() {
+    if (this.#waypoints.length <= 1) {
+      return this;
+    }
+
+    clearTimeout(this.#goalTimeout);
+    this.#goalTimeout = null;
+    this.waypointDirection *= -1;
+
+    let nextIndex = this.waypointIndex + this.waypointDirection;
+
+    if (nextIndex < 0 || nextIndex >= this.#waypoints.length) {
+      this.waypointDirection *= -1;
+      nextIndex = this.waypointIndex + this.waypointDirection;
+    }
+
+    this.waypointIndex = nextIndex;
+    this.setGoalPoint(this.currentWaypoint);
+
+    return this;
+  }
+
+  destroy() {
+    clearTimeout(this.#goalTimeout);
+    this.#goalTimeout = null;
+    return super.destroy();
   }
 
   toJSON() {
@@ -66,6 +97,7 @@ export class DarkSunModel extends TraverserModel {
       ...super.toJSON(),
       waypoints: this.#waypoints,
       wait: this.#wait,
+      waypointDirection: this.waypointDirection,
       waypointIndex: this.waypointIndex,
     };
   }

@@ -310,6 +310,10 @@ export const runCanvas = async (mapId) => {
 
   const collisions$ = new Subject();
   sceneModel.in({ name: 'collisions', source$: collisions$ });
+  const unsubscribeDarkSunCollision = sceneModel.out({ type: 'collision:dark-sun' })
+    .subscribe(({ darkSunId }) => {
+      entityCollection.get(darkSunId)?.reverseCourse?.();
+    });
 
   const unsubscribeActorMove = entityCollection.out({ type: 'traversal:move' })
     .subscribe(async ({ id, point, prevPoint }) => {
@@ -329,19 +333,31 @@ export const runCanvas = async (mapId) => {
       graphModel.moveObject(id, point, prevPoint);
 
 
-      // I want the collision to be an event stream
       if (node.objectCount > 1) {
-        const hasDarkSun = [...node.objectIds].some(objId => {
+        let darkSunId = null;
+        let actorId = null;
 
+        for (const objId of node.objectIds) {
           const obj = entityCollection.get(objId);
-          return objId.includes('dark-sun') || obj?.type === 'dark-sun';
-        });
 
-        if (hasDarkSun) {
-          collisions$.next({ type: 'collision:dark-sun', point, node, id });
+          if (!darkSunId && obj?.type === 'dark-sun') {
+            darkSunId = objId;
+          }
+
+          if (!actorId && obj?.type === 'actor') {
+            actorId = objId;
+          }
         }
 
-        console.warn('hasDarkSun, node with multiple objects', hasDarkSun, node.id, node.objects);
+        if (darkSunId && actorId && [darkSunId, actorId].includes(id)) {
+          collisions$.next({
+            type: 'collision:dark-sun',
+            point,
+            node,
+            darkSunId,
+            actorId,
+          });
+        }
       }
 
       let _neighbors = [...graphModel.getNeighbors(node).entries()];
@@ -572,6 +588,7 @@ export const runCanvas = async (mapId) => {
     unsubscribeNodeUpdates();
     unsubscribeActorMove();
     unsubscribeActorTravel();
+    unsubscribeDarkSunCollision();
     unwatch();
     svgCanvas.destroy();
     svgCanvas = null;
