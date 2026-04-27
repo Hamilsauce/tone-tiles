@@ -63,6 +63,10 @@ export class GraphNodeModel extends SpatialModel {
 
   get isOccupied() { return !!this.#objects.size; }
 
+  get objectCount() { return this.#objects.size; }
+
+  get objectIds() { return [...this.#objects]; }
+
   addObject(id) {
     this.#objects.add(id);
 

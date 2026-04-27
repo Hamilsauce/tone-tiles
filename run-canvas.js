@@ -109,8 +109,8 @@ export const runCanvas = async (mapId) => {
   sceneModel = new SceneModel({
     loopEngine,
     inputs$: [
-      { name: 'graph', source$: graphModel.output$ },
-      { name: 'entity', source$: entityCollection.output$ },
+      { name: 'graph', source$: graphModel.out({}) },
+      { name: 'entity', source$: entityCollection.out({}) },
     ],
   });
 
@@ -161,7 +161,7 @@ export const runCanvas = async (mapId) => {
     entityCollection.remove('actor1');
   }
 
-  const unsubscribeEntityCreate = entityCollection.connect('entity:create').subscribe(e => {
+  const unsubscribeEntityCreate = entityCollection.out({ type: 'entity:create' }).subscribe(e => {
     console.warn('entity create event', e);
     const canvasEntity = objectLayer.add({
       id: e.id,
@@ -207,7 +207,7 @@ export const runCanvas = async (mapId) => {
 
   //! start binding
 
-  const unsubscribeMapLoad = graphModel.connect('map:load').subscribe(e => {
+  const unsubscribeMapLoad = graphModel.out({ type: 'map:load' }).subscribe(e => {
     const { width, height, nodes, startNode } = e.data;
     selectionBox.setBounds({
       minX: 0,
@@ -233,7 +233,7 @@ export const runCanvas = async (mapId) => {
 
   let rowcnt = 0;
 
-  const unsubscribeNodeUpdates = graphModel.connect('node:update')
+  const unsubscribeNodeUpdates = graphModel.out({ type: 'node:update' })
     .pipe(
       map(projectNodePatchToRenderPatch),
       tap(renderPatch => {
@@ -258,8 +258,7 @@ export const runCanvas = async (mapId) => {
     contextMenu.update({ x: start.x, y: start.y - 2 }).show();
   });
 
-  const unsubscribeActorRender = entityCollection.connect('actor')
-    .pipe(filter(({ id }) => id === 'actor1'))
+  const unsubscribeActorRender = entityCollection.out({ type: 'actor', filter: ({ id }) => id === 'actor1' })
     .subscribe((event) => {
       const actor1Model = entityCollection.get('actor1');
 
@@ -298,8 +297,7 @@ export const runCanvas = async (mapId) => {
       }
     });
 
-  const unsubscribeActorTravel = entityCollection.connect('traversal:start')
-    .pipe(filter(({ id }) => id === 'darksun1'))
+  const unsubscribeActorTravel = entityCollection.out({ type: 'traversal:start', filter: ({ id }) => id === 'darksun1' })
     .subscribe(async ({ point, goalPoint }) => {
 
       const curr = graphModel.getNodeAtPoint(point);
@@ -313,7 +311,7 @@ export const runCanvas = async (mapId) => {
   const collisions$ = new Subject();
   sceneModel.in({ name: 'collisions', source$: collisions$ });
 
-  const unsubscribeActorMove = entityCollection.connect('traversal:move')
+  const unsubscribeActorMove = entityCollection.out({ type: 'traversal:move' })
     .subscribe(async ({ id, point, prevPoint }) => {
       // need to separate Actor Model from canvas object
       // have actor1 model emit this, and then
@@ -332,8 +330,8 @@ export const runCanvas = async (mapId) => {
 
 
       // I want the collision to be an event stream
-      if (node.objects.size > 1) {
-        const hasDarkSun = [...node.objects].some(objId => {
+      if (node.objectCount > 1) {
+        const hasDarkSun = [...node.objectIds].some(objId => {
 
           const obj = entityCollection.get(objId);
           return objId.includes('dark-sun') || obj?.type === 'dark-sun';

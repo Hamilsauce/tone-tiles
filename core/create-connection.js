@@ -1,6 +1,6 @@
 import { rxjs } from 'rxjs';
 const { Subject, operators } = rxjs;
-const { takeUntil, share } = operators;
+const { takeUntil, share, filter, map, distinctUntilChanged, shareReplay } = operators;
 
 export class Connection {
   #stop$ = new Subject();
@@ -66,6 +66,10 @@ export class ConnectionBus {
       }
     };
   }
+
+  emit(event) {
+    this.#input$.next(event);
+  }
   
   detach(id) {
     const conn = this.#connections.get(id);
@@ -86,20 +90,51 @@ export class ConnectionBus {
   }
 }
 
-export function createConnectionBus() {
+export function createConnectionBus(host = null) {
   const bus = new ConnectionBus();
-  
-  return {
+
+  const api = {
     events$: bus.events$,
-    
-    attach: (source$, options) => bus.attach(source$, options),
-    
+
+    in: ({ name, source$, transform }) => bus.attach(source$, { name, transform }),
+
+    out: ({ type = null, filter: filterFn = null, map: mapFn = null, distinct = null } = {}) => {
+      let stream$ = bus.events$.pipe(
+        filter(({ type: eventType }) => type ? eventType.includes(type) : true),
+      );
+
+      if (filterFn) {
+        stream$ = stream$.pipe(filter(filterFn));
+      }
+
+      if (mapFn) {
+        stream$ = stream$.pipe(map(mapFn));
+      }
+
+      if (distinct) {
+        stream$ = stream$.pipe(distinctUntilChanged(distinct));
+      }
+
+      return stream$.pipe(
+        shareReplay({ bufferSize: 1, refCount: true }),
+      );
+    },
+
+    emit: (event) => bus.emit(event),
+
     detach: (id) => bus.detach(id),
-    
+
     clear: () => bus.clear(),
-    
+
     get size() {
       return bus.size;
     }
   };
+
+  if (host) {
+    host.in = api.in;
+    host.out = api.out;
+  }
+
+  return api;
 }

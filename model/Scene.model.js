@@ -3,35 +3,20 @@ import { rxjs } from 'rxjs';
 // import { audioEngine } from '../audio/index.js';
 
 const { operators } = rxjs;
-const { map, startWith, tap, filter, scan, shareReplay, withLatestFrom } = operators;
-
-const DefaultInputConfig = {
-  name: '',
-  source$: null
-}
-
-const defaultInputOptions = [
-  { name: 'entities', source$: null },
-  { name: 'graph', source$: null },
-]
+const { map, tap, scan, shareReplay, withLatestFrom } = operators;
 
 export class SceneModel {
   #inputs
   
   constructor({ inputs$ = [], loopEngine }) {
     this.loopEngine = loopEngine
-    this.#inputs = createConnectionBus();
+    this.#inputs = createConnectionBus(this);
     
     inputs$.forEach(({ name, source$ }) => {
-      if (!source$) {
-        console.error(' no source$', name)
-        return
-      }
-      
-      this.#inputs.attach(source$, { name })
+      this.in({ name, source$ })
     });
     
-    const worldState$ = this.#inputs.events$.pipe(
+    const worldState$ = this.out({}).pipe(
       scan((state, event) => {
         switch (event.type) {
           case 'traversal:move':
