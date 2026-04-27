@@ -1,26 +1,21 @@
 import { SpatialModel } from './Spatial.model.js';
+import { Point } from '../core/spatial/Point.js';
 
-const DefaultTeleporterProperties = {
+const DefaultTeleporterOotions = {
   type: 'teleporter',
   id: null,
-  point: { x: 0, y: 0 },
-  target: null,
+  target: { x: 0, y: 0 },
   linkedId: null,
 };
 
 export class TeleporterModel extends SpatialModel {
-  constructor(options = {}) {
-    const properties = {
-      ...DefaultTeleporterProperties,
-      ...(options.properties ?? {}),
-    };
-
+  #target;
+  constructor({ target, ...options } = DefaultTeleporterOotions) {
     super({
       ...options,
-      id: options.id ?? properties.id,
-      type: options.type ?? properties.type,
-      point: options.point ?? properties.point,
-      properties,
     });
+    
+    this.#target = { x: 0, y: 0 };
+    
   }
 }

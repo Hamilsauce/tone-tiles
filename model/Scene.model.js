@@ -45,6 +45,10 @@ export class SceneModel {
     ) // .subscribe();
   };
   
+  in(options) { /* placeholder for cxn bus */}
+  
+  out(options) { /* placeholder for cxn bus */}
+  
   createCollection(name, options = {}) {
     
   }

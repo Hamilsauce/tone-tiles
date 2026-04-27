@@ -454,7 +454,7 @@ export const runCanvas = async (mapId) => {
     });
   
   
-  const unsubscribeCollisions = sceneModel.out({ type: 'node:collision' })
+  const unsubscribeCollisions = sceneModel.out({ type: 'collision' })
     // .pipe(filter(({ id }) => id === 'darksun1'))
     .subscribe(async ({ id, data }) => {
       const { newObjectId, point, objectIds } = data

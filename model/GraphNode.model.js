@@ -72,7 +72,7 @@ export class GraphNodeModel extends SpatialModel {
     
     if (this.objectCount > 1) {
       this.emit({
-        type: 'node:collision',
+        type: 'collision',
         id: this.id,
         data: {
           objectIds: this.objectIds,
