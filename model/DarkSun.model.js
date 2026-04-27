@@ -61,9 +61,12 @@ export class DarkSunModel extends TraverserModel {
     return this.currentWaypoint;
   }
   
-  // advanceRotation(dr) {
-  //   this.waypointIndex = (this.waypointIndex + 1) % this.#waypoints.length;
-  
-  //   return this.currentWaypoint;
-  // }
+  toJSON() {
+    return {
+      ...super.toJSON(),
+      waypoints: this.#waypoints,
+      wait: this.#wait,
+      waypointIndex: this.waypointIndex,
+    };
+  }
 }
