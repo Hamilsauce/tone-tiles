@@ -1,5 +1,5 @@
 import { CollectionRegistry } from '../core/types/collection-registry.js';
-// import { ModelRegistry } from '../core/types/model-registry.js';
+import { ModelRegistry } from '../core/types/model-registry.js';
 
 import { createConnectionBus } from '../core/create-connection.js';
 import { rxjs } from 'rxjs';
@@ -14,7 +14,7 @@ export class SceneModel {
   
   constructor({ registry, inputs$ = [], loopEngine, collections = [] }) {
     this.loopEngine = loopEngine
-    this.registry = registry
+    this.registry = CollectionRegistry
     
     this.#inputs = createConnectionBus(this);
     
@@ -64,6 +64,9 @@ export class SceneModel {
   }
   
   createCollection(name, options) {
+    const colly = [...CollectionRegistry.entries()].forEach(([k, v]) => {
+      console.warn('k, v', k,)
+    })
     const CollectionClass = CollectionRegistry.get(name);
     
     if (!CollectionClass) {

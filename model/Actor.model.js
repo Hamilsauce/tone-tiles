@@ -32,7 +32,7 @@ export class ActorModel extends TraverserModel {
       },
     });
   }
-
+  
   onGoal() {
     console.warn('actor goal reached', { id: this.id, point: this.point, goalPoint: this.goalPoint });
   }
@@ -43,7 +43,7 @@ export class ActorModel extends TraverserModel {
       goalPoint: Point.from(payload.goalPoint ?? this.goalPoint),
     });
   }
-
+  
   emitActorMove(payload = {}) {
     return this.#emitActorAction(ActorMove, {
       ...payload,
@@ -51,7 +51,7 @@ export class ActorModel extends TraverserModel {
       prevPoint: Point.from(payload.prevPoint ?? this.point),
     });
   }
-
+  
   emitActorIdle(reason = 'idle', payload = {}) {
     return this.#emitActorAction(ActorIdle, {
       ...payload,
@@ -60,7 +60,7 @@ export class ActorModel extends TraverserModel {
       reason,
     });
   }
-
+  
   emitActorGoal(payload = {}) {
     return this.#emitActorAction(ActorGoal, {
       ...payload,
@@ -68,41 +68,41 @@ export class ActorModel extends TraverserModel {
       goalPoint: Point.from(payload.goalPoint ?? this.goalPoint),
     });
   }
-
+  
   emitActorMapLink(payload = {}) {
     return this.#emitActorAction(ActorMapLink, {
       ...payload,
       point: Point.from(payload.point ?? this.point),
     });
   }
-
+  
   emitActorTeleport(payload = {}) {
     return this.#emitActorAction(ActorTeleport, {
       ...payload,
       point: Point.from(payload.point ?? this.point),
     });
   }
-
+  
   emitActorStop(payload = {}) {
     return this.#emitActorAction(ActorStop, {
       ...payload,
       point: Point.from(payload.point ?? this.point),
     });
   }
-
+  
   emitActorError(error, payload = {}) {
     return this.#emitActorAction(ActorError, {
       error,
       ...payload,
     });
   }
-
+  
   #emitActorAction(createActorAction, payload = {}) {
     const action = createActorAction({
       id: this.id,
       ...payload,
     });
-
+    
     this.emit?.(action);
     return action;
   }

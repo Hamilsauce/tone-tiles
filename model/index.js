@@ -7,6 +7,7 @@
 export { Graph } from './graph.model.js'
 export { EntityCollection } from './EntityCollection.js'
 
+export { ActorModel } from './Actor.model.js'
 export { TeleporterModel } from './Teleporter.model.js'
 export { GraphNodeModel } from './GraphNode.model.js'
 export { DarkSunModel } from './DarkSun.model.js'

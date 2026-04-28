@@ -17,6 +17,7 @@ import audioNote1 from './audio/fire-audio-note1.js';
 import { ContextMenu } from './canvas/ContextMenu.js';
 import { watch, toValue } from 'vue';
 import { useMapStore } from './store/map.store.js';
+import { Runtime } from './runtime/Runtime-scratch3.js';
 import { projectNodePatchToRenderPatch } from './core/projections/node-to-tile.projector.js';
 import { rxjs } from 'rxjs';
 import ham from 'ham';
@@ -105,26 +106,42 @@ export const runCanvas = async (mapId) => {
     audioContext: audioEngine.ctx,
   });
   
+  
+  const appStore = useAppState();
+  const { isRunning, setCurrentNode } = appStore
+  
   let mapStore = useMapStore();
   mapId = mapId && mapId.value ? mapId.value : mapId;
-  const { isRunning, setCurrentNode } = useAppState();
+  
+  const runtime = new Runtime({
+    appStore,
+    mapStore,
+    config: {
+      collections: [
+        { name: ModelTypes.GRAPH, },
+        { name: ModelTypes.ENTITIES, },
+      ],
+    }
+  })
+  
+  scene = runtime.scene;
+  entityCollection = sceneModel.getColl(ModelTypes.ENTITIES);
+  graphModel = sceneModel.getColl(ModelTypes.GRAPH);
   
   // TODO - Move into scene/init
   // graphModel = getGraphModel({ loopEngine, registry: ModelRegistry });
   // entityCollection = new EntityCollection({ loopEngine, registry: ModelRegistry });
   
   // will be init'd in run time when that happens
-  sceneModel = new SceneModel({
-    registry: ModelRegistry,
-    loopEngine,
-    collections: [
-      { name: ModelTypes.GRAPH, },
-      { name: ModelTypes.ENTITIES, },
-    ],
-  });
+  // sceneModel = new SceneModel({
+  //   registry: ModelRegistry,
+  //   loopEngine,
+  //   collections: [
+  //     { name: ModelTypes.GRAPH, },
+  //     { name: ModelTypes.ENTITIES, },
+  //   ],
+  // });
   
-  entityCollection = sceneModel.getColl(ModelTypes.ENTITIES);
-  graphModel = sceneModel.getColl(ModelTypes.GRAPH);
   
   canvasEl = document.querySelector('#canvas');
   svgCanvas = new SVGCanvas(canvasEl);
