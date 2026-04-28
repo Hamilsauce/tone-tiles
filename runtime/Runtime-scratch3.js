@@ -1,10 +1,10 @@
+import '../model/index.js';
+
 import { ModelTypes } from '../core/types//model.types.js';
 
 import { ModelRegistry } from '../core/types/model-registry.js';
 import { CollectionRegistry } from '../core/types/collection-registry.js';
 // import { ModelTypes } from './core/types/model.types.js';
-
-import '../model/index.js';
 
 import { SceneModel } from '../model/Scene.model.js';
 import { LoopEngine } from '../core/loop-engine/index.js';
