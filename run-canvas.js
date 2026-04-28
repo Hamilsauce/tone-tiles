@@ -1,4 +1,4 @@
-import './model/index.js'
+import './model/index.js';
 import { ModelRegistry } from './core/types/model-registry.js';
 import { CollectionRegistry } from './core/types/collection-registry.js';
 import { ModelTypes } from './core/types/model.types.js';
@@ -126,8 +126,8 @@ export const runCanvas = async (mapId) => {
     // ],
   });
 
-  entityCollection = sceneModel.getColl(ModelTypes.ENTITIES)
-  graphModel = sceneModel.getColl(ModelTypes.GRAPH)
+  entityCollection = sceneModel.getColl(ModelTypes.ENTITIES);
+  graphModel = sceneModel.getColl(ModelTypes.GRAPH);
 
 
 
@@ -314,10 +314,10 @@ export const runCanvas = async (mapId) => {
 
   const unsubscribeDarkSunCollision = sceneModel.out({ type: 'collision:dark-sun' })
     .subscribe(async ({ darkSunId }) => {
-      const ds = entityCollection.get(darkSunId)
-      const dso = objectLayer.get(darkSunId)
+      const ds = entityCollection.get(darkSunId);
+      const dso = objectLayer.get(darkSunId);
       // console.warn('dso', {dso})
-      dso.toggle({ recoiling: true }, 200)
+      dso.toggle({ recoiling: true }, 200);
 
 
       audioNote1(null, {
@@ -326,7 +326,7 @@ export const runCanvas = async (mapId) => {
         velocity: 0.2,
       });
 
-      await sleep(25)
+      await sleep(25);
 
       audioNote1(null, {
         forceNewNote: true,
@@ -334,7 +334,7 @@ export const runCanvas = async (mapId) => {
         velocity: 0.15,
       });
 
-      await sleep(25)
+      await sleep(25);
 
       audioNote1(null, {
         forceNewNote: true,
@@ -472,17 +472,17 @@ export const runCanvas = async (mapId) => {
   const unsubscribeCollisions = sceneModel.out({ type: 'collision' })
     // .pipe(filter(({ id }) => id === 'darksun1'))
     .subscribe(async ({ id, data }) => {
-      const { newObjectId, objectIds } = data
-      const newOccupant = entityCollection.get(newObjectId)
+      const { newObjectId, objectIds } = data;
+      const newOccupant = entityCollection.get(newObjectId);
 
-      console.warn('COLLISIONS', { newObjectId, point, objectIds })
+      console.warn('COLLISIONS', { newObjectId, objectIds });
 
       if (!newOccupant || newOccupant.type !== 'dark-sun') {
-        return
+        return;
       }
 
-      const dso = objectLayer.get(newObjectId)
-      dso.toggle({ recoiling: true }, 200)
+      const dso = objectLayer.get(newObjectId);
+      dso.toggle({ recoiling: true }, 200);
 
 
       audioNote1(null, {
@@ -491,7 +491,7 @@ export const runCanvas = async (mapId) => {
         velocity: 0.3,
       });
 
-      await sleep(25)
+      await sleep(25);
 
       audioNote1(null, {
         forceNewNote: true,
@@ -499,7 +499,7 @@ export const runCanvas = async (mapId) => {
         velocity: 0.15,
       });
 
-      await sleep(25)
+      await sleep(25);
 
       audioNote1(null, {
         forceNewNote: true,
@@ -567,7 +567,7 @@ export const runCanvas = async (mapId) => {
 
   const handleEditTileClick = async (targetNode) => {
     if (!targetNode) {
-      console.warn('handleEditTileClick !targetnode', );
+      console.warn('handleEditTileClick !targetnode',);
       blurContextMenu();
       return;
     }
