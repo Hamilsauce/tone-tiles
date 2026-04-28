@@ -507,6 +507,7 @@ export const runCanvas = async (mapId) => {
         velocity: 0.2,
       });
 
+
       newOccupant?.reverseCourse?.();
 
     });
