@@ -1,3 +1,8 @@
+import './model/index.js'
+import { ModelRegistry } from './core/types/model-registry.js';
+import { CollectionRegistry } from './core/types/collection-registry.js';
+import { ModelTypes } from './core/types/model.types.js';
+
 import { getDirectionFromPoints } from './core/spatial/utils.js';
 import getGraphModel from './model/graph.model.js';
 import { SceneModel } from './model/index.js';
@@ -104,17 +109,27 @@ export const runCanvas = async (mapId) => {
   const { isRunning, setCurrentNode } = useAppState();
   
   // TODO - Move into scene/init
-  graphModel = getGraphModel({ loopEngine });
-  entityCollection = new EntityCollection({ loopEngine });
+  // graphModel = getGraphModel({ loopEngine, registry: ModelRegistry });
+  // entityCollection = new EntityCollection({ loopEngine, registry: ModelRegistry });
   
   // will be init'd in run time when that happens
   sceneModel = new SceneModel({
+    registry: ModelRegistry,
     loopEngine,
-    inputs$: [
-      { name: 'graph', source$: graphModel.out({}) },
-      { name: 'entity', source$: entityCollection.out({}) },
+    collections: [
+      { name: ModelTypes.GRAPH, }, //source$: graphModel.out({}) },
+      { name: ModelTypes.ENTITIES, }, //source$: entityCollection.out({}) },
     ],
+    // inputs$: [
+    //   { name: 'graph', source$: graphModel.out({}) },
+    //   { name: 'entity', source$: entityCollection.out({}) },
+    // ],
   });
+  
+  entityCollection = sceneModel.getColl(ModelTypes.ENTITIES)
+  graphModel = sceneModel.getColl(ModelTypes.GRAPH)
+  
+  
   
   canvasEl = document.querySelector('#canvas');
   svgCanvas = new SVGCanvas(canvasEl);
@@ -459,9 +474,9 @@ export const runCanvas = async (mapId) => {
     .subscribe(async ({ id, data }) => {
       const { newObjectId, point, objectIds } = data
       const newOccupant = entityCollection.get(newObjectId)
-    
+      
       console.warn('COLLISIONS', { newObjectId, point, objectIds })
-    
+      
       if (!newOccupant || newOccupant.type !== 'dark-sun') {
         return
       }

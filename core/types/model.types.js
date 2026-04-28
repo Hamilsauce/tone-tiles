@@ -3,4 +3,6 @@ export const ModelTypes = {
   NODE: Symbol('NODE'),
   TELEPORTER: Symbol('TELEPORTER'),
   DARKSUN: Symbol('DARKSUN'),
+  ENTITIES: Symbol('ENTITIES'),
+  GRAPH: Symbol('GRAPH'),
 };

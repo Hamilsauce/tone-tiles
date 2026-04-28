@@ -47,7 +47,7 @@ const createNodeData = (overrides = {}) => {
   };
 };
 
-class Graph extends Collection {
+export class Graph extends Collection {
   #id = null;
   #name = 'Untitled';
   #meta = {};
@@ -60,7 +60,7 @@ class Graph extends Collection {
   #goalNode;
   #startNode;
   
-  constructor(map = [], options = {}) {
+  constructor({ map = [], ...options } = {}) {
     super(options);
     
     if (map && map.length) {
@@ -627,7 +627,7 @@ const getGraph = ({ loopEngine }) => {
 
 export const getTraversal = () => {
   if (!graph) {
-    getGraph();
+    getGraph({});
   }
   
   return (startPoint = graph.startNode?.point, getGoalPoint = () => graph.goalNode?.point) => {

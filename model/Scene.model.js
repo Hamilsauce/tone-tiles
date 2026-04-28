@@ -1,3 +1,6 @@
+import { CollectionRegistry } from '../core/types/collection-registry.js';
+// import { ModelRegistry } from '../core/types/model-registry.js';
+
 import { createConnectionBus } from '../core/create-connection.js';
 import { rxjs } from 'rxjs';
 // import { audioEngine } from '../audio/index.js';
@@ -7,10 +10,17 @@ const { map, tap, scan, shareReplay, withLatestFrom } = operators;
 
 export class SceneModel {
   #inputs
+  #collections = new Map();
   
-  constructor({ inputs$ = [], loopEngine }) {
+  constructor({ registry, inputs$ = [], loopEngine, collections = [] }) {
     this.loopEngine = loopEngine
+    this.registry = registry
+    
     this.#inputs = createConnectionBus(this);
+    
+    collections.forEach(({ name }) => {
+      this.createCollection(name, {})
+    });
     
     inputs$.forEach(({ name, source$ }) => {
       this.in({ name, source$ })
@@ -45,11 +55,36 @@ export class SceneModel {
     ) // .subscribe();
   };
   
-  in(options) { /* placeholder for cxn bus */}
+  in(options) { /* placeholder for cxn bus */ }
   
-  out(options) { /* placeholder for cxn bus */}
+  out(options) { /* placeholder for cxn bus */ }
   
-  createCollection(name, options = {}) {
-    
+  getColl(name, options = {}) {
+    return this.#collections.get(name)
   }
+  
+  createCollection(name, options) {
+    const CollectionClass = CollectionRegistry.get(name);
+
+    if (!CollectionClass) {
+      const typeLabel = typeof type === 'symbol' ?
+        (type.description ?? type.toString()) :
+        String(type);
+      throw new Error(`Unknown Coll type: ${typeLabel}`);
+    }
+    
+    const coll = new CollectionClass({
+      ...options,
+      registry: this.registry,
+      loopEngine: this.loopEngine,
+    });
+    
+    this.#collections.set(name, coll);
+    
+    this.in({ name, source$: coll.out({}) })
+    coll.in({ name, source$: this.out({}) })
+    
+    return coll;
+  }
+  
 }

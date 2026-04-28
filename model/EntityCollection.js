@@ -1,4 +1,4 @@
-import { ModelRegistry } from '../core/types/model-registry.js';
+// import { ModelRegistry } from '../core/types/model-registry.js';
 import { ModelTypes } from '../core/types/model.types.js';
 import { Collection } from '../model/Collection.js';
 
@@ -17,8 +17,8 @@ const createEntityId = (typeName = 'entity') => {
 };
 
 export class EntityCollection extends Collection {
-  constructor({ registry = ModelRegistry, loopEngine } = {}) {
-    super({ registry, loopEngine });
+  constructor(options = {}) {
+    super({ ...options });
   }
   
   get entities() {
