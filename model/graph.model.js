@@ -63,6 +63,12 @@ export class Graph extends Collection {
   constructor({ map = [], ...options } = {}) {
     super(options);
     
+    // TraverserModel resolves its traversal generator through the module-level
+    // graph reference below. Before the SceneModel refactor, run-canvas always
+    // initialized that singleton via getGraph(). When Graph is constructed
+    // directly as a collection, keep the active traversal graph in sync here.
+    graph = this;
+    
     if (map && map.length) {
       this.fromMap(map);
     }
