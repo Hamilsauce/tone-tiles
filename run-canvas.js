@@ -1,3 +1,8 @@
+import './model/index.js'
+import { ModelRegistry } from './core/types/model-registry.js';
+import { CollectionRegistry } from './core/types/collection-registry.js';
+import { ModelTypes } from './core/types/model.types.js';
+
 import { getDirectionFromPoints } from './core/spatial/utils.js';
 import getGraphModel from './model/graph.model.js';
 import { SceneModel } from './model/index.js';
@@ -104,17 +109,27 @@ export const runCanvas = async (mapId) => {
   const { isRunning, setCurrentNode } = useAppState();
 
   // TODO - Move into scene/init
-  graphModel = getGraphModel({ loopEngine });
-  entityCollection = new EntityCollection({ loopEngine });
+  // graphModel = getGraphModel({ loopEngine, registry: ModelRegistry });
+  // entityCollection = new EntityCollection({ loopEngine, registry: ModelRegistry });
 
   // will be init'd in run time when that happens
   sceneModel = new SceneModel({
+    registry: ModelRegistry,
     loopEngine,
-    inputs$: [
-      { name: 'graph', source$: graphModel.out({}) },
-      { name: 'entity', source$: entityCollection.out({}) },
+    collections: [
+      { name: ModelTypes.GRAPH, }, //source$: graphModel.out({}) },
+      { name: ModelTypes.ENTITIES, }, //source$: entityCollection.out({}) },
     ],
+    // inputs$: [
+    //   { name: 'graph', source$: graphModel.out({}) },
+    //   { name: 'entity', source$: entityCollection.out({}) },
+    // ],
   });
+
+  entityCollection = sceneModel.getColl(ModelTypes.ENTITIES)
+  graphModel = sceneModel.getColl(ModelTypes.GRAPH)
+
+
 
   canvasEl = document.querySelector('#canvas');
   svgCanvas = new SVGCanvas(canvasEl);
@@ -293,7 +308,45 @@ export const runCanvas = async (mapId) => {
 
   let neighborIndex = 0;
 
-  const unsubscribeActorMove = sceneModel.out({ type: 'traversal:move', filter: ({ id }) => id === 'actor1'  })
+  const collisions$ = new Subject();
+
+  // sceneModel.in({ name: 'collisions', source$: collisions$ });
+
+  const unsubscribeDarkSunCollision = sceneModel.out({ type: 'collision:dark-sun' })
+    .subscribe(async ({ darkSunId }) => {
+      const ds = entityCollection.get(darkSunId)
+      const dso = objectLayer.get(darkSunId)
+      // console.warn('dso', {dso})
+      dso.toggle({ recoiling: true }, 200)
+
+
+      audioNote1(null, {
+        forceNewNote: true,
+        frequency: 180,
+        velocity: 0.2,
+      });
+
+      await sleep(25)
+
+      audioNote1(null, {
+        forceNewNote: true,
+        frequency: 275,
+        velocity: 0.15,
+      });
+
+      await sleep(25)
+
+      audioNote1(null, {
+        forceNewNote: true,
+        frequency: 325,
+        velocity: 0.2,
+      });
+
+      entityCollection.get(darkSunId)?.reverseCourse?.();
+    });
+
+  const unsubscribeActorMove = sceneModel.out({ type: 'traversal:move' })
+    .pipe(filter(({ id }) => id === 'actor1'))
     .subscribe(async ({ id, point, prevPoint }) => {
       // need to separate Actor Model from canvas object
       // have actor1 model emit this, and then
@@ -309,6 +362,33 @@ export const runCanvas = async (mapId) => {
       }
 
       graphModel.moveObject(id, point, prevPoint);
+
+      if (node.objectCount > 1) {
+        let darkSunId = null;
+        let actorId = null;
+
+        for (const objId of node.objectIds) {
+          const obj = entityCollection.get(objId);
+
+          if (!darkSunId && obj?.type === 'dark-sun') {
+            darkSunId = objId;
+          }
+
+          if (!actorId && obj?.type === 'actor') {
+            actorId = objId;
+          }
+        }
+
+        if (darkSunId && actorId && [darkSunId, actorId].includes(id)) {
+          collisions$.next({
+            type: 'collision:dark-sun',
+            point,
+            node,
+            darkSunId,
+            actorId,
+          });
+        }
+      }
 
       let _neighbors = [...graphModel.getNeighbors(node).entries()];
       let n1 = _neighbors.slice(0, neighborIndex);
@@ -346,7 +426,8 @@ export const runCanvas = async (mapId) => {
 
     });
 
-  const unsubscribeDarkSunMove = sceneModel.out({ type: 'traversal:move', filter: ({ id }) => id === 'darksun1' })
+  const unsubscribeDarkSunMove = sceneModel.out({ type: 'traversal:move' })
+    .pipe(filter(({ id }) => id === 'darksun1'))
     .subscribe(async ({ id, point, prevPoint }) => {
       // need to separate Actor Model from canvas object
       // have actor1 model emit this, and then
@@ -356,6 +437,33 @@ export const runCanvas = async (mapId) => {
       const entity = entityCollection.get(id);
 
       graphModel.moveObject(id, point, prevPoint);
+
+      if (node.objectCount > 1) {
+        let darkSunId = null;
+        let actorId = null;
+
+        for (const objId of node.objectIds) {
+          const obj = entityCollection.get(objId);
+
+          if (!darkSunId && obj?.type === 'dark-sun') {
+            darkSunId = objId;
+          }
+
+          if (!actorId && obj?.type === 'actor') {
+            actorId = objId;
+          }
+        }
+
+        if (darkSunId && actorId && [darkSunId, actorId].includes(id)) {
+          collisions$.next({
+            type: 'collision:dark-sun',
+            point,
+            node,
+            darkSunId,
+            actorId,
+          });
+        }
+      }
 
       objectLayer.get(id)?.update({ point: node.point });
     });
@@ -590,12 +698,12 @@ export const runCanvas = async (mapId) => {
     unsubscribeSelectionBox();
     entityCollection.get('actor1')?.destroy();
     loopEngine.destroy();
-    unsubscribeMapLoad();
-    unsubscribeEntityCreate();
-    unsubscribeNodeUpdates();
-    unsubscribeActorMove();
-    unsubscribeActorTravel();
-    unsubscribeDarkSunCollision();
+    unsubscribeMapLoad.unsubscribe();
+    unsubscribeEntityCreate.unsubscribe();
+    unsubscribeNodeUpdates.unsubscribe();
+    unsubscribeActorMove.unsubscribe();
+    unsubscribeActorTravel.unsubscribe();
+    unsubscribeDarkSunCollision.unsubscribe();
     unwatch();
     svgCanvas.destroy();
     svgCanvas = null;

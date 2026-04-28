@@ -12,6 +12,7 @@ export const AppHeader = defineComponent(
     
     const appStore = useAppState();
     const frameRate = appStore.frameRate
+    const traversalEffectsEnabled = appStore.traversalEffectsEnabled;
     const mapStore = useMapStore();
     const mapState = mapStore.mapState
     const mapNameRef = ref('mapName');
@@ -33,10 +34,23 @@ export const AppHeader = defineComponent(
       router.push({ name: RouteName.mapList }) //, params: { id: route.value.params.id ?? undefined } })
     };
     
+    const handleToggleTraversalEffects = () => {
+      appStore.toggleTraversalEffects();
+    };
+    
     // watch(frameRateFormatted, (fps) => {
     //   console.warn('WATCHER frameRateFormatted', frameRateFormatted.value)
     // }, { immediate: true })
     
-    return { frameRateFormatted, shouldDisplay, handleChangeMap, handleMapNameChange, mapName, handleNewMap }
+    return {
+      frameRateFormatted,
+      shouldDisplay,
+      traversalEffectsEnabled,
+      handleChangeMap,
+      handleMapNameChange,
+      handleNewMap,
+      handleToggleTraversalEffects,
+      mapName,
+    }
   }, {},
 )

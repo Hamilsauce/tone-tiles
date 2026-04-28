@@ -1,8 +1,8 @@
 import { ModelTypes } from './model.types.js';
-// import { ActorModel } from '../model/ActorModel';
+import { ActorModel } from '../../model/Actor.model.js';
 // import { GraphNodeModel } from '../model/GraphNodeModel';
 import {
-  ActorModel,
+  // ActorModel,
   GraphNodeModel,
   TeleporterModel,
   DarkSunModel,

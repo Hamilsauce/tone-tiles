@@ -3,6 +3,7 @@ import { ref, computed, watch, reactive } from 'vue'
 const isRunningState = ref(true);
 const frameRateState = ref(0);
 const currentNodeState = ref(null);
+const traversalEffectsEnabledState = ref(false);
 
 
 export const useAppState = () => {
@@ -25,13 +26,30 @@ export const useAppState = () => {
     currentNodeState.value = node;
   };
   
+  const setTraversalEffectsEnabled = (value) => {
+    if (typeof value !== 'boolean') {
+      console.error(`setTraversalEffectsEnabled called invalid value: ${value}`)
+      
+      return;
+    }
+    
+    traversalEffectsEnabledState.value = value;
+  };
+  
+  const toggleTraversalEffects = () => {
+    setTraversalEffectsEnabled(!traversalEffectsEnabledState.value);
+  };
+  
   return {
     setRunning,
     setFrameRate,
+    setTraversalEffectsEnabled,
+    toggleTraversalEffects,
     
     setCurrentNode,
     currentNode: computed(() => currentNodeState.value || {}),
     isRunning: computed(() => isRunningState.value),
     frameRate: computed(() => frameRateState.value),
+    traversalEffectsEnabled: computed(() => traversalEffectsEnabledState.value),
   }
 };

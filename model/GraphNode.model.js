@@ -23,13 +23,13 @@ const DetaultGraphNodeProperties = {
 
 export class GraphNodeModel extends SpatialModel {
   #objects = new Set();
-  
+
   constructor(options = {}) {
     const properties = {
       ...DetaultGraphNodeProperties,
       ...(options.properties ?? {}),
     };
-    
+
     super({
       ...options,
       id: options.id ?? properties.id,
@@ -38,38 +38,38 @@ export class GraphNodeModel extends SpatialModel {
       properties,
     });
   }
-  
+
   get linkedMap() { return this.properties.linkedMap; }
-  
+
   get current() { return this.properties.current; }
-  
+
   get active() { return this.properties.active; }
-  
+
   get selected() { return this.properties.selected; }
-  
+
   get tileType() { return this.properties.tileType; }
-  
+
   set tileType(v) { this.properties.tileType = v; }
-  
+
   get isTraversable() { return TRAVERSABLE_TILE_TYPES.includes(this.properties.tileType); }
-  
+
   get address() { return `${this.x}_${this.y}`; }
-  
+
   get linkedNodeAddress() { return this.properties.target ? [this.properties.target.x, this.properties.target.y].join('_') : null; }
-  
+
   get target() { return this.properties.target; }
-  
+
   set target(v) { this.properties.target = v; }
-  
+
   get isOccupied() { return !!this.#objects.size; }
-  
+
   get objectCount() { return this.#objects.size; }
-  
+
   get objectIds() { return [...this.#objects]; }
-  
+
   addObject(id) {
     this.#objects.add(id);
-    
+
     if (this.objectCount > 1) {
       this.emit({
         type: 'collision',
@@ -81,21 +81,21 @@ export class GraphNodeModel extends SpatialModel {
       });
     }
   }
-  
+
   deleteObject(id) {
     this.#objects.delete(id);
-    
+
     this.emit({
       type: 'node:update',
       id: this.id,
       data: { occupied: this.isOccupied },
     });
   }
-  
+
   hasProp(key) {
     return this.properties[key] !== undefined;
   }
-  
+
   linkToNode({ x, y }) {
     this.properties.target = { x, y };
   }

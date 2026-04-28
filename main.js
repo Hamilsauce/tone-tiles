@@ -1,3 +1,5 @@
+import './model/index.js'
+
 import { createApp, ref } from 'vue';
 import { App } from './ui/App.js';
 import { router } from './router/router.js';
