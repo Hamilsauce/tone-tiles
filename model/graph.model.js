@@ -3,6 +3,7 @@ import { EventEmitter } from 'https://hamilsauce.github.io/hamhelper/event-emitt
 import { Point } from '../core/spatial/Point.js';
 import { Collection } from '../model/Collection.js';
 import { ModelTypes } from '../core/types/model.types.js';
+import { useAppState } from '../store/app.store.js';
 
 import { getDirectionFromPoints, getLinkCoords, DIRECTIONS } from '../core/spatial/utils.js';
 import { TILE_TYPE_INDEX, TileTypes } from '../core/tile-utils.js';
@@ -45,6 +46,26 @@ const createNodeData = (overrides = {}) => {
     id: overrides.id ?? address,
     address: overrides.address ?? address,
   };
+};
+
+const scheduleTraversalHighlight = (neighbor, cnt1, cnt2) => {
+  const { traversalEffectsEnabled } = useAppState();
+  
+  if (!traversalEffectsEnabled.value) {
+    return;
+  }
+  
+  setTimeout(() => {
+    neighbor.update({
+      highlight: true
+    });
+    
+    setTimeout(() => {
+      neighbor.update({
+        highlight: false
+      });
+    }, 1500);
+  }, 0 + ((25 * cnt1)) + ((25 * cnt2)));
 };
 
 export class Graph extends Collection {
@@ -357,19 +378,7 @@ export class Graph extends Collection {
 
         for (const [dir, neighbor] of neighbors) {
           queue.push([...path, neighbor]);
-
-          // demo traversal effects
-          // setTimeout(() => {
-          //   neighbor.update({
-          //     ['highlight']: true
-          //   });
-
-          //   setTimeout(() => {
-          //     neighbor.update({
-          //       ['highlight']: false
-          //     });
-          //   }, 1500);
-          // }, 0 + ((25 * cnt1)) + ((25 * cnt2)));
+          scheduleTraversalHighlight(neighbor, cnt1, cnt2);
 
           cnt2++;
         }
