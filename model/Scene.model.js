@@ -22,9 +22,9 @@ export class SceneModel {
       this.createCollection(name, {})
     });
     
-    // inputs$.forEach(({ name, source$ }) => {
-    //   this.in({ name, source$ })
-    // });
+    inputs$.forEach(({ name, source$ }) => {
+      this.in({ name, source$ })
+    });
     
     const worldState$ = this.out({}).pipe(
       scan((state, event) => {
@@ -64,33 +64,29 @@ export class SceneModel {
   }
   
   createCollection(name, options) {
-    try {
-      
-      
-      const CollectionClass = CollectionRegistry.get(name);
-      
-      if (!CollectionClass) {
-        const typeLabel = typeof type === 'symbol' ?
-          (type.description ?? type.toString()) :
-          String(type);
-        throw new Error(`Unknown Coll type: ${typeLabel}`);
-      }
-      
-      const coll = new CollectionClass({
-        ...options,
-        registry: this.registry,
-        loopEngine: this.loopEngine,
-      });
-      
-      this.#collections.set(name, coll);
-      
-      this.in({ name, source$: coll.out({}) })
-      coll.in({ name, source$: this.out({}) })
-      
-      return coll;
-    } catch (e) {
-      console.warn(e)
+    const CollectionClass = CollectionRegistry.get(name);
+    
+    if (!CollectionClass) {
+      const typeLabel = typeof name === 'symbol' ?
+        (name.description ?? name.toString()) :
+        String(name);
+      throw new Error(`Unknown Coll type: ${typeLabel}`);
     }
+    
+    const coll = new CollectionClass({
+      ...options,
+      registry: this.registry,
+      loopEngine: this.loopEngine,
+    });
+    
+    this.#collections.set(name, coll);
+    
+    // SceneModel is an event aggregator for collection output.
+    // Re-emitting scene output back into the same collection creates a
+    // synchronous feedback loop through ConnectionBus and freezes startup.
+    this.in({ name, source$: coll.out({}) })
+    
+    return coll;
   }
   
 }
