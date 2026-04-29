@@ -124,7 +124,7 @@ export const runCanvas = async (mapId) => {
     }
   })
   
-  scene = runtime.scene;
+  sceneModel = runtime.scene;
   entityCollection = sceneModel.getColl(ModelTypes.ENTITIES);
   graphModel = sceneModel.getColl(ModelTypes.GRAPH);
   

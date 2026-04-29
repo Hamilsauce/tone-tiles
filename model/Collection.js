@@ -1,4 +1,3 @@
-import { ModelRegistry } from '../core/types/model-registry.js';
 import { createConnectionBus } from '../core/create-connection.js';
 
 export class Collection {

@@ -1,10 +1,6 @@
 import '../model/index.js';
 
-import { ModelTypes } from '../core/types//model.types.js';
-
-import { ModelRegistry } from '../core/types/model-registry.js';
-import { CollectionRegistry } from '../core/types/collection-registry.js';
-// import { ModelTypes } from './core/types/model.types.js';
+import { ModelTypes } from '../core/types/model.types.js';
 
 import { SceneModel } from '../model/Scene.model.js';
 import { LoopEngine } from '../core/loop-engine/index.js';
@@ -23,6 +19,12 @@ export class Runtime {
     mapStore = null,
     config = {},
   }) {
+    const runtimeConfig = {
+      ...defaultConfig,
+      ...config,
+      collections: config.collections ?? defaultConfig.collections,
+    };
+
     this.appStore = appStore;
     this.mapStore = mapStore;
     this.audioEngine = audioEngine;
@@ -33,12 +35,8 @@ export class Runtime {
     
     
     this.scene = new SceneModel({
-      // registry: ModelRegistry,
       loopEngine: this.loopEngine,
-      collections: [
-        { name: ModelTypes.GRAPH, },
-        { name: ModelTypes.ENTITIES, },
-      ],
+      collections: runtimeConfig.collections,
     });
     
   };
