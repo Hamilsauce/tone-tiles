@@ -581,7 +581,7 @@ export const runCanvas = async (mapId) => {
     if (isSelectingLinkTile) {
       // handleTileLinkSelect(e);
     } else if (isRunning.value) {
-      blurContextMenu();
+      // blurContextMenu();
       handleTileClick(e);
     } else {
       handleEditTileClick(targetNode);
