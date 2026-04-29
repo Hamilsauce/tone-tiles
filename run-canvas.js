@@ -288,21 +288,22 @@ export const runCanvas = async (mapId) => {
   
   subscriptions.set(
     'actorTravel',
-    entityCollection.out({ type: 'traversal:start', filter: ({ id }) => id === 'darksun1' }).subscribe(async ({ point, goalPoint }) => {
+    entityCollection.out({ type: 'traversal:start' })
+    .subscribe(async ({ id, point, goalPoint }) => {
       const curr = graphModel.getNodeAtPoint(point);
-      audioNote1(curr, { forceNewNote: true });
+      
+      if (id === 'darksun1') {
+        audioNote1(curr, { forceNewNote: true, frequency: 300, velocity: 0.2 });
+        await sleep(75);
+        audioNote1(curr, { forceNewNote: true, frequency: 400, velocity: 0.2 });
+        await sleep(50);
+        audioNote1(curr, { forceNewNote: true, frequency: 520, velocity: 0.8 });
+        
+      }
     })
   );
   
   let neighborIndex = 0;
-  
-  subscriptions.set(
-    'actorTravel',
-    entityCollection.out({ type: 'traversal:start', filter: ({ id }) => id === 'darksun1' }).subscribe(async ({ point, goalPoint }) => {
-      const curr = graphModel.getNodeAtPoint(point);
-      audioNote1(curr, { forceNewNote: true });
-    })
-  );
   
   subscriptions.set(
     'actorMove',
@@ -391,7 +392,7 @@ export const runCanvas = async (mapId) => {
       
       audioNote1(null, {
         forceNewNote: true,
-        frequency: 180,
+        frequency: 220,
         velocity: 0.3,
       });
       
