@@ -172,19 +172,22 @@
   
   } */
   
-  10% {
+  45% {
     /* filter: hue-rotate(0deg); */
     fill: #FFFFFFCC;
-    /* fill: #FFFFFF38; */
+   fill: #FFFFFF3D;
+
 
     /* filter: hue-rotate(-240deg); */
 
 
   }
 
-  25% {
+  80% {
     /* filter: hue-rotate(0deg); */
-    fill: #FFFFFF38;
+    fill: #FFFFFF00;
+   fill: #FFFFFFA3;
+
     /* fill: #FFFFFFCC; */
 
     /* filter: hue-rotate(-240deg); */

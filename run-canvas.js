@@ -302,34 +302,49 @@ export const runCanvas = async (mapId) => {
         if (!actor1) return;
         const point = event.point ?? actor1Model.currentPoint;
         actor1.update({ x: point.x, y: point.y });
-        
-        graphModel
-          .findAll({ active: true })
-          .forEach(_ => _.update({ active: false }));
       }
     })
   );
+  
+  const darkSunNotes = [
+    { frequency: 246.94, velocity: 0.175 },
+    { frequency: 329.25, velocity: 0.125 },
+    { frequency: 234.96, velocity: 0.15 },
+  ]
+  const cMajorTriad = [
+    { frequency: 261.63, velocity: 0.175 },
+    { frequency: 329.63, velocity: 0.125 },
+    { frequency: 392, velocity: 0.15 },
+  ]
   
   subscriptions.set(
     'darksunTravel',
     entityCollection.out({
       type: 'traversal:start',
-      filter: ({ id, type }) => {
-        return entityCollection.get(id).type === 'dark-sun'
-      }
-    })
-    .subscribe(async ({ id, point, goalPoint }) => {
+      filter: ({ id, type }) => entityCollection.get(id).type === 'dark-sun'
+    }).subscribe(async ({ id, point, goalPoint }) => {
       const entity = entityCollection.get(id);
       const curr = graphModel.getNodeAtPoint(point);
+
+      graphModel.findNode(n => n.active === true)?.update({ active: false });
       
-      // if (id === 'darksun1') {
-      audioNote1(curr, { forceNewNote: true, frequency: 300, velocity: 0.2 });
-      await sleep(75);
-      audioNote1(curr, { forceNewNote: true, frequency: 400, velocity: 0.15 });
-      await sleep(125);
-      audioNote1(curr, { forceNewNote: true, frequency: 520, velocity: 0.15 });
       
-      // }
+      for (let { frequency, velocity } of darkSunNotes) {
+        const index = darkSunNotes.findIndex(_ => _.frequency === frequency)
+        const mod = index * 3
+        const delay = mod * 25
+        
+        await sleep(delay);
+        
+        audioNote1(curr, { forceNewNote: true, frequency, velocity });
+        
+      }
+      
+      // audioNote1(curr, { forceNewNote: true, frequency: 300, velocity: 0.15 });
+      // await sleep(75);
+      // audioNote1(curr, { forceNewNote: true, frequency: 400, velocity: 0.15 });
+      // await sleep(100);
+      // audioNote1(curr, { forceNewNote: true, frequency: 490, velocity: 0.15 });
     })
   );
   
@@ -339,12 +354,24 @@ export const runCanvas = async (mapId) => {
     'actorTravel',
     entityCollection.out({
       type: 'traversal:start',
-      filter: ({ id, type }) => {
-        return entityCollection.get(id).type === 'actor'
-      }
+      filter: ({ id, type }) => entityCollection.get(id).type === 'actor',
     }).subscribe(async ({ point, goalPoint }) => {
       const curr = graphModel.getNodeAtPoint(point);
-      audioNote1(curr, { forceNewNote: true });
+      const goal = graphModel.getNodeAtPoint(goalPoint);
+    
+      graphModel.findAny({ active: true })
+        .forEach(_ => _.active === false)
+      
+      goal.update({ active: true });
+      audioNote1(curr, { forceNewNote: true, frequency: cMajorTriad[0].frequency, velocity: 0.3 });
+      await sleep(50);
+      
+      // audioNote1(curr, { forceNewNote: true, frequency: cMajorTriad[1].frequency, velocity: 0.2 });
+      // await sleep(85);
+      
+      audioNote1(curr, { forceNewNote: true, frequency: cMajorTriad[2].frequency, velocity: 0.2 });
+      
+      // audioNote1(curr, { forceNewNote: true });
     })
   );
   
@@ -378,7 +405,7 @@ export const runCanvas = async (mapId) => {
       setCurrentNode(node.data());
       
       if (entity.type === 'actor') {
-        audioNote1(node);
+        audioNote1(node, {});
       }
       
       objectLayer.get(id)?.update({ point: node.point });
@@ -412,8 +439,7 @@ export const runCanvas = async (mapId) => {
       filter: ({ id, type }) => {
         return entityCollection.get(id).type === 'dark-sun'
       }
-    })
-    .subscribe(async ({ id, point, prevPoint }) => {
+    }).subscribe(async ({ id, point, prevPoint }) => {
       const dir = getDirectionFromPoints(point, prevPoint);
       const node = graphModel.getNodeAtPoint(point);
       const entity = entityCollection.get(id);

@@ -172,7 +172,7 @@
       amp.connect(delay);
       
       function glideTo(osc, f) {
-        osc.frequency.setTargetAtTime(f, time, glide);
+        osc.frequency.setValueAtTime(f, time, glide);
       }
       
       if (type === "mono") {
