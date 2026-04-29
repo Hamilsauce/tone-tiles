@@ -39,6 +39,9 @@ export class Runtime {
       collections: runtimeConfig.collections,
     });
     
+    this.loopEngine.start()
+
+    
   };
   // get prop() { return this._prop };
   // set prop(newValue) { this._prop = newValue };

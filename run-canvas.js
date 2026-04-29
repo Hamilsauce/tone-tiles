@@ -102,9 +102,9 @@ export const runCanvas = async (mapId) => {
   let selectMapById;
   const subscriptions = new Map();
   
-  const loopEngine = new LoopEngine({
-    audioContext: audioEngine.ctx,
-  });
+  // const loopEngine = new LoopEngine({
+  //   audioContext: audioEngine.ctx,
+  // });
   
   
   const appStore = useAppState();
@@ -125,6 +125,7 @@ export const runCanvas = async (mapId) => {
   })
   
   sceneModel = runtime.scene;
+ const loopEngine = runtime.loopEngine;
   entityCollection = sceneModel.getColl(ModelTypes.ENTITIES);
   graphModel = sceneModel.getColl(ModelTypes.GRAPH);
   
@@ -264,7 +265,6 @@ export const runCanvas = async (mapId) => {
     'actorRender',
     entityCollection.out({ type: 'actor', filter: ({ id }) => id === 'actor1' }).subscribe((event) => {
       const actor1Model = entityCollection.get('actor1');
-      
       if (event.type === 'actor:update') {
         if (!actor1) return;
         
@@ -330,8 +330,6 @@ export const runCanvas = async (mapId) => {
       const dir = getDirectionFromPoints(point, prevPoint);
       const node = graphModel.getNodeAtPoint(point);
       const entity = entityCollection.get(id);
-
-console.warn('actor1 move', actor1)   
       
       if (node.linkedMap) {
         const { linkedMap } = node;
@@ -463,7 +461,7 @@ console.warn('actor1 move', actor1)
   
   //! end 1bindings
   
-  loopEngine.start();
+  // loopEngine.start();
   
   const blurContextMenu = (e) => {
     const edgeLines = [...objectLayer.dom.querySelectorAll('.edge-line')];
@@ -481,8 +479,8 @@ console.warn('actor1 move', actor1)
   };
   
   const handleTileClick = async ({ type, detail }) => {
+    
     if (!isRunning.value) return;
-    console.warn('handleTileClick', detail)
     if (contextMenu.isVisible) {
       blurContextMenu();
       return;
