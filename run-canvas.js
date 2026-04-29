@@ -304,7 +304,7 @@ export const runCanvas = async (mapId) => {
   );
   
   subscriptions.set(
-    'actorTravel',
+    'darksunTravel',
     entityCollection.out({ type: 'traversal:start', filter: ({ id }) => id === 'darksun1' }).subscribe(async ({ point, goalPoint }) => {
       const curr = graphModel.getNodeAtPoint(point);
       audioNote1(curr, { forceNewNote: true });
@@ -315,7 +315,7 @@ export const runCanvas = async (mapId) => {
   
   subscriptions.set(
     'actorTravel',
-    entityCollection.out({ type: 'traversal:start', filter: ({ id }) => id === 'darksun1' }).subscribe(async ({ point, goalPoint }) => {
+    entityCollection.out({ type: 'traversal:start', filter: ({ id }) => id === 'actor1' }).subscribe(async ({ point, goalPoint }) => {
       const curr = graphModel.getNodeAtPoint(point);
       audioNote1(curr, { forceNewNote: true });
     })
@@ -330,6 +330,8 @@ export const runCanvas = async (mapId) => {
       const dir = getDirectionFromPoints(point, prevPoint);
       const node = graphModel.getNodeAtPoint(point);
       const entity = entityCollection.get(id);
+
+console.warn('actor1 move', actor1)   
       
       if (node.linkedMap) {
         const { linkedMap } = node;
@@ -480,7 +482,7 @@ export const runCanvas = async (mapId) => {
   
   const handleTileClick = async ({ type, detail }) => {
     if (!isRunning.value) return;
-    
+    console.warn('handleTileClick', detail)
     if (contextMenu.isVisible) {
       blurContextMenu();
       return;
@@ -500,7 +502,7 @@ export const runCanvas = async (mapId) => {
     }
     
     const goalNode = graphModel.getNodeByAddress(detail.id);
-    
+    console.warn('goalNode', goalNode)
     if (!goalNode || !goalNode.isTraversable) {
       console.warn('NO GOAL OR GOAL NOT TRAVERSABLE. Early return');
       console.warn(goalNode?.id, goalNode?.isTraversable);
