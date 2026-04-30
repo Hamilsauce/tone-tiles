@@ -28,7 +28,7 @@ export const DEFAULT_TRANSFORMS = [{
 },
 {
   type: 'rotate',
-  values: [0, 0, 0],
+  values: [0, 0.0, 0.0],
   position: 1,
 },
 {
@@ -36,6 +36,27 @@ export const DEFAULT_TRANSFORMS = [{
   values: [1, 1],
   position: 2,
 }];
+
+export const DEFAULT_TRANSFORM_MAP = DEFAULT_TRANSFORMS
+  .reduce((acc, curr, i) => {
+    return { ...acc, [curr.type]: curr }
+  }, {});
+
+// export const DEFAULT_TRANSFORM_MAP = [{
+//   type: 'translate',
+//   values: [0, 0],
+//   position: 0,
+// },
+// {
+//   type: 'rotate',
+//   values: [0, 0, 0],
+//   position: 1,
+// },
+// {
+//   type: 'scale',
+//   values: [1, 1],
+//   position: 2,
+// }];
 
 const transformTypeMap = new Map([
   ['translate', SVGTransform.SVG_TRANSFORM_TRANSLATE],
@@ -56,12 +77,13 @@ export class TransformList {
   };
   
   init(transforms = []) {
+    // console.warn('transforms', transforms)
     transforms.forEach(({ type, values }, i) => {
       if (type?.toLowerCase() === 'rotate') {
         const [deg = 0, x = 0, y = 0] = values || [];
         this.#rotation = { deg, x, y };
       }
-
+      
       const t = this.createTransform(type, ...(values || []))
       
       if (i === 0) {

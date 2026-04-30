@@ -7,6 +7,7 @@ import { initHueRoto } from '../lib/hue-rotato.js';
 import { CanvasScene } from '../canvas/CanvasScene.js';
 import { TileObject } from '../canvas/TileObject.js';
 import { DarkSun } from '../canvas/DarkSun.js';
+import { TransformList, DEFAULT_TRANSFORM_MAP, DEFAULT_TRANSFORMS } from './TransformList.js';
 
 const { getPanZoom, template, utils, download, TwoWayMap } = ham;
 
@@ -14,6 +15,55 @@ const { fromEvent, operators } = rxjs;
 const { filter, map, tap } = operators;
 let hasInitViewBox = false;
 const DRAG_DISTANCE_THRESHOLD = 4;
+
+const TEMPLATE_CONFIG = {
+  'context-menu': {
+    withHarness: false,
+    transforms: {
+      spatial: ['translate', 'rotate', 'scale'],
+      visual: [],
+    },
+  },
+  group: {
+    withHarness: false,
+    transforms: {
+      spatial: ['translate'],
+      visual: [],
+    },
+  },
+  layer: {
+    withHarness: false,
+    transforms: {
+      spatial: ['translate'],
+      visual: [],
+    },
+  },
+  
+  tile: {
+    withHarness: false,
+    transforms: {
+      spatial: ['translate'],
+      visual: [],
+    },
+  },
+  
+  actor: {
+    withHarness: true,
+    transforms: {
+      spatial: ['translate'],
+      visual: ['rotate', 'scale'],
+    },
+  },
+  
+  'dark-sun': {
+    withHarness: true,
+    transforms: {
+      spatial: ['translate'],
+      visual: ['rotate', 'scale'],
+    },
+  },
+};
+
 
 export class SVGCanvas extends EventTarget {
   #self = null;
@@ -23,12 +73,15 @@ export class SVGCanvas extends EventTarget {
   #pointerDown = null;
   #didDrag = false;
   #suppressNextClick = false;
+  #harnessTemplate = null;
   
   
   constructor(svg) {
     super();
     
     this.#self = svg;
+    // this.#harnessTemplate = this.#self.querySelector(`[data-template="canvas-harness"]`).cloneNode(true);
+    
     this.hueRotato = initHueRoto(this.#self);
     
     
@@ -44,12 +97,14 @@ export class SVGCanvas extends EventTarget {
     {
       name: 'tile',
       id: 'tile-layer',
-      transforms: [{ type: 'translate', values: [0.5, 0.5], position: 0 }]
+      transforms: { translate: DEFAULT_TRANSFORM_MAP.translate },
+      // transforms: [{ type: 'translate', values: [0.5, 0.5], position: 0 }]
     },
     {
       name: 'object',
       id: 'object-layer',
-      transforms: [{ type: 'translate', values: [0.5, 0.5], position: 0 }]
+      transforms: { translate: DEFAULT_TRANSFORM_MAP.translate },
+      // transforms: [{ type: 'translate', values: [0.5, 0.5], position: 0 }]
     }]);
     
     this.viewport.append(this.#scene.dom);
@@ -190,6 +245,7 @@ export class SVGCanvas extends EventTarget {
     );
     
     this.toggleScroll = this.#toggleScroll.bind(this);
+    
     this.pointerDownDOMSubscription = this.pointerDownDOM$.subscribe();
     this.pointerMoveDOMSubscription = this.pointerMoveDOM$.subscribe();
     this.pointerUpDOMSubscription = this.pointerUpDOM$.subscribe();
@@ -198,6 +254,15 @@ export class SVGCanvas extends EventTarget {
   }
   
   get dom() { return this.#self; }
+  
+  get harnessTemplate() {
+    if (!this.#harnessTemplate) {
+      this.#harnessTemplate = this.#self.querySelector(`[data-template="canvas-harness"]`);
+      delete this.#harnessTemplate.dataset.template
+    }
+    
+    return this.#harnessTemplate.cloneNode(true);
+  }
   
   get boundingClientRect() { return this.dom.getBoundingClientRect(); }
   
@@ -222,13 +287,79 @@ export class SVGCanvas extends EventTarget {
   
   get viewBox() { return this.#self.viewBox.baseVal; }
   
+  // useTemplate(templateName, options = {}) {
+  //   const config = TEMPLATE_CONFIG[templateName] ?? {};
+  
+  //   const base = this.#self
+  //     .querySelector(`[data-template="${templateName}"]`)
+  //     .cloneNode(true);
+  
+  //   delete base.dataset.template;
+  
+  //   if (options.dataset) Object.assign(base.dataset, options.dataset);
+  //   if (options.id) base.id = options.id;
+  
+  //   if (!config.withHarness) {
+  //     return {
+  //       template: base,
+  //       position: base,
+  //       transformConfig: config.transforms,
+  //     };
+  //   }
+  
+  //   const harness = this.#self
+  //     .querySelector(`[data-template="canvas-harness"]`)
+  //     .cloneNode(true);
+  
+  //   const slot = harness.querySelector('[data-slot="object"]');
+  //   slot.appendChild(base);
+  
+  //   return {
+  //     root: harness,
+  //     visualTarget: slot,
+  //     transformConfig: config.transforms,
+  //   };
+  // }
+  
+  createCanvasObject(type, options) {
+    const config = TEMPLATE_CONFIG[type];
+    const defaultTransforms = options.transforms || DEFAULT_TRANSFORM_MAP
+    // console.warn('type', type)
+    
+    const base = this.useTemplate(type, options);
+    
+    let template, transformTarget;
+    
+    if (config.withHarness) {
+      const harness = this.harnessTemplate
+      const slot = harness.querySelector('[data-slot="object"]');
+      slot.appendChild(base);
+      
+      template = harness;
+      transformTarget = slot;
+    } else {
+      template = base;
+      transformTarget = base;
+    }
+    
+    if (options.dataset) Object.assign(template.dataset, options.dataset);
+    if (options.id) template.id = options.id;
+    
+    return {
+      template,
+      transforms: {
+        position: new TransformList(this, template, [defaultTransforms.translate]),
+        transformList: new TransformList(this, transformTarget, [{ type: 'translate', values: [0, 0] }, defaultTransforms.rotate, defaultTransforms.scale]),
+      }
+    };
+  }
+  
   useTemplate(templateName, options = {}) {
     const el = this.#self.querySelector(`[data-template="${templateName}"]`).cloneNode(true);
     
     delete el.dataset.template;
     
     if (options.dataset) Object.assign(el.dataset, options.dataset);
-    
     if (options.id) el.id = options.id;
     
     if (options.fill) el.style.fill = options.fill;
@@ -276,7 +407,7 @@ export class SVGCanvas extends EventTarget {
         model,
       });
     }
-  
+    
     if (type === 'dark-sun') {
       return new DarkSun(this, {
         ...rest,

@@ -1,6 +1,6 @@
 import ham from 'ham';
 import { EventEmitter } from 'https://hamilsauce.github.io/hamhelper/event-emitter.js';
-import { TransformList, DEFAULT_TRANSFORMS } from './TransformList.js';
+import { TransformList, DEFAULT_TRANSFORMS, DEFAULT_TRANSFORM_MAP } from './TransformList.js';
 import { SVGCanvas } from './SVGCanvas.js';
 import { CanvasPoint } from './CanvasPoint.js';
 const { utils, sleep } = ham;
@@ -21,7 +21,7 @@ export const CanvasObjectDisplayState = {
 export const DefaultCanvasObjectOptions = {
   id: '',
   model: DefaultCanvasObjectModel,
-  transforms: DEFAULT_TRANSFORMS,
+  transforms: DEFAULT_TRANSFORM_MAP,
   dataset: CanvasObjectDisplayState,
 };
 
@@ -44,23 +44,43 @@ export class CanvasObject extends EventEmitter {
   #transformList;
   #subscriptions = new Map();
   #point = { x: null, y: null }
+  #isBusy = false;
+  #updateQueue = []
+  #position = []
   
   constructor(context = new SVGCanvas(), type = '', options) {
     super();
-    const { id, model = {}, transforms } = options;
+    const { id, model = {} } = options;
     
     this.#context = context;
     this.#type = type;
-    Object.assign(this.#model, this.#normalizeSpatialPatch(model));
     
     this.#id = id ?? `${type}${utils.uuid()}`;
     
-    this.#self = this.#context.useTemplate(type, {
+    // this.#self = this.#context.useTemplate(type, {
+    //   withHarness: type !== 'tile',
+    //   id: this.#id,
+    //   dataset: this.#model,
+    // });
+    const { template, transforms } = this.#context.createCanvasObject(type, {
+      withHarness: type !== 'tile',
       id: this.#id,
       dataset: this.#model,
+      transforms: options.transforms
     });
+    this.#self = template;
     
-    this.#transformList = new TransformList(this.#context, this.#self, transforms);
+    // const translate = transforms.filter(_ => _.type === 'translate')
+    // const others = transforms.filter(_ => _.type !== 'translate')
+    // console.warn('template, transforms', template, transforms)
+    this.#position = transforms.position;
+    this.#transformList = transforms.transformList;
+    Object.assign(this.#model, this.#normalizeSpatialPatch(model));
+    
+    
+    // this.#transformList = new TransformList(this.#context, this.#self, transforms);
+    // this.#position = new TransformList(this.#context, this.#self, translate);
+    // this.#transformList = new TransformList(this.#context, this.#self, transforms);
   }
   
   get context() { return this.#context; }
@@ -92,6 +112,19 @@ export class CanvasObject extends EventEmitter {
   get type() { return this.#type; }
   
   get id() { return this.#id; }
+  
+  get isBusy() { return this.#isBusy; }
+  
+  set isBusy(v) {
+    if (this.#isBusy && !v && this.#updateQueue.length) {
+      this.#isBusy = v;
+      
+      const update = this.#updateQueue.pop()
+      update();
+    } else {
+      this.#isBusy = v;
+    }
+  }
   
   get point() { return this.#model.point; }
   
@@ -131,11 +164,11 @@ export class CanvasObject extends EventEmitter {
   }
   
   translateTo(x, y) {
-    this.transforms.translateTo(x, y);
+    this.#position.translateTo(x, y);
     return this;
   }
   
-  rotateTo(angle, x, y) {
+  rotateTo(angle, x = 0, y = 0) {
     this.transforms.rotateTo(angle, x, y);
     return this;
   }
@@ -164,6 +197,10 @@ export class CanvasObject extends EventEmitter {
   }
   
   update(attributeMap = {}) {
+    if (attributeMap.recoiling !== undefined) {
+      console.warn('attributeMap.recoiling', attributeMap.recoiling)
+    }
+    
     const normalizedPatch = this.#normalizeSpatialPatch(attributeMap);
     
     for (const key in normalizedPatch) {
@@ -203,15 +240,24 @@ export class CanvasObject extends EventEmitter {
     return this;
   }
   
-  toggle(attributeMap, time = 25) {
-    const model = { ...this.#model }
+  toggle(attributeMap, { time = 25, retries = 0 }) {
+    if (this.isBusy) {
+      this.#updateQueue.push(() => {
+        this.toggle.bind(this)(attributeMap, { time, retries })
+      })
+      
+      return this;
+    }
     
+    this.isBusy = true;
+    
+    const model = { ...this.#model }
     this.update(attributeMap)
     
     setTimeout(() => {
       this.update(model)
-    }, time)
-    
+      this.isBusy = false;
+    }, time);
     
     return this;
   }

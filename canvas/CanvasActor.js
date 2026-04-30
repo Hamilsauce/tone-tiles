@@ -79,7 +79,6 @@ export class CanvasActor extends CanvasObject {
     
     this.#currentRotation = this.#currentRotation + turnDegree
     const ismoving = patch && !!patch.isMoving
-    // console.warn('this.#currentRotation', this.#currentRotation)
     this.#ticker = this.#ticker === 0 ? 1 : 0;
     this.phase = (this.phase + 1) % 4;
     let _angles = angles
@@ -87,9 +86,9 @@ export class CanvasActor extends CanvasObject {
     if (this.#travelDir === 'left' || this.#travelDir === 'left') {
       _angles = [...angles].reverse()
     }
-    const angle = turnDegree === 0 ? _angles[this.phase] : 0;
-    // this.rotateTo(rotation + angle, 0.5, 0.5);
     
-    this.rotateTo(this.#currentRotation + angle, 0.5, 0.5);
+    const angle = turnDegree === 0 ? _angles[this.phase] : 0;
+    
+    this.rotateTo(this.#currentRotation + angle, 0.0, 0.0);
   }
 }

@@ -1,10 +1,14 @@
 import { CanvasObject, DefaultCanvasObjectOptions } from './CanvasObject.js';
 
-const contextMenuTransforms = [
+const _contextMenuTransforms = [
   { type: 'translate', values: [0, 0], position: 0 },
   { type: 'rotate', values: [0, 0, 0], position: 1 },
   { type: 'scale', values: [0.05, 0.05], position: 2 },
 ];
+
+const contextMenuTransforms = _contextMenuTransforms.reduce((acc, curr, i) => {
+  return { ...acc, [curr.type]: curr }
+}, {});
 
 const defaultContextMenuItems = [
 {
