@@ -49,7 +49,7 @@ function getScaleDegree(x, y, arp) {
 
 const getTileTone = ({ x, y, degree, arp = false, octaveMod }) => {
   const deg = degree ?? getScaleDegree(x, y, arp);
-  
+
   const {
     pitch,
     pitchClass,
@@ -57,12 +57,12 @@ const getTileTone = ({ x, y, degree, arp = false, octaveMod }) => {
     sharp,
     flat
   } = harmonicCxt.notes[Math.max(deg, 0)]
-  // arp ? harmonicCxt.chordNotes[deg] : harmonicCxt.notes[deg];
   if (octaveMod) {
     const pClassResolved = sharp ?? flat ?? pitchClass
     const finalPitch = `${pClassResolved}${octave+octaveMod}`
     const chord = getChordNotes(finalPitch, 'major')
     const note = harmonicCxt.chordNotes[getRandomInt(4)]
+    console.warn({note})
     return note.frequency
   }
   return pitchToFrequency(pitch)
@@ -70,12 +70,12 @@ const getTileTone = ({ x, y, degree, arp = false, octaveMod }) => {
 
 const getDynamicTone = (x, y, dir = 1) => {
   const mod = y > 5 ? -2 : 0;
-  
+
   const pitchClass = getTileDegree(x, harmonicCxt.notes.length);
   const octave = getTileOctave(Math.min(y, 5), harmonicCxt.notes.length);
-  
+
   const pitch = `${pitchClass}${octave + dir}`;
-  
+
   return pitchToFrequency(pitch);
 };
 
@@ -97,28 +97,28 @@ const doAudioNote = (currentNode, options = DefaultDoAudioNoteOptions) => {
   const { forceNewNote, frequency, velocity } = options;
   curr = currentNode;
   prev = prev ?? curr;
-  
+
   const travelDir = getDirectionFromPoints(prev, curr);
   const chordToneDegree = getChordToneDegreeFromDir(travelDir);
-  
+
   try {
     const vel = velocity ?? pointer % 2 === 0 ? 0.3 : 0.4;
     let freq = frequency ?? toTone({ x: curr.x, y: curr.y, degree: chordToneDegree });
-    
+
     if (!audioNote1) {
       audioNote1 = fireAudioNote(freq, vel);
     }
-    
+
     if (forceNewNote) {
       audioNote1.stop(0.2)
       audioNote1 = fireAudioNote(freq, vel);
     }
-    
+
     else if (curr.tileType === 'teleport') {
       audioNote1.stop(0.015)
-      
+
       freq = major7(toTone({ x: curr.x, y: curr.y, degree: chordToneDegree, octaveMod: 1 }))[getRandomInt(4)];
-      
+
       audioNote1 = fireAudioNote(freq, vel);
     }
     else if (prevDir === travelDir) {
@@ -128,10 +128,10 @@ const doAudioNote = (currentNode, options = DefaultDoAudioNoteOptions) => {
       audioNote1.stop(0.2)
       audioNote1 = fireAudioNote(freq, vel);
     }
-    
+
     prevDir = travelDir;
     prev = curr;
-    
+
     pointer++;
     // audioNote1 = fireAudioNote(freq, vel);
   } catch (e) {

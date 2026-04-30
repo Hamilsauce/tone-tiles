@@ -13,10 +13,8 @@ console.log('noteData', noteData)
 export const NoteData = noteData
   .map(({ note, name, ...rest }, i) => ({
     ...rest,
-    pitchClass: note,
-    pitch: name,
     json() {
-      return JSON.stringify({ ...rest, pitchClass: note, pitch: name }, null, 2)
+      return JSON.stringify(rest, null, 2)
     },
     toJSON() { return this; },
   }));
