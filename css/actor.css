@@ -5,7 +5,7 @@
   pointer-events: none;
   /* filter: hue-rotate(200deg) invert(1); */
   filter: drop-shadow(0 0 0.1px #000000);
-  transition: 0.15s;
+  transition: 0.15s ease;
   
   /* transform-origin: center center; */
   .actor-eye {

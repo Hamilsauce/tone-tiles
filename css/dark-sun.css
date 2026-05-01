@@ -54,8 +54,8 @@
 
 [data-type=dark-sun][data-recoiling=true] {
   /* filter: brightness(5); */
-  filter: invert(1);
+  filter:  contrast(2) invert(1);
   /* scale: 0.4 0.4 0.4; */
-  transition: 0.2s;
+  transition: 0.2s ease;
 
 }

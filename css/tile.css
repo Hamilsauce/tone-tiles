@@ -127,7 +127,7 @@
 }
 
 .tile[data-tile-type=teleport]>* {
-  fill: #B5127C;
+  fill: #FF4768;
 }
 
 .tile[data-selected=true]>* {
