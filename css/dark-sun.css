@@ -1,44 +1,43 @@
-.dark-sun {
-  fill: #e3c70d;
-  stroke: #FFFFFFD9;
-  stroke-width: 0.05px;
+[data-type=dark-sun] {
+  /* fill: #e3c70d; */
+  stroke: #fa0d0dd9 !important;
+  /* stroke-width:  !important; */
   pointer-events: none;
   /* filter: hue-rotate(200deg) invert(1); */
-  filter: drop-shadow(0 0 0.1px #FFFFFF) brightness(2);
+  filter: brightness(1.1) contrast(1.2) saturate(1.2) drop-shadow(0 0 0.175px #460731) ;
+  mix-blend-mode: hard-light;
   transition: 0.15s ease-out;
-  
-  /* transform-origin: center center; */
-  .actor-eye {
-    fill: #FFFFFF
-  }
 }
 
-.dark-sun[data-moving=false],
-.dark-sun[data-moving=false] * {}
+[data-type=dark-sun][data-moving=false],
+[data-type=dark-sun][data-moving=false] * {
+}
 
-.dark-sun[data-moving=true][data-teleporting=false],
-.dark-sun[data-moving=true][data-teleporting=false]>* {
+[data-type=dark-sun][data-moving=true][data-teleporting=false],
+[data-type=dark-sun][data-moving=true][data-teleporting=false]>* {
+  /* filter:  invert(1) !important; */
+
   /* fill: #38DD17; */
   /* scale: 0.9 */
   /* transition: 0.15s ease-out; */
   /* stroke-width: 0.00px; */
   filter: contrast(2) hue-rotate(25deg) invert(1) !important;
-  
+
 }
 
-.actor[data-teleporting=false],
-.actor[data-teleporting=false] * {
+[data-type=dark-sun][data-teleporting=false],
+[data-type=dark-sun][data-teleporting=false] * {
   /* transition: 0.0s; */
 }
 
-.actor[data-teleporting=true],
-.actor[data-teleporting=true] {
+[data-type=dark-sun][data-teleporting=true],
+[data-type=dark-sun][data-teleporting=true] {
   /* fill: #783BC1; */
   r: 0.01;
   stroke-width: 0.00px;
-  
+
   filter: blur(5px) !important;
-  
+
 }
 
 .dark-sun {
@@ -58,5 +57,5 @@
   filter: invert(1);
   /* scale: 0.4 0.4 0.4; */
   transition: 0.2s;
-  
+
 }
