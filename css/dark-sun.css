@@ -1,10 +1,10 @@
 [data-type=dark-sun] {
   /* fill: #e3c70d; */
   stroke: #fa0d0dd9 !important;
-  /* stroke-width:  !important; */
+  stroke-width: 0.01px !important;
   pointer-events: none;
   /* filter: hue-rotate(200deg) invert(1); */
-  filter: brightness(1.1) contrast(1.2) saturate(1.2) drop-shadow(0 0 0.175px #460731) ;
+  filter: brightness(1.4) contrast(1) saturate(1.2) drop-shadow(0 0 0.1px #37500C) ;
   mix-blend-mode: hard-light;
   transition: 0.15s ease-out;
 }
@@ -40,7 +40,7 @@
 
 }
 
-.dark-sun {
+[data-type=dark-sun] {
   fill: url(#lineargradient1);
   fill-opacity: 1;
   stroke: #890D0D;
@@ -52,7 +52,7 @@
   stroke-dashoffset: 0;
 }
 
-.dark-sun[data-recoiling=true] {
+[data-type=dark-sun][data-recoiling=true] {
   /* filter: brightness(5); */
   filter: invert(1);
   /* scale: 0.4 0.4 0.4; */
