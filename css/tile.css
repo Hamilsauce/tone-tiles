@@ -137,9 +137,10 @@
 
 .tile[data-occupied=true]>* {
   /* stroke: #59595963; */
-  /* filter: invert(1); */
-  rx: 1;
-  ry: 1;
+  filter: invert(1);
+  fill: #FFFFFF00 !important;
+  rx: 50%; 
+  ry: 50%;
   /* scale: 1.25; */
   /* transition: 0.35s; */
 }

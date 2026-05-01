@@ -459,16 +459,43 @@ export const runCanvas = async (mapId) => {
 		'collision',
 		sceneModel.out({ type: 'collision' })
 		.subscribe(async ({ id, data }) => {
+			// console.warn('data', data)			
+			
 			const { newObjectId, objectIds } = data;
 			const newOccupant = entityCollection.get(newObjectId);
+			const node = tileLayer.get(id);
 			
 			if (!newOccupant || newOccupant.type !== 'dark-sun') {
 				return;
 			}
 			
+			newOccupant?.reverseCourse?.();
+			
 			const dso = objectLayer.get(newObjectId);
 			dso.toggle({ recoiling: true }, { time: 200 });
 			
+			node.toggle({ recoiling: true }, { time: 500 });
+			
+			objectIds.forEach(async (id, i) => {
+				const o = entityCollection.get(id);
+				
+				if (o === newOccupant) {
+					return
+				}
+				// o.setGoalPoint(node.point);
+				
+				if (o.travelTo) {
+					await sleep(180)
+					o.travelTo(node.point);
+					audioNote1(null, {
+						forceNewNote: true,
+						frequency: 530,
+						velocity: 0.3,
+					});
+				}
+			})
+		await sleep(50)
+	
 			audioNote1(null, {
 				forceNewNote: true,
 				frequency: 220,
@@ -483,15 +510,13 @@ export const runCanvas = async (mapId) => {
 				velocity: 0.15,
 			});
 			
-			await sleep(25);
+			await sleep(50);
 			
 			audioNote1(null, {
 				forceNewNote: true,
 				frequency: 325,
 				velocity: 0.2,
 			});
-			
-			newOccupant?.reverseCourse?.();
 		})
 	);
 	
