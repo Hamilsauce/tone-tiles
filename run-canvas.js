@@ -331,6 +331,7 @@ export const runCanvas = async (mapId) => {
 			
 			
 			for (let { frequency, velocity } of darkSunNotes) {
+				console.warn({ frequency, velocity })
 				const index = darkSunNotes.findIndex(_ => _.frequency === frequency)
 				const mod = index * 3
 				const delay = mod * 25
@@ -363,7 +364,8 @@ export const runCanvas = async (mapId) => {
 			// graphModel.findAny({ active: true })
 			// 	.forEach(_ => _.active === false)
 			graphModel.findNodes(n => n.active === true)
-	.forEach(_ => _.update({ active: false }));
+				.forEach(_ => _.update({ active: false }));
+			console.warn('cMajorTriad', cMajorTriad)
 			goal.update({ active: true });
 			audioNote1(curr, { forceNewNote: true, frequency: cMajorTriad[0].frequency, velocity: 0.3 });
 			await sleep(50);
