@@ -115,6 +115,10 @@ export const runCanvas = async (mapId) => {
 	
 	let mapStore = useMapStore();
 	mapId = mapId && mapId.value ? mapId.value : mapId;
+    
+	if (mapId) {
+  		await mapStore.setCurrentMapById(mapId)
+	}	
 	
 	const runtime = new Runtime({
 		appStore,
