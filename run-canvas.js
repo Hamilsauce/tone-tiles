@@ -14,6 +14,7 @@ import { useAppState } from './store/app.store.js';
 import { LoopEngine } from './core/loop-engine/index.js';
 import { audioEngine } from './audio/index.js';
 import audioNote1 from './audio/fire-audio-note1.js';
+import { playChord } from './audio/play-chord.js';
 import { ContextMenu } from './canvas/ContextMenu.js';
 import { watch, toValue } from 'vue';
 import { useMapStore } from './store/map.store.js';
@@ -25,7 +26,7 @@ import { DEFAULT_TRANSFORM_MAP } from './canvas/TransformList.js';
 import ham from 'ham';
 const { sleep } = ham;
 const { operators, Subject } = rxjs;
-const { map, tap, filter } = operators;
+const { map, scan, tap, filter, bufferTime, timestamp } = operators;
 
 
 const useTemplate = (templateName, options = {}) => {
@@ -224,7 +225,36 @@ export const runCanvas = async (mapId) => {
 	
 	svgCanvas.setCanvasDimensions({ width: innerWidth, height: innerHeight });
 	
+	const graphEvents = {
+		events: [],
+		duration: 0,
+		start: performance.now(),
+	}
+	
+	window.graphEvents = graphEvents
+	
 	//! start binding
+	subscriptions.set(
+		'world',
+		sceneModel.out({}) // filter: (_) => _.type !== 'map:load' })
+		.pipe(
+			timestamp(),
+			map(({ timestamp, value }) => ({
+				...value,
+				timestamp,
+				time: performance.now(),
+			})),
+			scan((state, event) => {
+				state[event.type] = state[event.type] ? state[event.type] + 1 : 1;
+				state.events.push(event)
+				state.end = event.time;
+				state.duration = event.time - state.start;
+				
+				return state
+			}, graphEvents),
+			
+		).subscribe(e => {}));
+	
 	subscriptions.set(
 		'mapLoad',
 		graphModel.out({ type: 'map:load' }).subscribe(e => {
@@ -314,6 +344,7 @@ export const runCanvas = async (mapId) => {
 		{ frequency: 329.25, velocity: 0.125 },
 		{ frequency: 234.96, velocity: 0.15 },
 	]
+	
 	const cMajorTriad = [
 		{ frequency: 261.63, velocity: 0.175 },
 		{ frequency: 329.63, velocity: 0.125 },
@@ -331,7 +362,6 @@ export const runCanvas = async (mapId) => {
 			
 			
 			for (let { frequency, velocity } of darkSunNotes) {
-				console.warn({ frequency, velocity })
 				const index = darkSunNotes.findIndex(_ => _.frequency === frequency)
 				const mod = index * 3
 				const delay = mod * 25
@@ -339,7 +369,7 @@ export const runCanvas = async (mapId) => {
 				await sleep(delay);
 				
 				audioNote1(curr, { forceNewNote: true, frequency, velocity });
-				
+				playChord
 			}
 			
 			// audioNote1(curr, { forceNewNote: true, frequency: 300, velocity: 0.15 });
@@ -365,21 +395,23 @@ export const runCanvas = async (mapId) => {
 			// 	.forEach(_ => _.active === false)
 			graphModel.findNodes(n => n.active === true)
 				.forEach(_ => _.update({ active: false }));
-			console.warn('cMajorTriad', cMajorTriad)
+			
 			goal.update({ active: true });
-			audioNote1(curr, { forceNewNote: true, frequency: cMajorTriad[0].frequency, velocity: 0.3 });
-			await sleep(50);
+			
+			// audioNote1(curr, { forceNewNote: true, frequency: cMajorTriad[0].frequency, velocity: 0.3 });
+			// await sleep(50);
 			
 			// audioNote1(curr, { forceNewNote: true, frequency: cMajorTriad[1].frequency, velocity: 0.2 });
 			// await sleep(85);
-			console.warn(cMajorTriad[2].frequency)
-			audioNote1(curr, { forceNewNote: true, frequency: cMajorTriad[2].frequency, velocity: 0.2 });
+			// audioNote1(curr, { forceNewNote: true, frequency: cMajorTriad[2].frequency, velocity: 0.2 });
+			await sleep(50);
 			
+			playChord({ point: curr.point, })
 			// audioNote1(curr, { forceNewNote: true });
 		})
 	);
 	
-	
+	let prevDir
 	subscriptions.set(
 		'actorMove',
 		sceneModel.out({
@@ -387,10 +419,22 @@ export const runCanvas = async (mapId) => {
 			filter: ({ id, type }) => {
 				return entityCollection.get(id).type === 'actor'
 			}
-		}).subscribe(async ({ id, point, prevPoint }) => {
-			const dir = getDirectionFromPoints(point, prevPoint);
+		})
+		.pipe(
+			scan((state, event) => {
+				const direction = getDirectionFromPoints(state.point, event.point);
+				
+				return { ...event, direction }
+			}, { point: { x: 0, y: 0 } }),
+		)
+		
+		.subscribe(async ({ id, point, prevPoint, direction }) => {
+			// const dir = getDirectionFromPoints(point, prevPoint);
 			const node = graphModel.getNodeAtPoint(point);
 			const entity = entityCollection.get(id);
+			const sameDir = prevDir === direction
+			
+			prevDir = direction
 			
 			if (node.linkedMap) {
 				const { linkedMap } = node;
@@ -409,8 +453,16 @@ export const runCanvas = async (mapId) => {
 			
 			setCurrentNode(node.data());
 			
-			if (entity.type === 'actor') {
-				audioNote1(node);
+			if (entity.type === 'actor' && sameDir) {
+				// audioNote1(node);
+				// audioNote1(node, {velocity: 0.15});
+
+			}
+			
+			if (!sameDir) {
+				// audioNote1(node, {velocity:"" 0.15});
+			playChord({ point: node.point, })	
+				
 			}
 			
 			objectLayer.get(id)?.update({ point: node.point });
@@ -421,13 +473,14 @@ export const runCanvas = async (mapId) => {
 				cnt++;
 				
 				setTimeout(() => {
-					const propKey = dir !== nDir ? 'isPathNode' : 'highlight';
-					neighbor.update({
+					const propKey = direction !== nDir ? 'isPathNode' : 'highlight';
+					const tile = tileLayer.get(neighbor.id)
+					tile.update({
 						[propKey]: true
 					});
 					
 					setTimeout(() => {
-						neighbor.update({
+						tile.update({
 							[propKey]: false
 						});
 					}, 1600);
@@ -494,8 +547,8 @@ export const runCanvas = async (mapId) => {
 					});
 				}
 			})
-		await sleep(50)
-	
+			await sleep(50)
+			
 			audioNote1(null, {
 				forceNewNote: true,
 				frequency: 220,

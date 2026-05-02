@@ -1,30 +1,23 @@
-import { CollectionRegistry } from '../core/types/collection-registry.js';
-import { ModelRegistry } from '../core/types/model-registry.js';
+import { CollectionRegistry } from '../../core/types/collection-registry.js';
+import { ModelRegistry } from '../../core/types/model-registry.js';
 
-import { createConnectionBus } from '../core/create-connection.js';
+import { createConnectionBus } from '../../core/create-connection.js';
 import { rxjs } from 'rxjs';
 
 const { operators } = rxjs;
-const { map, tap, scan, shareReplay, withLatestFrom } = operators;
+const { map, tap, scan, shareReplay, combineLatest } = operators;
 
-export class SceneModel {
+export class InteractionResolver {
   #inputs
   #collections = new Map();
   #collectionRegistry;
   #modelRegistry;
   
-  constructor({ registry, inputs$ = [], loopEngine, collections = [] }) {
+  constructor({ inputs$ = [] }) {
     this.loopEngine = loopEngine
-    this.#collectionRegistry = CollectionRegistry;
-    this.#modelRegistry = registry ?? ModelRegistry;
     
     this.#inputs = createConnectionBus(this);
-    console.warn('  this.#inputs ', this.#inputs)
-    
-    collections.forEach(({ name }) => {
-      this.createCollection(name, {})
-    });
-    
+  
     inputs$.forEach(({ name, source$ }) => {
       this.in({ name, source$ })
     });

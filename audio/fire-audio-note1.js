@@ -62,7 +62,7 @@ const getTileTone = ({ x, y, degree, arp = false, octaveMod }) => {
     const finalPitch = `${pClassResolved}${octave+octaveMod}`
     const chord = getChordNotes(finalPitch, 'major')
     const note = harmonicCxt.chordNotes[getRandomInt(4)]
-    console.warn({note})
+
     return note.frequency
   }
   return pitchToFrequency(pitch)

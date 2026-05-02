@@ -197,10 +197,6 @@ export class CanvasObject extends EventEmitter {
   }
   
   update(attributeMap = {}) {
-    if (attributeMap.recoiling !== undefined) {
-      console.warn('attributeMap.recoiling', attributeMap.recoiling)
-    }
-    
     const normalizedPatch = this.#normalizeSpatialPatch(attributeMap);
     
     for (const key in normalizedPatch) {
