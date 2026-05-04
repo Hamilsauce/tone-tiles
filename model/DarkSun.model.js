@@ -2,16 +2,16 @@ import { TraverserModel } from './Traverser.model.js';
 import { Point } from '../core/spatial/Point.js';
 
 const DefaultDarkSunWaypoints = [
+  { x: 10, y: 21 },
   { x: 0, y: 0 },
   { x: 5, y: 0 },
-  { x: 10, y: 21 },
   { x: 4, y: 5 },
 ];
 
 const DefaultDarkSunProperties = {
   type: 'dark-sun',
   id: null,
-  point: { x: 0, y: 0 },
+  point: { x: 10, y: 21 },
   moving: false,
   teleporting: false,
   idleReason: null,

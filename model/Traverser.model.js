@@ -325,7 +325,7 @@ export class TraverserModel extends SpatialModel {
     };
   }
   
-  #emitTraversalAction(createAction, context) {
+  #emitTraversalAction(action, context) {
     const payload = {
       id: this.id,
       point: context.point,
@@ -336,7 +336,7 @@ export class TraverserModel extends SpatialModel {
     if (context.reason) payload.reason = context.reason;
     if (context.error) payload.error = context.error;
     
-    this.emit?.(createAction(payload));
+    this.emit?.(action(payload));
   }
   
   destroy() {

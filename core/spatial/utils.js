@@ -1,4 +1,3 @@
-
 export const DIRECTIONS = new Map([
 	['up', { x: 0, y: -1 }],
 	['down', { x: 0, y: 1 }],
@@ -26,35 +25,35 @@ export const getChordToneDegreeFromDir = (dir) => {
 
 export const getLinkCoords = (dir = 'n', { width, height }) => {
 	let x, y;
-
+	
 	if (dir.toLowerCase() === 'n') {
 		x = Math.floor(width / 2);
 		y = -1;
 	}
-
+	
 	if (dir.toLowerCase() === 'e') {
 		y = Math.floor(height / 2);
 		x = width;
 	}
-
+	
 	if (dir.toLowerCase() === 's') {
 		x = Math.floor(width / 2);
 		y = height;
 	}
-
+	
 	if (dir.toLowerCase() === 'w') {
 		x = -1;
 		y = Math.floor(height / 2);
 	}
-
+	
 	return { x, y };
 };
 
 export const getDirectionFromPoints = (p1, p2) => {
 	if (!p1 || !p2) return null;
-
+	
 	const dx = p2.x - p1.x;
 	const dy = p2.y - p1.y;
-
+	
 	return DIR_LOOKUP.get(`${dx}_${dy}`) || null;
 };

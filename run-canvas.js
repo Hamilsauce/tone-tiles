@@ -115,11 +115,10 @@ export const runCanvas = async (mapId) => {
 	
 	let mapStore = useMapStore();
 	mapId = mapId && mapId.value ? mapId.value : mapId;
-    
-	if (mapId) {
-  		await mapStore.setCurrentMapById(mapId)
-	}	
 	
+	// if (mapId) {
+	// 	await mapStore.setCurrentMapById(mapId)
+	// }
 	const runtime = new Runtime({
 		appStore,
 		mapStore,
@@ -221,7 +220,7 @@ export const runCanvas = async (mapId) => {
 		properties: {
 			moving: false,
 			teleporting: false,
-			point: { x: 1, y: 0 },
+			point: { x: 10, y: 21 },
 		},
 	});
 	
@@ -229,36 +228,7 @@ export const runCanvas = async (mapId) => {
 	
 	svgCanvas.setCanvasDimensions({ width: innerWidth, height: innerHeight });
 	
-	const graphEvents = {
-		events: [],
-		duration: 0,
-		start: performance.now(),
-	}
-	
-	window.graphEvents = graphEvents
-	
 	//! start binding
-	subscriptions.set(
-		'world',
-		sceneModel.out({}) // filter: (_) => _.type !== 'map:load' })
-		.pipe(
-			timestamp(),
-			map(({ timestamp, value }) => ({
-				...value,
-				timestamp,
-				time: performance.now(),
-			})),
-			scan((state, event) => {
-				state[event.type] = state[event.type] ? state[event.type] + 1 : 1;
-				state.events.push(event)
-				state.end = event.time;
-				state.duration = event.time - state.start;
-				
-				return state
-			}, graphEvents),
-			
-		).subscribe(e => {}));
-	
 	subscriptions.set(
 		'mapLoad',
 		graphModel.out({ type: 'map:load' }).subscribe(e => {
@@ -413,114 +383,159 @@ export const runCanvas = async (mapId) => {
 			playChord({ point: curr.point, })
 			// audioNote1(curr, { forceNewNote: true });
 		})
-	);
-	
-	let prevDir
-	subscriptions.set(
-		'actorMove',
-		sceneModel.out({
-			type: 'traversal:move',
-			filter: ({ id, type }) => {
-				return entityCollection.get(id).type === 'actor'
-			}
-		})
-		.pipe(
-			scan((state, event) => {
-				const direction = getDirectionFromPoints(state.point, event.point);
-				
-				return { ...event, direction }
-			}, { point: { x: 0, y: 0 } }),
-		)
-		
-		.subscribe(async ({ id, point, prevPoint, direction }) => {
-			// const dir = getDirectionFromPoints(point, prevPoint);
-			const node = graphModel.getNodeAtPoint(point);
-			const entity = entityCollection.get(id);
-			const sameDir = prevDir === direction
-			
-			prevDir = direction
-			
-			if (node.linkedMap) {
-				const { linkedMap } = node;
-				await selectMapById(linkedMap);
-				entity.stop();
-			}
-			
-			graphModel.moveObject(id, point, prevPoint);
-			
-			let _neighbors = [...graphModel.getNeighbors(node).entries()];
-			let n1 = _neighbors.slice(0, neighborIndex);
-			let n2 = _neighbors.slice(neighborIndex);
-			
-			const neighbors = [...n1, ...n2];
-			neighborIndex = neighborIndex >= 3 ? 0 : neighborIndex + 1;
-			
-			setCurrentNode(node.data());
-			
-			if (entity.type === 'actor' && sameDir) {
-				// audioNote1(node);
-				// audioNote1(node, {velocity: 0.15});
+		);
 
-			}
-			
-			if (!sameDir) {
-				// audioNote1(node, {velocity:"" 0.15});
-			playChord({ point: node.point, })	
+		subscriptions.set(
+			'spatialMoveSync',
+			sceneModel.out({ type: 'spatial:move' })
+				.subscribe(({ id, point }) => {
+					graphModel.moveObject(id, point);
+				})
+		);
+
+		let prevDir;
+		subscriptions.set(
+			'actorMove',
+			sceneModel.out({
+				type: 'spatial:move',
+				filter: ({ id }) => entityCollection.get(id).type === 'actor',
+			})
+				.subscribe(async ({ id, point, prevPoint }) => {
+					const direction = getDirectionFromPoints(prevPoint, point);
+					const node = graphModel.getNodeAtPoint(point);
+					const entity = entityCollection.get(id);
+					const sameDir = prevDir === direction;
+
+					prevDir = direction;
+
+					if (node.linkedMap) {
+						const { linkedMap } = node;
+						await selectMapById(linkedMap);
+						entity.stop();
+					}
+
+					const _neighbors = [...graphModel.getNeighbors(node).entries()];
+					const n1 = _neighbors.slice(0, neighborIndex);
+					const n2 = _neighbors.slice(neighborIndex);
+					const neighbors = [...n1, ...n2];
+
+					neighborIndex = neighborIndex >= 3 ? 0 : neighborIndex + 1;
+
+					setCurrentNode(node.data());
+
+					if (!sameDir) {
+						playChord({ point: node.point, });
+					}
+
+					objectLayer.get(id)?.update({ point: node.point });
+
+					let cnt = 0;
+
+					for (const [nDir, neighbor] of neighbors) {
+						cnt++;
+
+						setTimeout(() => {
+							const propKey = direction !== nDir ? 'isPathNode' : 'highlight';
+							const tile = tileLayer.get(neighbor.id);
+							tile.update({
+								[propKey]: true,
+							});
+
+							setTimeout(() => {
+								tile.update({
+									[propKey]: false,
+								});
+							}, 1600);
+						}, 0 + (100 * cnt));
+					}
+				})
+		);
+
+		subscriptions.set(
+			'darkSunMove',
+			sceneModel.out({
+				type: 'spatial:move',
+				filter: ({ id }) => entityCollection.get(id).type === 'dark-sun',
+			}).subscribe(async ({ id, point }) => {
+				const node = graphModel.getNodeAtPoint(point);
 				
-			}
-			
-			objectLayer.get(id)?.update({ point: node.point });
-			
-			let cnt = 0;
-			
-			for (const [nDir, neighbor] of neighbors) {
-				cnt++;
-				
-				setTimeout(() => {
-					const propKey = direction !== nDir ? 'isPathNode' : 'highlight';
-					const tile = tileLayer.get(neighbor.id)
-					tile.update({
-						[propKey]: true
-					});
-					
-					setTimeout(() => {
-						tile.update({
-							[propKey]: false
-						});
-					}, 1600);
-				}, 0 + (100 * cnt));
-			}
-		})
-	);
+				objectLayer.get(id)?.update({ point: node.point });
+			})
+		);
+
+		// subscriptions.set(
+	// 	'collision',
+	// 	sceneModel.out({ type: 'collision' })
+	// 	.subscribe(async (event) => {
+	// 		console.warn('event', event)			
+	// 		const { id, entering, actors } = event
 	
-	subscriptions.set(
-		'darkSunMove',
-		sceneModel.out({
-			type: 'traversal:move',
-			// filter: (({ id }) => id === 'darksun1'),
-			filter: ({ id, type }) => {
-				return entityCollection.get(id).type === 'dark-sun'
-			}
-		}).subscribe(async ({ id, point, prevPoint }) => {
-			const dir = getDirectionFromPoints(point, prevPoint);
-			const node = graphModel.getNodeAtPoint(point);
-			const entity = entityCollection.get(id);
-			
-			graphModel.moveObject(id, point, prevPoint);
-			
-			objectLayer.get(id)?.update({ point: node.point });
-		})
-	);
+	// 		const { newObjectId, objectIds } = data;
+	// 		const newOccupant = entityCollection.get(newObjectId);
+	// 		const node = tileLayer.get(id);
 	
+	// 		if (!newOccupant || newOccupant.type !== 'dark-sun') {
+	// 			return;
+	// 		}
+	
+	// 		newOccupant?.reverseCourse?.();
+	
+	// 		const dso = objectLayer.get(newObjectId);
+	// 		dso.toggle({ recoiling: true }, { time: 200 });
+	
+	// 		node.toggle({ recoiling: true }, { time: 500 });
+	
+	// 		objectIds.forEach(async (id, i) => {
+	// 			const o = entityCollection.get(id);
+	
+	// 			if (o === newOccupant) {
+	// 				return
+	// 			}
+	// 			// o.setGoalPoint(node.point);
+	
+	// 			if (o.travelTo) {
+	// 				await sleep(180)
+	// 				o.travelTo(node.point);
+	// 				audioNote1(null, {
+	// 					forceNewNote: true,
+	// 					frequency: 530,
+	// 					velocity: 0.3,
+	// 				});
+	// 			}
+	// 		})
+	// 		await sleep(50)
+	
+	// 		audioNote1(null, {
+	// 			forceNewNote: true,
+	// 			frequency: 220,
+	// 			velocity: 0.3,
+	// 		});
+	
+	// 		await sleep(25);
+	
+	// 		audioNote1(null, {
+	// 			forceNewNote: true,
+	// 			frequency: 275,
+	// 			velocity: 0.15,
+	// 		});
+	
+	// 		await sleep(50);
+	
+	// 		audioNote1(null, {
+	// 			forceNewNote: true,
+	// 			frequency: 325,
+	// 			velocity: 0.2,
+	// 		});
+	// 	})
+	// );
 	subscriptions.set(
 		'collision',
-		sceneModel.out({ type: 'collision' })
-		.subscribe(async ({ id, data }) => {
-			// console.warn('data', data)			
+		sceneModel.out({ type: 'interaction:collision' })
+		.subscribe(async (event) => {
+			const { point, entering, actors } = event;
 			
-			const { newObjectId, objectIds } = data;
-			const newOccupant = entityCollection.get(newObjectId);
-			const node = tileLayer.get(id);
+			const newOccupant = entityCollection.get(entering);
+			const node = tileLayer.get(point);
 			
 			if (!newOccupant || newOccupant.type !== 'dark-sun') {
 				return;
@@ -528,21 +543,20 @@ export const runCanvas = async (mapId) => {
 			
 			newOccupant?.reverseCourse?.();
 			
-			const dso = objectLayer.get(newObjectId);
+			const dso = objectLayer.get(entering);
 			dso.toggle({ recoiling: true }, { time: 200 });
 			
 			node.toggle({ recoiling: true }, { time: 500 });
 			
-			objectIds.forEach(async (id, i) => {
+			actors.forEach(async (id) => {
 				const o = entityCollection.get(id);
 				
 				if (o === newOccupant) {
-					return
+					return;
 				}
-				// o.setGoalPoint(node.point);
 				
 				if (o.travelTo) {
-					await sleep(180)
+					await sleep(180);
 					o.travelTo(node.point);
 					audioNote1(null, {
 						forceNewNote: true,
@@ -550,8 +564,9 @@ export const runCanvas = async (mapId) => {
 						velocity: 0.3,
 					});
 				}
-			})
-			await sleep(50)
+			});
+			
+			await sleep(50);
 			
 			audioNote1(null, {
 				forceNewNote: true,
@@ -576,7 +591,6 @@ export const runCanvas = async (mapId) => {
 			});
 		})
 	);
-	
 	const unwatchCurrentMap = watch(mapStore.currentMap, (newMap, oldMap) => {
 		if (!newMap.id) return;
 		

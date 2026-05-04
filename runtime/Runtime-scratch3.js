@@ -24,7 +24,7 @@ export class Runtime {
       ...config,
       collections: config.collections ?? defaultConfig.collections,
     };
-
+    
     this.appStore = appStore;
     this.mapStore = mapStore;
     this.audioEngine = audioEngine;
@@ -40,7 +40,7 @@ export class Runtime {
     });
     
     this.loopEngine.start()
-
+    
     
   };
   // get prop() { return this._prop };

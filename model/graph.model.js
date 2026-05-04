@@ -3,6 +3,7 @@ import { EventEmitter } from 'https://hamilsauce.github.io/hamhelper/event-emitt
 import { Point } from '../core/spatial/Point.js';
 import { Collection } from '../model/Collection.js';
 import { ModelTypes } from '../core/types/model.types.js';
+import { NodeUpdated } from '../core/actions/node.actions.js';
 import { useAppState } from '../store/app.store.js';
 
 import { getDirectionFromPoints, getLinkCoords, DIRECTIONS } from '../core/spatial/utils.js';
@@ -177,14 +178,33 @@ export class Graph extends Collection {
     const fromId = this.#objectIndex.get(id);
     const fromNode = this.getNodeByAddress(fromId);
     const toNode = this.getNodeAtPoint(point);
+
+    if (fromNode?.id === toNode?.id) {
+      return;
+    }
     
     if (fromNode) {
-      fromNode.deleteObject(id); //objects.delete(id);
+      fromNode.deleteObject(id);
+      this.emit(NodeUpdated({
+        id: fromNode.id,
+        data: {
+          occupied: fromNode.isOccupied,
+          objectIds: fromNode.objectIds,
+          removed: id,
+        },
+      }));
     }
     
     if (toNode) {
-      toNode.addObject(id); //objects.delete(id);
-      
+      toNode.addObject(id);
+      this.emit(NodeUpdated({
+        id: toNode.id,
+        data: {
+          occupied: toNode.isOccupied,
+          objectIds: toNode.objectIds,
+          added: id,
+        },
+      }));
     }
     
     this.#objectIndex.set(id, toNode?.id);
@@ -195,6 +215,8 @@ export class Graph extends Collection {
       from: fromNode?.id,
       to: toNode?.id,
     });
+
+    return this;
   }
   
   pathToDirections(path = []) {

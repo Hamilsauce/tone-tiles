@@ -26,46 +26,46 @@ export const useMapStore = () => {
   const isMapSaved = computed(() => !!currentMap.value.id && !currentMap.value.id.includes('TEMP'));
   const mapState = computed(() => currentMapIndex.value);
   const previousMapId = ref(null);
-
+  
   const setCurrentMap = (mapDoc) => {
     console.warn('[ setCurrentMap ]', mapDoc);
     previousMapId.value = currentMapIndex.value?.id;
     currentMapIndex.value = mapIndex.has(mapDoc.id) ? mapIndex.get(mapDoc.id) : null;
-
+    
     currentMap.value = { ...(currentMapIndex.value ?? MAP_DOC_TEMPLATE), ...mapDoc, id: mapDoc.id ?? `TEMP_MAP_${Date.now()}`, };
   };
-
-  const saveMap = async (map) => { };
-
-  const deleteMap = async (map) => { };
-
+  
+  const saveMap = async (map) => {};
+  
+  const deleteMap = async (map) => {};
+  
   const createMap = async (id) => {
-
+    
     const loaded = await loadMap(id);
     return loaded;
   };
-
+  
   const initMaps = async () => {
     const res = await loadMapIndex();
     res.forEach(m => mapIndex.set(m.id, m));
   };
-
+  
   const setCurrentMapById = async (mapId) => {
     const loaded = await loadMap(mapId);
-
+    
     setCurrentMap(loaded);
   };
-
+  
   const getMapData = async (mapId) => {
     return mapIndex.get(mapId);
   };
-
+  
   const updateMapState = async (mapPatch = {}) => {
     if (mapPatch.name) {
       currentMapIndex.value.name = mapPatch.name;
     }
   };
-
+  
   return {
     setCurrentMap,
     updateMapState,
