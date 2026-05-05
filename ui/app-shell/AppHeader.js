@@ -9,39 +9,40 @@ export const AppHeader = defineComponent(
   getTemplate('app-header'),
   (props, ctx) => {
     // console.warn(ctx)
-    
+
     const appStore = useAppState();
     const frameRate = appStore.frameRate
     const traversalEffectsEnabled = appStore.traversalEffectsEnabled;
+    const toolbarEnabled = appStore.toolbarEnabled;
     const mapStore = useMapStore();
     const mapState = mapStore.mapState
     const mapNameRef = ref('mapName');
     const mapName = computed(() => mapState.value?.name ?? 'No Map')
     const shouldDisplay = computed(() => route.value.path !== '/')
-    
+
     const frameRateFormatted = computed(() => frameRate.value ? `${frameRate.value}fps` : '');
-    
+
     const handleNewMap = () => {
-      router.push({ name: RouteName.createMap })
+      router.push({ name: RouteName.createMap });
     };
-    
+
     const handleMapNameChange = (e) => {
       const value = e.target.value.trim()
       mapStore.updateMapState({ name: value })
     };
-    
+
     const handleChangeMap = () => {
-      router.push({ name: RouteName.mapList }) //, params: { id: route.value.params.id ?? undefined } })
+      router.push({ name: RouteName.mapList });
     };
-    
+
     const handleToggleTraversalEffects = () => {
       appStore.toggleTraversalEffects();
     };
-    
-    // watch(frameRateFormatted, (fps) => {
-    //   console.warn('WATCHER frameRateFormatted', frameRateFormatted.value)
-    // }, { immediate: true })
-    
+
+    const handleToggleToolbar = () => {
+      appStore.toggleToolbar();
+    };
+
     return {
       frameRateFormatted,
       shouldDisplay,
@@ -50,6 +51,7 @@ export const AppHeader = defineComponent(
       handleMapNameChange,
       handleNewMap,
       handleToggleTraversalEffects,
+      handleToggleToolbar,
       mapName,
     }
   }, {},
