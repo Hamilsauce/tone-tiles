@@ -13,9 +13,6 @@ class AudioEngine extends EventEmitter {
   get now() {
     return this.ctx.currentTime
   }
-  get currentTime() {
-    return this.ctx.currentTime
-  }
   
   registerInstrument(name, instrument) {
     this.instruments.set(name, instrument)

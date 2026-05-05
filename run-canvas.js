@@ -378,7 +378,8 @@ export const runCanvas = async (mapId) => {
 				await sleep(delay);
 				
 				audioNote1(curr, { forceNewNote: true, frequency, velocity });
-				playChord
+			playChord({ point: curr.point, })
+
 			}
 			
 			// audioNote1(curr, { forceNewNote: true, frequency: 300, velocity: 0.15 });

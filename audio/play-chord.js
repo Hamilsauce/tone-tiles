@@ -136,7 +136,7 @@ export async function playChord(options = {}) {
 	
 	const ratios = [1, 1.25, 1.5];
 	
-	ratios.forEach(async(r, i) => {
+	ratios.forEach(async (r, i) => {
 		const osc = ctx.createOscillator();
 		osc.type = "triangle";
 		
