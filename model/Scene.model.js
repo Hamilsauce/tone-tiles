@@ -29,7 +29,9 @@ export class SceneModel {
       entities: this.#collections.get(ModelTypes.ENTITIES),
       graph: this.#collections.get(ModelTypes.GRAPH),
     });
-    
+
+    this.#collections.get(ModelTypes.ENTITIES)
+      .in({ name: 'resolver', source$: this.resolver.derived$ });
     this.in({ name: 'resolver', source$: this.resolver.derived$ });
   }
   
@@ -54,8 +56,15 @@ export class SceneModel {
     });
 
     this.#collections.set(name, coll);
-    
-    this.in({ name, source$: coll.out({}) });
+
+    this.in({
+      name,
+      source$: coll.out({
+        filter: name === ModelTypes.ENTITIES ?
+          (event) => !event.meta?.derived :
+          undefined,
+      }),
+    });
     
     return coll;
   }

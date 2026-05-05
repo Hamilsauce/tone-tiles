@@ -251,8 +251,10 @@ export const runCanvas = async (mapId) => {
 				moving: false,
 				teleporting: false,
 			});
-			
-			graphModel.moveObject(actor1Model.id, startNode.point);
+
+			entityCollection.entities.forEach((entity) => {
+				sceneModel.resolver.syncEntityPosition(entity.id, entity.point);
+			});
 			
 			svgCanvas.layers.surface.setAttribute('transform', `translate(${Math.floor((graphModel.width + 2) / 2) - 0.3}, ${Math.floor((graphModel.height + 2) / 2) - 0.25})`);
 			svgCanvas.layers.surface.querySelector('#surface-map-name').setAttribute('transform', `translate(0, ${-((graphModel.height / 2)) - 3}) scale(0.4)`);
@@ -383,14 +385,6 @@ export const runCanvas = async (mapId) => {
 			playChord({ point: curr.point, })
 			// audioNote1(curr, { forceNewNote: true });
 		})
-		);
-
-		subscriptions.set(
-			'spatialMoveSync',
-			sceneModel.out({ type: 'spatial:move' })
-				.subscribe(({ id, point }) => {
-					graphModel.moveObject(id, point);
-				})
 		);
 
 		let prevDir;
@@ -532,39 +526,22 @@ export const runCanvas = async (mapId) => {
 		'collision',
 		sceneModel.out({ type: 'interaction:collision' })
 		.subscribe(async (event) => {
-			const { point, entering, actors } = event;
+			const { point, entering } = event;
 			
 			const newOccupant = entityCollection.get(entering);
-			const node = tileLayer.get(point);
+			const node = tileLayer.get(graphModel.pointToAddress(point));
 			
-			if (!newOccupant || newOccupant.type !== 'dark-sun') {
+			if (!newOccupant || newOccupant.type !== 'dark-sun' || !node) {
 				return;
 			}
 			
-			newOccupant?.reverseCourse?.();
-			
 			const dso = objectLayer.get(entering);
+			if (!dso) {
+				return;
+			}
 			dso.toggle({ recoiling: true }, { time: 200 });
 			
 			node.toggle({ recoiling: true }, { time: 500 });
-			
-			actors.forEach(async (id) => {
-				const o = entityCollection.get(id);
-				
-				if (o === newOccupant) {
-					return;
-				}
-				
-				if (o.travelTo) {
-					await sleep(180);
-					o.travelTo(node.point);
-					audioNote1(null, {
-						forceNewNote: true,
-						frequency: 530,
-						velocity: 0.3,
-					});
-				}
-			});
 			
 			await sleep(50);
 			

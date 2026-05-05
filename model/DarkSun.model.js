@@ -87,6 +87,19 @@ export class DarkSunModel extends TraverserModel {
     
     return this;
   }
+
+  resolveAction(event = {}) {
+    if (event.type === 'spatial:blocked') {
+      if (event.reason === 'blocked-by:actor') {
+        this.reverseCourse();
+      }
+
+      this.resetTraversal(this.currentPoint);
+      return this;
+    }
+
+    return super.resolveAction(event);
+  }
   
   destroy() {
     clearTimeout(this.#goalTimeout);

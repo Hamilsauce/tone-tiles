@@ -3,7 +3,6 @@ import { EventEmitter } from 'https://hamilsauce.github.io/hamhelper/event-emitt
 import { Point } from '../core/spatial/Point.js';
 import { Collection } from '../model/Collection.js';
 import { ModelTypes } from '../core/types/model.types.js';
-import { NodeUpdated } from '../core/actions/node.actions.js';
 import { useAppState } from '../store/app.store.js';
 
 import { getDirectionFromPoints, getLinkCoords, DIRECTIONS } from '../core/spatial/utils.js';
@@ -185,26 +184,10 @@ export class Graph extends Collection {
     
     if (fromNode) {
       fromNode.deleteObject(id);
-      this.emit(NodeUpdated({
-        id: fromNode.id,
-        data: {
-          occupied: fromNode.isOccupied,
-          objectIds: fromNode.objectIds,
-          removed: id,
-        },
-      }));
     }
     
     if (toNode) {
       toNode.addObject(id);
-      this.emit(NodeUpdated({
-        id: toNode.id,
-        data: {
-          occupied: toNode.isOccupied,
-          objectIds: toNode.objectIds,
-          added: id,
-        },
-      }));
     }
     
     this.#objectIndex.set(id, toNode?.id);
@@ -492,6 +475,7 @@ export class Graph extends Collection {
   
   fromMap(map = {}) {
     this.clear();
+    this.#objectIndex.clear();
     
     let rows;
     this.previousMapId = this.#id ?? this.previousMapId;

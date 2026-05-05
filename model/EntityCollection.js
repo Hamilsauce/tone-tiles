@@ -1,6 +1,10 @@
 // import { ModelRegistry } from '../core/types/model-registry.js';
 import { ModelTypes } from '../core/types/model.types.js';
 import { Collection } from '../model/Collection.js';
+import { rxjs } from 'rxjs';
+
+const { operators } = rxjs;
+const { tap } = operators;
 
 const ENTITY_TYPE_NAMES = new Map([
   [ModelTypes.ACTOR, 'actor'],
@@ -19,6 +23,19 @@ const createEntityId = (typeName = 'entity') => {
 export class EntityCollection extends Collection {
   constructor(options = {}) {
     super({ ...options });
+
+    const connectIn = this.in.bind(this);
+
+    this.in = ({ name, source$, transform } = {}) => connectIn({
+      name,
+      source$,
+      transform: (input$) => {
+        const stream$ = transform ? input$.pipe(transform) : input$;
+        return stream$.pipe(
+          tap((event) => this.#routeResolvedEvent(event)),
+        );
+      },
+    });
   }
   
   get entities() {
@@ -91,6 +108,23 @@ export class EntityCollection extends Collection {
         type: typeName,
       },
     };
+  }
+
+  #routeResolvedEvent(event = {}) {
+    if (!event?.meta?.derived) {
+      return;
+    }
+
+    if (event.type === 'spatial:move' || event.type === 'spatial:blocked') {
+      this.get(event.id)?.resolveAction?.(event);
+      return;
+    }
+
+    if (event.type === 'interaction:collision') {
+      [...new Set(event.actors ?? [])].forEach((id) => {
+        this.get(id)?.resolveAction?.(event);
+      });
+    }
   }
 }
 

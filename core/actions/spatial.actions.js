@@ -12,8 +12,22 @@ export const SpatialMove = createAction('spatial:move', {
   toNodeId: isString,
 });
 
+export const SpatialBlocked = createAction('spatial:blocked', {
+  id: isString,
+  point: isPointLike,
+  prevPoint: isPointLike,
+  goalPoint: optional(isPointLike),
+  fromNodeId: isString,
+  toNodeId: isString,
+  blockers: isStringArray,
+  reason: isString,
+});
+
 export const SpatialCollision = createAction('interaction:collision', {
-  point: isString,
+  id: isString,
+  point: isPointLike,
+  prevPoint: isPointLike,
   actors: isStringArray,
-  entering: optional(isString),
+  blockers: isStringArray,
+  entering: isString,
 });

@@ -78,6 +78,20 @@ export class TraverserModel extends SpatialModel {
   onIdle(_context) {}
   onTraversalEnd(_context) {}
   onTraversalError(_context) {}
+
+  resolveAction(event = {}) {
+    if (event.type === 'spatial:move') {
+      this.commitResolvedMove(event);
+      return this;
+    }
+
+    if (event.type === 'spatial:blocked') {
+      this.handleBlockedMove(event);
+      return this;
+    }
+
+    return this;
+  }
   
   setMoving(value = true) {
     if (this.isMoving === value) return this;
@@ -108,6 +122,26 @@ export class TraverserModel extends SpatialModel {
   setGoalPoint(goalPoint = null) {
     this.#goalPoint = goalPoint ? Point.from(goalPoint) : null;
     this.properties.goalPoint = this.#goalPoint;
+    return this;
+  }
+
+  commitResolvedMove({ point, goalPoint } = {}) {
+    const nextPoint = toPoint(point ?? this.currentPoint);
+    this.syncPoint(nextPoint);
+    this.#idleReason = null;
+
+    this.update({
+      point: this.currentPoint,
+      goalPoint: goalPoint ? toPoint(goalPoint) : this.goalPoint,
+      isTraversing: true,
+      idleReason: null,
+    });
+
+    return this;
+  }
+
+  handleBlockedMove() {
+    this.resetTraversal(this.currentPoint);
     return this;
   }
   
@@ -210,6 +244,11 @@ export class TraverserModel extends SpatialModel {
           return;
         }
       }
+
+      if (this.goalPoint && this.currentPoint?.equals?.(this.goalPoint)) {
+        this.#handleTraversalGoal(this.currentPoint);
+        return;
+      }
       
       const nextValue = this.#traversalGen?.next().value;
       const nextPoint = nextValue ? toPoint(nextValue) : null;
@@ -225,10 +264,6 @@ export class TraverserModel extends SpatialModel {
       }
       
       await this.#handleTraversalMove(nextPoint);
-      
-      if (this.goalPoint?.equals?.(this.currentPoint)) {
-        this.#handleTraversalGoal(this.currentPoint);
-      }
     } catch (error) {
       this.#handleTraversalError(error);
     } finally {
@@ -240,7 +275,6 @@ export class TraverserModel extends SpatialModel {
     const prevPoint = this.currentPoint;
     const point = toPoint(nextPoint);
     
-    this.syncPoint(point);
     this.#idleReason = null;
     this.update({
       isTraversing: true,
@@ -249,7 +283,7 @@ export class TraverserModel extends SpatialModel {
     
     const context = this.#createContext({
       prevPoint,
-      point: this.currentPoint,
+      point,
       goalPoint: this.goalPoint,
     });
     
