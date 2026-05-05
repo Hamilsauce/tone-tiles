@@ -240,26 +240,26 @@ export const runCanvas = async (mapId) => {
 	
 	window.graphEvents = graphEvents
 	//! start binding
-	// subscriptions.set(
-	// 	'world',
-	// 	sceneModel.out({}) // filter: (_) => _.type !== 'map:load' })
-	// 	.pipe(
-	// 		timestamp(),
-	// 		map(({ timestamp, value }) => ({
-	// 			...value,
-	// 			timestamp,
-	// 			time: performance.now(),
-	// 		})),
-	// 		scan((state, event) => {
-	// 			state[event.type] = state[event.type] ? state[event.type] + 1 : 1;
-	// 			state.events.push(event)
-	// 			state.end = event.time;
-	// 			state.duration = event.time - state.start;
+	subscriptions.set(
+		'world',
+		sceneModel.out({}) // filter: (_) => _.type !== 'map:load' })
+		.pipe(
+			timestamp(),
+			map(({ timestamp, value }) => ({
+				...value,
+				timestamp,
+				time: performance.now(),
+			})),
+			scan((state, event) => {
+				state[event.type] = state[event.type] ? state[event.type] + 1 : 1;
+				state.events.push(event)
+				state.end = event.time;
+				state.duration = event.time - state.start;
 				
-	// 			return state
-	// 		}, graphEvents),
+				return state
+			}, graphEvents),
 			
-	// 	).subscribe(e => {}));
+		).subscribe(e => {}));
 	
 	
 	subscriptions.set(
@@ -559,8 +559,8 @@ export const runCanvas = async (mapId) => {
 		'collision',
 		sceneModel.out({ type: 'interaction:collision' })
 		.subscribe(async (event) => {
-			const { point, entering } = event;
-			
+			const { point, entering, actors } = event;
+			// console.warn('collision', event)
 			const newOccupant = entityCollection.get(entering);
 			const node = tileLayer.get(graphModel.pointToAddress(point));
 			
@@ -575,6 +575,44 @@ export const runCanvas = async (mapId) => {
 			dso.toggle({ point, recoiling: true }, { time: 150 });
 			
 			node.toggle({ recoiling: true }, { time: 500 });
+			
+			actors.forEach(async (id) => {
+				const a = objectLayer.get(id);
+				if (a === dso) return
+				
+				// console.warn('a', a)
+				
+				// if (o.travelTo) {
+					await sleep(180)
+					// o.travelTo(node.point);
+					a.recoil(500)
+					
+					audioNote1(null, {
+						forceNewNote: true,
+						frequency: 530,
+						velocity: 0.3,
+					});
+				// }
+			})
+			
+			// objectIds.forEach(async (id, i) => {
+			// 	const o = entityCollection.get(id);
+				
+			// 	if (o === newOccupant) {
+			// 		return
+			// 	}
+			// 	// o.setGoalPoint(node.point);
+				
+			// 	if (o.travelTo) {
+			// 		await sleep(180)
+			// 		o.travelTo(node.point);
+			// 		audioNote1(null, {
+			// 			forceNewNote: true,
+			// 			frequency: 530,
+			// 			velocity: 0.3,
+			// 		});
+			// 	}
+			// })
 			
 			await sleep(50);
 			

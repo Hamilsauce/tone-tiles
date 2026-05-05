@@ -49,7 +49,7 @@ export class ActorModel extends TraverserModel {
   onMove(event) {
     this.prevDir = this.currDir
     this.currDir = getDirectionFromPoints(event.prevPoint, event.point)
-
+    
     if (this.prevDir === this.currDir) {
       this.stepInterval = clamp(this.stepInterval - 0.008, 0.05, 0.1)
     } else {
@@ -57,77 +57,87 @@ export class ActorModel extends TraverserModel {
     }
   }
   
-  emitActorTravel(payload = {}) {
+  onBlocked(event) {
+    console.warn('onBlocked', event)
+    this.travelTo(event.prevPoint)
+    // this.pre"vDir = this.currDir
+    // this.cur"rDir = getDirectionFromPoints(event.prevPoint, event.point)
     
-    
-    return this.#emitActorAction(ActorTravel, {
-      ...payload,
-      point: Point.from(payload.point ?? this.point),
-      goalPoint: Point.from(payload.goalPoint ?? this.goalPoint),
-    });
+    // if (this.prevDir === this.currDir) {
+    //   this.stepInterval = clamp(this.stepInterval - 0.008, 0.05, 0.1)
+    // } else {
+    //   this.stepInterval = clamp(this.stepInterval + 0.012, 0.05, 0.1)
+    // }
   }
   
-  emitActorMove(payload = {}) {
-    
-    return this.#emitActorAction(ActorMove, {
-      ...payload,
-      point: Point.from(payload.point ?? this.point),
-      prevPoint: Point.from(payload.prevPoint ?? this.point),
-    });
-  }
+  // emitActorTravel(payload = {}) {
+  //   return this.#emitActorAction(ActorTravel, {
+  //     ...payload,
+  //     point: Point.from(payload.point ?? this.point),
+  //     goalPoint: Point.from(payload.goalPoint ?? this.goalPoint),
+  //   });
+  // }
   
-  emitActorIdle(reason = 'idle', payload = {}) {
-    return this.#emitActorAction(ActorIdle, {
-      ...payload,
-      point: Point.from(payload.point ?? this.point),
-      goalPoint: payload.goalPoint ? Point.from(payload.goalPoint) : this.goalPoint,
-      reason,
-    });
-  }
+  // emitActorMove(payload = {}) {
+  //   return this.#emitActorAction(ActorMove, {
+  //     ...payload,
+  //     point: Point.from(payload.point ?? this.point),
+  //     prevPoint: Point.from(payload.prevPoint ?? this.point),
+  //   });
+  // }
   
-  emitActorGoal(payload = {}) {
-    return this.#emitActorAction(ActorGoal, {
-      ...payload,
-      point: Point.from(payload.point ?? this.point),
-      goalPoint: Point.from(payload.goalPoint ?? this.goalPoint),
-    });
-  }
+  // emitActorIdle(reason = 'idle', payload = {}) {
+  //   return this.#emitActorAction(ActorIdle, {
+  //     ...payload,
+  //     point: Point.from(payload.point ?? this.point),
+  //     goalPoint: payload.goalPoint ? Point.from(payload.goalPoint) : this.goalPoint,
+  //     reason,
+  //   });
+  // }
   
-  emitActorMapLink(payload = {}) {
-    return this.#emitActorAction(ActorMapLink, {
-      ...payload,
-      point: Point.from(payload.point ?? this.point),
-    });
-  }
+  // emitActorGoal(payload = {}) {
+  //   return this.#emitActorAction(ActorGoal, {
+  //     ...payload,
+  //     point: Point.from(payload.point ?? this.point),
+  //     goalPoint: Point.from(payload.goalPoint ?? this.goalPoint),
+  //   });
+  // }
   
-  emitActorTeleport(payload = {}) {
-    return this.#emitActorAction(ActorTeleport, {
-      ...payload,
-      point: Point.from(payload.point ?? this.point),
-    });
-  }
+  // emitActorMapLink(payload = {}) {
+  //   return this.#emitActorAction(ActorMapLink, {
+  //     ...payload,
+  //     point: Point.from(payload.point ?? this.point),
+  //   });
+  // }
   
-  emitActorStop(payload = {}) {
-    return this.#emitActorAction(ActorStop, {
-      ...payload,
-      point: Point.from(payload.point ?? this.point),
-    });
-  }
+  // emitActorTeleport(payload = {}) {
+  //   return this.#emitActorAction(ActorTeleport, {
+  //     ...payload,
+  //     point: Point.from(payload.point ?? this.point),
+  //   });
+  // }
   
-  emitActorError(error, payload = {}) {
-    return this.#emitActorAction(ActorError, {
-      error,
-      ...payload,
-    });
-  }
+  // emitActorStop(payload = {}) {
+  //   return this.#emitActorAction(ActorStop, {
+  //     ...payload,
+  //     point: Point.from(payload.point ?? this.point),
+  //   });
+  // }
   
-  #emitActorAction(createActorAction, payload = {}) {
-    const action = createActorAction({
-      id: this.id,
-      ...payload,
-    });
-    
-    this.emit?.(action);
-    return action;
-  }
+  // emitActorError(error, payload = {}) {
+  //   return this.#emitActorAction(ActorError, {
+  //     error,
+  //     ...payload,
+  //   });
+  // }
+  
+  // #emitActorAction(createActorAction, payload = {}) {
+  //   const action = createActorAction({
+  //     id: this.id,
+  //     ...payload,
+  //   });
+  
+  //   this.emit?.(action);
+  //   return action;
+  // }
 }

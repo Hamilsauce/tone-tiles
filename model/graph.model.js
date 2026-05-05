@@ -116,16 +116,6 @@ export class Graph extends Collection {
   
   get targetNode() { return this.nodes.find(n => n.tileType === 'target'); }
   
-  setGoal(pt) {
-    this.#goalNode = this.getNodeByAddress(this.pointToAddress(pt));
-    return this;
-  }
-  
-  setStart(pt) {
-    this.#startNode = this.getNodeByAddress(this.pointToAddress(pt));
-    return this;
-  }
-  
   pointToAddress({ x, y }) {
     return `${x}_${y}`;
   }
@@ -177,7 +167,7 @@ export class Graph extends Collection {
     const fromId = this.#objectIndex.get(id);
     const fromNode = this.getNodeByAddress(fromId);
     const toNode = this.getNodeAtPoint(point);
-
+    
     if (fromNode?.id === toNode?.id) {
       return;
     }
@@ -192,13 +182,13 @@ export class Graph extends Collection {
     
     this.#objectIndex.set(id, toNode?.id);
     
-    this.emit({
-      type: 'object:move',
-      id,
-      from: fromNode?.id,
-      to: toNode?.id,
-    });
-
+    // this.emit({
+    //   type: 'object:move',
+    //   id,
+    //   from: fromNode?.id,
+    //   to: toNode?.id,
+    // });
+    
     return this;
   }
   

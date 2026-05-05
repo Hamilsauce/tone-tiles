@@ -74,22 +74,23 @@ export class TraverserModel extends SpatialModel {
   // --- Traversal Hooks for subclasses ---
   onTraversalStart(_context) {}
   onMove(_context) {}
+  onBlocked(_context) {}
   onGoal(_context) {}
   onIdle(_context) {}
   onTraversalEnd(_context) {}
   onTraversalError(_context) {}
-
+  
   resolveAction(event = {}) {
     if (event.type === 'spatial:move') {
       this.commitResolvedMove(event);
       return this;
     }
-
+    
     if (event.type === 'spatial:blocked') {
       this.handleBlockedMove(event);
       return this;
     }
-
+    
     return this;
   }
   
@@ -124,24 +125,26 @@ export class TraverserModel extends SpatialModel {
     this.properties.goalPoint = this.#goalPoint;
     return this;
   }
-
+  
   commitResolvedMove({ point, goalPoint } = {}) {
     const nextPoint = toPoint(point ?? this.currentPoint);
     this.syncPoint(nextPoint);
     this.#idleReason = null;
-
+    
     this.update({
       point: this.currentPoint,
       goalPoint: goalPoint ? toPoint(goalPoint) : this.goalPoint,
       isTraversing: true,
       idleReason: null,
     });
-
+    
     return this;
   }
-
-  handleBlockedMove() {
-    this.resetTraversal(this.currentPoint);
+  
+  handleBlockedMove(e) {
+    this.resetTraversal(e.prevPoint);
+    this.#clearGoalPoint()
+    this.onBlocked(e)
     return this;
   }
   
@@ -244,7 +247,7 @@ export class TraverserModel extends SpatialModel {
           return;
         }
       }
-
+      
       if (this.goalPoint && this.currentPoint?.equals?.(this.goalPoint)) {
         this.#handleTraversalGoal(this.currentPoint);
         return;

@@ -1,4 +1,8 @@
-[data-type=actor], .actor {
+/* [data-type=actor] {
+  transition: filter 2s ease-in-out !important;
+} */
+[data-type=actor],
+.actor {
   fill: #268cc3;
   stroke: #FFFFFFD9;
   stroke-width: 0.05px;
@@ -6,6 +10,8 @@
   /* filter: hue-rotate(200deg) invert(1); */
   filter: drop-shadow(0 0 0.1px #000000);
   transition: 0.15s ease;
+  /* transition: filter 2s ease-in-out !important; */
+  mix-blend-mode: normal;
   
   /* transform-origin: center center; */
   .actor-eye {
@@ -34,7 +40,7 @@
 }
 
 [data-type=actor][data-moving=false],
-[data-type=actor][data-moving=false] * {}
+[data-type=actor][data-moving=false] .actor {}
 
 [data-type=actor][data-moving=true][data-teleporting=false],
 [data-type=actor][data-moving=true][data-teleporting=false]>* {
@@ -42,7 +48,16 @@
   /* scale: 0.9 */
   /* transition: 0.15s ease-out; */
   /* stroke-width: 0.00px; */
-  filter: contrast(2) hue-rotate(25deg) invert(1) !important;
+  /* filter: contrast(2) hue-rotate(25deg) invert(1) !important; */
+  
+}
+
+[data-type=actor][data-recoiling=true] {
+  /* filter: contrast(2) hue-rotate(25deg) invert(1) !important; */
+  filter: drop-shadow(0 0 0.1px #FFFFFF) brightness(1) !important;
+  mix-blend-mode: hard-light;
+  transition: 0.2s !important;
+  
   
 }
 
@@ -53,22 +68,8 @@
 
 [data-type=actor][data-teleporting=true],
 [data-type=actor][data-teleporting=true] {
-  /* fill: #783BC1; */
   r: 0.01;
   stroke-width: 0.00px;
   
   filter: blur(5px) !important;
-  
 }
-
-/* .dark-sun {
-  fill: url(#lineargradient1);
-  fill-opacity: 1;
-  stroke: #890D0D;
-  stroke-width: 0.02;
-  stroke-opacity: 1;
-  stroke-linecap: butt;
-  stroke-linejoin: round;
-  stroke-miterlimit: 4;
-  stroke-dashoffset: 0;
-} */
