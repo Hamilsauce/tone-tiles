@@ -201,7 +201,7 @@ export class CanvasObject extends EventEmitter {
     for (const key in normalizedPatch) {
       const v = normalizedPatch[key];
       const modelV = this.#model[key];
-      const hasChanged = v !== modelV;
+      const hasChanged = !this.#valuesMatch(v, modelV);
       const isValid = !(v === undefined || modelV === undefined);
 
       if (v !== undefined && hasChanged) {
@@ -246,11 +246,30 @@ export class CanvasObject extends EventEmitter {
 
     this.isBusy = true;
 
-    const model = { ...this.#model }
-    this.update(attributeMap)
+    const normalizedPatch = this.#normalizeSpatialPatch(attributeMap);
+    const changedPatch = this.#getChangedPatch(normalizedPatch);
+    const restorePatch = this.#getRestorePatch(changedPatch);
+
+    if (!Object.keys(changedPatch).length) {
+      this.isBusy = false;
+      return this;
+    }
+
+    this.update(changedPatch)
 
     setTimeout(() => {
-      this.update(model)
+      const nextRestorePatch = Object.entries(restorePatch).reduce((patch, [key, value]) => {
+        if (this.#valuesMatch(this.#model[key], changedPatch[key])) {
+          patch[key] = value;
+        }
+
+        return patch;
+      }, {});
+
+      if (Object.keys(nextRestorePatch).length) {
+        this.update(nextRestorePatch)
+      }
+
       this.isBusy = false;
     }, time);
 
@@ -296,6 +315,39 @@ export class CanvasObject extends EventEmitter {
       x: point.x,
       y: point.y,
     };
+  }
+
+  #getChangedPatch(normalizedPatch = {}) {
+    return Object.entries(normalizedPatch).reduce((patch, [key, value]) => {
+      if (value !== undefined && !this.#valuesMatch(value, this.#model[key])) {
+        patch[key] = value;
+      }
+
+      return patch;
+    }, {});
+  }
+
+  #getRestorePatch(changedPatch = {}) {
+    return Object.entries(changedPatch).reduce((patch, [key]) => {
+      patch[key] = this.#cloneValue(this.#model[key]);
+      return patch;
+    }, {});
+  }
+
+  #cloneValue(value) {
+    return value?.clone?.() ?? value;
+  }
+
+  #valuesMatch(left, right) {
+    if (left?.equals && typeof left.equals === 'function') {
+      return left.equals(right);
+    }
+
+    if (right?.equals && typeof right.equals === 'function') {
+      return right.equals(left);
+    }
+
+    return left === right;
   }
 
   getEl(selector = '') { return this.dom.querySelector(selector); }

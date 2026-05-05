@@ -49,46 +49,46 @@ export class CanvasActor extends CanvasObject {
   #ticker = 0;
   #travelDir = 'down';
   #currentRotation = 0;
-  
+
   constructor(ctx, options = DefaultCanvasObjectOptions) {
     const model = {
       ...DefaultCanvasActorModel,
       ...(options.model ?? {}),
     };
-    
+
     super(ctx, 'actor', {
       ...options,
       model,
     });
-    
+
     this.phase = 0;
   }
-  
+
   update(patch) {
     const prev = { x: this.x, y: this.y };
     const prevDir = this.#travelDir;
-    
+
     super.update(patch);
-    
+
     const curr = { x: this.x, y: this.y };
-    
+
     this.#travelDir = getDirectionFromPoints(prev, curr) ?? this.#travelDir ?? 'down';
-    
+
     const rotation = dirRotationMap[this.#travelDir]
     const turnDegree = directionPivot[prevDir][this.#travelDir]
-    
+
     this.#currentRotation = this.#currentRotation + turnDegree
     const ismoving = patch && !!patch.isMoving
     this.#ticker = this.#ticker === 0 ? 1 : 0;
     this.phase = (this.phase + 1) % 4;
     let _angles = angles
-    
+
     if (this.#travelDir === 'left' || this.#travelDir === 'left') {
       _angles = [...angles].reverse()
     }
-    
+
     const angle = turnDegree === 0 ? _angles[this.phase] : 0;
-    
+
     this.rotateTo(this.#currentRotation + angle, 0.0, 0.0);
   }
 }
