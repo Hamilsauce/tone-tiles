@@ -1,10 +1,9 @@
 import '../model/index.js';
-
 import { ModelTypes } from '../core/types/model.types.js';
-
 import { SceneModel } from '../model/Scene.model.js';
 import { LoopEngine } from '../core/loop-engine/index.js';
 import { audioEngine } from '../audio/index.js';
+import { SVGCanvas } from '../canvas/SVGCanvas.js';
 
 const defaultConfig = {
   collections: [
@@ -33,11 +32,12 @@ export class Runtime {
       audioContext: this.audioEngine.ctx,
     });
     
-    
     this.scene = new SceneModel({
       loopEngine: this.loopEngine,
       collections: runtimeConfig.collections,
     });
+    
+    this.svgCanvas = new SVGCanvas();
     
     this.loopEngine.start()
     

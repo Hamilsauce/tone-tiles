@@ -30,10 +30,13 @@ const canCoOccupy = (entrantType = '', occupantType = '') => {
 const getEntityType = (entity) => entity?.type ?? entity?.properties?.type ?? 'unknown';
 
 const resolveTraversalMove = (event, graph, entities) => {
+  event.prevPoint = event.prevPoint ?? event.point;
+  
   const movingEntity = entities.get(event.id);
   const fromNodeId = graph.pointToAddress(event.prevPoint);
   const toNodeId = graph.pointToAddress(event.point);
   const toNode = graph.getNodeAtPoint(event.point);
+  const direction = getDirectionFromPoints(event.prevPoint, event.point);
   
   if (!movingEntity || !toNode) {
     return [
@@ -42,7 +45,8 @@ const resolveTraversalMove = (event, graph, entities) => {
         point: event.point,
         prevPoint: event.prevPoint,
         goalPoint: event.goalPoint,
-        direction: getDirectionFromPoints(event.prevPoint, event.point),
+        direction,
+        actionType: event.type,
         fromNodeId,
         toNodeId,
         blockers: [],
@@ -67,6 +71,8 @@ const resolveTraversalMove = (event, graph, entities) => {
         point: event.point,
         prevPoint: event.prevPoint,
         goalPoint: event.goalPoint,
+        direction,
+        actionType: event.type,
         fromNodeId,
         toNodeId,
         meta: { derived: true },
@@ -86,6 +92,8 @@ const resolveTraversalMove = (event, graph, entities) => {
       prevPoint: event.prevPoint,
       goalPoint: event.goalPoint,
       fromNodeId,
+      direction,
+      actionType: event.type,
       toNodeId,
       blockers,
       reason,
@@ -96,6 +104,8 @@ const resolveTraversalMove = (event, graph, entities) => {
       point: event.point,
       prevPoint: event.prevPoint,
       actors,
+      direction,
+      actionType: event.type,
       blockers,
       entering: event.id,
       meta: { derived: true },
@@ -109,7 +119,7 @@ export const derive$ = (events$, graph, entities) => {
   );
   
   return base$.pipe(
-    filter(event => event.type === 'traversal:move'),
+    filter(event => event.type.includes('traversal:')),
     concatMap((event) => rxjs.from(resolveTraversalMove(event, graph, entities))),
   );
 };

@@ -20,7 +20,7 @@ import { LoopableScaleSequence } from './audio/LoopableScaleSequence.js';
 import { ContextMenu } from './canvas/ContextMenu.js';
 import { watch, toValue } from 'vue';
 import { useMapStore } from './store/map.store.js';
-import { Runtime } from './runtime/Runtime-scratch3.js';
+import { Runtime } from './runtime/Runtime.js';
 import { projectNodePatchToRenderPatch } from './core/projections/node-to-tile.projector.js';
 import { rxjs } from 'rxjs';
 import { DEFAULT_TRANSFORM_MAP } from './canvas/TransformList.js';
@@ -114,7 +114,6 @@ export const runCanvas = async (mapId) => {
 	let graphModel;
 	let entityCollection;
 	let sceneModel;
-	let canvasEl;
 	let svgCanvas;
 	let sceneObj;
 	let tileLayer;
@@ -154,6 +153,15 @@ export const runCanvas = async (mapId) => {
 	const loopEngine = runtime.loopEngine;
 	entityCollection = sceneModel.getColl(ModelTypes.ENTITIES);
 	graphModel = sceneModel.getColl(ModelTypes.GRAPH);
+	
+	
+	svgCanvas = runtime.svgCanvas
+	sceneObj = svgCanvas.scene;
+	tileLayer = sceneObj.getLayer('tile');
+	objectLayer = sceneObj.getLayer('object');
+	selectionBox = getTileSelector(objectLayer.dom);
+	
+	
 	const actorTraversalMelodyOptions = {
 		rootPitch: 'C4',
 		scaleName: 'major',
@@ -281,28 +289,6 @@ export const runCanvas = async (mapId) => {
 		
 		return { direction, didTurn: false, played: true };
 	};
-	
-	// TODO - Move into scene/init
-	// graphModel = getGraphModel({ loopEngine, registry: ModelRegistry });
-	// entityCollection = new EntityCollection({ loopEngine, registry: ModelRegistry });
-	
-	// will be init'd in run time when that happens
-	// sceneModel = new SceneModel({
-	//   registry: ModelRegistry,
-	//   loopEngine,
-	//   collections: [
-	//     { name: ModelTypes.GRAPH, },
-	//     { name: ModelTypes.ENTITIES, },
-	//   ],
-	// });
-	
-	
-	canvasEl = document.querySelector('#canvas');
-	svgCanvas = new SVGCanvas(canvasEl);
-	sceneObj = svgCanvas.scene;
-	tileLayer = sceneObj.getLayer('tile');
-	objectLayer = sceneObj.getLayer('object');
-	selectionBox = getTileSelector(objectLayer.dom);
 	
 	let isSelectingLinkTile = false;
 	let selectedTileBeingLinked = null;
@@ -461,6 +447,7 @@ export const runCanvas = async (mapId) => {
 			}
 		})
 		.subscribe((event) => {
+	console.warn('actorRender', event)
 			const actor1Model = entityCollection.get('actor1');
 			if (event.type === 'actor:update') {
 				if (!actor1) return;
@@ -469,8 +456,8 @@ export const runCanvas = async (mapId) => {
 				
 				actor1.update({
 					...event.data,
-					x: event.data?.point?.x ?? event.data?.x,
-					y: event.data?.point?.y ?? event.data?.y,
+					// x: event.data?.point?.x ?? event.data?.x,
+					// y: event.data?.point?.y ?? event.data?.y,
 				});
 				
 				return;
@@ -513,28 +500,23 @@ export const runCanvas = async (mapId) => {
 		entityCollection.out({
 			type: 'traversal:start',
 			filter: ({ id, type }) => entityCollection.get(id).type === 'dark-sun'
-		}).subscribe(async ({ id, point, goalPoint }) => {
+		}).subscribe(async (event) => {
+			console.warn('event', JSON.stringify(event, null, 2))
+			// console.warn('graphModel.getNodeAtPoint(point)', graphModel.getNodeAtPoint(event.point))
+			const { id, point, goalPoint } = event
 			const entity = entityCollection.get(id);
-			const curr = graphModel.getNodeAtPoint(point);
-			
+			const curr = graphModel.getNodeAtPoint(point) || {};
 			
 			for (let { frequency, velocity } of darkSunNotes) {
-				const index = darkSunNotes.findIndex(_ => _.frequency === frequency)
-				const mod = index * 3
-				const delay = mod * 25
+				const index = darkSunNotes.findIndex(_ => _.frequency === frequency);
+				const mod = index * 3;
+				const delay = mod * 25;
+				// audioNote1(curr, { forceNewNote: true, frequency, velocity });
 				
 				await sleep(delay);
 				
-				audioNote1(curr, { forceNewNote: true, frequency, velocity });
-			playChord({ point: curr.point, })
-
+				playChord({ point: curr.point, });
 			}
-			
-			// audioNote1(curr, { forceNewNote: true, frequency: 300, velocity: 0.15 });
-			// await sleep(75);
-			// audioNote1(curr, { forceNewNote: true, frequency: 400, velocity: 0.15 });
-			// await sleep(100);
-			// audioNote1(curr, { forceNewNote: true, frequency: 490, velocity: 0.15 });
 		})
 	);
 	
@@ -550,8 +532,6 @@ export const runCanvas = async (mapId) => {
 			const curr = graphModel.getNodeAtPoint(point);
 			const goal = graphModel.getNodeAtPoint(goalPoint);
 			
-			// graphModel.findAny({ active: true })
-			// 	.forEach(_ => _.active === false)
 			graphModel.findNodes(n => n.active === true)
 				.forEach(_ => _.update({ active: false }));
 			
@@ -586,8 +566,7 @@ export const runCanvas = async (mapId) => {
 				prevNode.target.x === point.x &&
 				prevNode.target.y === point.y
 			);
-			const moveState = isTeleportJump ?
-				{ direction: null, didTurn: false, played: true } :
+			const moveState = isTeleportJump ? { direction: null, didTurn: false, played: true } :
 				handleActorTraversalMove({ prevPoint, point });
 			const direction = moveState.direction ?? getDirectionFromPoints(prevPoint, point);
 			
@@ -644,14 +623,14 @@ export const runCanvas = async (mapId) => {
 		'actorTraversalEnd',
 		entityCollection.out({
 			filter: ({ id, type }) => {
-				return entityCollection.get(id)?.type === 'actor' &&
-					['traversal:stop', 'traversal:goal', 'traversal:idle'].includes(type);
+				return entityCollection.get(id)?.type === 'actor' && ['traversal:stop', 'traversal:goal', 'traversal:idle'].includes(type);
 			},
 		}).subscribe(() => {
 			endActorTraversalMelody();
 		})
 	);
 	
+	// TODO: Move to audio	
 	subscriptions.set(
 		'actorBlocked',
 		sceneModel.out({
@@ -667,7 +646,8 @@ export const runCanvas = async (mapId) => {
 		sceneModel.out({
 			type: 'spatial:move',
 			filter: ({ id }) => entityCollection.get(id).type === 'dark-sun',
-		}).subscribe(async ({ id, point }) => {
+		}).subscribe(async (event) => {
+			const { id, point } = event
 			const node = graphModel.getNodeAtPoint(point);
 			
 			objectLayer.get(id)?.update({ point: node.point });
@@ -767,26 +747,26 @@ export const runCanvas = async (mapId) => {
 				// console.warn('a', a)
 				
 				// if (o.travelTo) {
-					await sleep(180)
-					// o.travelTo(node.point);
-					a.recoil(500)
-					
-					audioNote1(null, {
-						forceNewNote: true,
-						frequency: 530,
-						velocity: 0.3,
-					});
+				await sleep(180)
+				// o.travelTo(node.point);
+				a.recoil(500)
+				
+				audioNote1(null, {
+					forceNewNote: true,
+					frequency: 530,
+					velocity: 0.3,
+				});
 				// }
 			})
 			
 			// objectIds.forEach(async (id, i) => {
 			// 	const o = entityCollection.get(id);
-				
+			
 			// 	if (o === newOccupant) {
 			// 		return
 			// 	}
 			// 	// o.setGoalPoint(node.point);
-				
+			
 			// 	if (o.travelTo) {
 			// 		await sleep(180)
 			// 		o.travelTo(node.point);

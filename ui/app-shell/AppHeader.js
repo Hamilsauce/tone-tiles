@@ -52,6 +52,7 @@ export const AppHeader = defineComponent(
       handleNewMap,
       handleToggleTraversalEffects,
       handleToggleToolbar,
+      toolbarEnabled,
       mapName,
     }
   }, {},

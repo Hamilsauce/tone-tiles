@@ -79,12 +79,9 @@ export class SVGCanvas extends EventTarget {
   constructor(svg) {
     super();
     
-    this.#self = svg;
-    // this.#harnessTemplate = this.#self.querySelector(`[data-template="canvas-harness"]`).cloneNode(true);
+    this.#self = svg ?? document.querySelector('#canvas');
     
     this.hueRotato = initHueRoto(this.#self);
-    
-    
     this.surfaceLayer = this.dom.querySelector('#surface-layer');
     this.#surface = this.surfaceLayer.querySelector('#surface');
     
@@ -133,6 +130,7 @@ export class SVGCanvas extends EventTarget {
     });
     
     getPanZoom(this.dom);
+    
     this.hueRotato(true);
     
     this.pointerDownDOM$ = fromEvent(this.#self, 'pointerdown').pipe(
@@ -287,40 +285,6 @@ export class SVGCanvas extends EventTarget {
   
   get viewBox() { return this.#self.viewBox.baseVal; }
   
-  // useTemplate(templateName, options = {}) {
-  //   const config = TEMPLATE_CONFIG[templateName] ?? {};
-  
-  //   const base = this.#self
-  //     .querySelector(`[data-template="${templateName}"]`)
-  //     .cloneNode(true);
-  
-  //   delete base.dataset.template;
-  
-  //   if (options.dataset) Object.assign(base.dataset, options.dataset);
-  //   if (options.id) base.id = options.id;
-  
-  //   if (!config.withHarness) {
-  //     return {
-  //       template: base,
-  //       position: base,
-  //       transformConfig: config.transforms,
-  //     };
-  //   }
-  
-  //   const harness = this.#self
-  //     .querySelector(`[data-template="canvas-harness"]`)
-  //     .cloneNode(true);
-  
-  //   const slot = harness.querySelector('[data-slot="object"]');
-  //   slot.appendChild(base);
-  
-  //   return {
-  //     root: harness,
-  //     visualTarget: slot,
-  //     transformConfig: config.transforms,
-  //   };
-  // }
-  
   createCanvasObject(type, options) {
     const config = TEMPLATE_CONFIG[type];
     const defaultTransforms = options.transforms || DEFAULT_TRANSFORM_MAP
@@ -376,7 +340,6 @@ export class SVGCanvas extends EventTarget {
     this.hueRotato(false);
     
     this.#scene.clear();
-    
   }
   
   domPoint(x, y) {
@@ -425,22 +388,6 @@ export class SVGCanvas extends EventTarget {
     return cObj;
   }
   
-  createTileObject({ x, y, tileType, linkedMap, linkedNodeAddress }) {
-    const model = {
-      tileType,
-      x,
-      y,
-      current: false,
-      active: false,
-      isPathNode: false,
-      linkedNodeAddress: linkedNodeAddress ?? '',
-      linkedMap,
-      id: null,
-    };
-    
-    return t;
-  }
-  
   #toggleScroll(x, y) {
     this.#isContextMenuActive = !this.#isContextMenuActive;
     
@@ -453,98 +400,18 @@ export class SVGCanvas extends EventTarget {
     }
   }
   
-  createTileObject({ x, y, tileType, linkedMap, linkedNodeAddress }) {
-    const model = {
-      tileType,
-      x,
-      y,
-      current: false,
-      active: false,
-      isPathNode: false,
-      linkedNodeAddress: linkedNodeAddress ?? '',
-      linkedMap,
-    };
-    
-    const t = this.createObject('tile', { model });
-    
-    return t;
-  }
-  
-  createTile({ x, y, tileType, linkedMap }) {
-    const t = this.useTemplate('tile', {
-      dataset: {
-        tileType,
-        x,
-        y,
-        current: false,
-        active: false,
-        isPathNode: false,
-      },
-    });
-    
-    if (linkedMap) {
-      t.dataset.linkedMap = linkedMap;
-    }
-    
-    t.setAttribute('transform', `translate(${x},${y})`);
-    
-    t.id = 'rect' + utils.uuid();
-    
-    return t;
-  }
-  
-  createRect({ classList, width, height, x, y, textContent, dataset }) {
-    const g = document.createElementNS(SVG_NS, 'g');
-    const r = document.createElementNS(SVG_NS, 'rect');
-    
-    Object.assign(g.dataset, dataset);
-    g.setAttribute('transform', `translate(${dataset.x},${dataset.y})`);
-    g.classList.add(...(classList || ['tile']));
-    // r.classList.add('gradient');
-    
-    g.id = 'rect' + utils.uuid();
-    
-    r.setAttribute('width', width);
-    r.setAttribute('height', height);
-    
-    g.append(r);
-    
-    if (textContent) {
-      const t = this.createText({ textContent });
-      g.append(t);
-    }
-    
-    return g;
-  }
-  
-  createText({ textContent }) {
-    const textNode = document.createElementNS(SVG_NS, 'text');
-    textNode.style.fontSize = '0.0175rem';
-    textNode.style.textAnchor = 'middle';
-    textNode.style.dominantBaseline = 'middle';
-    textNode.textContent = textContent;
-    textNode.setAttribute('transform', 'translate(0.5,0.5)');
-    
-    return textNode;
-  }
-  
   setCanvasDimensions({ width, height } = {}) {
     if (+width) {
       height = +height ? height : width;
       
-      
       this.#self.setAttribute('width', width);
       this.#self.setAttribute('height', height);
-    }
-    else if (this.parentElement) {
+    } else if (this.parentElement) {
       const { width, height } = this.parentElement.getBoundingClientRect();
       
-      
       this.#self.setAttribute('width', width);
       this.#self.setAttribute('height', height);
-    }
-    
-    else {
+    } else {
       this.#self.setAttribute('width', window.innerWidth);
       this.#self.setAttribute('height', window.innerHeight);
     }
@@ -561,30 +428,6 @@ export class SVGCanvas extends EventTarget {
     
     
     return this;
-  }
-  
-  
-  // isInView(coords) {
-  //   const { x, y, width, height } = this.viewBox;
-  
-  
-  //   return coords.x >= x &&
-  //     coords.y >= y &&
-  //     coords.x <= width &&
-  //     coords.y <= height;
-  // }
-  
-  
-  getPixelAspectRatio() {
-    const { width, height } = this.#self.getBoundingClientRect();
-    
-    return width / height;
-  }
-  
-  getAspectRatio() {
-    const { width, height } = this.#self.getBBox();
-    
-    return width / height;
   }
   
   querySelector(selector) { return this.#self.querySelector(selector); }
