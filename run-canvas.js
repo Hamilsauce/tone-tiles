@@ -3,7 +3,7 @@ import { ModelRegistry } from './core/types/model-registry.js';
 import { CollectionRegistry } from './core/types/collection-registry.js';
 import { ModelTypes } from './core/types/model.types.js';
 
-import { getDirectionFromPoints } from './core/spatial/utils.js';
+import { getChordToneDegreeFromDir, getDirectionFromPoints } from './core/spatial/utils.js';
 import getGraphModel from './model/graph.model.js';
 import { SceneModel } from './model/index.js';
 import { EntityCollection } from './model/EntityCollection.js';
@@ -15,6 +15,8 @@ import { LoopEngine } from './core/loop-engine/index.js';
 import { audioEngine } from './audio/index.js';
 import audioNote1 from './audio/fire-audio-note1.js';
 import { playChord } from './audio/play-chord.js';
+import { GlideVoice } from './audio/GlideVoice.js';
+import { LoopableScaleSequence } from './audio/LoopableScaleSequence.js';
 import { ContextMenu } from './canvas/ContextMenu.js';
 import { watch, toValue } from 'vue';
 import { useMapStore } from './store/map.store.js';
@@ -27,6 +29,24 @@ import ham from 'ham';
 const { sleep } = ham;
 const { operators, Subject } = rxjs;
 const { map, scan, tap, filter, bufferTime, timestamp } = operators;
+
+const normalizeRhythmPattern = ({ playEvery = 1, playPattern = null } = {}) => {
+	if (Array.isArray(playPattern) && playPattern.length) {
+		const pattern = playPattern
+			.map(step => Number(step))
+			.filter(step => step === 0 || step === 1);
+		
+		if (pattern.length) {
+			return pattern;
+		}
+	}
+	
+	const interval = Math.max(1, Math.floor(playEvery || 1));
+	
+	return Array.from({ length: interval }, (_, index) => index === 0 ? 1 : 0);
+};
+
+const getDirectionAnchorDegree = (direction) => getChordToneDegreeFromDir(direction) ?? 0;
 
 
 const useTemplate = (templateName, options = {}) => {
@@ -134,6 +154,91 @@ export const runCanvas = async (mapId) => {
 	const loopEngine = runtime.loopEngine;
 	entityCollection = sceneModel.getColl(ModelTypes.ENTITIES);
 	graphModel = sceneModel.getColl(ModelTypes.GRAPH);
+	const actorTraversalMelodyOptions = {
+		rootPitch: 'C4',
+		scaleName: 'major',
+		octaveSpan: 3,
+		glideTime: 0.08,
+		turnGlideTime: 0.035,
+		releaseTime: 0.16,
+		velocity: 0.2,
+		playEvery: 1,
+		playPattern: null,
+	};
+	const actorTraversalRhythmPattern = normalizeRhythmPattern(actorTraversalMelodyOptions);
+	const actorTraversalSequence = new LoopableScaleSequence(actorTraversalMelodyOptions);
+	const actorTraversalVoice = new GlideVoice(audioEngine.ctx);
+	let actorTraversalPrevDirection = null;
+	let actorTraversalRhythmIndex = 0;
+	
+	const resetActorTraversalMelodyState = () => {
+		actorTraversalPrevDirection = null;
+		actorTraversalRhythmIndex = 0;
+		actorTraversalSequence.reset(0);
+	};
+	
+	const endActorTraversalMelody = ({ release = true } = {}) => {
+		if (release) {
+			actorTraversalVoice.release(actorTraversalMelodyOptions.releaseTime);
+		} else {
+			actorTraversalVoice.dispose();
+		}
+		
+		resetActorTraversalMelodyState();
+	};
+	
+	const startActorTraversalMelody = () => {
+		endActorTraversalMelody({ release: false });
+	};
+	
+	const reanchorActorTraversalMelody = (direction, { isStart = false } = {}) => {
+		const note = actorTraversalSequence.reset(getDirectionAnchorDegree(direction));
+		
+		actorTraversalRhythmIndex = 0;
+		
+		if (!actorTraversalVoice.isActive || isStart) {
+			actorTraversalVoice.start(note.frequency, actorTraversalMelodyOptions.velocity);
+		} else {
+			actorTraversalVoice.glideTo(note.frequency, actorTraversalMelodyOptions.turnGlideTime);
+		}
+		
+		actorTraversalPrevDirection = direction;
+		
+		return note;
+	};
+	
+	const shouldPlayActorTraversalStep = () => {
+		const step = actorTraversalRhythmPattern[actorTraversalRhythmIndex % actorTraversalRhythmPattern.length] ?? 1;
+		actorTraversalRhythmIndex++;
+		return step === 1;
+	};
+	
+	const handleActorTraversalMove = ({ prevPoint, point } = {}) => {
+		const direction = getDirectionFromPoints(prevPoint, point);
+		
+		if (!direction) {
+			return { direction: null, didTurn: false, played: false };
+		}
+		
+		if (!actorTraversalVoice.isActive || actorTraversalPrevDirection === null) {
+			reanchorActorTraversalMelody(direction, { isStart: true });
+			return { direction, didTurn: true, played: true };
+		}
+		
+		if (actorTraversalPrevDirection !== direction) {
+			reanchorActorTraversalMelody(direction);
+			return { direction, didTurn: true, played: true };
+		}
+		
+		if (!shouldPlayActorTraversalStep()) {
+			return { direction, didTurn: false, played: false };
+		}
+		
+		const note = actorTraversalSequence.next();
+		actorTraversalVoice.glideTo(note.frequency, actorTraversalMelodyOptions.glideTime);
+		
+		return { direction, didTurn: false, played: true };
+	};
 	
 	// TODO - Move into scene/init
 	// graphModel = getGraphModel({ loopEngine, registry: ModelRegistry });
@@ -266,6 +371,7 @@ export const runCanvas = async (mapId) => {
 		'mapLoad',
 		graphModel.out({ type: 'map:load' }).subscribe(e => {
 			const { width, height, nodes, startNode } = e.data;
+			endActorTraversalMelody();
 			
 			selectionBox.setBounds({
 				minX: 0,
@@ -398,6 +504,7 @@ export const runCanvas = async (mapId) => {
 			type: 'traversal:start',
 			filter: ({ id, type }) => entityCollection.get(id).type === 'actor',
 		}).subscribe(async ({ point, goalPoint }) => {
+			startActorTraversalMelody();
 			const curr = graphModel.getNodeAtPoint(point);
 			const goal = graphModel.getNodeAtPoint(goalPoint);
 			
@@ -421,7 +528,6 @@ export const runCanvas = async (mapId) => {
 		})
 	);
 	
-	let prevDir;
 	subscriptions.set(
 		'actorMove',
 		sceneModel.out({
@@ -429,17 +535,17 @@ export const runCanvas = async (mapId) => {
 			filter: ({ id }) => entityCollection.get(id).type === 'actor',
 		})
 		.subscribe(async ({ id, point, prevPoint }) => {
-			const direction = getDirectionFromPoints(prevPoint, point);
 			const node = graphModel.getNodeAtPoint(point);
 			const entity = entityCollection.get(id);
-			const sameDir = prevDir === direction;
-			
-			prevDir = direction;
+			const moveState = handleActorTraversalMove({ prevPoint, point });
+			const direction = moveState.direction ?? getDirectionFromPoints(prevPoint, point);
 			
 			if (node.linkedMap) {
 				const { linkedMap } = node;
+				endActorTraversalMelody();
 				await selectMapById(linkedMap);
 				entity.stop();
+				return;
 			}
 			
 			const _neighbors = [...graphModel.getNeighbors(node).entries()];
@@ -451,7 +557,7 @@ export const runCanvas = async (mapId) => {
 			
 			setCurrentNode(node.data());
 			
-			if (!sameDir) {
+			if (moveState.didTurn) {
 				playChord({ point: node.point, });
 			}
 			
@@ -476,6 +582,28 @@ export const runCanvas = async (mapId) => {
 					}, 1600);
 				}, 0 + (100 * cnt));
 			}
+		})
+	);
+	
+	subscriptions.set(
+		'actorTraversalEnd',
+		entityCollection.out({
+			filter: ({ id, type }) => {
+				return entityCollection.get(id)?.type === 'actor' &&
+					['traversal:stop', 'traversal:goal', 'traversal:idle'].includes(type);
+			},
+		}).subscribe(() => {
+			endActorTraversalMelody();
+		})
+	);
+	
+	subscriptions.set(
+		'actorBlocked',
+		sceneModel.out({
+			type: 'spatial:blocked',
+			filter: ({ id }) => entityCollection.get(id)?.type === 'actor',
+		}).subscribe(() => {
+			endActorTraversalMelody();
 		})
 	);
 	
@@ -850,6 +978,7 @@ export const runCanvas = async (mapId) => {
 	
 	
 	return () => {
+		endActorTraversalMelody();
 		subscriptions.forEach((sub, k) => {
 			console.warn('unsubscribing: ', k)
 			sub.unsubscribe()
