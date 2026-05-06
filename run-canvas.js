@@ -160,6 +160,8 @@ export const runCanvas = async (mapId) => {
 		octaveSpan: 3,
 		glideTime: 0.08,
 		turnGlideTime: 0.035,
+		teleportGlideTime: 0.09,
+		teleportLeadTime: 18,
 		releaseTime: 0.16,
 		velocity: 0.2,
 		playEvery: 1,
@@ -170,6 +172,7 @@ export const runCanvas = async (mapId) => {
 	const actorTraversalVoice = new GlideVoice(audioEngine.ctx);
 	let actorTraversalPrevDirection = null;
 	let actorTraversalRhythmIndex = 0;
+	let actorTraversalTeleportTimer = null;
 	
 	const resetActorTraversalMelodyState = () => {
 		actorTraversalPrevDirection = null;
@@ -177,7 +180,16 @@ export const runCanvas = async (mapId) => {
 		actorTraversalSequence.reset(0);
 	};
 	
+	const clearActorTraversalTeleportTimer = () => {
+		if (actorTraversalTeleportTimer !== null) {
+			window.clearTimeout(actorTraversalTeleportTimer);
+			actorTraversalTeleportTimer = null;
+		}
+	};
+	
 	const endActorTraversalMelody = ({ release = true } = {}) => {
+		clearActorTraversalTeleportTimer();
+		
 		if (release) {
 			actorTraversalVoice.release(actorTraversalMelodyOptions.releaseTime);
 		} else {
@@ -211,6 +223,36 @@ export const runCanvas = async (mapId) => {
 		const step = actorTraversalRhythmPattern[actorTraversalRhythmIndex % actorTraversalRhythmPattern.length] ?? 1;
 		actorTraversalRhythmIndex++;
 		return step === 1;
+	};
+	
+	const getActorTraversalNodeNote = ({ x = 0, y = 0 } = {}) => {
+		const index = Math.abs((x ?? 0) + (y ?? 0)) % actorTraversalSequence.length;
+		return actorTraversalSequence.noteAt(index);
+	};
+	
+	const playActorTeleportGliss = (fromNode, toNode) => {
+		if (!fromNode || !toNode) {
+			return;
+		}
+		
+		clearActorTraversalTeleportTimer();
+		
+		const sourceNote = getActorTraversalNodeNote(fromNode.point);
+		const destinationNote = getActorTraversalNodeNote(toNode.point);
+		
+		if (actorTraversalVoice.isActive) {
+			actorTraversalVoice.glideTo(sourceNote.frequency, 0.025);
+		} else {
+			actorTraversalVoice.start(sourceNote.frequency, actorTraversalMelodyOptions.velocity);
+		}
+		
+		actorTraversalTeleportTimer = window.setTimeout(() => {
+			actorTraversalVoice.glideTo(destinationNote.frequency, actorTraversalMelodyOptions.teleportGlideTime);
+			actorTraversalTeleportTimer = null;
+		}, actorTraversalMelodyOptions.teleportLeadTime);
+		
+		actorTraversalPrevDirection = null;
+		actorTraversalRhythmIndex = 0;
 	};
 	
 	const handleActorTraversalMove = ({ prevPoint, point } = {}) => {
@@ -536,8 +578,17 @@ export const runCanvas = async (mapId) => {
 		})
 		.subscribe(async ({ id, point, prevPoint }) => {
 			const node = graphModel.getNodeAtPoint(point);
+			const prevNode = graphModel.getNodeAtPoint(prevPoint);
 			const entity = entityCollection.get(id);
-			const moveState = handleActorTraversalMove({ prevPoint, point });
+			const isTeleportJump = !!(
+				prevNode?.tileType === 'teleport' &&
+				prevNode?.target &&
+				prevNode.target.x === point.x &&
+				prevNode.target.y === point.y
+			);
+			const moveState = isTeleportJump ?
+				{ direction: null, didTurn: false, played: true } :
+				handleActorTraversalMove({ prevPoint, point });
 			const direction = moveState.direction ?? getDirectionFromPoints(prevPoint, point);
 			
 			if (node.linkedMap) {
@@ -546,6 +597,10 @@ export const runCanvas = async (mapId) => {
 				await selectMapById(linkedMap);
 				entity.stop();
 				return;
+			}
+			
+			if (isTeleportJump) {
+				playActorTeleportGliss(prevNode, node);
 			}
 			
 			const _neighbors = [...graphModel.getNeighbors(node).entries()];
