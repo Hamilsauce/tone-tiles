@@ -37,39 +37,48 @@ export class ActorModel extends TraverserModel {
         ...(properties ?? {}),
       },
     });
-    
-    this.prevDir = null
-    this.currDir = null
+
+    this.prevDir = null;
+    this.currDir = null;
   }
-  
+
+  onTraversalStart(_context) { }
+  // onMove(_context) { }
+  // onBlocked(_context) { }
+  onGoal(_context) { }
+  onIdle(_context) { }
+  onTraversalEnd(_context) { }
+  onTraversalError(_context) { }
+
   onGoal() {
+    this.update({ teleporting: false });
     console.warn('actor goal reached', { id: this.id, point: this.point, goalPoint: this.goalPoint });
   }
-  
+
   onMove(event) {
-    this.prevDir = this.currDir
-    this.currDir = getDirectionFromPoints(event.prevPoint, event.point)
-    
+    this.prevDir = this.currDir;
+    this.currDir = getDirectionFromPoints(event.prevPoint, event.point);
+
     if (this.prevDir === this.currDir) {
-      this.stepInterval = clamp(this.stepInterval - 0.008, 0.05, 0.1)
+      this.stepInterval = clamp(this.stepInterval - 0.008, 0.05, 0.1);
     } else {
-      this.stepInterval = clamp(this.stepInterval + 0.012, 0.05, 0.1)
+      this.stepInterval = clamp(this.stepInterval + 0.012, 0.05, 0.1);
     }
   }
-  
+
   onBlocked(event) {
-    console.warn('onBlocked', event)
-    this.travelTo(event.prevPoint)
+    console.warn('onBlocked', event);
+    this.travelTo(event.prevPoint);
     // this.pre"vDir = this.currDir
     // this.cur"rDir = getDirectionFromPoints(event.prevPoint, event.point)
-    
+
     // if (this.prevDir === this.currDir) {
     //   this.stepInterval = clamp(this.stepInterval - 0.008, 0.05, 0.1)
     // } else {
     //   this.stepInterval = clamp(this.stepInterval + 0.012, 0.05, 0.1)
     // }
   }
-  
+
   // emitActorTravel(payload = {}) {
   //   return this.#emitActorAction(ActorTravel, {
   //     ...payload,
@@ -77,7 +86,7 @@ export class ActorModel extends TraverserModel {
   //     goalPoint: Point.from(payload.goalPoint ?? this.goalPoint),
   //   });
   // }
-  
+
   // emitActorMove(payload = {}) {
   //   return this.#emitActorAction(ActorMove, {
   //     ...payload,
@@ -85,7 +94,7 @@ export class ActorModel extends TraverserModel {
   //     prevPoint: Point.from(payload.prevPoint ?? this.point),
   //   });
   // }
-  
+
   // emitActorIdle(reason = 'idle', payload = {}) {
   //   return this.#emitActorAction(ActorIdle, {
   //     ...payload,
@@ -94,7 +103,7 @@ export class ActorModel extends TraverserModel {
   //     reason,
   //   });
   // }
-  
+
   // emitActorGoal(payload = {}) {
   //   return this.#emitActorAction(ActorGoal, {
   //     ...payload,
@@ -102,41 +111,41 @@ export class ActorModel extends TraverserModel {
   //     goalPoint: Point.from(payload.goalPoint ?? this.goalPoint),
   //   });
   // }
-  
+
   // emitActorMapLink(payload = {}) {
   //   return this.#emitActorAction(ActorMapLink, {
   //     ...payload,
   //     point: Point.from(payload.point ?? this.point),
   //   });
   // }
-  
+
   // emitActorTeleport(payload = {}) {
   //   return this.#emitActorAction(ActorTeleport, {
   //     ...payload,
   //     point: Point.from(payload.point ?? this.point),
   //   });
   // }
-  
+
   // emitActorStop(payload = {}) {
   //   return this.#emitActorAction(ActorStop, {
   //     ...payload,
   //     point: Point.from(payload.point ?? this.point),
   //   });
   // }
-  
+
   // emitActorError(error, payload = {}) {
   //   return this.#emitActorAction(ActorError, {
   //     error,
   //     ...payload,
   //   });
   // }
-  
+
   // #emitActorAction(createActorAction, payload = {}) {
   //   const action = createActorAction({
   //     id: this.id,
   //     ...payload,
   //   });
-  
+
   //   this.emit?.(action);
   //   return action;
   // }

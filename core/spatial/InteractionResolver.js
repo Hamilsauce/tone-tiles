@@ -16,11 +16,11 @@ const canCoOccupy = (entrantType = '', occupantType = '') => {
   if (!entrantType || !occupantType) {
     return false;
   }
-  
+
   if (entrantType === occupantType) {
     return false;
   }
-  
+
   return !!(
     CO_OCCUPANCY_RULES[entrantType]?.has(occupantType) &&
     CO_OCCUPANCY_RULES[occupantType]?.has(entrantType)
@@ -31,13 +31,13 @@ const getEntityType = (entity) => entity?.type ?? entity?.properties?.type ?? 'u
 
 const resolveTraversalMove = (event, graph, entities) => {
   event.prevPoint = event.prevPoint ?? event.point;
-  
+
   const movingEntity = entities.get(event.id);
   const fromNodeId = graph.pointToAddress(event.prevPoint);
   const toNodeId = graph.pointToAddress(event.point);
   const toNode = graph.getNodeAtPoint(event.point);
   const direction = getDirectionFromPoints(event.prevPoint, event.point);
-  
+  const teleporting = toNode ? toNode.tileType === 'teleport' : false;
   if (!movingEntity || !toNode) {
     return [
       SpatialBlocked({
@@ -46,6 +46,7 @@ const resolveTraversalMove = (event, graph, entities) => {
         prevPoint: event.prevPoint,
         goalPoint: event.goalPoint,
         direction,
+        teleporting: false,
         actionType: event.type,
         fromNodeId,
         toNodeId,
@@ -55,16 +56,16 @@ const resolveTraversalMove = (event, graph, entities) => {
       }),
     ];
   }
-  
+
   const movingType = getEntityType(movingEntity);
   const blockingEntities = toNode.objectIds
     .filter((occupantId) => occupantId !== event.id)
     .map((occupantId) => entities.get(occupantId))
     .filter((occupant) => occupant && !canCoOccupy(movingType, getEntityType(occupant)));
-  
+
   if (!blockingEntities.length) {
     graph.moveObject(event.id, event.point);
-    
+
     return [
       SpatialMove({
         id: event.id,
@@ -72,6 +73,7 @@ const resolveTraversalMove = (event, graph, entities) => {
         prevPoint: event.prevPoint,
         goalPoint: event.goalPoint,
         direction,
+        teleporting,
         actionType: event.type,
         fromNodeId,
         toNodeId,
@@ -79,12 +81,12 @@ const resolveTraversalMove = (event, graph, entities) => {
       }),
     ];
   }
-  
+
   const blockers = blockingEntities.map(({ id }) => id);
   const blockerTypes = [...new Set(blockingEntities.map(getEntityType))];
   const actors = [...new Set([event.id, ...blockers])];
   const reason = blockerTypes.includes('actor') ? 'blocked-by:actor' : `blocked-by:${blockerTypes[0] ?? 'occupant'}`;
-  
+
   return [
     SpatialBlocked({
       id: event.id,
@@ -93,6 +95,7 @@ const resolveTraversalMove = (event, graph, entities) => {
       goalPoint: event.goalPoint,
       fromNodeId,
       direction,
+      teleporting: false,
       actionType: event.type,
       toNodeId,
       blockers,
@@ -105,6 +108,7 @@ const resolveTraversalMove = (event, graph, entities) => {
       prevPoint: event.prevPoint,
       actors,
       direction,
+      teleporting: false,
       actionType: event.type,
       blockers,
       entering: event.id,
@@ -117,7 +121,7 @@ export const derive$ = (events$, graph, entities) => {
   const base$ = events$.pipe(
     filter(event => !event.meta?.derived)
   );
-  
+
   return base$.pipe(
     filter(event => event.type.includes('traversal:')),
     concatMap((event) => rxjs.from(resolveTraversalMove(event, graph, entities))),
@@ -129,15 +133,15 @@ export class InteractionResolver {
   constructor({ entities, graph }) {
     this.graph = graph;
     this.entities = entities;
-    
+
     createConnectionBus(this);
-    
+
     this.in({ name: 'entities', source$: entities.out({}) });
     this.in({ name: 'graph', source$: graph.out({}) });
-    
+
     this.derived$ = derive$(this.out({}), graph, entities).pipe(share());
   }
-  
+
   syncEntityPosition(id, point) {
     this.graph.moveObject(id, point);
     return this;

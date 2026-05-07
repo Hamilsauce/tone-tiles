@@ -176,7 +176,7 @@ export const runCanvas = async (mapId) => {
     teleportGlideTime: 0.1,
     teleportLeadTime: 18,
     releaseTime: 0.2,
-    velocity: 0.235,
+    velocity: 0.205,
     playEvery: 1,
     playPattern: null,
   };
@@ -208,18 +208,18 @@ export const runCanvas = async (mapId) => {
         1.24
       ),
       brightness: clamp(
-        0.28 +
+        0.24 +
         (mediumBlend * 0.16) +
         (longBlend * (0.1 + (travelWave * 0.11) + (swellWave * 0.05))),
-        0.18,
-        0.84
+        0.16,
+        0.72
       ),
       warmth: clamp(
-        0.18 +
+        0.16 +
         (mediumBlend * 0.14) +
         (longBlend * (0.12 + (lift * 0.07) + (swellWave * 0.04))),
-        0.12,
-        0.78
+        0.1,
+        0.64
       ),
       width: clamp(
         0.12 +
@@ -229,11 +229,11 @@ export const runCanvas = async (mapId) => {
         0.68
       ),
       level: clamp(
-        0.48 +
-        (mediumBlend * 0.1) +
-        (longBlend * (0.08 + (lift * 0.08))),
-        0.42,
-        0.82
+        0.43 +
+        (mediumBlend * 0.08) +
+        (longBlend * (0.06 + (lift * 0.06))),
+        0.38,
+        0.68
       ),
       pan: clamp(
         polarity * longBlend * (0.06 + (travelWave * 0.18)),
@@ -351,10 +351,10 @@ export const runCanvas = async (mapId) => {
     }
 
     actorTraversalVoice.setExpression({
-      brightness: 0.34,
-      warmth: 0.22,
-      width: 0.2,
-      level: 0.56,
+      brightness: 0.28,
+      warmth: 0.18,
+      width: 0.18,
+      level: 0.46,
       pan: 0,
     }, { immediate: true });
 
@@ -448,11 +448,6 @@ export const runCanvas = async (mapId) => {
           y: e.data?.point?.y ?? e.data?.y ?? 0,
         },
         transforms: DEFAULT_TRANSFORM_MAP,
-        // transforms: [
-        //   { type: 'translate', values: [0, 0], position: 0 },
-        //   { type: 'rotate', values: [0, 0.5, 0.5], position: 1 },
-        //   { type: 'scale', values: [1, 1], position: 2 },
-        // ],
       });
 
       if (e.id === 'actor1') {
@@ -516,8 +511,13 @@ export const runCanvas = async (mapId) => {
           return state;
         }, graphEvents),
 
-      ).subscribe(e => { }));
+      )
+      // .subscribe(e => {
 
+      // })
+    );
+
+  // navigator.clipboard.writeText(JSON.stringify(graphEvents, null, 2));
 
   subscriptions.set(
     'mapLoad',
@@ -565,23 +565,22 @@ export const runCanvas = async (mapId) => {
     'actorRender',
     entityCollection.out({
       type: 'actor',
-      // filter: ({ id }) => id === 'actor1',
       filter: ({ id, type }) => {
         return entityCollection.get(id).type === 'actor';
       }
     })
       .subscribe((event) => {
-        console.warn('actorRender', event);
+        // console.warn('actorRender', event);
         const actor1Model = entityCollection.get('actor1');
         if (event.type === 'actor:update') {
+          const actor1 = objectLayer.get(event.id);
+
           if (!actor1) return;
 
           const currRotate = actor1.transforms.rotation;
 
           actor1.update({
             ...event.data,
-            // x: event.data?.point?.x ?? event.data?.x,
-            // y: event.data?.point?.y ?? event.data?.y,
           });
 
           return;
@@ -602,7 +601,7 @@ export const runCanvas = async (mapId) => {
         if (['actor:stop', 'actor:idle', 'actor:goal', 'actor:map-link'].includes(event.type)) {
           if (!actor1) return;
           const point = event.point ?? actor1Model.currentPoint;
-          actor1.update({ x: point.x, y: point.y });
+          actor1.update({ x: point.x, y: point.y, teleporting: false });
         }
       })
   );
@@ -625,8 +624,7 @@ export const runCanvas = async (mapId) => {
       type: 'traversal:start',
       filter: ({ id, type }) => entityCollection.get(id).type === 'dark-sun'
     }).subscribe(async (event) => {
-      console.warn('event', JSON.stringify(event, null, 2));
-      // console.warn('graphModel.getNodeAtPoint(point)', graphModel.getNodeAtPoint(event.point))
+      // console.warn('event', JSON.stringify(event, null, 2));
       const { id, point, goalPoint } = event;
       const entity = entityCollection.get(id);
       const curr = graphModel.getNodeAtPoint(point) || {};
@@ -635,7 +633,6 @@ export const runCanvas = async (mapId) => {
         const index = darkSunNotes.findIndex(_ => _.frequency === frequency);
         const mod = index * 3;
         const delay = mod * 25;
-        // audioNote1(curr, { forceNewNote: true, frequency, velocity });
 
         await sleep(delay);
 
@@ -674,7 +671,7 @@ export const runCanvas = async (mapId) => {
       type: 'spatial:move',
       filter: ({ id }) => entityCollection.get(id).type === 'actor',
     })
-      .subscribe(async ({ id, point, prevPoint }) => {
+      .subscribe(async ({ id, point, prevPoint, ...rest }) => {
         const node = graphModel.getNodeAtPoint(point);
         const prevNode = graphModel.getNodeAtPoint(prevPoint);
         const entity = entityCollection.get(id);
@@ -713,7 +710,7 @@ export const runCanvas = async (mapId) => {
           playChord({ point: node.point, });
         }
 
-        objectLayer.get(id)?.update({ point: node.point });
+        objectLayer.get(id)?.update({ point: node.point, teleporting: rest.teleporting ?? false });
 
         let cnt = 0;
 
@@ -743,8 +740,10 @@ export const runCanvas = async (mapId) => {
       filter: ({ id, type }) => {
         return entityCollection.get(id)?.type === 'actor' && ['traversal:stop', 'traversal:goal', 'traversal:idle'].includes(type);
       },
-    }).subscribe(() => {
+    }).subscribe((event) => {
       endActorTraversalMelody();
+      objectLayer.get(event.id)?.update({ teleporting: false });
+
     })
   );
 
@@ -765,84 +764,18 @@ export const runCanvas = async (mapId) => {
       type: 'spatial:move',
       filter: ({ id }) => entityCollection.get(id).type === 'dark-sun',
     }).subscribe(async (event) => {
-      const { id, point } = event;
+      const { id, point, ...rest } = event;
       const node = graphModel.getNodeAtPoint(point);
 
-      objectLayer.get(id)?.update({ point: node.point });
+      objectLayer.get(id)?.update({ point: node.point, teleporting: rest.teleporting ?? false });
     })
   );
 
-  // subscriptions.set(
-  // 	'collision',
-  // 	sceneModel.out({ type: 'collision' })
-  // 	.subscribe(async (event) => {
-  // 		console.warn('event', event)
-  // 		const { id, entering, actors } = event
-
-  // 		const { newObjectId, objectIds } = data;
-  // 		const newOccupant = entityCollection.get(newObjectId);
-  // 		const node = tileLayer.get(id);
-
-  // 		if (!newOccupant || newOccupant.type !== 'dark-sun') {
-  // 			return;
-  // 		}
-
-  // 		newOccupant?.reverseCourse?.();
-
-  // 		const dso = objectLayer.get(newObjectId);
-  // 		dso.toggle({ recoiling: true }, { time: 200 });
-
-  // 		node.toggle({ recoiling: true }, { time: 500 });
-
-  // 		objectIds.forEach(async (id, i) => {
-  // 			const o = entityCollection.get(id);
-
-  // 			if (o === newOccupant) {
-  // 				return
-  // 			}
-  // 			// o.setGoalPoint(node.point);
-
-  // 			if (o.travelTo) {
-  // 				await sleep(180)
-  // 				o.travelTo(node.point);
-  // 				audioNote1(null, {
-  // 					forceNewNote: true,
-  // 					frequency: 530,
-  // 					velocity: 0.3,
-  // 				});
-  // 			}
-  // 		})
-  // 		await sleep(50)
-
-  // 		audioNote1(null, {
-  // 			forceNewNote: true,
-  // 			frequency: 220,
-  // 			velocity: 0.3,
-  // 		});
-
-  // 		await sleep(25);
-
-  // 		audioNote1(null, {
-  // 			forceNewNote: true,
-  // 			frequency: 275,
-  // 			velocity: 0.15,
-  // 		});
-
-  // 		await sleep(50);
-
-  // 		audioNote1(null, {
-  // 			forceNewNote: true,
-  // 			frequency: 325,
-  // 			velocity: 0.2,
-  // 		});
-  // 	})
-  // );
   subscriptions.set(
     'collision',
     sceneModel.out({ type: 'interaction:collision' })
       .subscribe(async (event) => {
         const { point, entering, actors } = event;
-        // console.warn('collision', event)
         const newOccupant = entityCollection.get(entering);
         const node = tileLayer.get(graphModel.pointToAddress(point));
 
@@ -862,11 +795,7 @@ export const runCanvas = async (mapId) => {
           const a = objectLayer.get(id);
           if (a === dso) return;
 
-          // console.warn('a', a)
-
-          // if (o.travelTo) {
           await sleep(180);
-          // o.travelTo(node.point);
           a.recoil(500);
 
           audioNote1(null, {
@@ -874,27 +803,7 @@ export const runCanvas = async (mapId) => {
             frequency: 530,
             velocity: 0.3,
           });
-          // }
         });
-
-        // objectIds.forEach(async (id, i) => {
-        // 	const o = entityCollection.get(id);
-
-        // 	if (o === newOccupant) {
-        // 		return
-        // 	}
-        // 	// o.setGoalPoint(node.point);
-
-        // 	if (o.travelTo) {
-        // 		await sleep(180)
-        // 		o.travelTo(node.point);
-        // 		audioNote1(null, {
-        // 			forceNewNote: true,
-        // 			frequency: 530,
-        // 			velocity: 0.3,
-        // 		});
-        // 	}
-        // })
 
         await sleep(50);
 
@@ -949,8 +858,6 @@ export const runCanvas = async (mapId) => {
 
 
   //! end 1bindings
-
-  // loopEngine.start();
 
   const blurContextMenu = (e) => {
     const edgeLines = [...objectLayer.dom.querySelectorAll('.edge-line')];

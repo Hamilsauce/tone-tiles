@@ -1,5 +1,5 @@
 import { createAction } from './create-action.js';
-import { optional, isPointLike, isString } from '../../lib/utils.js';
+import { optional, isPointLike, isString, isBoolean } from '../../lib/utils.js';
 
 const isStringArray = (value) => Array.isArray(value) && value.every(isString);
 
@@ -10,6 +10,9 @@ export const SpatialMove = createAction('spatial:move', {
   goalPoint: optional(isPointLike),
   fromNodeId: isString,
   toNodeId: isString,
+  direction: optional(isString),
+  teleporting: optional(isBoolean),
+  actionType: isString,
 });
 
 export const SpatialBlocked = createAction('spatial:blocked', {
@@ -21,6 +24,9 @@ export const SpatialBlocked = createAction('spatial:blocked', {
   toNodeId: isString,
   blockers: isStringArray,
   reason: isString,
+  direction: optional(isString),
+  teleporting: optional(isBoolean),
+  actionType: isString,
 });
 
 export const SpatialCollision = createAction('interaction:collision', {
@@ -30,4 +36,7 @@ export const SpatialCollision = createAction('interaction:collision', {
   actors: isStringArray,
   blockers: isStringArray,
   entering: isString,
+  direction: optional(isString),
+  teleporting: optional(isBoolean),
+  actionType: isString,
 });

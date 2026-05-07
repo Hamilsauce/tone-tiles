@@ -12,30 +12,30 @@
   transition: 0.15s ease;
   /* transition: filter 2s ease-in-out !important; */
   mix-blend-mode: normal;
-  
+
   /* transform-origin: center center; */
   .actor-eye {
     fill: #FFFFFF
   }
-  
+
   .actor-mouth {
     stroke: #000000;
     stroke-width: 0.075;
-    
+
   }
-  
+
   .actor-arm {
     fill: #3B5F89;
     /* stroke: #7C7C7C; */
     /* stroke-width: 0.035; */
-    
+
   }
-  
+
   .actor-head {
     fill: #3B4889;
     /* stroke: #7C7C7C; */
     /* stroke-width: 0.035; */
-    
+
   }
 }
 
@@ -49,7 +49,7 @@
   /* transition: 0.15s ease-out; */
   /* stroke-width: 0.00px; */
   /* filter: contrast(2) hue-rotate(25deg) invert(1) !important; */
-  
+
 }
 
 [data-type=actor][data-recoiling=true] {
@@ -57,8 +57,8 @@
   filter: drop-shadow(0 0 0.1px #FFFFFF) brightness(1) !important;
   mix-blend-mode: hard-light;
   transition: 0.2s !important;
-  
-  
+
+
 }
 
 [data-type=actor][data-teleporting=false],
@@ -70,6 +70,6 @@
 [data-type=actor][data-teleporting=true] {
   r: 0.01;
   stroke-width: 0.00px;
-  
-  filter: blur(5px) !important;
+
+  filter: blur(0.25px) invert(1) !important;
 }

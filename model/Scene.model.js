@@ -9,18 +9,18 @@ export class SceneModel {
   #collections = new Map();
   #collectionRegistry;
   #modelRegistry;
-  
-  constructor({ registry, inputs$ = [], loopEngine, collections = [] }) {
+
+  constructor({ registry, inputs$ = [], loopEngine, collections = [], userEvents$ = null }) {
     this.loopEngine = loopEngine;
     this.#collectionRegistry = CollectionRegistry;
     this.#modelRegistry = registry ?? ModelRegistry;
-    
+
     createConnectionBus(this);
-    
+
     collections.forEach(({ name }) => {
       this.createCollection(name, {});
     });
-    
+
     inputs$.forEach(({ name, source$ }) => {
       this.in({ name, source$ });
     });
@@ -32,23 +32,34 @@ export class SceneModel {
 
     this.#collections.get(ModelTypes.ENTITIES)
       .in({ name: 'resolver', source$: this.resolver.derived$ });
+
     this.in({ name: 'resolver', source$: this.resolver.derived$ });
+
+    if (userEvents$) {
+      // this.in({ name: 'user-events', source$: userEvents$ });
+
+      userEvents$.subscribe(event => {
+        // this.resolver.handleEvent(event);
+        console.warn('TODO: finish routing canvas dom events through scene model and resolver', event);
+      });
+    }
+
   }
-  
+
   getColl(name, options = {}) {
     return this.#collections.get(name);
   }
-  
+
   createCollection(name, options) {
     const CollectionClass = this.#collectionRegistry.get(name);
-    
+
     if (!CollectionClass) {
       const typeLabel = typeof name === 'symbol' ?
         (name.description ?? name.toString()) :
         String(name);
       throw new Error(`Unknown Coll type: ${typeLabel}`);
     }
-    
+
     const coll = new CollectionClass({
       ...options,
       registry: this.#modelRegistry,
@@ -65,7 +76,7 @@ export class SceneModel {
           undefined,
       }),
     });
-    
+
     return coll;
   }
 }

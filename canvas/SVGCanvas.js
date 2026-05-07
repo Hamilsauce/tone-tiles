@@ -4,16 +4,17 @@ import { createCustomEvent } from '../lib/create-event.js';
 import { CanvasObject, DefaultCanvasObjectOptions } from './CanvasObject.js';
 import { CanvasActor } from './CanvasActor.js';
 import { initHueRoto } from '../lib/hue-rotato.js';
+import { getUserEvents } from '../lib/get-user-event.js';
 import { CanvasScene } from '../canvas/CanvasScene.js';
 import { TileObject } from '../canvas/TileObject.js';
 import { DarkSun } from '../canvas/DarkSun.js';
 import { TransformList, DEFAULT_TRANSFORM_MAP, DEFAULT_TRANSFORMS } from './TransformList.js';
 
+import { createConnectionBus } from '../core/create-connection.js';
 const { getPanZoom, template, utils, download, TwoWayMap } = ham;
 
-const { fromEvent, operators } = rxjs;
+const { fromEvent, operators, merge } = rxjs;
 const { filter, map, tap } = operators;
-let hasInitViewBox = false;
 const DRAG_DISTANCE_THRESHOLD = 4;
 
 const TEMPLATE_CONFIG = {
@@ -38,7 +39,7 @@ const TEMPLATE_CONFIG = {
       visual: [],
     },
   },
-  
+
   tile: {
     withHarness: false,
     transforms: {
@@ -46,7 +47,7 @@ const TEMPLATE_CONFIG = {
       visual: [],
     },
   },
-  
+
   actor: {
     withHarness: true,
     transforms: {
@@ -54,7 +55,7 @@ const TEMPLATE_CONFIG = {
       visual: ['rotate', 'scale'],
     },
   },
-  
+
   'dark-sun': {
     withHarness: true,
     transforms: {
@@ -74,199 +75,86 @@ export class SVGCanvas extends EventTarget {
   #didDrag = false;
   #suppressNextClick = false;
   #harnessTemplate = null;
-  
-  
+
+
   constructor(svg) {
     super();
-    
+    createConnectionBus(this);
+
     this.#self = svg ?? document.querySelector('#canvas');
-    
+
     this.hueRotato = initHueRoto(this.#self);
     this.surfaceLayer = this.dom.querySelector('#surface-layer');
     this.#surface = this.surfaceLayer.querySelector('#surface');
-    
-    
+
     this.viewport = this.dom.querySelector('#viewport');
     this.minimap = this.dom.querySelector('#minimap');
-    
-    
-    this.#scene = new CanvasScene(this, [
-    {
+
+    this.#scene = new CanvasScene(this, [{
       name: 'tile',
       id: 'tile-layer',
       transforms: { translate: DEFAULT_TRANSFORM_MAP.translate },
-      // transforms: [{ type: 'translate', values: [0.5, 0.5], position: 0 }]
     },
     {
       name: 'object',
       id: 'object-layer',
       transforms: { translate: DEFAULT_TRANSFORM_MAP.translate },
-      // transforms: [{ type: 'translate', values: [0.5, 0.5], position: 0 }]
     }]);
-    
+
     this.viewport.append(this.#scene.dom);
-    
+
     this.layers = {
       surface: this.dom.querySelector('#surface-layer'),
       tile: this.dom.querySelector('#tile-layer'),
       object: this.dom.querySelector('#object-layer'),
     };
-    
+
     let shouldInvert = 0;
-    
-    
+
+
     this.#surface.addEventListener('dblclick', (e) => {
       shouldInvert = shouldInvert === 0 ? 1 : 0;
       this.layers.tile.style.filter = `hue-rotate(55deg) invert(${shouldInvert}) drop-shadow(1px 1px 0.1px #00000050)`;
     });
-    
-    
+
+
     document.querySelector('#map-name-text').addEventListener('dblclick', (e) => {
       this.hueRotato(false);
     });
-    
+
     this.addEventListener('blurContextMenu', (e) => {
       this.#isContextMenuActive = false;
     });
-    
+
     getPanZoom(this.dom);
-    
+
     this.hueRotato(true);
-    
-    this.pointerDownDOM$ = fromEvent(this.#self, 'pointerdown').pipe(
-      tap(({ clientX, clientY }) => {
-        this.#suppressNextClick = false;
-        this.#pointerDown = { x: clientX, y: clientY };
-        this.#didDrag = false;
-      }),
-    );
-    
-    this.pointerMoveDOM$ = fromEvent(this.#self, 'pointermove').pipe(
-      tap(({ clientX, clientY }) => {
-        if (!this.#pointerDown || this.#didDrag) return;
-        
-        const dx = clientX - this.#pointerDown.x;
-        const dy = clientY - this.#pointerDown.y;
-        const distance = Math.hypot(dx, dy);
-        
-        if (distance >= DRAG_DISTANCE_THRESHOLD) {
-          this.#didDrag = true;
-        }
-      }),
-    );
-    
-    this.pointerUpDOM$ = fromEvent(this.#self, 'pointerup').pipe(
-      tap(() => {
-        if (this.#pointerDown && this.#didDrag) {
-          this.#suppressNextClick = true;
-        }
-        
-        this.#pointerDown = null;
-        this.#didDrag = false;
-      }),
-    );
-    
-    this.clickDOM$ = fromEvent(this.#self, 'click').pipe(
-      filter(() => {
-        if (!this.#suppressNextClick) return true;
-        
-        this.#suppressNextClick = false;
-        return false;
-      }),
-      tap(e => {
-        e.preventDefault();
-        e.stopPropagation();
-        e.stopImmediatePropagation();
-      }),
-    );
-    
-    this.contextMenuDOM$ = fromEvent(this.#self, 'contextmenu').pipe(
-      tap(e => {
-        e.preventDefault();
-        e.stopPropagation();
-      }),
-      map(({ type, target, clientX, clientY }) => {
-        const layerDOM = target.closest('[data-type="layer"]');
-        
-        if (!layerDOM) return null;
-        
-        const layerName = layerDOM.dataset.name;
-        
-        const point = this.domPoint(clientX, clientY);
-        const isTile = !!target.closest('.tile');
-        const x = Math.floor(point.x);
-        const y = Math.floor(point.y);
-        
-        return {
-          type: `${layerName}:${type}`,
-          detail: {
-            id: `${x}_${y}`,
-            x,
-            y,
-            target,
-          }
-        };
-      }),
-      filter(e => !!e),
-      map(({ type, detail }) => createCustomEvent(type, detail)),
-      tap((event) => this.dispatchEvent(event)),
-      // tap((evt) => { console.warn(`[ CANVAS EVENT ] ${evt.type}: `); }),
-    );
-    
-    this.eventEmits$ = this.clickDOM$.pipe(
-      map((e) => {
-        e.stopPropagation();
-        e.stopImmediatePropagation();
-        e.preventDefault();
-        const { type, target, clientX, clientY } = e;
-        
-        const layerDOM = target.closest('[data-type="layer"]');
-        const layerName = layerDOM.dataset.name;
-        
-        const point = this.domPoint(clientX, clientY);
-        const isTile = !!target.closest('.tile');
-        const x = Math.floor(point.x);
-        const y = Math.floor(point.y);
-        
-        return {
-          type: `${layerName}:${type}`,
-          detail: {
-            id: `${x}_${y}`,
-            x,
-            y,
-          }
-        };
-      }),
-      map(({ type, detail }) => createCustomEvent(type, detail)),
-      tap((event) => this.dispatchEvent(event)),
-      tap((evt) => { console.warn('[ CANVAS EVEVENT ]: ', evt.type); }),
-    );
-    
+
     this.toggleScroll = this.#toggleScroll.bind(this);
-    
-    this.pointerDownDOMSubscription = this.pointerDownDOM$.subscribe();
-    this.pointerMoveDOMSubscription = this.pointerMoveDOM$.subscribe();
-    this.pointerUpDOMSubscription = this.pointerUpDOM$.subscribe();
-    this.clickDOMSubscription = this.eventEmits$.subscribe();
-    this.contextmenuDOMSubscription = this.contextMenuDOM$.subscribe();
+
+    const { eventEmits$, pointerEvents$ } = getUserEvents(this)
+
+    this.in({ name: 'user-events', source$: eventEmits$ });
+
+    this.pointerDOMSubscription = pointerEvents$.subscribe();
   }
-  
+
   get dom() { return this.#self; }
-  
+
   get harnessTemplate() {
     if (!this.#harnessTemplate) {
       this.#harnessTemplate = this.#self.querySelector(`[data-template="canvas-harness"]`);
       delete this.#harnessTemplate.dataset.template
     }
-    
+
     return this.#harnessTemplate.cloneNode(true);
   }
-  
+
   get boundingClientRect() { return this.dom.getBoundingClientRect(); }
-  
+
   get bounds() {
     const { x, y, width, height } = this.boundingClientRect;
-    
+
     return {
       top: y,
       right: x + width,
@@ -274,41 +162,40 @@ export class SVGCanvas extends EventTarget {
       left: x,
     };
   }
-  
+
   get isContextMenuActive() { return this.#isContextMenuActive; }
-  
+
   get scene() { return this.#scene; }
-  
+
   get surface() { return this.#surface; }
-  
+
   get parentElement() { return this.#self.parentElement; }
-  
+
   get viewBox() { return this.#self.viewBox.baseVal; }
-  
+
   createCanvasObject(type, options) {
     const config = TEMPLATE_CONFIG[type];
     const defaultTransforms = options.transforms || DEFAULT_TRANSFORM_MAP
-    // console.warn('type', type)
-    
+
     const base = this.useTemplate(type, options);
-    
+
     let template, transformTarget;
-    
+
     if (config.withHarness) {
       const harness = this.harnessTemplate
       const slot = harness.querySelector('[data-slot="object"]');
       slot.appendChild(base);
-      
+
       template = harness;
       transformTarget = slot;
     } else {
       template = base;
       transformTarget = base;
     }
-    
+
     if (options.dataset) Object.assign(template.dataset, options.dataset);
     if (options.id) template.id = options.id;
-    
+
     return {
       template,
       transforms: {
@@ -317,20 +204,20 @@ export class SVGCanvas extends EventTarget {
       }
     };
   }
-  
+
   useTemplate(templateName, options = {}) {
     const el = this.#self.querySelector(`[data-template="${templateName}"]`).cloneNode(true);
-    
+
     delete el.dataset.template;
-    
+
     if (options.dataset) Object.assign(el.dataset, options.dataset);
     if (options.id) el.id = options.id;
-    
+
     if (options.fill) el.style.fill = options.fill;
-    
+
     return el;
   };
-  
+
   destroy(x, y) {
     this.pointerDownDOMSubscription.unsubscribe();
     this.pointerMoveDOMSubscription.unsubscribe();
@@ -338,23 +225,23 @@ export class SVGCanvas extends EventTarget {
     this.clickDOMSubscription.unsubscribe();
     this.contextmenuDOMSubscription.unsubscribe();
     this.hueRotato(false);
-    
+
     this.#scene.clear();
   }
-  
+
   domPoint(x, y) {
     return new DOMPoint(x, y).matrixTransform(
       this.#scene.dom.getScreenCTM().inverse()
     );
   }
-  
+
   createObject(type, options = {}) {
     const normalizedOptions = options?.model ? options : {
       ...options,
       model: options,
     };
     const { model = {}, ...rest } = normalizedOptions;
-    
+
     if (type === 'tile') {
       return new TileObject(this, {
         ...rest,
@@ -362,7 +249,7 @@ export class SVGCanvas extends EventTarget {
         model,
       });
     }
-    
+
     if (type === 'actor') {
       return new CanvasActor(this, {
         ...rest,
@@ -370,7 +257,7 @@ export class SVGCanvas extends EventTarget {
         model,
       });
     }
-    
+
     if (type === 'dark-sun') {
       return new DarkSun(this, {
         ...rest,
@@ -378,19 +265,19 @@ export class SVGCanvas extends EventTarget {
         model,
       });
     }
-    
+
     const cObj = new CanvasObject(this, type, {
       ...rest,
       id: rest.id ?? model.id,
       model,
     });
-    
+
     return cObj;
   }
-  
+
   #toggleScroll(x, y) {
     this.#isContextMenuActive = !this.#isContextMenuActive;
-    
+
     if (this.isContextMenuActive) {
       this.dom.removeEventListener('contextmenu', this.toggleScroll);
       this.dom.addEventListener('click', this.toggleScroll);
@@ -399,38 +286,38 @@ export class SVGCanvas extends EventTarget {
       this.dom.removeEventListener('click', this.toggleScroll);
     }
   }
-  
+
   setCanvasDimensions({ width, height } = {}) {
     if (+width) {
       height = +height ? height : width;
-      
+
       this.#self.setAttribute('width', width);
       this.#self.setAttribute('height', height);
     } else if (this.parentElement) {
       const { width, height } = this.parentElement.getBoundingClientRect();
-      
+
       this.#self.setAttribute('width', width);
       this.#self.setAttribute('height', height);
     } else {
       this.#self.setAttribute('width', window.innerWidth);
       this.#self.setAttribute('height', window.innerHeight);
     }
-    
+
     return this;
   }
-  
+
   setViewBox({ x = 0, y = 0, width = 100, height = 100 }) {
     Object.assign(this.viewBox, { x, y, width, height, });
-    
+
     setTimeout(() => {
       const tileBB = this.layers.tile.getBBox();
     }, 0);
-    
-    
+
+
     return this;
   }
-  
+
   querySelector(selector) { return this.#self.querySelector(selector); }
-  
+
   querySelectorAll(selector) { return [...this.#self.querySelectorAll(selector)]; }
 }

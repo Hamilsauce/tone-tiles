@@ -46,10 +46,10 @@ export class GlideVoice {
     this.velocity = 0.18;
     this.frequency = null;
     this.expression = {
-      brightness: 0.34,
-      warmth: 0.22,
-      width: 0.18,
-      level: 0.54,
+      brightness: 0.29,
+      warmth: 0.18,
+      width: 0.16,
+      level: 0.48,
       pan: 0,
     };
   }
@@ -112,10 +112,10 @@ export class GlideVoice {
     airRightPanner.pan.setValueAtTime(0.2, now);
 
     filter.type = 'lowpass';
-    filter.frequency.setValueAtTime(1180, now);
-    filter.Q.setValueAtTime(0.45, now);
+    filter.frequency.setValueAtTime(1060, now);
+    filter.Q.setValueAtTime(0.38, now);
 
-    shaperInput.gain.setValueAtTime(1.15, now);
+    shaperInput.gain.setValueAtTime(1.06, now);
     shaper.curve = createSaturationCurve();
     shaper.oversample = '2x';
 
@@ -208,13 +208,13 @@ export class GlideVoice {
     const level = clamp(this.expression.level ?? 0.54, 0, 1);
     const pan = clamp(this.expression.pan ?? 0, -1, 1);
     const transitionTime = immediate ? 0.0001 : 0.1;
-    const filterTarget = lerp(820, 3550, brightness);
-    const qTarget = lerp(0.32, 1.05, brightness);
-    const driveTarget = lerp(1.08, 2.45, warmth);
-    const bodyTarget = lerp(0.08, 0.18, warmth);
-    const airTarget = lerp(0.012, 0.09, Math.sqrt(width * brightness));
+    const filterTarget = lerp(760, 3000, brightness);
+    const qTarget = lerp(0.28, 0.9, brightness);
+    const driveTarget = lerp(1.02, 1.9, warmth);
+    const bodyTarget = lerp(0.075, 0.15, warmth);
+    const airTarget = lerp(0.008, 0.06, Math.sqrt(width * brightness));
     const spreadTarget = lerp(0.14, 0.82, width);
-    const levelTarget = clamp(this.velocity * lerp(0.9, 1.18, level), 0.08, 0.36);
+    const levelTarget = clamp(this.velocity * lerp(0.86, 1.08, level), 0.08, 0.32);
 
     scheduleParamRamp(this.filter.frequency, now, filterTarget, transitionTime);
     scheduleParamRamp(this.filter.Q, now, qTarget, transitionTime);

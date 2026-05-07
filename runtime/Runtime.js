@@ -10,7 +10,7 @@ const defaultConfig = {
     { name: ModelTypes.GRAPH, },
     { name: ModelTypes.ENTITIES, },
   ],
-}
+};
 
 export class Runtime {
   constructor({
@@ -23,25 +23,27 @@ export class Runtime {
       ...config,
       collections: config.collections ?? defaultConfig.collections,
     };
-    
+
     this.appStore = appStore;
     this.mapStore = mapStore;
     this.audioEngine = audioEngine;
-    
+
     this.loopEngine = new LoopEngine({
       audioContext: this.audioEngine.ctx,
     });
-    
+
+    this.svgCanvas = new SVGCanvas();
+
     this.scene = new SceneModel({
       loopEngine: this.loopEngine,
       collections: runtimeConfig.collections,
+      userEvents$: this.svgCanvas.out({}),
     });
-    
-    this.svgCanvas = new SVGCanvas();
-    
-    this.loopEngine.start()
-    
-    
+
+
+    this.loopEngine.start();
+
+
   };
   // get prop() { return this._prop };
   // set prop(newValue) { this._prop = newValue };
