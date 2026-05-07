@@ -1,9 +1,7 @@
 import ham from 'ham';
+import { audioEngine } from './index.js';
 const { sleep } = ham;
-
-
-const AudioContext = window.AudioContext || window.webkitAudioContext;
-const ctx = new AudioContext();
+const ctx = audioEngine.ctx;
 
 // ======== GRAPH (UNCHANGED) ========
 
@@ -109,7 +107,7 @@ let currentVoice = null;
 // ======== EXACT VOICE ========
 
 export async function playChord(options = {}) {
-	if (ctx.state === 'suspended') await ctx.resume();
+	await audioEngine.ensureReady();
 	
 	const {
 		point,

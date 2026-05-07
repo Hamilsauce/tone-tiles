@@ -13,6 +13,14 @@ class AudioEngine extends EventEmitter {
   get now() {
     return this.ctx.currentTime
   }
+
+  async ensureReady() {
+    if (this.ctx.state === 'suspended') {
+      await this.ctx.resume();
+    }
+
+    return this.ctx;
+  }
   
   registerInstrument(name, instrument) {
     this.instruments.set(name, instrument)

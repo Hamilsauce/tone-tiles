@@ -29,6 +29,7 @@ import ham from 'ham';
 const { sleep } = ham;
 const { operators, Subject } = rxjs;
 const { map, scan, tap, filter, bufferTime, timestamp } = operators;
+const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
 
 const normalizeRhythmPattern = ({ playEvery = 1, playPattern = null } = {}) => {
   if (Array.isArray(playPattern) && playPattern.length) {
@@ -47,8 +48,6 @@ const normalizeRhythmPattern = ({ playEvery = 1, playPattern = null } = {}) => {
 };
 
 const getDirectionAnchorDegree = (direction) => getChordToneDegreeFromDir(direction) ?? 0;
-
-
 const useTemplate = (templateName, options = {}) => {
   const el = document.querySelector(`[data-template="${templateName}"]`).cloneNode(true);
 
@@ -160,12 +159,12 @@ export const runCanvas = async (mapId) => {
     rootPitch: 'C4',
     scaleName: 'major',
     octaveSpan: 3,
-    glideTime: 0.08,
+    glideTime: 0.048,
     turnGlideTime: 0.035,
     teleportGlideTime: 0.09,
     teleportLeadTime: 18,
     releaseTime: 0.16,
-    velocity: 0.2,
+    velocity: 0.225,
     playEvery: 1,
     playPattern: null,
   };
@@ -175,11 +174,62 @@ export const runCanvas = async (mapId) => {
   let actorTraversalPrevDirection = null;
   let actorTraversalRhythmIndex = 0;
   let actorTraversalTeleportTimer = null;
+  let actorTraversalSameDirCount = 0;
+  let actorTraversalPersistencePhase = 0;
+
+  const getActorTraversalExpression = (sameDirCount = 0) => {
+    const persistence = Math.max(0, sameDirCount - 1);
+    const mediumBlend = clamp(persistence / 2, 0, 1);
+    const longBlend = clamp((persistence - 3) / 4, 0, 1);
+    const travelWave = Math.sin(actorTraversalPersistencePhase) * 0.75;
+
+    return {
+      glideScale: clamp(
+        0.78 +
+        (mediumBlend * 0.18) +
+        (longBlend * (0.09 + (travelWave * 0.1))),
+        0.72,
+        1.2
+      ),
+      brightness: clamp(
+        0.3 +
+        (mediumBlend * 0.18) +
+        (longBlend * (0.08 + (travelWave * 0.12))),
+        0.2,
+        0.76
+      ),
+      articulationDepth: clamp(
+        0.17 -
+        (mediumBlend * 0.05) -
+        (longBlend * 0.04) +
+        (longBlend * Math.max(0, travelWave) * 0.02),
+        0.07,
+        0.19
+      ),
+      articulationBloom: clamp(
+        0.02 +
+        (mediumBlend * 0.012) +
+        (longBlend * (0.018 + (Math.max(0, travelWave) * 0.018))),
+        0.018,
+        0.065
+      ),
+    };
+  };
 
   const resetActorTraversalMelodyState = () => {
     actorTraversalPrevDirection = null;
     actorTraversalRhythmIndex = 0;
+    actorTraversalSameDirCount = 0;
+    actorTraversalPersistencePhase = 0;
     actorTraversalSequence.reset(0);
+  };
+
+  const ensureTraversalAudioReady = async () => {
+    try {
+      await audioEngine.ensureReady();
+    } catch (error) {
+      console.warn('Unable to resume traversal audio context', error);
+    }
   };
 
   const clearActorTraversalTeleportTimer = () => {
@@ -202,19 +252,25 @@ export const runCanvas = async (mapId) => {
   };
 
   const startActorTraversalMelody = () => {
+    void ensureTraversalAudioReady();
     endActorTraversalMelody({ release: false });
   };
 
   const reanchorActorTraversalMelody = (direction, { isStart = false } = {}) => {
     const note = actorTraversalSequence.reset(getDirectionAnchorDegree(direction));
+    const expression = getActorTraversalExpression(1);
 
     actorTraversalRhythmIndex = 0;
+    actorTraversalSameDirCount = 1;
+    actorTraversalPersistencePhase = 0;
 
     if (!actorTraversalVoice.isActive || isStart) {
       actorTraversalVoice.start(note.frequency, actorTraversalMelodyOptions.velocity);
     } else {
       actorTraversalVoice.glideTo(note.frequency, actorTraversalMelodyOptions.turnGlideTime);
     }
+
+    actorTraversalVoice.setExpression(expression, { immediate: isStart });
 
     actorTraversalPrevDirection = direction;
 
@@ -248,6 +304,8 @@ export const runCanvas = async (mapId) => {
       actorTraversalVoice.start(sourceNote.frequency, actorTraversalMelodyOptions.velocity);
     }
 
+    actorTraversalVoice.setExpression({ brightness: 0.32 }, { immediate: true });
+
     actorTraversalTeleportTimer = window.setTimeout(() => {
       actorTraversalVoice.glideTo(destinationNote.frequency, actorTraversalMelodyOptions.teleportGlideTime);
       actorTraversalTeleportTimer = null;
@@ -255,6 +313,8 @@ export const runCanvas = async (mapId) => {
 
     actorTraversalPrevDirection = null;
     actorTraversalRhythmIndex = 0;
+    actorTraversalSameDirCount = 0;
+    actorTraversalPersistencePhase = 0;
   };
 
   const handleActorTraversalMove = ({ prevPoint, point } = {}) => {
@@ -274,12 +334,26 @@ export const runCanvas = async (mapId) => {
       return { direction, didTurn: true, played: true };
     }
 
+    actorTraversalSameDirCount++;
+    actorTraversalPersistencePhase += clamp(0.72 + (actorTraversalSameDirCount * 0.09), 0.72, 1.18);
+
     if (!shouldPlayActorTraversalStep()) {
       return { direction, didTurn: false, played: false };
     }
 
     const note = actorTraversalSequence.next();
-    actorTraversalVoice.glideTo(note.frequency, actorTraversalMelodyOptions.glideTime);
+    const expression = getActorTraversalExpression(actorTraversalSameDirCount);
+    const glideTime = actorTraversalMelodyOptions.glideTime * expression.glideScale;
+
+    actorTraversalVoice.setExpression(expression);
+    actorTraversalVoice.glideTo(note.frequency, glideTime);
+    actorTraversalVoice.articulate({
+      depth: expression.articulationDepth,
+      bloom: expression.articulationBloom,
+      dipTime: 0.01,
+      recoverTime: 0.14,
+      settleTime: 0.24,
+    });
 
     return { direction, didTurn: false, played: true };
   };
@@ -287,7 +361,6 @@ export const runCanvas = async (mapId) => {
   /**
   * END Actor Traversal Melody Logic
   */
-
 
   let isSelectingLinkTile = false;
   let selectedTileBeingLinked = null;
@@ -536,12 +609,6 @@ export const runCanvas = async (mapId) => {
 
       goal.update({ active: true });
 
-      // audioNote1(curr, { forceNewNote: true, frequency: cMajorTriad[0].frequency, velocity: 0.3 });
-      // await sleep(50);
-
-      // audioNote1(curr, { forceNewNote: true, frequency: cMajorTriad[1].frequency, velocity: 0.2 });
-      // await sleep(85);
-      // audioNote1(curr, { forceNewNote: true, frequency: cMajorTriad[2].frequency, velocity: 0.2 });
       await sleep(50);
 
       playChord({ point: curr.point, });
@@ -569,7 +636,7 @@ export const runCanvas = async (mapId) => {
           handleActorTraversalMove({ prevPoint, point });
         const direction = moveState.direction ?? getDirectionFromPoints(prevPoint, point);
 
-        if (node.linkedMap) {
+        if (node.tileType === 'map-link' && node.linkedMap) {
           const { linkedMap } = node;
           endActorTraversalMelody();
           await selectMapById(linkedMap);
@@ -879,6 +946,7 @@ export const runCanvas = async (mapId) => {
       return;
     }
 
+    await ensureTraversalAudioReady();
     entityCollection.get('actor1').travelTo(goalNode.point);
   };
 
