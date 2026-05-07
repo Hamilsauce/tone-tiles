@@ -48,6 +48,18 @@ const normalizeRhythmPattern = ({ playEvery = 1, playPattern = null } = {}) => {
 };
 
 const getDirectionAnchorDegree = (direction) => getChordToneDegreeFromDir(direction) ?? 0;
+const getDirectionTravelPolarity = (direction) => {
+  if (direction === 'right' || direction === 'down') {
+    return 1;
+  }
+
+  if (direction === 'left' || direction === 'up') {
+    return -1;
+  }
+
+  return 0;
+};
+
 const useTemplate = (templateName, options = {}) => {
   const el = document.querySelector(`[data-template="${templateName}"]`).cloneNode(true);
 
@@ -159,12 +171,12 @@ export const runCanvas = async (mapId) => {
     rootPitch: 'C4',
     scaleName: 'major',
     octaveSpan: 3,
-    glideTime: 0.048,
-    turnGlideTime: 0.035,
-    teleportGlideTime: 0.09,
+    glideTime: 0.054,
+    turnGlideTime: 0.03,
+    teleportGlideTime: 0.1,
     teleportLeadTime: 18,
-    releaseTime: 0.16,
-    velocity: 0.225,
+    releaseTime: 0.2,
+    velocity: 0.235,
     playEvery: 1,
     playPattern: null,
   };
@@ -177,41 +189,71 @@ export const runCanvas = async (mapId) => {
   let actorTraversalSameDirCount = 0;
   let actorTraversalPersistencePhase = 0;
 
-  const getActorTraversalExpression = (sameDirCount = 0) => {
+  const getActorTraversalExpression = (direction, sameDirCount = 0) => {
     const persistence = Math.max(0, sameDirCount - 1);
-    const mediumBlend = clamp(persistence / 2, 0, 1);
-    const longBlend = clamp((persistence - 3) / 4, 0, 1);
-    const travelWave = Math.sin(actorTraversalPersistencePhase) * 0.75;
+    const mediumBlend = clamp(persistence / 2.5, 0, 1);
+    const longBlend = clamp((persistence - 4) / 5, 0, 1);
+    const travelWave = Math.sin(actorTraversalPersistencePhase);
+    const swellWave = Math.sin((actorTraversalPersistencePhase * 0.53) + 0.9);
+    const lift = Math.max(0, travelWave);
+    const ebb = Math.max(0, -travelWave);
+    const polarity = getDirectionTravelPolarity(direction);
 
     return {
       glideScale: clamp(
-        0.78 +
-        (mediumBlend * 0.18) +
-        (longBlend * (0.09 + (travelWave * 0.1))),
-        0.72,
-        1.2
+        0.74 +
+        (mediumBlend * 0.22) +
+        (longBlend * (0.14 + (lift * 0.1) - (ebb * 0.04))),
+        0.68,
+        1.24
       ),
       brightness: clamp(
-        0.3 +
+        0.28 +
+        (mediumBlend * 0.16) +
+        (longBlend * (0.1 + (travelWave * 0.11) + (swellWave * 0.05))),
+        0.18,
+        0.84
+      ),
+      warmth: clamp(
+        0.18 +
+        (mediumBlend * 0.14) +
+        (longBlend * (0.12 + (lift * 0.07) + (swellWave * 0.04))),
+        0.12,
+        0.78
+      ),
+      width: clamp(
+        0.12 +
         (mediumBlend * 0.18) +
-        (longBlend * (0.08 + (travelWave * 0.12))),
-        0.2,
-        0.76
+        (longBlend * (0.18 + (lift * 0.09))),
+        0.08,
+        0.68
+      ),
+      level: clamp(
+        0.48 +
+        (mediumBlend * 0.1) +
+        (longBlend * (0.08 + (lift * 0.08))),
+        0.42,
+        0.82
+      ),
+      pan: clamp(
+        polarity * longBlend * (0.06 + (travelWave * 0.18)),
+        -0.28,
+        0.28
       ),
       articulationDepth: clamp(
-        0.17 -
-        (mediumBlend * 0.05) -
-        (longBlend * 0.04) +
-        (longBlend * Math.max(0, travelWave) * 0.02),
-        0.07,
-        0.19
+        0.18 -
+        (mediumBlend * 0.055) -
+        (longBlend * 0.05) +
+        (ebb * longBlend * 0.018),
+        0.055,
+        0.2
       ),
       articulationBloom: clamp(
-        0.02 +
-        (mediumBlend * 0.012) +
-        (longBlend * (0.018 + (Math.max(0, travelWave) * 0.018))),
-        0.018,
-        0.065
+        0.022 +
+        (mediumBlend * 0.016) +
+        (longBlend * (0.02 + (lift * 0.026) + (Math.max(0, swellWave) * 0.012))),
+        0.016,
+        0.09
       ),
     };
   };
@@ -258,7 +300,7 @@ export const runCanvas = async (mapId) => {
 
   const reanchorActorTraversalMelody = (direction, { isStart = false } = {}) => {
     const note = actorTraversalSequence.reset(getDirectionAnchorDegree(direction));
-    const expression = getActorTraversalExpression(1);
+    const expression = getActorTraversalExpression(direction, 1);
 
     actorTraversalRhythmIndex = 0;
     actorTraversalSameDirCount = 1;
@@ -270,7 +312,11 @@ export const runCanvas = async (mapId) => {
       actorTraversalVoice.glideTo(note.frequency, actorTraversalMelodyOptions.turnGlideTime);
     }
 
-    actorTraversalVoice.setExpression(expression, { immediate: isStart });
+    actorTraversalVoice.setExpression({
+      ...expression,
+      width: expression.width * 0.7,
+      level: expression.level * 0.96,
+    }, { immediate: isStart });
 
     actorTraversalPrevDirection = direction;
 
@@ -304,7 +350,13 @@ export const runCanvas = async (mapId) => {
       actorTraversalVoice.start(sourceNote.frequency, actorTraversalMelodyOptions.velocity);
     }
 
-    actorTraversalVoice.setExpression({ brightness: 0.32 }, { immediate: true });
+    actorTraversalVoice.setExpression({
+      brightness: 0.34,
+      warmth: 0.22,
+      width: 0.2,
+      level: 0.56,
+      pan: 0,
+    }, { immediate: true });
 
     actorTraversalTeleportTimer = window.setTimeout(() => {
       actorTraversalVoice.glideTo(destinationNote.frequency, actorTraversalMelodyOptions.teleportGlideTime);
@@ -335,14 +387,14 @@ export const runCanvas = async (mapId) => {
     }
 
     actorTraversalSameDirCount++;
-    actorTraversalPersistencePhase += clamp(0.72 + (actorTraversalSameDirCount * 0.09), 0.72, 1.18);
+    actorTraversalPersistencePhase += clamp(0.66 + (actorTraversalSameDirCount * 0.085), 0.66, 1.08);
 
     if (!shouldPlayActorTraversalStep()) {
       return { direction, didTurn: false, played: false };
     }
 
     const note = actorTraversalSequence.next();
-    const expression = getActorTraversalExpression(actorTraversalSameDirCount);
+    const expression = getActorTraversalExpression(direction, actorTraversalSameDirCount);
     const glideTime = actorTraversalMelodyOptions.glideTime * expression.glideScale;
 
     actorTraversalVoice.setExpression(expression);
@@ -350,9 +402,9 @@ export const runCanvas = async (mapId) => {
     actorTraversalVoice.articulate({
       depth: expression.articulationDepth,
       bloom: expression.articulationBloom,
-      dipTime: 0.01,
-      recoverTime: 0.14,
-      settleTime: 0.24,
+      dipTime: 0.011,
+      recoverTime: 0.16,
+      settleTime: 0.3,
     });
 
     return { direction, didTurn: false, played: true };

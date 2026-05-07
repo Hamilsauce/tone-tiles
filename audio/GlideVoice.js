@@ -1,10 +1,29 @@
 const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
 const lerp = (start, end, amount) => start + ((end - start) * amount);
+const centsToRatio = (cents = 0) => Math.pow(2, cents / 1200);
+
+const createSaturationCurve = (amount = 1.4) => {
+  const samples = 256;
+  const curve = new Float32Array(samples);
+
+  for (let index = 0; index < samples; index++) {
+    const x = ((index / (samples - 1)) * 2) - 1;
+    curve[index] = Math.tanh(x * amount);
+  }
+
+  return curve;
+};
+
+const scheduleParamRamp = (param, now, target, time = 0.08) => {
+  param.cancelScheduledValues(now);
+  param.setValueAtTime(param.value || target, now);
+  param.linearRampToValueAtTime(target, now + Math.max(0.0001, time));
+};
 
 export class GlideVoice {
   constructor(audioCtx, {
-    type = 'sine',
-    attackTime = 0.025,
+    type = 'triangle',
+    attackTime = 0.02,
     destination = audioCtx.destination,
   } = {}) {
     this.audioCtx = audioCtx;
@@ -12,14 +31,26 @@ export class GlideVoice {
     this.attackTime = attackTime;
     this.destination = destination;
 
-    this.osc = null;
+    this.oscillators = [];
     this.filter = null;
+    this.shaperInput = null;
+    this.shaper = null;
+    this.bodyGain = null;
+    this.airLeftGain = null;
+    this.airRightGain = null;
+    this.airLeftPanner = null;
+    this.airRightPanner = null;
+    this.spacePanner = null;
     this.contourGain = null;
     this.gain = null;
     this.velocity = 0.18;
     this.frequency = null;
     this.expression = {
-      brightness: 0.32,
+      brightness: 0.34,
+      warmth: 0.22,
+      width: 0.18,
+      level: 0.54,
+      pan: 0,
     };
   }
 
@@ -28,42 +59,112 @@ export class GlideVoice {
   }
 
   get isActive() {
-    return !!this.osc && !!this.gain && !!this.contourGain;
+    return this.oscillators.length > 0 && !!this.gain && !!this.contourGain;
+  }
+
+  createOscillator(multiplier = 1, {
+    type = this.type,
+    detune = 0,
+    gainNode = null,
+  } = {}) {
+    const osc = this.audioCtx.createOscillator();
+    osc.type = type;
+
+    if (gainNode) {
+      osc.connect(gainNode);
+    }
+
+    this.oscillators.push({ osc, multiplier, detune });
+
+    return osc;
+  }
+
+  scheduleOscillatorFrequency({ osc, multiplier = 1, detune = 0 }, frequency, now, glideTime = 0.02) {
+    const target = frequency * multiplier * centsToRatio(detune);
+    osc.frequency.cancelScheduledValues(now);
+    osc.frequency.setValueAtTime(osc.frequency.value || target, now);
+    osc.frequency.linearRampToValueAtTime(target, now + glideTime);
   }
 
   start(frequency, velocity = this.velocity) {
     this.dispose();
 
     const now = this.currentTime;
-    const osc = this.audioCtx.createOscillator();
+    const level = clamp(velocity, 0.13, 0.3);
+    const bodyGain = this.audioCtx.createGain();
+    const toneGain = this.audioCtx.createGain();
     const filter = this.audioCtx.createBiquadFilter();
+    const shaperInput = this.audioCtx.createGain();
+    const shaper = this.audioCtx.createWaveShaper();
+    const airLeftGain = this.audioCtx.createGain();
+    const airRightGain = this.audioCtx.createGain();
+    const airLeftPanner = this.audioCtx.createStereoPanner();
+    const airRightPanner = this.audioCtx.createStereoPanner();
     const contourGain = this.audioCtx.createGain();
+    const spacePanner = this.audioCtx.createStereoPanner();
     const gain = this.audioCtx.createGain();
-    const level = clamp(velocity, 0.12, 0.28);
 
-    osc.type = this.type;
-    osc.frequency.setValueAtTime(frequency + 3, now);
-    osc.frequency.linearRampToValueAtTime(frequency, now + 0.02);
+    toneGain.gain.setValueAtTime(1, now);
+    bodyGain.gain.setValueAtTime(0.12, now);
+    airLeftGain.gain.setValueAtTime(0.02, now);
+    airRightGain.gain.setValueAtTime(0.02, now);
+    airLeftPanner.pan.setValueAtTime(-0.2, now);
+    airRightPanner.pan.setValueAtTime(0.2, now);
 
     filter.type = 'lowpass';
-    filter.frequency.setValueAtTime(1200, now);
-    filter.Q.value = 0.25;
-    contourGain.gain.setValueAtTime(0.82, now);
-    contourGain.gain.linearRampToValueAtTime(0.92, now + 0.055);
-    contourGain.gain.linearRampToValueAtTime(1.035, now + 0.22);
-    contourGain.gain.linearRampToValueAtTime(1, now + 0.4);
+    filter.frequency.setValueAtTime(1180, now);
+    filter.Q.setValueAtTime(0.45, now);
+
+    shaperInput.gain.setValueAtTime(1.15, now);
+    shaper.curve = createSaturationCurve();
+    shaper.oversample = '2x';
+
+    contourGain.gain.setValueAtTime(0.76, now);
+    contourGain.gain.linearRampToValueAtTime(0.88, now + 0.055);
+    contourGain.gain.linearRampToValueAtTime(1.05, now + 0.24);
+    contourGain.gain.linearRampToValueAtTime(1, now + 0.48);
+
+    spacePanner.pan.setValueAtTime(0, now);
+
     gain.gain.setValueAtTime(0.0001, now);
-    gain.gain.linearRampToValueAtTime(level * 0.82, now + this.attackTime);
-    gain.gain.linearRampToValueAtTime(level, now + 0.15);
+    gain.gain.linearRampToValueAtTime(level * 0.78, now + this.attackTime);
+    gain.gain.linearRampToValueAtTime(level * 0.92, now + 0.1);
+    gain.gain.linearRampToValueAtTime(level, now + 0.24);
 
-    osc.connect(filter);
-    filter.connect(contourGain);
-    contourGain.connect(gain);
+    toneGain.connect(filter);
+    filter.connect(shaperInput);
+    shaperInput.connect(shaper);
+    shaper.connect(contourGain);
+    airLeftGain.connect(airLeftPanner);
+    airRightGain.connect(airRightPanner);
+    airLeftPanner.connect(contourGain);
+    airRightPanner.connect(contourGain);
+    contourGain.connect(spacePanner);
+    spacePanner.connect(gain);
     gain.connect(this.destination);
-    osc.start(now);
 
-    this.osc = osc;
+    const coreOsc = this.createOscillator(1, { type: this.type, gainNode: toneGain });
+    const bodyOsc = this.createOscillator(0.5, { type: 'sine', gainNode: bodyGain });
+    const airLeftOsc = this.createOscillator(2, { type: 'triangle', detune: -7, gainNode: airLeftGain });
+    const airRightOsc = this.createOscillator(2, { type: 'triangle', detune: 7, gainNode: airRightGain });
+
+    [coreOsc, bodyOsc, airLeftOsc, airRightOsc].forEach((oscillator, index) => {
+      const oscState = this.oscillators[index];
+      const startFrequency = index === 1 ? frequency * 0.5 : frequency;
+      oscState.osc.frequency.setValueAtTime(startFrequency + (index === 0 ? 4 : 0), now);
+      this.scheduleOscillatorFrequency(oscState, frequency, now, 0.025);
+      oscillator.start(now);
+    });
+
     this.filter = filter;
+    this.shaperInput = shaperInput;
+    this.shaper = shaper;
+    this.bodyGain = bodyGain;
+    this.airLeftGain = airLeftGain;
+    this.airRightGain = airRightGain;
+    this.airLeftPanner = airLeftPanner;
+    this.airRightPanner = airRightPanner;
+    this.spacePanner = spacePanner;
     this.contourGain = contourGain;
     this.gain = gain;
     this.velocity = level;
@@ -80,11 +181,11 @@ export class GlideVoice {
 
     const now = this.currentTime;
     const safeGlideTime = Math.max(glideTime, 0.01);
-    const currentFrequency = this.osc.frequency.value || this.frequency || frequency;
 
-    this.osc.frequency.cancelScheduledValues(now);
-    this.osc.frequency.setValueAtTime(currentFrequency, now);
-    this.osc.frequency.linearRampToValueAtTime(frequency, now + safeGlideTime);
+    this.oscillators.forEach((oscillator) => {
+      this.scheduleOscillatorFrequency(oscillator, frequency, now, safeGlideTime);
+    });
+
     this.frequency = frequency;
 
     return this;
@@ -101,13 +202,35 @@ export class GlideVoice {
     }
 
     const now = this.currentTime;
-    const brightness = clamp(this.expression.brightness ?? 0.32, 0, 1);
-    const transitionTime = immediate ? 0.0001 : 0.085;
-    const filterTarget = lerp(880, 3200, brightness);
+    const brightness = clamp(this.expression.brightness ?? 0.34, 0, 1);
+    const warmth = clamp(this.expression.warmth ?? 0.22, 0, 1);
+    const width = clamp(this.expression.width ?? 0.18, 0, 1);
+    const level = clamp(this.expression.level ?? 0.54, 0, 1);
+    const pan = clamp(this.expression.pan ?? 0, -1, 1);
+    const transitionTime = immediate ? 0.0001 : 0.1;
+    const filterTarget = lerp(820, 3550, brightness);
+    const qTarget = lerp(0.32, 1.05, brightness);
+    const driveTarget = lerp(1.08, 2.45, warmth);
+    const bodyTarget = lerp(0.08, 0.18, warmth);
+    const airTarget = lerp(0.012, 0.09, Math.sqrt(width * brightness));
+    const spreadTarget = lerp(0.14, 0.82, width);
+    const levelTarget = clamp(this.velocity * lerp(0.9, 1.18, level), 0.08, 0.36);
 
-    this.filter.frequency.cancelScheduledValues(now);
-    this.filter.frequency.setValueAtTime(this.filter.frequency.value || filterTarget, now);
-    this.filter.frequency.linearRampToValueAtTime(filterTarget, now + transitionTime);
+    scheduleParamRamp(this.filter.frequency, now, filterTarget, transitionTime);
+    scheduleParamRamp(this.filter.Q, now, qTarget, transitionTime);
+    scheduleParamRamp(this.shaperInput.gain, now, driveTarget, transitionTime);
+    scheduleParamRamp(this.bodyGain.gain, now, bodyTarget, transitionTime);
+    scheduleParamRamp(this.airLeftGain.gain, now, airTarget, transitionTime);
+    scheduleParamRamp(this.airRightGain.gain, now, airTarget, transitionTime);
+    scheduleParamRamp(this.airLeftPanner.pan, now, -spreadTarget, transitionTime);
+    scheduleParamRamp(this.airRightPanner.pan, now, spreadTarget, transitionTime);
+    scheduleParamRamp(this.spacePanner.pan, now, pan, transitionTime);
+
+    if (preserveAttack) {
+      this.gain.gain.linearRampToValueAtTime(levelTarget, now + Math.max(transitionTime, 0.24));
+    } else {
+      scheduleParamRamp(this.gain.gain, now, levelTarget, transitionTime);
+    }
 
     return this;
   }
@@ -115,26 +238,34 @@ export class GlideVoice {
   articulate({
     depth = 0.08,
     bloom = 0.02,
-    dipTime = 0.014,
+    dipTime = 0.012,
     recoverTime = 0.12,
-    settleTime = 0.22,
+    settleTime = 0.24,
   } = {}) {
     if (!this.isActive) {
       return this;
     }
 
     const now = this.currentTime;
-    const safeDepth = clamp(depth, 0.01, 0.22);
-    const safeBloom = clamp(bloom, 0, 0.08);
-    const floor = clamp(1 - safeDepth, 0.68, 1);
-    const crest = clamp(1 + safeBloom, 1, 1.11);
-    const currentContour = Math.max(this.contourGain.gain.value || 1, 0.0001);
+    const safeDepth = clamp(depth, 0.01, 0.24);
+    const safeBloom = clamp(bloom, 0, 0.085);
+    const floor = clamp(1 - safeDepth, 0.64, 1);
+    const crest = clamp(1 + safeBloom, 1, 1.14);
+    const contourNow = Math.max(this.contourGain.gain.value || 1, 0.0001);
+    const brightnessNow = this.filter.frequency.value || 1200;
+    const breathTarget = brightnessNow * (1 + safeBloom * 0.28);
 
     this.contourGain.gain.cancelScheduledValues(now);
-    this.contourGain.gain.setValueAtTime(currentContour, now);
+    this.contourGain.gain.setValueAtTime(contourNow, now);
     this.contourGain.gain.linearRampToValueAtTime(floor, now + Math.max(0.005, dipTime));
     this.contourGain.gain.linearRampToValueAtTime(crest, now + Math.max(0.025, recoverTime));
     this.contourGain.gain.linearRampToValueAtTime(1, now + Math.max(0.05, settleTime));
+
+    this.filter.frequency.cancelScheduledValues(now);
+    this.filter.frequency.setValueAtTime(brightnessNow, now);
+    this.filter.frequency.linearRampToValueAtTime(brightnessNow * (1 - safeDepth * 0.08), now + Math.max(0.005, dipTime));
+    this.filter.frequency.linearRampToValueAtTime(breathTarget, now + Math.max(0.03, recoverTime));
+    this.filter.frequency.linearRampToValueAtTime(brightnessNow, now + Math.max(0.06, settleTime));
 
     return this;
   }
@@ -146,57 +277,75 @@ export class GlideVoice {
 
     const now = this.currentTime;
     const safeReleaseTime = Math.max(releaseTime, 0.02);
-    const stopTime = now + safeReleaseTime + 0.02;
+    const stopTime = now + safeReleaseTime + 0.03;
 
     this.gain.gain.cancelScheduledValues(now);
     this.gain.gain.setValueAtTime(this.gain.gain.value || 0.0001, now);
     this.gain.gain.linearRampToValueAtTime(0.0001, now + safeReleaseTime);
     this.contourGain.gain.cancelScheduledValues(now);
     this.contourGain.gain.setValueAtTime(this.contourGain.gain.value || 1, now);
-    this.contourGain.gain.linearRampToValueAtTime(1, now + 0.02);
+    this.contourGain.gain.linearRampToValueAtTime(1, now + 0.03);
 
-    try {
-      this.osc.stop(stopTime);
-    } catch (error) {
-      return this.dispose();
-    }
+    this.oscillators.forEach(({ osc }) => {
+      try {
+        osc.stop(stopTime);
+      } catch (error) {}
+    });
 
-    this.osc.onended = () => {
+    const finalOscillator = this.oscillators[this.oscillators.length - 1]?.osc;
+
+    if (finalOscillator) {
+      finalOscillator.onended = () => {
+        this.dispose();
+      };
+    } else {
       this.dispose();
-    };
+    }
 
     return this;
   }
 
   dispose() {
-    if (this.osc) {
-      this.osc.onended = null;
+    this.oscillators.forEach(({ osc }) => {
+      osc.onended = null;
 
       try {
-        this.osc.disconnect();
+        osc.disconnect();
       } catch (error) {}
-    }
+    });
 
-    if (this.gain) {
+    [
+      this.gain,
+      this.contourGain,
+      this.spacePanner,
+      this.airLeftPanner,
+      this.airRightPanner,
+      this.airLeftGain,
+      this.airRightGain,
+      this.bodyGain,
+      this.shaper,
+      this.shaperInput,
+      this.filter,
+    ].forEach((node) => {
+      if (!node) {
+        return;
+      }
+
       try {
-        this.gain.disconnect();
+        node.disconnect();
       } catch (error) {}
-    }
+    });
 
-    if (this.contourGain) {
-      try {
-        this.contourGain.disconnect();
-      } catch (error) {}
-    }
-
-    if (this.filter) {
-      try {
-        this.filter.disconnect();
-      } catch (error) {}
-    }
-
-    this.osc = null;
+    this.oscillators = [];
     this.filter = null;
+    this.shaperInput = null;
+    this.shaper = null;
+    this.bodyGain = null;
+    this.airLeftGain = null;
+    this.airRightGain = null;
+    this.airLeftPanner = null;
+    this.airRightPanner = null;
+    this.spacePanner = null;
     this.contourGain = null;
     this.gain = null;
     this.frequency = null;
