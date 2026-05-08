@@ -285,13 +285,13 @@ export class Graph extends Collection {
       return range;
     }
     
-    for (let x = start.x; x < end.x; x++) {
-      for (let y = start.y; y < end.y; y++) {
+    for (let x = start.x; x < end.x + 1; x++) {
+      for (let y = start.y; y < end.y + 1; y++) {
         const node = this.getNodeAtPoint({ x, y });
         range.push(node);
       }
     }
-    
+    console.warn('range', range)
     return range;
   }
   

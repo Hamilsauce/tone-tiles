@@ -340,6 +340,11 @@ export class CanvasObject extends EventEmitter {
     return left === right;
   }
   
+  toJSON() {
+    return { model: { ...this.#model }, type: this.#type, id: this.#id };
+  }
+
+  
   getEl(selector = '') { return this.dom.querySelector(selector); }
   
   getEls(selector = '') { return [...this.dom.querySelectorAll(selector)]; }

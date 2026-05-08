@@ -88,6 +88,9 @@
   fill: #9B2B2B;
 }
 
+
+.tile[data-active=true],
+.tile[data-active=true] >*,
 [data-type=tile][data-active=true],
 [data-type=tile][data-active=true]>* {
   fill: #E218EF !important;
