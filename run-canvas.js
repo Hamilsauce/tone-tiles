@@ -14,7 +14,7 @@ import { useAppState } from './store/app.store.js';
 import { LoopEngine } from './core/loop-engine/index.js';
 import { audioEngine } from './audio/index.js';
 import audioNote1 from './audio/fire-audio-note1.js';
-import { playChord } from './audio/play-chord.js';
+import { playChord, playChordLong } from './audio/play-chord.js';
 import { GlideVoice } from './audio/GlideVoice.js';
 import { LoopableScaleSequence } from './audio/LoopableScaleSequence.js';
 import { ContextMenu } from './canvas/ContextMenu.js';
@@ -637,7 +637,9 @@ export const runCanvas = async (mapId) => {
 
         await sleep(delay);
 
-        playChord({ point: curr.point, });
+        // playChord({ point: curr.point, });
+        playChordLong({ point: curr.point, });
+
       }
     })
   );
@@ -770,8 +772,28 @@ export const runCanvas = async (mapId) => {
     }).subscribe(async (event) => {
       const { id, point, ...rest } = event;
       const node = graphModel.getNodeAtPoint(point);
+      const actorModel = entityCollection.get('actor1') ?? entityCollection.actors[0];
+      let velocity = 0.2;
+
+      if (actorModel) {
+        const distance = Math.hypot(
+          (node.point.x ?? 0) - (actorModel.x ?? actorModel.point?.x ?? 0),
+          (node.point.y ?? 0) - (actorModel.y ?? actorModel.point?.y ?? 0),
+        );
+        if (distance >= 10) {
+          objectLayer.get(id)?.update({ point: node.point, teleporting: rest.teleporting ?? false });
+          return;
+        }
+
+        const proximity = 1 - (distance / 10);
+        const easedProximity = proximity * proximity * (3 - (2 * proximity));
+
+        velocity = easedProximity * 0.55;
+      }
 
       objectLayer.get(id)?.update({ point: node.point, teleporting: rest.teleporting ?? false });
+
+      playChordLong({ point: node.point, crossfade:0.0, velocity });
     })
   );
 
