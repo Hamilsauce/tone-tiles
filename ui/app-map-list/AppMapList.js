@@ -1,14 +1,14 @@
-import { ref, computed, watch, onMounted } from 'vue'
-import { defineComponent, getTemplate } from '../../lib/vue-helpers.js';
+import { ref, computed, watch, defineAsyncComponent, onMounted } from 'vue'
+import { defineComponent2, getTemplate } from '../../lib/vue-helpers.js';
 import { router, RouteName } from '../../router/router.js'
 import { useMapStore } from '../../store/map.store.js';
-import { AppMapListItem } from './AppMapListItem.js'
 
 const PINNED_MAP_ID = 'AV1lKxUDArOcODrZAgaQ'; // diagnal
 
-export const AppMapList = defineComponent(
-  getTemplate('app-map-list-view'),
-  (props, ctx) => {
+export const AppMapList = defineComponent2({
+  template: getTemplate('app-map-list-view'),
+  props: ['displayMode'],
+  setup(props, ctx) {
     const mapStore = useMapStore();
     const maps = mapStore.mapIndex
     const displayMode = computed(() => props.displayMode);
@@ -22,7 +22,7 @@ export const AppMapList = defineComponent(
     };
     
     const handleMapClick = (id) => {
-
+      
       if (id && !selectedId.value) {
         router.push({
           name: RouteName.home,
@@ -65,9 +65,13 @@ export const AppMapList = defineComponent(
       isCompact: isCompactMode,
       displayMode,
     }
-  }, {
-    components: { 'app-map-list-item': AppMapListItem }
   },
-)
-
-AppMapList.props = ['displayMode']
+  components: {
+    // AppMapListItem: lazy(() =>import('./AppMapListItem.js')),
+    'app-map-list-item': defineAsyncComponent(() => import('./AppMapListItem.js').then(m => m.default)),
+    
+    // 'app-map-list-item': () => import('../../ui/app-map-list/AppMapListItem.js')
+    // 'app-map-list-item': AppMapListItem,
+  },
+})
+export default AppMapList
