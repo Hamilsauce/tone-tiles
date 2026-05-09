@@ -36,7 +36,7 @@ export class TraverserModel extends SpatialModel {
   constructor(options = DefaultTraverserOptions) {
     super(options);
     createTraversal = getTraversal();
-    this.#traversalGen = createTraversal(this.point, () => this.goalPoint);
+    this.#traversalGen = createTraversal(this.point);
     this.#stepInterval = options.stepInterval ?? 0.1;
     this.step = this.#step.bind(this);
     this.stop = this.#stopTraversal.bind(this);
@@ -114,7 +114,7 @@ export class TraverserModel extends SpatialModel {
     this.update({ idleReason: null });
     
     if (!this.#traversalGen) {
-      this.#traversalGen = createTraversal(this.currentPoint, () => this.goalPoint);
+      this.#traversalGen = createTraversal(this.currentPoint);
     }
     
     return true;
@@ -175,7 +175,7 @@ export class TraverserModel extends SpatialModel {
       idleReason: null,
     });
     
-    this.#traversalGen = this.goalPoint ? createTraversal(start, () => this.goalPoint) : null;
+    this.#traversalGen = this.goalPoint ? createTraversal(start) : null;
     
     return this;
   }
@@ -225,7 +225,7 @@ export class TraverserModel extends SpatialModel {
     
     try {
       if (!this.#traversalGen) {
-        this.#traversalGen = createTraversal(this.currentPoint, () => this.goalPoint);
+        this.#traversalGen = createTraversal(this.currentPoint);
       }
       
       if (!this.isTraversing) {
@@ -253,7 +253,7 @@ export class TraverserModel extends SpatialModel {
         return;
       }
       
-      const nextValue = this.#traversalGen?.next().value;
+      const nextValue = this.#traversalGen?.next(this.goalPoint).value;
       const nextPoint = nextValue ? toPoint(nextValue) : null;
       
       if (!nextPoint) {
@@ -308,7 +308,7 @@ export class TraverserModel extends SpatialModel {
     if (!this.goalPoint || toPoint(point).equals(this.goalPoint)) {
       this.#stopTraversal('goal');
     } else {
-      this.#traversalGen = createTraversal(this.currentPoint, () => this.goalPoint);
+      this.#traversalGen = createTraversal(this.currentPoint);
     }
     
     return this;

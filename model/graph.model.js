@@ -157,9 +157,15 @@ export class Graph extends Collection {
     return this.getNodeByAddress(this.pointToAddress({ x, y }));
   }
   
-  * traversePoints(start = this.startNode, getGoal = () => this.goalNode) {
-    for (const node of this.traverseHybrid(start, getGoal)) {
-      yield node?.point ?? null;
+  * traversePoints(start = this.startNode) {
+    const traversal = this.traverseHybrid(start);
+    let step = traversal.next();
+    
+    while (!step.done) {
+      const goalPoint = yield step.value?.point ?? null;
+      const goalNode = goalPoint ? this.getNodeAtPoint(goalPoint) : null;
+      
+      step = traversal.next(goalNode);
     }
   }
   
@@ -219,24 +225,23 @@ export class Graph extends Collection {
     return dirs;
   };
   
-  * traverseHybrid(start = this.startNode, getGoal = () => this.goalNode) {
+  * traverseHybrid(start = this.startNode) {
     let current = start;
-    let goal = getGoal();
+    let goal = yield current;
     
-    let path = this.getPath(current, goal) || [];
-    let dirs = this.pathToDirections(path);
+    let path = [];
+    let dirs = [];
     let i = 0;
     
+    const replan = () => {
+      path = goal ? (this.getPath(current, goal) || []) : [];
+      dirs = this.pathToDirections(path);
+      i = 0;
+    };
+    
+    replan();
+    
     while (true) {
-      const nextGoal = getGoal();
-      // replan if goal changes
-      if (nextGoal !== goal) {
-        goal = nextGoal;
-        path = this.getPath(current, goal) || [];
-        dirs = this.pathToDirections(path);
-        i = 0;
-      }
-      
       if (path.length && path[path.length - 1] !== goal) {
         console.warn('PATH DOES NOT REACH GOAL', {
           current: current.address,
@@ -247,7 +252,13 @@ export class Graph extends Collection {
       
       //no more directions → idle at current
       if (i >= dirs.length) {
-        yield current;
+        const nextGoal = yield current;
+        
+        if (nextGoal !== goal) {
+          goal = nextGoal;
+          replan();
+        }
+        
         continue;
       }
       
@@ -255,25 +266,34 @@ export class Graph extends Collection {
       
       // guard
       if (!dir) {
-        yield current;
+        const nextGoal = yield current;
+        
+        if (nextGoal !== goal) {
+          goal = nextGoal;
+          replan();
+        }
+        
         continue;
       }
       
       const next = this.getNeighbor(current, dir);
       const nexts = this.getNeighbors(current);
-      const isNextBlocked = !nexts.has(dir);
       const hasOpenNeighbor = [...nexts.values()].some(_ => _.isTraversable)
       
       // fallback if world changed
       if (!next && hasOpenNeighbor) {
-        path = this.getPath(current, goal) || [];
-        dirs = this.pathToDirections(path);
-        i = 0;
+        replan();
         continue;
       }
       
       current = next;
-      yield current;
+      
+      const nextGoal = yield current;
+      
+      if (nextGoal !== goal) {
+        goal = nextGoal;
+        replan();
+      }
     }
   }
   
@@ -641,16 +661,10 @@ export const getTraversal = () => {
     getGraph({});
   }
   
-  return (startPoint = graph.startNode?.point, getGoalPoint = () => graph.goalNode?.point) => {
+  return (startPoint = graph.startNode?.point) => {
     const startNode = graph.getNodeAtPoint(startPoint);
     
-    return graph.traversePoints(
-      startNode,
-      () => {
-        const goalPoint = getGoalPoint?.();
-        return goalPoint ? graph.getNodeAtPoint(goalPoint) : null;
-      }
-    );
+    return graph.traversePoints(startNode);
   };
 };
 
