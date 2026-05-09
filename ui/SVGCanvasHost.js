@@ -18,15 +18,15 @@ export const SVGCanvasHost = defineComponent(
     let tileLayer;
     let objectLayer;
     let cancelRunCanvas;
-
+    
     const handleRunningToggle = () => {
       isRunning.value = !isRunning.value;
     }
-
+    
     const centerViewport = () => {
       viewport.setAttribute('transform', 'matrix(1 0 0 1 0 0)')
     }
-
+    
     onMounted(async () => {
       try {
         if (mapId.value) {
@@ -37,7 +37,7 @@ export const SVGCanvasHost = defineComponent(
         console.warn('Svg host error run canvas: ', e)
       }
     });
-
+    
     onBeforeUnmount(async () => {
       try {
         if (cancelRunCanvas) {
@@ -48,13 +48,13 @@ export const SVGCanvasHost = defineComponent(
         console.error(e)
       }
     });
-
+    
     watch(mapId, async (id, prev) => {
       if (id && id !== prev) {
         await mapStore.setCurrentMapById(id);
       }
     });
-
+    
     return { centerViewport, map }
   }, {
     components: {}

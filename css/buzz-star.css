@@ -1,0 +1,32 @@
+#app {
+  /* background: #1A1D24; */
+}
+
+.buzz-star {
+  fill: url(#nethervision);
+  fill-opacity: 1;
+  stroke: #282359;
+  /* stroke: #000000; */
+  stroke-width: 0.005;
+  stroke-opacity: 1;
+  stroke-linecap: square;
+  stroke-linejoin: round;
+  stroke-miterlimit: 4;
+  stroke-dashoffset: 0;
+  /* filter: drop-shadow(0 0 0.075px #2D272D); */
+  filter: contrast(2);
+
+  /* scale: 1.6 */
+}
+
+.stop-color-middle {
+  fill: hsla(352, 76%, 13%, 0.4)
+}
+
+.stop-color-0 {
+  fill: hsla(300, 7%, 16%, 1)
+}
+
+.stop-color-1 {
+  fill: hsla(0, 0%, 100%, 1)
+}

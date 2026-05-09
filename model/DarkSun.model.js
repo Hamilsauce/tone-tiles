@@ -32,8 +32,8 @@ export class DarkSunModel extends TraverserModel {
 		this.#waypoints = waypoints;
 		this.waypointDirection = 1;
 		this.waypointIndex = 0;
-		this.stepInterval = 0.125;
-		this.stepInterval = 0.075;
+		this.stepInterval = 0.15;
+		// this.stepInterval = 0.075;
 		this.setGoalPoint(this.currentWaypoint);
 	}
 	

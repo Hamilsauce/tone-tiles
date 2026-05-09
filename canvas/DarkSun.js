@@ -44,6 +44,8 @@ export class DarkSun extends CanvasObject {
 		});
 		
 		this.phase = 0;
+		
+		this.scaleTo(3, 3)
 	}
 	
 	update(patch) {
