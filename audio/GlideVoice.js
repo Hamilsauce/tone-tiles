@@ -205,7 +205,7 @@ export class GlideVoice {
     const brightness = clamp(this.expression.brightness ?? 0.34, 0, 1);
     const warmth = clamp(this.expression.warmth ?? 0.22, 0, 1);
     const width = clamp(this.expression.width ?? 0.18, 0, 1);
-    const level = clamp(this.expression.level ?? 0.54, 0, 1);
+    const level = clamp(this.expression.level ?? 0.54, 0, 0.58);
     const pan = clamp(this.expression.pan ?? 0, -1, 1);
     const transitionTime = immediate ? 0.0001 : 0.1;
     const filterTarget = lerp(760, 3000, brightness);
@@ -214,7 +214,7 @@ export class GlideVoice {
     const bodyTarget = lerp(0.075, 0.15, warmth);
     const airTarget = lerp(0.008, 0.06, Math.sqrt(width * brightness));
     const spreadTarget = lerp(0.14, 0.82, width);
-    const levelTarget = clamp(this.velocity * lerp(0.5, 1.08, level), 0.08, 0.32);
+    const levelTarget = clamp(this.velocity * lerp(0.5, 0.08, level), 0.08, 0.32);
 
     scheduleParamRamp(this.filter.frequency, now, filterTarget, transitionTime);
     scheduleParamRamp(this.filter.Q, now, qTarget, transitionTime);
