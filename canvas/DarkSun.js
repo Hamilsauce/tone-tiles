@@ -48,6 +48,23 @@ export class DarkSun extends CanvasObject {
 		this.scaleTo(3)
 	}
 	
+	  recoil(time) {
+    const prev = this.#travelDir
+    const curr = { x: this.x, y: this.y };
+    const prevDir = this.#travelDir;
+
+    this.#travelDir = getDirectionFromPoints(prev, curr) ?? this.#travelDir ?? 'down';
+
+    const turnDegree = directionPivot[prevDir][this.#travelDir]
+    const ang = this.phase === 0 ? 65 : -65;
+
+    this.toggle({ recoiling: true }, { time: 500 })
+
+    this.rotateTo(this.#currentRotation + ang, 0.0, 0.0);
+    this.phase = this.phase === 0 ? 1 : 0;
+  }
+
+	
 	update(patch) {
 		if (patch && patch.point) {
 			const prevDir = this.#travelDir;

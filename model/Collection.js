@@ -23,6 +23,7 @@ export class Collection {
   
   create(type, options) {
     const ModelClass = this.#registry.get(type);
+ 
     if (!ModelClass) {
       const typeLabel = typeof type === 'symbol' ?
         (type.description ?? type.toString()) :

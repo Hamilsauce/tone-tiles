@@ -23,9 +23,9 @@ const createEntityId = (typeName = 'entity') => {
 export class EntityCollection extends Collection {
   constructor(options = {}) {
     super({ ...options });
-
+    
     const connectIn = this.in.bind(this);
-
+    
     this.in = ({ name, source$, transform } = {}) => connectIn({
       name,
       source$,
@@ -71,6 +71,11 @@ export class EntityCollection extends Collection {
     console.warn('creating dark sun with options', options);
     return this.createEntity(ModelTypes.DARKSUN, options);
   }
+
+  createBigRupture(options = {}) {
+    return this.createEntity(ModelTypes.BIG_RUPTURE, options);
+  }
+
   createTeleporter(options = {}) {
     return this.createEntity(ModelTypes.TELEPORTER, options);
   }
@@ -109,17 +114,17 @@ export class EntityCollection extends Collection {
       },
     };
   }
-
+  
   #routeResolvedEvent(event = {}) {
     if (!event?.meta?.derived) {
       return;
     }
-
+    
     if (event.type === 'spatial:move' || event.type === 'spatial:blocked') {
       this.get(event.id)?.resolveAction?.(event);
       return;
     }
-
+    
     if (event.type === 'interaction:collision') {
       [...new Set(event.actors ?? [])].forEach((id) => {
         this.get(id)?.resolveAction?.(event);

@@ -467,25 +467,26 @@ export const runCanvas = async (mapId) => {
 		},
 	});
 	
-	entityCollection.createBigRupture({
-		type: 'big-rupture',
-		id: 'bigrupture1',
-		properties: {
-			moving: false,
-			teleporting: false,
-			point: { x: 12, y: 21 },
-		},
-	});
-	
-	// entityCollection.createDarkSun({
+	// entityCollection.createBigRupture({
 	// 	type: 'dark-sun',
-	// 	id: 'darksun1',
+	// 	id: 'bigrupture1',
 	// 	properties: {
 	// 		moving: false,
 	// 		teleporting: false,
-	// 		point: { x: 10, y: 21 },
+	// 		point: { x: 12, y: 21 },
 	// 	},
 	// });
+	
+	// TODO: temporary stealing dark sun template name    
+	entityCollection.createDarkSun({
+		type: 'dark-sun',
+		id: 'darksun1',
+		properties: {
+			moving: false,
+			teleporting: false,
+			point: { x: 10, y: 21 },
+		},
+	});
 	
 	selectMapById = selectMapById ?? await initMapControls(graphModel, svgCanvas);
 	

@@ -283,7 +283,7 @@ export class TraverserModel extends SpatialModel {
       isTraversing: true,
       idleReason: null,
     });
-    
+  
     const context = this.#createContext({
       prevPoint,
       point,

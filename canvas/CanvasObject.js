@@ -52,6 +52,10 @@ export class CanvasObject extends EventEmitter {
     super();
     const { id, model = {} } = options;
     
+    if (type !== 'tile') {
+     console.warn('id, model, type', id, model, type)  
+ 
+    }
     this.#context = context;
     this.#type = type;
     
