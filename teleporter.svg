@@ -2,19 +2,20 @@
 
 <!-- Created with PainterSVG V3.92 -->
 
-<svg  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:psvg="http://www.paintersvg.com/namespace.html" id="svg"  width="1" height="1" viewBox="0 0 1 1">
-<defs><linearGradient id="lineargradient1" x1="0.05" y1="0.05" x2="0.95" y2="0.95" gradientUnits="userSpaceOnUse" spreadMethod="pad" >
-<stop offset="0" style="stop-color:#5000a0;stop-opacity:1" />
-<stop offset="0.4943" style="stop-color:#ff0000;stop-opacity:1" />
-<stop offset="1" style="stop-color:#ff8000;stop-opacity:1" />
-</linearGradient>
-<radialGradient id="radialgradient1" cx="0.5105" cy="0.5217" r="0.0798" gradientUnits="userSpaceOnUse" spreadMethod="reflect">
-<stop offset="0" style="stop-color:#60626;stop-opacity:1" />
-<stop offset="0.3601" style="stop-color:#50;stop-opacity:1" />
-<stop offset="1" style="stop-color:#ff00;stop-opacity:1" />
-</radialGradient>
-</defs>
-<g psvg:layer="layer1">
-<path id="path1" d=" M 0.5,0.05 0.7003,0.0926 0.8592,0.219 0.95,0.3986 0.948,0.5989 0.8609,0.7802 0.6994,0.9035 0.5,0.95 0.3006,0.9035 0.1391,0.7802 0.052,0.5989 0.05,0.3986 0.1408,0.219 0.2997,0.0926 0.5,0.05 Z" style="fill:url(#radialgradient1);fill-opacity:1;stroke:url(#lineargradient1);stroke-width:0.085;stroke-opacity:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dashoffset:0;"/>
-</g>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:psvg="http://www.paintersvg.com/namespace.html" id="svg" width="1" height="1" viewBox="0 0 1 1">
+  <defs>
+    <linearGradient id="lineargradient1" x1="0.05" y1="0.05" x2="0.95" y2="0.95" gradientUnits="userSpaceOnUse" spreadMethod="pad">
+      <stop offset="0" style="stop-color:#5000a0;stop-opacity:1" />
+      <stop offset="0.4943" style="stop-color:#ff0000;stop-opacity:1" />
+      <stop offset="1" style="stop-color:#ff8000;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="radialgradient1" cx="0.5105" cy="0.5217" r="0.0798" gradientUnits="userSpaceOnUse" spreadMethod="reflect">
+      <stop offset="0" style="stop-color:#60626;stop-opacity:1" />
+      <stop offset="0.3601" style="stop-color:#50;stop-opacity:1" />
+      <stop offset="1" style="stop-color:#ff00;stop-opacity:1" />
+    </radialGradient>
+  </defs>
+  <g>
+    <path id="path1" d=" M 0.5,0.05 0.7003,0.0926 0.8592,0.219 0.95,0.3986 0.948,0.5989 0.8609,0.7802 0.6994,0.9035 0.5,0.95 0.3006,0.9035 0.1391,0.7802 0.052,0.5989 0.05,0.3986 0.1408,0.219 0.2997,0.0926 0.5,0.05 Z" style="fill:url(#radialgradient1);fill-opacity:1;stroke:url(#lineargradient1);stroke-width:0.085;stroke-opacity:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dashoffset:0;" />
+  </g>
 </svg>

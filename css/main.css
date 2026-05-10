@@ -1,6 +1,8 @@
 :root {
   --tiletext-dark: #706D6D9C;
   --tiletext-light: #EBEBEB96;
+  --tempo-scale: 1;
+
 }
 
 * {
@@ -275,4 +277,47 @@ body {
   background-color: #f0f0f0;
   word-wrap: nowrap;
   white-space: nowrap;
+}
+
+.tempo-control {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 9999;
+  
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  
+  padding: 12px;
+  
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid #666;
+  border-radius: 8px;
+  
+  color: white;
+  font-family: monospace;
+}
+
+#tempo-slider {
+  width: 220px;
+}
+
+/*
+Example usage
+*/
+
+.actor {
+  transition:
+    transform calc(90ms / var(--tempo-scale)) linear;
+}
+
+.tile {
+  transition:
+    opacity calc(180ms / var(--tempo-scale)) linear;
+}
+
+.wave {
+  animation-duration:
+    calc(2400ms / var(--tempo-scale));
 }

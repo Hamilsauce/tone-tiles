@@ -14,6 +14,7 @@ export class AudioClockLoop {
 	#routines = new Set();
 	#render;
 	#tick$ = new Subject();
+	#tempoScale = 1;
 	
 	// tick$ = this.#tick$.asObservable();
 	// import { shareReplay } from 'rxjs/operators';
@@ -37,6 +38,15 @@ export class AudioClockLoop {
 	}
 	
 	get running() { return this.#running; }
+	get scaledDt() { return this.#running; }
+	
+	get scaledDt() {
+		return dt * this.#tempoScale;
+	}
+	
+	setTempoScale(v) {
+		this.#tempoScale = Math.max(v, 0.01);
+	}
 	
 	addRoutine(fn) {
 		this.#routines.add(fn);
@@ -69,8 +79,12 @@ export class AudioClockLoop {
 				if (!this.#running) return;
 				
 				const now = this.#timeSource();
-				let dt = now - this.#lastTime;
+				// let dt = now - this.#lastTime;
+				const rawDt = now - this.#lastTime;
+				let dt = rawDt * this.#tempoScale;
+				
 				this.#lastTime = now;
+				
 				
 				dt = Math.min(Math.max(dt, 0), 0.1);
 				this.#tick$.next({ dt, now });
@@ -101,11 +115,11 @@ export class AudioClockLoop {
 	stop() {
 		this.pause();
 	}
+	
 	destroy() {
 		this.pause();
 		
 		this.#routines.clear();
 		this.#render = undefined
-		
 	}
 }
