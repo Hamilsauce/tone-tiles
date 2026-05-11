@@ -26,7 +26,7 @@ export class BigRuptureModel extends TraverserModel {
 	
 	constructor({ waypoints = DefaultBigRuptureWaypoints, ...options } = {}) {
 		const initialPoint = options.point ?? options.properties?.point ?? DefaultBigRuptureProperties.point;
-
+		
 		super({
 			...options,
 			type: 'big-rupture',
@@ -48,11 +48,11 @@ export class BigRuptureModel extends TraverserModel {
 	get currentWaypoint() {
 		return Point.from(this.#waypoints[this.waypointIndex]);
 	}
-
+	
 	get gravityRadius() {
 		return this.properties.gravityRadius;
 	}
-
+	
 	get gravityStepIntervalModifier() {
 		return this.properties.stepIntervalModifier;
 	}

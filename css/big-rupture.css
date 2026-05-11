@@ -2,6 +2,12 @@
   /* background: #1A1D24; */
 }
 
+[data-type=big-rupture] {
+  transition: transform 0.2s ease-out;
+  filter: contrast(2);
+
+
+}
 .big-rupture {
   fill: url(#nethervision);
   fill-opacity: 1;
@@ -15,7 +21,7 @@
   stroke-dashoffset: 0;
   /* filter: drop-shadow(0 0 0.075px #2D272D); */
   filter: contrast(2);
-
+  /* transition: 0.15s ease-out; */
   /* scale: 1.6 */
 }
 

@@ -30,7 +30,7 @@ export class BigRupture extends CanvasObject {
 	#currentRotation = 0;
 	#rotation = 0;
 	#rotationMod = 1;
-	#rotationStep = 100;
+	#rotationStep = 50;
 	
 	constructor(ctx, options = DefaultCanvasObjectOptions) {
 		const model = {
@@ -60,7 +60,7 @@ export class BigRupture extends CanvasObject {
 		
 		this.toggle({ recoiling: true }, { time: 500 })
 		
-		this.rotateTo(this.#currentRotation + ang, 0.0, 0.0);
+		this.rotateTo(this.#currentRotation + turnDegree, 0.0, 0.0);
 		this.phase = this.phase === 0 ? 1 : 0;
 	}
 	
@@ -85,7 +85,8 @@ export class BigRupture extends CanvasObject {
 		const change = (dr ?? this.#rotationStep) * this.#rotationMod;
 		
 		this.#rotation = this.#rotation + change;
+		// this.rotateTo(this.#currentRotation + angle, 0.0, 0.0);
 		
-		this.rotateTo(this.#rotation);
+		this.rotateTo(this.#rotation, 0.1, -0.1);
 	}
 }
