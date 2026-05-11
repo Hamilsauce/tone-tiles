@@ -1,6 +1,6 @@
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch } from 'vue';
 import { defineComponent, getTemplate } from '../../lib/vue-helpers.js';
-import { router, route, RouteName } from '../../router/router.js'
+import { router, route, RouteName } from '../../router/router.js';
 
 import { useMapStore } from '../../store/map.store.js';
 import { useAppState } from '../../store/app.store.js';
@@ -11,14 +11,14 @@ export const AppHeader = defineComponent(
     // console.warn(ctx)
 
     const appStore = useAppState();
-    const frameRate = appStore.frameRate
+    const frameRate = appStore.frameRate;
     const traversalEffectsEnabled = appStore.traversalEffectsEnabled;
     const toolbarEnabled = appStore.toolbarEnabled;
     const mapStore = useMapStore();
-    const mapState = mapStore.mapState
+    const mapState = mapStore.mapState;
     const mapNameRef = ref('mapName');
-    const mapName = computed(() => mapState.value?.name ?? 'No Map')
-    const shouldDisplay = computed(() => route.value.path !== '/')
+    const mapName = computed(() => mapState.value?.name ?? 'No Map');
+    const shouldDisplay = computed(() => route.value.path !== '/');
 
     const frameRateFormatted = computed(() => frameRate.value ? `${frameRate.value}fps` : '');
 
@@ -27,8 +27,8 @@ export const AppHeader = defineComponent(
     };
 
     const handleMapNameChange = (e) => {
-      const value = e.target.value.trim()
-      mapStore.updateMapState({ name: value })
+      const value = e.target.value.trim();
+      mapStore.updateMapState({ name: value });
     };
 
     const handleChangeMap = () => {
@@ -43,6 +43,10 @@ export const AppHeader = defineComponent(
       appStore.toggleToolbar();
     };
 
+    const handleCopyEvents = () => {
+      navigator.clipboard.writeText(JSON.stringify(window.graphEvents, null, 2));
+    };
+
     return {
       frameRateFormatted,
       shouldDisplay,
@@ -54,6 +58,7 @@ export const AppHeader = defineComponent(
       handleToggleToolbar,
       toolbarEnabled,
       mapName,
-    }
+      handleCopyEvents
+    };
   }, {},
-)
+);

@@ -252,9 +252,7 @@ export const runCanvas = async (mapId) => {
         }, graphEvents),
 
       )
-    // .subscribe(e => {
-
-    // })
+      // .subscribe()
   );
 
   // navigator.clipboard.writeText(JSON.stringify(graphEvents, null, 2));
@@ -417,15 +415,6 @@ export const runCanvas = async (mapId) => {
           tile.toggle({
             [propKey]: true
           }, { time: 1600 });
-          // tile.update({
-          //   [propKey]: true,
-          // });
-
-          // setTimeout(() => {
-          //   tile.update({
-          //     [propKey]: false,
-          //   });
-          // }, 1600);
         }, 0 + (100 * cnt));
       }
     })
