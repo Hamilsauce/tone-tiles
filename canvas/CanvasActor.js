@@ -42,7 +42,8 @@ const DefaultCanvasActorModel = {
   teleporting: false,
 };
 
-const angles = [0, -45, 0, 45]
+const angles2 = [0, 0,-20,-50,-75, -20,-50,-75, -90, -90, -75, -50, -20, 0, 0];
+const angles = [0, -50, -50];
 
 
 export class CanvasActor extends CanvasObject {
@@ -97,7 +98,7 @@ export class CanvasActor extends CanvasObject {
     this.#currentRotation = this.#currentRotation + turnDegree
     const ismoving = patch && !!patch.isMoving
     this.#ticker = this.#ticker === 0 ? 1 : 0;
-    this.phase = (this.phase + 1) % 4;
+    this.phase = (this.phase + 1) % angles.length;
     let _angles = angles
 
     if (this.#travelDir === 'left' || this.#travelDir === 'left') {

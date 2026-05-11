@@ -40,13 +40,16 @@
 }
 
 [data-type=actor][data-moving=false],
-[data-type=actor][data-moving=false] .actor {}
+[data-type=actor][data-moving=false] .actor {
+  /* transition: transform 0.25s ease-out; */
 
-[data-type=actor][data-moving=true][data-teleporting=false],
-[data-type=actor][data-moving=true][data-teleporting=false]>* {
+}
+
+[data-type=actor][data-moving=true],
+[data-type=actor][data-moving=true]>* {
   /* fill: #38DD17; */
   /* scale: 0.9 */
-  /* transition: 0.15s ease-out; */
+  /* transition: 0.2s ease-out; */
   /* stroke-width: 0.00px; */
   /* filter: contrast(2) hue-rotate(25deg) invert(1) !important; */
 
