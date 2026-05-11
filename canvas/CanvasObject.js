@@ -193,13 +193,17 @@ export class CanvasObject extends EventEmitter {
     for (const key in normalizedPatch) {
       const v = normalizedPatch[key];
       const modelV = this.#model[key];
-      const hasChanged = v !== undefined && !this.#valuesMatch(v, modelV);
       const isValid = !(v === undefined || modelV === undefined);
       
-      if (v !== undefined && hasChanged) {
+      if (!isValid) {
+        console.error(`[${this.constructor.name} ${this.id}] invalid Model patch: ${key}: ${v}`);
+        continue;
+      }
+
+      const hasChanged = !this.#valuesMatch(v, modelV);
+
+      if (hasChanged) {
         this.#model[key] = v;
-      } else if (!isValid) {
-        console.error(`[${this.constructor.name} ${this.id}] invalid Model patch: ${key}: ${v}\n\nReasons: isValid: ${isValid}, hasChanged: ${hasChanged}`);
       }
     }
     

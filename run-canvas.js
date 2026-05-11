@@ -165,7 +165,7 @@ export const runCanvas = async (mapId) => {
   subscriptions.set(
     'entityCreate',
     entityCollection.out({ type: 'entity:create' }).subscribe(e => {
-      console.warn(e);
+      console.warn('entityCreate', e);
       const canvasEntity = objectLayer.add({
         id: e.id,
         type: e.data?.type ?? 'actor',

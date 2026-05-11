@@ -40,6 +40,7 @@ const DefaultCanvasActorModel = {
   y: 0,
   moving: false,
   teleporting: false,
+  isTraversing: false,
 };
 
 const angles2 = [0, 0,-20,-50,-75, -20,-50,-75, -90, -90, -75, -50, -20, 0, 0];

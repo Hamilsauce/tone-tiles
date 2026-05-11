@@ -33,7 +33,7 @@ export class Model {
   get emit() { return this.#emit; }
 
   update(attributeMap = {}) {
-    let patch = this.data();
+    let patch = { ...this.data(), ...this.data().properties };
 
     if (attributeMap) {
       patch = Object.entries(attributeMap).reduce((ptch, [k, v]) => {
