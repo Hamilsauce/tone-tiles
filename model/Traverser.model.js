@@ -30,6 +30,8 @@ export class TraverserModel extends SpatialModel {
   #idleReason = null;
   #dtSum = 0;
   #stepInterval = 0.1;
+  #stepIntervalModifier = 0;
+  #stepIntervalModifierSourceId = null;
   #isStepping = false;
   // #step = null;
   
@@ -49,6 +51,14 @@ export class TraverserModel extends SpatialModel {
   
   set stepInterval(value) {
     this.#stepInterval = value;
+  }
+
+  get stepIntervalModifier() {
+    return this.#stepIntervalModifier;
+  }
+
+  get effectiveStepInterval() {
+    return Math.max(0.01, this.#stepInterval - this.#stepIntervalModifier);
   }
   
   get isMoving() {
@@ -90,7 +100,29 @@ export class TraverserModel extends SpatialModel {
       this.handleBlockedMove(event);
       return this;
     }
+
+    if (event.type === 'traverser:step-interval-modifier') {
+      this.applyStepIntervalModifier(event.modifier, event.sourceId);
+      return this;
+    }
     
+    return this;
+  }
+
+  applyStepIntervalModifier(value = 0, sourceId = null) {
+    if (!Number.isFinite(value) || value === 0 || this.#stepIntervalModifier !== 0) {
+      return false;
+    }
+
+    this.#stepIntervalModifier = value;
+    this.#stepIntervalModifierSourceId = sourceId;
+
+    return true;
+  }
+
+  clearStepIntervalModifier() {
+    this.#stepIntervalModifier = 0;
+    this.#stepIntervalModifierSourceId = null;
     return this;
   }
   
@@ -211,19 +243,19 @@ export class TraverserModel extends SpatialModel {
   }
   
   async #step(dt = 0) {
-    if (!this.goalPoint) {
-      return;
-    }
-    
-    this.#dtSum += dt;
-    if (this.#dtSum <= this.#stepInterval || this.#isStepping) {
-      return;
-    }
-    
-    this.#dtSum = 0;
-    this.#isStepping = true;
-    
     try {
+      if (!this.goalPoint) {
+        return;
+      }
+      
+      this.#dtSum += dt;
+      if (this.#dtSum <= this.effectiveStepInterval || this.#isStepping) {
+        return;
+      }
+      
+      this.#dtSum = 0;
+      this.#isStepping = true;
+      
       if (!this.#traversalGen) {
         this.#traversalGen = createTraversal(this.currentPoint);
       }
@@ -271,6 +303,7 @@ export class TraverserModel extends SpatialModel {
       this.#handleTraversalError(error);
     } finally {
       this.#isStepping = false;
+      this.clearStepIntervalModifier();
     }
   }
   

@@ -15,6 +15,8 @@ const DefaultBigRuptureProperties = {
 	teleporting: false,
 	idleReason: null,
 	goalPoint: null,
+	gravityRadius: 5,
+	stepIntervalModifier: -0.04,
 };
 
 export class BigRuptureModel extends TraverserModel {
@@ -23,9 +25,16 @@ export class BigRuptureModel extends TraverserModel {
 	#goalTimeout = null;
 	
 	constructor({ waypoints = DefaultBigRuptureWaypoints, ...options } = {}) {
+		const initialPoint = options.point ?? options.properties?.point ?? DefaultBigRuptureProperties.point;
+
 		super({
 			...options,
-			type: 'big-rupture'
+			type: 'big-rupture',
+			properties: {
+				...DefaultBigRuptureProperties,
+				...(options.properties ?? {}),
+				point: initialPoint,
+			},
 		});
 		
 		this.#waypoints = waypoints;
@@ -38,6 +47,14 @@ export class BigRuptureModel extends TraverserModel {
 	
 	get currentWaypoint() {
 		return Point.from(this.#waypoints[this.waypointIndex]);
+	}
+
+	get gravityRadius() {
+		return this.properties.gravityRadius;
+	}
+
+	get gravityStepIntervalModifier() {
+		return this.properties.stepIntervalModifier;
 	}
 	
 	onGoal() {
@@ -89,7 +106,7 @@ export class BigRuptureModel extends TraverserModel {
 	
 	resolveAction(event = {}) {
 		if (event.type === 'spatial:blocked') {
-			if (event.reason === 'blocked-by:actor') {
+			if (typeof event.reason === 'string' && event.reason.startsWith('blocked-by:')) {
 				this.reverseCourse();
 			}
 			

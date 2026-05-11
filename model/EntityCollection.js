@@ -9,6 +9,7 @@ const { tap } = operators;
 const ENTITY_TYPE_NAMES = new Map([
   [ModelTypes.ACTOR, 'actor'],
   [ModelTypes.DARKSUN, 'dark-sun'],
+  [ModelTypes.BIG_RUPTURE, 'big-rupture'],
   [ModelTypes.TELEPORTER, 'teleporter'],
 ]);
 
@@ -121,6 +122,11 @@ export class EntityCollection extends Collection {
     }
     
     if (event.type === 'spatial:move' || event.type === 'spatial:blocked') {
+      this.get(event.id)?.resolveAction?.(event);
+      return;
+    }
+
+    if (event.type === 'traverser:step-interval-modifier') {
       this.get(event.id)?.resolveAction?.(event);
       return;
     }

@@ -193,15 +193,17 @@ export const runCanvas = async (mapId) => {
     },
   });
 
-  // entityCollection.createBigRupture({
-  // 	type: 'dark-sun',
-  // 	id: 'bigrupture1',
-  // 	properties: {
-  // 		moving: false,
-  // 		teleporting: false,
-  // 		point: { x: 12, y: 21 },
-  // 	},
-  // });
+  entityCollection.createBigRupture({
+    type: 'big-rupture',
+    id: 'bigrupture1',
+    properties: {
+      moving: false,
+      teleporting: false,
+      point: { x: 12, y: 21 },
+      gravityRadius: 5,
+      stepIntervalModifier: -0.04,
+    },
+  });
 
   // TODO: temporary stealing dark sun template name
   entityCollection.createDarkSun({
@@ -490,6 +492,19 @@ export const runCanvas = async (mapId) => {
       },
     }).subscribe(() => {
       darkSunTraversalGliss.end();
+    })
+  );
+
+  subscriptions.set(
+    'bigRuptureMove',
+    sceneModel.out({
+      type: 'spatial:move',
+      filter: ({ id }) => entityCollection.get(id).type === 'big-rupture',
+    }).subscribe((event) => {
+      const { id, point, ...rest } = event;
+      const node = graphModel.getNodeAtPoint(point);
+
+      objectLayer.get(id)?.update({ point: node.point, teleporting: rest.teleporting ?? false });
     })
   );
 

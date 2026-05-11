@@ -165,6 +165,11 @@ The event model is distributed but fairly consistent in intent:
 - The resolver derives new events from existing ones.
 - Runtime subscribers react to those outputs for render/audio/UI concerns.
 
+There are now two distinct derivation styles in the world:
+
+- graph-resolved spatial derivation via `InteractionResolver`
+- wave/field influence derivation via a sibling wave influence resolver
+
 This is one of the most valuable things to preserve when extending the project. The world is becoming event-composed, and that trend already has real shape.
 
 ## Emerging Invariants
@@ -204,9 +209,33 @@ The code is already leaning toward:
 
 That seems like a good invariant to maintain. `run-canvas.js` is large, but much of what it does is subscribe reactively rather than drive the world directly.
 
+### 4a. Spatial truth and wave influence are different kinds of world fact
+
+The code now has a meaningful distinction between:
+
+- spatial facts that require graph adjudication
+- influence facts that modulate entity behavior without changing graph truth
+
+`InteractionResolver` should stay focused on graph-backed movement and collisions.
+
+Wave-world field effects can live in sibling derivation layers that emit influence events into the same sphere without pretending to be graph movement.
+
 ### 5. Traverser subclasses should differentiate through hooks, not whole new movement stacks
 
 `ActorModel` and `DarkSunModel` both get their distinct behavior mostly by overriding traversal hooks and reactions. That pattern looks intentional and worth preserving.
+
+### 5a. Traversers own their effective cadence, even when influenced externally
+
+Wave-world entities can now influence traversers by emitting field events that ultimately resolve to temporary cadence modifiers.
+
+The important ownership rule is:
+
+- external systems emit influence
+- traversers decide how to apply it
+- base `stepInterval` stays traverser-owned
+- temporary modifiers affect `effectiveStepInterval`
+
+For the current MVP, cadence modifiers are ephemeral and cleared after each traverser step invocation, so emitters must keep reapplying them while the target remains in range.
 
 ### 6. `properties` shape is meaningful
 
@@ -219,6 +248,10 @@ That means new persistent model attributes usually need to be declared in defaul
 The codebase seems to be converging toward something like:
 
 "A scene-composed world model where stateful entities and graph nodes emit typed events, a resolver mediates movement against world rules, and audiovisual systems subscribe to those events to create the Tone Tiles experience."
+
+That direction now also includes a second world behavior track:
+
+"wave-world entities can emit non-spatial influence into the same event sphere, and traversers can absorb that influence without breaking graph-resolved movement."
 
 A few signs of that direction:
 

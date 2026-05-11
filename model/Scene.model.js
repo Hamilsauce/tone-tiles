@@ -1,6 +1,7 @@
 import { CollectionRegistry } from '../core/types/collection-registry.js';
 import { ModelRegistry } from '../core/types/model-registry.js';
 import { InteractionResolver } from '../core/spatial/InteractionResolver.js';
+import { WaveInfluenceResolver } from '../core/wave/WaveInfluenceResolver.js';
 import { ModelTypes } from '../core/types/model.types.js';
 
 import { createConnectionBus } from '../core/create-connection.js';
@@ -29,11 +30,19 @@ export class SceneModel {
       entities: this.#collections.get(ModelTypes.ENTITIES),
       graph: this.#collections.get(ModelTypes.GRAPH),
     });
+    this.waveResolver = new WaveInfluenceResolver({
+      entities: this.#collections.get(ModelTypes.ENTITIES),
+      loopEngine: this.loopEngine,
+    });
 
     this.#collections.get(ModelTypes.ENTITIES)
       .in({ name: 'resolver', source$: this.resolver.derived$ });
+    this.#collections.get(ModelTypes.ENTITIES)
+      .in({ name: 'wave-resolver', source$: this.waveResolver.derived$ });
 
     this.in({ name: 'resolver', source$: this.resolver.derived$ });
+    this.in({ name: 'wave', source$: this.waveResolver.out({}) });
+    this.in({ name: 'wave-resolver', source$: this.waveResolver.derived$ });
 
     if (userEvents$) {
       // this.in({ name: 'user-events', source$: userEvents$ });

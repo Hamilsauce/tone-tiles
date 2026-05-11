@@ -54,7 +54,7 @@ export class DarkSun extends CanvasObject {
 
     this.phase = 0;
 
-    this.scaleTo(3);
+    this.scaleTo(1.5);
   }
 
   recoil(time) {

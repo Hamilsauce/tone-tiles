@@ -90,7 +90,7 @@ export class DarkSunModel extends TraverserModel {
 	
 	resolveAction(event = {}) {
 		if (event.type === 'spatial:blocked') {
-			if (event.reason === 'blocked-by:actor') {
+			if (typeof event.reason === 'string' && event.reason.startsWith('blocked-by:')) {
 				this.reverseCourse();
 			}
 			
