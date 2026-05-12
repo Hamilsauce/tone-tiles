@@ -36,14 +36,6 @@ export class TileLayer extends SceneLayer {
 
       // const r = this.getRow(t.y)
 
-      // setTimeout(() => {
-      //   r.update({ start: true })
-
-      //   setTimeout(() => {
-      //     r.update({ start: false })
-
-      //   }, 200)
-      // }, 0)
     }
   };
 

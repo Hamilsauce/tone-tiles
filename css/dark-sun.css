@@ -4,25 +4,24 @@
   stroke-width: 0.01px !important;
   pointer-events: none;
   /* filter: hue-rotate(200deg) invert(1); */
-  filter: brightness(1.4) contrast(1) saturate(1.2) drop-shadow(0 0 0.1px #37500C) ;
+  filter: brightness(1.4) contrast(1) saturate(1.2) drop-shadow(0 0 0.1px #37500C) invert(0) blur(0px);
   mix-blend-mode: hard-light;
   transition: 0.2s ease-out;
 }
 
 [data-type=dark-sun][data-moving=false],
-[data-type=dark-sun][data-moving=false] * {
-}
+[data-type=dark-sun][data-moving=false] * {}
 
 [data-type=dark-sun][data-moving=true][data-teleporting=false],
 [data-type=dark-sun][data-moving=true][data-teleporting=false]>* {
   /* filter:  invert(1) !important; */
-
+  
   /* fill: #38DD17; */
   /* scale: 0.9 */
   /* transition: 0.15s ease-out; */
   /* stroke-width: 0.00px; */
   filter: contrast(2) hue-rotate(25deg) invert(1) !important;
-
+  
 }
 
 [data-type=dark-sun][data-teleporting=false],
@@ -35,9 +34,9 @@
   /* fill: #783BC1; */
   r: 0.01;
   stroke-width: 0.00px;
-
-  /* filter: blur(5px) !important; */
-
+  
+  filter: blur(1px) invert(1) !important;
+  
 }
 
 [data-type=dark-sun] {
@@ -54,8 +53,8 @@
 
 [data-type=dark-sun][data-recoiling=true] {
   /* filter: brightness(5); */
-  filter:  contrast(2) invert(1);
+  filter: contrast(2) invert(1);
   /* scale: 0.4 0.4 0.4; */
   transition: 0.2s ease;
-
+  
 }

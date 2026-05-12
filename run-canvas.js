@@ -165,7 +165,7 @@ export const runCanvas = async (mapId) => {
   subscriptions.set(
     'entityCreate',
     entityCollection.out({ type: 'entity:create' }).subscribe(e => {
-      console.warn('entityCreate', e);
+      // console.warn('entityCreate', e);
       const canvasEntity = objectLayer.add({
         id: e.id,
         type: e.data?.type ?? 'actor',
@@ -252,14 +252,14 @@ export const runCanvas = async (mapId) => {
       }, graphEvents),
       
     )
-    // .subscribe()
+    .subscribe()
   );
   
   // navigator.clipboard.writeText(JSON.stringify(graphEvents, null, 2));
   
   subscriptions.set(
     'mapLoad',
-    graphModel.out({ type: 'map:load' }).subscribe(e => {
+    sceneModel.out({ type: 'map:load' }).subscribe(e => {
       const { width, height, nodes, startNode } = e.data;
       darkSunTraversalGliss.end();
       
@@ -348,9 +348,13 @@ export const runCanvas = async (mapId) => {
     'darksunTravel',
     entityCollection.out({
       type: 'traversal:start',
-      filter: ({ id, type }) => entityCollection.get(id).type === 'dark-sun'
-    }).subscribe(() => {
+      filter: ({ id, type, point, goalNode }) => entityCollection.get(id).type === 'dark-sun'
+    }).subscribe(({ id, type, point, goalNode }) => {
       darkSunTraversalGliss.start();
+      // const curr = graphModel.getNodeAtPoint(point);
+      
+      playChord({ point: point, forceNewNote: true });
+      
     })
   );
   
@@ -363,7 +367,6 @@ export const runCanvas = async (mapId) => {
       filter: ({ id, type }) => entityCollection.get(id).type === 'actor',
     }).subscribe(async ({ point, goalPoint }) => {
       const curr = graphModel.getNodeAtPoint(point);
-      console.warn('tileLayer.get(`${goalPoint.x}_${goalPoint.y}`)', `${tileLayer.get(`${goalPoint.x}_${goalPoint.y}`).toJSON()})`);
       
       tileLayer.forEach(_ => _.update({ active: false }));
       tileLayer.get(`${goalPoint.x}_${goalPoint.y}`).update({ active: true });
@@ -566,6 +569,7 @@ export const runCanvas = async (mapId) => {
       });
     })
   );
+  
   const unwatchCurrentMap = watch(mapStore.currentMap, (newMap, oldMap) => {
     if (!newMap.id) return;
     
@@ -611,38 +615,38 @@ export const runCanvas = async (mapId) => {
   
   const handleTileClick = async ({ type, detail }) => {
     
-    if (!isRunning.value) return;
+    // if (!isRunning.value) return;
     if (contextMenu.isVisible) {
       blurContextMenu();
       return;
     };
     
-    if (isSelectingLinkTile === true) return;
+    // if (isSelectingLinkTile === true) return;
     
-    if (!type || type !== 'tile:click') {
-      console.warn('NON TILE CLICK, RETURNING FROM LOOP', type, detail);
-      return;
-    }
+    // if (!type || type !== 'tile:click') {
+    //   console.warn('NON TILE CLICK, RETURNING FROM LOOP', type, detail);
+    //   return;
+    // }
     
-    const prevGoal = graphModel.findNode(n => n.current === true);
+    // const prevGoal = graphModel.findNode(n => n.current === true);
     
-    if (prevGoal) {
-      // prevGoal.update({ active: false })
-    }
+    // if (prevGoal) {
+    //   // prevGoal.update({ active: false })
+    // }
     
-    const goalNode = graphModel.getNodeByAddress(detail.id);
+    // const goalNode = graphModel.getNodeByAddress(detail.id);
     
-    if (!goalNode || !goalNode.isTraversable) {
-      console.warn('NO GOAL OR GOAL NOT TRAVERSABLE. Early return');
-      console.warn(goalNode?.id, goalNode?.isTraversable);
-      entityCollection.get('actor1').stop();
-      
-      return;
-    }
+    // if (!goalNode || !goalNode.isTraversable) {
+    //   console.warn('NO GOAL OR GOAL NOT TRAVERSABLE. Early return');
+    //   console.warn(goalNode?.id, goalNode?.isTraversable);
+    //   entityCollection.get('actor1').stop();
+    
+    //   return;
+    // }
     
     await audioEngine.ensureReady();
-    entityCollection.get('actor1').travelTo(goalNode.point);
-    playChord({ point: goalNode.point, forceNewNote: true });
+    // entityCollection.get('actor1').travelTo(goalNode.point);
+    // playChord({ point: goalNode.point, forceNewNote: true });
     
   };
   

@@ -54,10 +54,9 @@ export class BigRupture extends CanvasObject {
 		const prevDir = this.#travelDir;
 		
 		this.#travelDir = getDirectionFromPoints(prev, curr) ?? this.#travelDir ?? 'down';
-		
-		const turnDegree = directionPivot[prevDir][this.#travelDir]
+		const turnDegree = directionPivot[prevDir][this.#travelDir] ?? 0
 		const ang = this.phase === 0 ? 65 : -65;
-		
+
 		this.toggle({ recoiling: true }, { time: 500 })
 		
 		this.rotateTo(this.#currentRotation + turnDegree, 0.0, 0.0);

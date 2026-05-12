@@ -16,11 +16,11 @@ const canCoOccupy = (entrantType = '', occupantType = '') => {
   if (!entrantType || !occupantType) {
     return false;
   }
-
+  
   if (entrantType === occupantType) {
     return false;
   }
-
+  
   return !!(
     CO_OCCUPANCY_RULES[entrantType]?.has(occupantType) &&
     CO_OCCUPANCY_RULES[occupantType]?.has(entrantType)
@@ -31,7 +31,7 @@ const getEntityType = (entity) => entity?.type ?? entity?.properties?.type ?? 'u
 
 const resolveTraversalMove = (event, graph, entities) => {
   event.prevPoint = event.prevPoint ?? event.point;
-
+  
   const movingEntity = entities.get(event.id);
   const fromNodeId = graph.pointToAddress(event.prevPoint);
   const toNodeId = graph.pointToAddress(event.point);
@@ -56,16 +56,16 @@ const resolveTraversalMove = (event, graph, entities) => {
       }),
     ];
   }
-
+  
   const movingType = getEntityType(movingEntity);
   const blockingEntities = toNode.objectIds
     .filter((occupantId) => occupantId !== event.id)
     .map((occupantId) => entities.get(occupantId))
     .filter((occupant) => occupant && !canCoOccupy(movingType, getEntityType(occupant)));
-
+  
   if (!blockingEntities.length) {
     graph.moveObject(event.id, event.point);
-
+    
     return [
       SpatialMove({
         id: event.id,
@@ -81,12 +81,12 @@ const resolveTraversalMove = (event, graph, entities) => {
       }),
     ];
   }
-
+  
   const blockers = blockingEntities.map(({ id }) => id);
   const blockerTypes = [...new Set(blockingEntities.map(getEntityType))];
   const actors = [...new Set([event.id, ...blockers])];
   const reason = blockerTypes.includes('actor') ? 'blocked-by:actor' : `blocked-by:${blockerTypes[0] ?? 'occupant'}`;
-
+  
   return [
     SpatialBlocked({
       id: event.id,
@@ -121,7 +121,7 @@ export const derive$ = (events$, graph, entities) => {
   const base$ = events$.pipe(
     filter(event => !event.meta?.derived)
   );
-
+  
   return base$.pipe(
     filter(event => event.type.includes('traversal:')),
     concatMap((event) => rxjs.from(resolveTraversalMove(event, graph, entities))),
@@ -130,20 +130,56 @@ export const derive$ = (events$, graph, entities) => {
 
 
 export class InteractionResolver {
-  constructor({ entities, graph }) {
+  constructor({ entities, graph, userEvents$ }) {
     this.graph = graph;
     this.entities = entities;
-
+    
     createConnectionBus(this);
-
+    
     this.in({ name: 'entities', source$: entities.out({}) });
     this.in({ name: 'graph', source$: graph.out({}) });
-
+    this.in({ name: 'user-events', source$: userEvents$ });
+    
     this.derived$ = derive$(this.out({}), graph, entities).pipe(share());
+    
+    this.out({ type: 'tile:click' }).subscribe((e) => {
+      this.handleTileClick(e)
+      return e;
+    });
   }
-
+  
   syncEntityPosition(id, point) {
     this.graph.moveObject(id, point);
     return this;
   }
+  
+  async handleTileClick({ type, detail }) {
+    
+    if (this.isSelectingLinkTile === true) return;
+    
+    const goalNode = this.graph.getNodeByAddress(detail.id);
+    
+    if (!goalNode || !goalNode.isTraversable) {
+      console.warn('NO GOAL OR GOAL NOT TRAVERSABLE. Early return');
+      console.warn(goalNode?.id, goalNode?.isTraversable);
+      // entityCollection.get('actor1').stop();
+      
+      this.entities.getAll().forEach(entity => {
+        if (entity.type === 'actor') {
+          entity.stop();
+        }
+      });
+      
+      return;
+    }
+    
+    this.entities.getAll().forEach(entity => {
+      if (entity.type === 'actor') {
+        entity.travelTo(goalNode.point);
+      }
+    });
+    
+    
+  };
+  
 }

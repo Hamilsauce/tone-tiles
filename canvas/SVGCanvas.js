@@ -142,7 +142,10 @@ export class SVGCanvas extends EventTarget {
 		this.toggleScroll = this.#toggleScroll.bind(this);
 		
 		const { eventEmits$, pointerEvents$ } = getUserEvents(this)
-		
+		eventEmits$ .pipe(
+			tap(x => console.log('eventEmits$', x)),
+		)
+
 		this.in({ name: 'user-events', source$: eventEmits$ });
 		
 		this.pointerDOMSubscription = pointerEvents$.subscribe();

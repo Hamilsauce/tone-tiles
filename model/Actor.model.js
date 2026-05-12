@@ -48,7 +48,7 @@ export class ActorModel extends TraverserModel {
   
   onGoal() {
     this.update({ teleporting: false });
-    console.warn('actor goal reached', { id: this.id, point: this.point, goalPoint: this.goalPoint });
+    // console.warn('actor goal reached', { id: this.id, point: this.point, goalPoint: this.goalPoint });
   }
   
   onMove(event) {

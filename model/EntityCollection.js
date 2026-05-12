@@ -69,14 +69,14 @@ export class EntityCollection extends Collection {
   }
   
   createDarkSun(options = {}) {
-    console.warn('creating dark sun with options', options);
+    // console.warn('creating dark sun with options', options);
     return this.createEntity(ModelTypes.DARKSUN, options);
   }
-
+  
   createBigRupture(options = {}) {
     return this.createEntity(ModelTypes.BIG_RUPTURE, options);
   }
-
+  
   createTeleporter(options = {}) {
     return this.createEntity(ModelTypes.TELEPORTER, options);
   }
@@ -125,7 +125,7 @@ export class EntityCollection extends Collection {
       this.get(event.id)?.resolveAction?.(event);
       return;
     }
-
+    
     if (event.type === 'traverser:step-interval-modifier') {
       this.get(event.id)?.resolveAction?.(event);
       return;

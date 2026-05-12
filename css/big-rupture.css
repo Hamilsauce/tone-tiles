@@ -1,13 +1,40 @@
-#app {
-  /* background: #1A1D24; */
-}
-
 [data-type=big-rupture] {
   transition: transform 0.2s ease-out;
   filter: contrast(2);
-
-
 }
+
+
+[data-type=big-rupture][data-moving=false],
+[data-type=big-rupture][data-moving=false] * {}
+
+[data-type=big-rupture][data-moving=true][data-teleporting=false],
+[data-type=big-rupture][data-moving=true][data-teleporting=false]>* {
+  /* filter:  invert(1) !important; */
+  
+  /* fill: #38DD17; */
+  /* scale: 0.9 */
+  /* transition: 0.15s ease-out; */
+  /* stroke-width: 0.00px; */
+  filter: contrast(2) hue-rotate(250deg) invert(0) !important;
+  
+}
+
+[data-type=big-rupture][data-teleporting=false],
+[data-type=big-rupture][data-teleporting=false] * {
+  /* transition: 0.0s; */
+}
+
+[data-type=big-rupture][data-teleporting=true],
+[data-type=big-rupture][data-teleporting=true] {
+  /* fill: #783BC1; */
+  /* r: 0.01; */
+  /* stroke-width: 0.00px; */
+  
+  filter: blur(1px) invert(1) !important;
+  
+}
+
+
 .big-rupture {
   fill: url(#nethervision);
   fill-opacity: 1;
