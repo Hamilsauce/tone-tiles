@@ -38,7 +38,7 @@ export class AudioClockLoop {
 	}
 	
 	get running() { return this.#running; }
-	get scaledDt() { return this.#running; }
+	get tick$() { return this.#tick$; }
 	
 	get scaledDt() {
 		return dt * this.#tempoScale;

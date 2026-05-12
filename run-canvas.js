@@ -229,10 +229,10 @@ export const runCanvas = async (mapId) => {
   };
   
   window.graphEvents = graphEvents;
-
+  
   subscriptions.set(
     'world',
-    sceneModel.out({})
+    runtime.out({})
     .pipe(
       timestamp(),
       map(({ timestamp, value }) => ({
@@ -369,7 +369,7 @@ export const runCanvas = async (mapId) => {
   
   subscriptions.set(
     'actorMove',
-    sceneModel.out({
+    runtime.out({
       type: 'spatial:move',
       filter: ({ id }) => entityCollection.get(id).type === 'actor',
     }).subscribe(async ({ id, point, prevPoint, ...rest }) => {
@@ -427,7 +427,7 @@ export const runCanvas = async (mapId) => {
   
   subscriptions.set(
     'darkSunMove',
-    sceneModel.out({
+    runtime.out({
       type: 'spatial:move',
       filter: ({ id }) => entityCollection.get(id).type === 'dark-sun',
     }).subscribe((event) => {
@@ -478,7 +478,7 @@ export const runCanvas = async (mapId) => {
   
   subscriptions.set(
     'bigRuptureMove',
-    sceneModel.out({
+    runtime.out({
       type: 'spatial:move',
       filter: ({ id }) => entityCollection.get(id).type === 'big-rupture',
     }).subscribe((event) => {
@@ -491,7 +491,7 @@ export const runCanvas = async (mapId) => {
   
   subscriptions.set(
     'darkSunBlocked',
-    sceneModel.out({
+    runtime.out({
       type: 'spatial:blocked',
       filter: ({ id }) => entityCollection.get(id)?.type === 'dark-sun',
     }).subscribe(() => {
@@ -501,7 +501,7 @@ export const runCanvas = async (mapId) => {
   
   subscriptions.set(
     'collision',
-    sceneModel.out({ type: 'interaction:collision' })
+    runtime.out({ type: 'interaction:collision' })
     .subscribe(async (event) => {
       const { point, entering, actors } = event;
       const newOccupant = entityCollection.get(entering);
@@ -568,11 +568,11 @@ export const runCanvas = async (mapId) => {
   
   const unwatchIsRunning = watch(isRunning, (newVal, oldVal) => {
     if (newVal === true && oldVal === false) {
-      loopEngine.start();
+      // loopEngine.start();
     }
     
     if (newVal === false && oldVal === true) {
-      loopEngine.pause();
+      // loopEngine.pause();
     }
   }, { immediate: true });
   

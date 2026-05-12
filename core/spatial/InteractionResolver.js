@@ -154,7 +154,6 @@ export class InteractionResolver {
   }
   
   async handleTileClick({ type, detail }) {
-    
     if (this.isSelectingLinkTile === true) return;
     
     const goalNode = this.graph.getNodeByAddress(detail.id);
@@ -178,8 +177,5 @@ export class InteractionResolver {
         entity.travelTo(goalNode.point);
       }
     });
-    
-    
   };
-  
 }

@@ -9,10 +9,10 @@ import { audioEngine } from '../audio/index.js';
 import { SVGCanvas } from '../canvas/SVGCanvas.js';
 import { watch, toValue } from 'vue';
 import { rxjs } from 'rxjs';
+import { createConnectionBus } from '../../core/create-connection.js';
 
 const { operators } = rxjs;
-const { concatMap, filter, share } = operators;
-// import { createTempoControl } from './tempo-control.js';
+const { concatMap, filter,tap, share, withLatestFrom, sampleTime, map } = operators;
 
 const defaultConfig = {
   collections: [
@@ -33,6 +33,8 @@ export class Runtime {
       collections: config.collections ?? defaultConfig.collections,
     };
     
+    createConnectionBus(this);
+    
     this.appStore = appStore;
     this.mapStore = mapStore;
     this.audioEngine = audioEngine;
@@ -52,6 +54,25 @@ export class Runtime {
         ),
     });
     
+    this.in({
+      name: 'scene',
+      source$: this.scene.out({}).pipe(
+        filter(_ => appStore.isRunning.value === true),
+        sampleTime(8),
+      ),
+    });
+    
+    this.frame$ = this.loopEngine.tick$.pipe(
+      withLatestFrom(this.out({
+        filter: (e) => {}
+      })),
+      map(([_, state]) => state),
+      tap(x => console.log('x', x)),
+    )
+    
+    this.frame$
+      .subscribe()
+    
     
     createTempoControl({
       loop: this.loopEngine,
@@ -62,7 +83,7 @@ export class Runtime {
     
     // const unwatchCurrentMap = watch(mapStore.currentMap, (newMap, oldMap) => {
     //   if (!newMap.id) return;
-      
+    
     //   const mapData = toValue(newMap);
     //   console.warn('[[[[[mapData]]]]]', mapData)
     //   this.scene.getColl(ModelTypes.GRAPH).fromMap(mapData);
@@ -72,7 +93,7 @@ export class Runtime {
     //   if (newVal === true && oldVal === false) {
     //     this.loopEngine.start();
     //   }
-      
+    
     //   if (newVal === false && oldVal === true) {
     //     this.loopEngine.pause();
     //   }
@@ -80,6 +101,8 @@ export class Runtime {
     
     
   };
+  
+  
   // get prop() { return this._prop };
   // set prop(newValue) { this._prop = newValue };
 }
