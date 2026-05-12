@@ -1,4 +1,6 @@
 import '../model/index.js';
+import '../canvas/index.js'
+
 import { ModelTypes } from '../core/types/model.types.js';
 import { SceneModel } from '../model/Scene.model.js';
 import { LoopEngine } from '../core/loop-engine/index.js';

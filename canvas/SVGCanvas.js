@@ -1,4 +1,6 @@
 import ham from 'ham';
+import './index.js';
+
 import { rxjs } from 'rxjs';
 import { createCustomEvent } from '../lib/create-event.js';
 import { CanvasObject, DefaultCanvasObjectOptions } from './CanvasObject.js';

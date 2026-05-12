@@ -1,17 +1,21 @@
 import './model/index.js';
-import { ModelRegistry } from './core/types/model-registry.js';
-import { CollectionRegistry } from './core/types/collection-registry.js';
+
+// import './canvas/index.js'
+
 import { ModelTypes } from './core/types/model.types.js';
 import { getDirectionFromPoints } from './core/spatial/utils.js';
 
-import getGraphModel from './model/graph.model.js';
 import { SceneModel } from './model/index.js';
-import { EntityCollection } from './model/EntityCollection.js';
+// import { EntityCollection } from './model/EntityCollection.js';
+
+// TODO: NOTE GOTTA KEEP THIS HERE BC 'CANVAS OBJECT INIT' ERROR
 import { SVGCanvas } from './canvas/SVGCanvas.js';
+import { Runtime } from './runtime/Runtime.js';
+
 import { getTileSelector } from 'https://hamilsauce.github.io/svg-range-selector/tile-selector.js';
 import { initMapControls } from './ui/map-selection.js';
 import { useAppState } from './store/app.store.js';
-import { LoopEngine } from './core/loop-engine/index.js';
+// import { LoopEngine } from './core/loop-engine/index.js';
 import { audioEngine } from './audio/index.js';
 import audioNote1 from './audio/fire-audio-note1.js';
 import { playChord } from './audio/play-chord.js';
@@ -19,15 +23,13 @@ import { createTraversalGlissController } from './audio/traversal-gliss.js';
 import { ContextMenu } from './canvas/ContextMenu.js';
 import { watch, toValue } from 'vue';
 import { useMapStore } from './store/map.store.js';
-import { Runtime } from './runtime/Runtime.js';
 import { projectNodePatchToRenderPatch } from './core/projections/node-to-tile.projector.js';
 import { rxjs } from 'rxjs';
 import { DEFAULT_TRANSFORM_MAP } from './canvas/TransformList.js';
 import ham from 'ham';
 
 const { sleep } = ham;
-const { operators, Subject } = rxjs;
-const { map, scan, tap, filter, bufferTime, timestamp } = operators;
+const { map, scan, tap, filter, timestamp } = rxjs.operators;
 
 const useTemplate = (templateName, options = {}) => {
   const el = document.querySelector(`[data-template="${templateName}"]`).cloneNode(true);
@@ -126,7 +128,6 @@ export const runCanvas = async (mapId) => {
   entityCollection = sceneModel.getColl(ModelTypes.ENTITIES);
   graphModel = sceneModel.getColl(ModelTypes.GRAPH);
   
-  
   svgCanvas = runtime.svgCanvas;
   sceneObj = svgCanvas.scene;
   tileLayer = sceneObj.getLayer('tile');
@@ -165,7 +166,6 @@ export const runCanvas = async (mapId) => {
   subscriptions.set(
     'entityCreate',
     entityCollection.out({ type: 'entity:create' }).subscribe(e => {
-      // console.warn('entityCreate', e);
       const canvasEntity = objectLayer.add({
         id: e.id,
         type: e.data?.type ?? 'actor',
@@ -222,8 +222,6 @@ export const runCanvas = async (mapId) => {
   
   //! start binding
   
-  
-  
   const graphEvents = {
     events: [],
     duration: 0,
@@ -231,7 +229,7 @@ export const runCanvas = async (mapId) => {
   };
   
   window.graphEvents = graphEvents;
-  //! start binding
+
   subscriptions.set(
     'world',
     sceneModel.out({})
@@ -252,7 +250,7 @@ export const runCanvas = async (mapId) => {
       }, graphEvents),
       
     )
-    .subscribe()
+    // .subscribe()
   );
   
   // navigator.clipboard.writeText(JSON.stringify(graphEvents, null, 2));
@@ -295,21 +293,17 @@ export const runCanvas = async (mapId) => {
       map(projectNodePatchToRenderPatch),
       tap(renderPatch => {
         tileLayer.applyRenderPatch(renderPatch);
-      })
-    ).subscribe()
+      })).subscribe()
   );
   
   subscriptions.set(
     'actorRender',
     entityCollection.out({
       type: 'actor',
-      filter: ({ id, type }) => {
-        return entityCollection.get(id).type === 'actor';
-      }
-    })
-    .subscribe((event) => {
-      // console.warn('actorRender', event);
+      filter: ({ id, type }) => entityCollection.get(id).type === 'actor',
+    }).subscribe((event) => {
       const actor1Model = entityCollection.get('actor1');
+      
       if (event.type === 'actor:update') {
         const actor1 = objectLayer.get(event.id);
         
@@ -317,9 +311,7 @@ export const runCanvas = async (mapId) => {
         
         const currRotate = actor1.transforms.rotation;
         
-        actor1.update({
-          ...event.data,
-        });
+        actor1.update({ ...event.data, });
         
         return;
       }
@@ -351,10 +343,7 @@ export const runCanvas = async (mapId) => {
       filter: ({ id, type, point, goalNode }) => entityCollection.get(id).type === 'dark-sun'
     }).subscribe(({ id, type, point, goalNode }) => {
       darkSunTraversalGliss.start();
-      // const curr = graphModel.getNodeAtPoint(point);
-      
       playChord({ point: point, forceNewNote: true });
-      
     })
   );
   
@@ -371,6 +360,7 @@ export const runCanvas = async (mapId) => {
       tileLayer.forEach(_ => _.update({ active: false }));
       tileLayer.get(`${goalPoint.x}_${goalPoint.y}`).update({ active: true });
       
+      await audioEngine.ensureReady();
       await sleep(50);
       
       playChord({ point: curr.point, });
@@ -432,7 +422,6 @@ export const runCanvas = async (mapId) => {
     }).subscribe((event) => {
       objectLayer.get(event.id)?.update({ teleporting: false });
       tileLayer.forEach(_ => _.update({ active: false }));
-      
     })
   );
   
@@ -523,9 +512,8 @@ export const runCanvas = async (mapId) => {
       }
       
       const dso = objectLayer.get(entering);
-      if (!dso) {
-        return;
-      }
+      if (!dso) return;
+      
       dso.toggle({ point, recoiling: true }, { time: 150 });
       
       node.toggle({ recoiling: true }, { time: 500 });
@@ -596,7 +584,7 @@ export const runCanvas = async (mapId) => {
   });
   
   
-  //! end 1bindings
+  //! end bindings
   
   const blurContextMenu = (e) => {
     const edgeLines = [...objectLayer.dom.querySelectorAll('.edge-line')];
@@ -611,43 +599,6 @@ export const runCanvas = async (mapId) => {
       contextMenu.hide();
       contextMenu.toggleActions(false);
     }
-  };
-  
-  const handleTileClick = async ({ type, detail }) => {
-    
-    // if (!isRunning.value) return;
-    if (contextMenu.isVisible) {
-      blurContextMenu();
-      return;
-    };
-    
-    // if (isSelectingLinkTile === true) return;
-    
-    // if (!type || type !== 'tile:click') {
-    //   console.warn('NON TILE CLICK, RETURNING FROM LOOP', type, detail);
-    //   return;
-    // }
-    
-    // const prevGoal = graphModel.findNode(n => n.current === true);
-    
-    // if (prevGoal) {
-    //   // prevGoal.update({ active: false })
-    // }
-    
-    // const goalNode = graphModel.getNodeByAddress(detail.id);
-    
-    // if (!goalNode || !goalNode.isTraversable) {
-    //   console.warn('NO GOAL OR GOAL NOT TRAVERSABLE. Early return');
-    //   console.warn(goalNode?.id, goalNode?.isTraversable);
-    //   entityCollection.get('actor1').stop();
-    
-    //   return;
-    // }
-    
-    await audioEngine.ensureReady();
-    // entityCollection.get('actor1').travelTo(goalNode.point);
-    // playChord({ point: goalNode.point, forceNewNote: true });
-    
   };
   
   const handleEditTileClick = async (targetNode) => {
@@ -733,17 +684,17 @@ export const runCanvas = async (mapId) => {
     const targetNode = graphModel.getNodeByAddress(e.detail.id);
     if (isSelectingLinkTile) {
       // handleTileLinkSelect(e);
-    } else if (isRunning.value) {
-      // blurContextMenu();
-      handleTileClick(e);
-    } else {
+    } else if (isRunning.value) {} else {
       handleEditTileClick(targetNode);
     }
   });
   
+  svgCanvas.addEventListener('contextmenu:blur', (e) => {
+    blurContextMenu();
+  });
+  
   svgCanvas.addEventListener('tile:contextmenu', (e) => {
     const targetNode = graphModel.getNodeByAddress(e.detail.id);
-    console.warn('CONTEXT MENU');
     handleEditTileClick(targetNode);
   });
   
