@@ -13,8 +13,6 @@ export class SpatialModel extends Model {
     super({ ...rest });
 
     this.#point = Point.from(point);
-
-    // this.toJSON = this.toJSON.bind(this);
   }
 
   // --- getters ---
@@ -34,12 +32,7 @@ export class SpatialModel extends Model {
   syncPoint(nextPoint) {
     const prev = this.#point;
     const normalized = Point.from(nextPoint);
-    // console.warn({ prev, nextPoint, normalized });
-    // const normalized = nextPoint instanceof Point ?
-    //   nextPoint :
-    //   new Point(nextPoint?.x ?? 0, nextPoint?.y ?? 0);
 
-    // if (prev?.x === normalized.x && prev?.y === normalized.y) {
     if (this.#point.equals(normalized)) {
       return null;
     }

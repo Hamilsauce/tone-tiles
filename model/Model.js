@@ -1,14 +1,24 @@
+export const DefaultModelProperties = {
+  width: 1,
+  height: 1,
+  selected: false,
+  active: false,
+  hide: false,
+  recoiling: false,
+  disabled: false,
+};
+
 export const DefaultModelOptions = {
   type: '',
   id: '',
-  properties: {},
+  properties: DefaultModelProperties,
   emitCallback: null,
 };
 
 export class Model {
   #type = null;
   #id = null;
-  #properties = {};
+  #properties;
   #emit;
 
   constructor(options = DefaultModelOptions) {
@@ -69,7 +79,7 @@ export class Model {
   }
 
   data() {
-    const { objects, ...res } = this.toJSON();
+    const res = this.toJSON();
 
     Object.entries(res).forEach(([k, v]) => {
       if ([undefined].includes(v)) {
