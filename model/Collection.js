@@ -23,7 +23,7 @@ export class Collection {
   
   create(type, options) {
     const ModelClass = this.#registry.get(type);
- 
+    
     if (!ModelClass) {
       const typeLabel = typeof type === 'symbol' ?
         (type.description ?? type.toString()) :
@@ -58,6 +58,7 @@ export class Collection {
     }
     
     this.#models.delete(id);
+    console.warn('  this.#models.delete(id)',   this.#models.get(id))
   }
   
   clear() {

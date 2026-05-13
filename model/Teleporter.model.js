@@ -15,7 +15,7 @@ export class TeleporterModel extends SpatialModel {
       ...options,
     });
     
-    this.#target = { x: 0, y: 0 };
+    this.#target = target ?? { x: 0, y: 0 };
     
   }
 }

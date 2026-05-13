@@ -2,6 +2,7 @@
 import { ModelTypes } from '../core/types/model.types.js';
 import { Collection } from '../model/Collection.js';
 import { rxjs } from 'rxjs';
+import { createConnectionBus } from '../core/create-connection.js';
 
 const { operators } = rxjs;
 const { tap } = operators;
@@ -24,8 +25,14 @@ const createEntityId = (typeName = 'entity') => {
 export class EntityCollection extends Collection {
   constructor(options = {}) {
     super({ ...options });
+    // createConnectionBus(this)
     
     const connectIn = this.in.bind(this);
+    
+    // this.out({}).pipe(
+    //     tap(x => console.log('[[EntityCollection IN]', x)),
+    //   )   .subscribe()
+    
     
     this.in = ({ name, source$, transform } = {}) => connectIn({
       name,
@@ -33,6 +40,7 @@ export class EntityCollection extends Collection {
       transform: (input$) => {
         const stream$ = transform ? input$.pipe(transform) : input$;
         return stream$.pipe(
+          // tap(x => console.log('x', x)),
           tap((event) => this.#routeResolvedEvent(event)),
         );
       },

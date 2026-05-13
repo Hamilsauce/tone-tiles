@@ -91,7 +91,7 @@
 
 
 .tile[data-active=true],
-.tile[data-active=true] >*,
+.tile[data-active=true]>*,
 [data-type=tile][data-active=true],
 [data-type=tile][data-active=true]>* {
   fill: #E218EF !important;
@@ -132,7 +132,10 @@
 }
 
 .tile[data-tile-type=teleport]>* {
-  fill: #FF4768;
+  fill: #FFFFFF;
+  filter: contrast(2) opacity(0.5) ;
+  /* filter: saturate(1.3) brightness(2); */
+  /* mix-blend-mode: multiply; */
 }
 
 .tile[data-selected=true]>* {

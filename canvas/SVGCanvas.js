@@ -51,6 +51,13 @@ const TEMPLATE_CONFIG = {
 		},
 	},
 	
+	teleporter: {
+		withHarness: true,
+		transforms: {
+			spatial: ['translate'],
+			visual: ['rotate', 'scale'],
+		},
+	},
 	actor: {
 		withHarness: true,
 		transforms: {

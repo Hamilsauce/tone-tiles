@@ -1,0 +1,60 @@
+[data-type=teleport], .teleporter {
+  /* fill: #e3c70d; */
+  stroke: #fa0d0dd9 !important;
+  stroke-width: 0.01px !important;
+  pointer-events: none;
+  /* filter: hue-rotate(200deg) invert(1); */
+  filter: drop-shadow(0 0 0.075px #262222A8) brightness(1.4) contrast(1) saturate(1.2) invert(0) blur(0px);
+  /* mix-blend-mode: color; */
+  transition: 0.2s ease-out;
+}
+
+[data-type=teleport][data-moving=false],
+[data-type=teleport][data-moving=false] * {}
+
+[data-type=teleport][data-moving=true][data-teleporting=false],
+[data-type=teleport][data-moving=true][data-teleporting=false]>* {
+  /* filter:  invert(1) !important; */
+  
+  /* fill: #38DD17; */
+  /* scale: 0.9 */
+  /* transition: 0.15s ease-out; */
+  /* stroke-width: 0.00px; */
+  filter: contrast(2) hue-rotate(25deg) invert(1) !important;
+  
+}
+
+[data-type=teleport][data-teleporting=false],
+[data-type=teleport][data-teleporting=false] * {
+  /* transition: 0.0s; */
+}
+
+[data-type=teleport][data-teleporting=true],
+[data-type=teleport][data-teleporting=true] {
+  /* fill: #783BC1; */
+  r: 0.01;
+  stroke-width: 0.00px;
+  
+  filter: blur(1px) invert(1) !important;
+  
+}
+
+[data-type=teleport] {
+  fill: url(#lineargradient1);
+  fill-opacity: 1;
+  stroke: #890D0D;
+  stroke-width: 0.02;
+  stroke-opacity: 1;
+  stroke-linecap: butt;
+  stroke-linejoin: round;
+  stroke-miterlimit: 4;
+  stroke-dashoffset: 0;
+}
+
+[data-type=teleport][data-recoiling=true] {
+  /* filter: brightness(5); */
+  filter: contrast(2) invert(1);
+  /* scale: 0.4 0.4 0.4; */
+  transition: 0.2s ease;
+  
+}
