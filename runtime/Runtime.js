@@ -9,7 +9,7 @@ import { audioEngine } from '../audio/index.js';
 import { SVGCanvas } from '../canvas/SVGCanvas.js';
 import { watch, toValue } from 'vue';
 import { rxjs } from 'rxjs';
-import { createConnectionBus } from '../../core/create-connection.js';
+import { createConnectionBus } from '../core/create-connection.js';
 
 const { operators } = rxjs;
 const { concatMap, filter,tap, share, withLatestFrom, sampleTime, map } = operators;
