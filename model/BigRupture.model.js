@@ -4,7 +4,8 @@ import { Point } from '../core/spatial/Point.js';
 const DefaultBigRuptureWaypoints = [
 	{ x: 0, y: 21 },
 	{ x: 10, y: 0 },
-	{ x: 0, y: 0 },
+	{ x: 7, y: 10 },
+	{ x: 10, y: 0 },
 ];
 
 const DefaultBigRuptureProperties = {

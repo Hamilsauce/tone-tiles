@@ -57,8 +57,7 @@ export class BigRupture extends CanvasObject {
 			
 			this.scaleValue += this.scaleMod;
 			this.scaleTo(this.scaleValue);
-		}, 40)
-		
+		}, 40);
 	}
 	
 	recoil(time) {
@@ -70,7 +69,7 @@ export class BigRupture extends CanvasObject {
 		const turnDegree = directionPivot[prevDir][this.#travelDir] ?? 0
 		const ang = this.phase === 0 ? 65 : -65;
 		
-		this.toggle({ recoiling: true }, { time: 500 })
+		this.toggle({ recoiling: true }, { time: 500 });
 		
 		this.rotateTo(this.#currentRotation + turnDegree, 0.0, 0.0);
 		this.phase = this.phase === 0 ? 1 : 0;
@@ -80,25 +79,24 @@ export class BigRupture extends CanvasObject {
 	update(patch) {
 		if (patch && patch.point) {
 			const prevDir = this.#travelDir;
-			this.#travelDir = getDirectionFromPoints(this.point, patch.point) ?? this.#travelDir
+			this.#travelDir = getDirectionFromPoints(this.point, patch.point) ?? this.#travelDir;
 			
 			if (prevDir !== this.#travelDir) {
-				this.#rotationMod = directionPivot[prevDir][this.#travelDir]
+				this.#rotationMod = directionPivot[prevDir][this.#travelDir];
 			}
 		}
 		
 		super.update(patch);
 		this.advanceRotation();
 		
-		return this
+		return this;
 	}
 	
 	advanceRotation(dr) {
 		const change = (dr ?? this.#rotationStep) * this.#rotationMod;
 		
 		this.#rotation = this.#rotation + change;
-		// this.rotateTo(this.#currentRotation + angle, 0.0, 0.0);
 		
 		this.rotateTo(this.#rotation, 0.1, -0.1);
 	}
-}
+}	
