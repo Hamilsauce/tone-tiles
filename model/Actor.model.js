@@ -63,7 +63,6 @@ export class ActorModel extends TraverserModel {
   }
   
   onBlocked(event) {
-    console.warn('onBlocked', event);
     this.travelTo(event.prevPoint);
   }
   

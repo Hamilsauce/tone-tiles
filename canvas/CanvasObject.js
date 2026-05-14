@@ -246,8 +246,6 @@ export class CanvasObject extends EventEmitter {
     const changedPatch = this.#getChangedPatch(normalizedPatch);
     const restorePatch = this.#getRestorePatch(changedPatch);
 
-    console.warn({ changedPatch, restorePatch, attributeMap, time, retries });
-
     if (!Object.keys(changedPatch).length) {
       this.isBusy = false;
       return this;

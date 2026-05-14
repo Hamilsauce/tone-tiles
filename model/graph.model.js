@@ -311,7 +311,7 @@ export class Graph extends Collection {
         range.push(node);
       }
     }
-    console.warn('range', range)
+
     return range;
   }
   

@@ -2,8 +2,8 @@ import { TraverserModel } from './Traverser.model.js';
 import { Point } from '../core/spatial/Point.js';
 
 const DefaultBigRuptureWaypoints = [
-	{ x: 7, y: 10 },
-	{ x: 12, y: 21 },
+	{ x: 0, y: 21 },
+	{ x: 10, y: 0 },
 	{ x: 0, y: 0 },
 ];
 

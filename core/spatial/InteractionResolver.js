@@ -8,7 +8,8 @@ const { concatMap, filter, share } = operators;
 const CO_OCCUPANCY_RULES = {
   actor: new Set(['teleporter']),
   'dark-sun': new Set(['teleporter']),
-  teleporter: new Set(['actor', 'dark-sun', 'teleporter']),
+  'big-rupture': new Set(['teleporter']),
+  teleporter: new Set(['actor', 'big-rupture', 'dark-sun', 'teleporter']),
 };
 
 const canCoOccupy = (entrantType = '', occupantType = '') => {

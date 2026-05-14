@@ -58,7 +58,6 @@ export class Collection {
     }
     
     this.#models.delete(id);
-    console.warn('  this.#models.delete(id)',   this.#models.get(id))
   }
   
   clear() {

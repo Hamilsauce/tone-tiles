@@ -115,7 +115,6 @@ export class CanvasActor extends CanvasObject {
     this.#currentRotation = this.#currentRotation + turnDegree;
     const ismoving = patch && !!patch.isMoving;
     const isTraversing = patch && patch.isTraversing;
-    console.warn({ isTraversing });
 
     if (isTraversing) {
       this.move();
