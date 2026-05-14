@@ -1,12 +1,14 @@
 import { CanvasObject, DefaultCanvasObjectOptions } from './CanvasObject.js';
 import { getDirectionFromPoints } from '../core/spatial/utils.js';
+import ham from 'ham';
+const { sleep } = ham;
 
 const dirRotationMap = {
   up: 180,
   down: 0,
   left: 90,
   right: -90
-}
+};
 
 const directionPivot = {
   up: {
@@ -33,7 +35,7 @@ const directionPivot = {
     left: 180,
     right: 0,
   },
-}
+};
 
 const DefaultCanvasActorModel = {
   x: 0,
@@ -43,8 +45,8 @@ const DefaultCanvasActorModel = {
   isTraversing: false,
 };
 
-const angles2 = [0, 0,-20,-50,-75, -20,-50,-75, -90, -90, -75, -50, -20, 0, 0];
-const angles = [0, -50, -50];
+const angles2 = [0, 0, -20, -50, -75, -20, -50, -75, -90, -90, -75, -50, -20, 0, 0];
+const angles = [0, -50, -50, 0];
 
 
 export class CanvasActor extends CanvasObject {
@@ -66,17 +68,31 @@ export class CanvasActor extends CanvasObject {
     this.phase = 0;
   }
 
+  move() {
+    const copies = new Array(5).fill().map(() => this.dom.cloneNode(true));
+
+    copies.forEach(async (copy, i) => {
+      75 * i && await sleep(50 * i);
+      copy.style.opacity = 0.5 - (0.1 * i);
+      this.dom.parentNode.appendChild(copy);
+      copy.setAttribute('transform', this.dom.getAttribute('transform'));
+      await sleep(500);
+      copy.remove();
+    });
+
+  }
+
   recoil(time) {
-    const prev = this.#travelDir
+    const prev = this.#travelDir;
     const curr = { x: this.x, y: this.y };
     const prevDir = this.#travelDir;
 
     this.#travelDir = getDirectionFromPoints(prev, curr) ?? this.#travelDir ?? 'down';
 
-    const turnDegree = directionPivot[prevDir][this.#travelDir]
+    const turnDegree = directionPivot[prevDir][this.#travelDir];
     const ang = this.phase === 0 ? 65 : -65;
 
-    this.toggle({ recoiling: true }, { time: 500 })
+    // this.toggle({ recoiling: true }, { time: 500 });
 
     this.rotateTo(this.#currentRotation + ang, 0.0, 0.0);
     this.phase = this.phase === 0 ? 1 : 0;
@@ -88,22 +104,30 @@ export class CanvasActor extends CanvasObject {
     const prevDir = this.#travelDir;
 
     super.update(patch);
-
+    // console.warn(this.dom);
     const curr = { x: this.x, y: this.y };
 
     this.#travelDir = getDirectionFromPoints(prev, curr) ?? this.#travelDir ?? 'down';
 
-    const rotation = dirRotationMap[this.#travelDir]
-    const turnDegree = directionPivot[prevDir][this.#travelDir]
+    const rotation = dirRotationMap[this.#travelDir];
+    const turnDegree = directionPivot[prevDir][this.#travelDir];
 
-    this.#currentRotation = this.#currentRotation + turnDegree
-    const ismoving = patch && !!patch.isMoving
+    this.#currentRotation = this.#currentRotation + turnDegree;
+    const ismoving = patch && !!patch.isMoving;
+    const isTraversing = patch && patch.isTraversing;
+    console.warn({ isTraversing });
+
+    if (isTraversing) {
+      this.move();
+
+    }
+
     this.#ticker = this.#ticker === 0 ? 1 : 0;
     this.phase = (this.phase + 1) % angles.length;
-    let _angles = angles
+    let _angles = angles;
 
     if (this.#travelDir === 'left' || this.#travelDir === 'left') {
-      _angles = [...angles].reverse()
+      _angles = [...angles]//.reverse();
     }
 
     const angle = turnDegree === 0 ? _angles[this.phase] : 0;

@@ -1,7 +1,6 @@
-import { SpatialBlocked, SpatialCollision, SpatialMove } from '../actions/spatial.actions.js';
+import { TraversalIdle, TraversalMove } from '../actions/traversal.actions.js';
 import { createConnectionBus } from '../../core/create-connection.js';
 import { rxjs } from 'rxjs';
-import { getDirectionFromPoints, getLinkCoords, DIRECTIONS } from './utils.js';
 
 const { operators } = rxjs;
 const { concatMap, filter, share } = operators;
@@ -33,24 +32,14 @@ const resolveTraversalMove = (event, graph, entities) => {
   event.prevPoint = event.prevPoint ?? event.point;
   
   const movingEntity = entities.get(event.id);
-  const fromNodeId = graph.pointToAddress(event.prevPoint);
-  const toNodeId = graph.pointToAddress(event.point);
   const toNode = graph.getNodeAtPoint(event.point);
-  const direction = getDirectionFromPoints(event.prevPoint, event.point);
-  const teleporting = toNode ? toNode.tileType === 'teleport' : false;
   if (!movingEntity || !toNode) {
     return [
-      SpatialBlocked({
+      TraversalIdle({
         id: event.id,
-        point: event.point,
+        point: event.prevPoint,
         prevPoint: event.prevPoint,
         goalPoint: event.goalPoint,
-        direction,
-        teleporting: false,
-        actionType: event.type,
-        fromNodeId,
-        toNodeId,
-        blockers: [],
         reason: !movingEntity ? 'missing-entity' : 'invalid-destination',
         meta: { derived: true },
       }),
@@ -67,51 +56,26 @@ const resolveTraversalMove = (event, graph, entities) => {
     graph.moveObject(event.id, event.point);
     
     return [
-      SpatialMove({
+      TraversalMove({
         id: event.id,
         point: event.point,
         prevPoint: event.prevPoint,
         goalPoint: event.goalPoint,
-        direction,
-        teleporting,
-        actionType: event.type,
-        fromNodeId,
-        toNodeId,
         meta: { derived: true },
       }),
     ];
   }
   
-  const blockers = blockingEntities.map(({ id }) => id);
   const blockerTypes = [...new Set(blockingEntities.map(getEntityType))];
-  const actors = [...new Set([event.id, ...blockers])];
   const reason = blockerTypes.includes('actor') ? 'blocked-by:actor' : `blocked-by:${blockerTypes[0] ?? 'occupant'}`;
   
   return [
-    SpatialBlocked({
+    TraversalIdle({
       id: event.id,
-      point: event.point,
+      point: event.prevPoint,
       prevPoint: event.prevPoint,
       goalPoint: event.goalPoint,
-      fromNodeId,
-      direction,
-      teleporting: false,
-      actionType: event.type,
-      toNodeId,
-      blockers,
       reason,
-      meta: { derived: true },
-    }),
-    SpatialCollision({
-      id: event.id,
-      point: event.point,
-      prevPoint: event.prevPoint,
-      actors,
-      direction,
-      teleporting: false,
-      actionType: event.type,
-      blockers,
-      entering: event.id,
       meta: { derived: true },
     }),
   ];
@@ -123,7 +87,7 @@ export const derive$ = (events$, graph, entities) => {
   );
   
   return base$.pipe(
-    filter(event => event.type.includes('traversal:')),
+    filter((event) => event.type === 'traversal:move'),
     concatMap((event) => rxjs.from(resolveTraversalMove(event, graph, entities))),
   );
 };
@@ -146,11 +110,6 @@ export class InteractionResolver {
       this.handleTileClick(e)
       return e;
     });
-  }
-  
-  syncEntityPosition(id, point) {
-    this.graph.moveObject(id, point);
-    return this;
   }
   
   async handleTileClick({ type, detail }) {

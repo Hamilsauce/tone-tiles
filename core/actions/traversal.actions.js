@@ -29,6 +29,7 @@ export const TraversalIdle = createAction('traversal:idle', {
   id: isString,
   point: isPointLike,
   reason: isString,
+  prevPoint: optional(isPointLike),
   goalPoint: optional(isPointLike),
 });
 

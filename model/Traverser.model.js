@@ -91,12 +91,12 @@ export class TraverserModel extends SpatialModel {
   onTraversalError(_context) {}
   
   resolveAction(event = {}) {
-    if (event.type === 'spatial:move') {
+    if (event.type === 'traversal:move') {
       this.commitResolvedMove(event);
       return this;
     }
     
-    if (event.type === 'spatial:blocked') {
+    if (event.type === 'traversal:idle') {
       this.handleBlockedMove(event);
       return this;
     }

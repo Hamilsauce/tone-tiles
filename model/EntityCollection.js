@@ -129,7 +129,7 @@ export class EntityCollection extends Collection {
       return;
     }
     
-    if (event.type === 'spatial:move' || event.type === 'spatial:blocked') {
+    if (event.type === 'traversal:move' || event.type === 'traversal:idle') {
       this.get(event.id)?.resolveAction?.(event);
       return;
     }
@@ -139,11 +139,6 @@ export class EntityCollection extends Collection {
       return;
     }
     
-    if (event.type === 'interaction:collision') {
-      [...new Set(event.actors ?? [])].forEach((id) => {
-        this.get(id)?.resolveAction?.(event);
-      });
-    }
   }
 }
 

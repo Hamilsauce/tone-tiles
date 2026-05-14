@@ -70,18 +70,15 @@ The main player-facing flow currently looks like this:
    - `traversal:goal`
    - `traversal:idle`
    - `traversal:stop`
-5. `InteractionResolver` listens to those traversal events and derives world-resolved events such as:
-   - `spatial:move`
-   - `spatial:blocked`
-   - `interaction:collision`
-6. `EntityCollection` routes derived events back into the entity via `resolveAction(...)`.
-7. The traverser commits movement or handles blockage.
+5. `InteractionResolver` listens to traversal move attempts and resolves them into traversal-scoped outcomes.
+6. `EntityCollection` routes derived traversal outcomes back into the entity via `resolveAction(...)`.
+7. The traverser commits movement or handles blockage without leaving traversal semantics.
 8. Scene/entity subscriptions in `run-canvas.js` update:
    - object positions
    - tile highlighting
    - actor traversal melody behavior
    - map transitions
-   - collision reactions
+   - blocked collision reactions
 
 Important takeaway:
 

@@ -19,6 +19,14 @@ export class CanvasPoint {
     return new CanvasPoint(value.x, value.y);
   }
 
+  static isPoint(obj) {
+    return obj instanceof CanvasPoint;
+  }
+
+  static isPointLike(obj) {
+    return obj && typeof obj.x === 'number' && typeof obj.y === 'number';
+  }
+
   get x() { return this.#x; }
 
   get y() { return this.#y; }

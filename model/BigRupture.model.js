@@ -105,7 +105,7 @@ export class BigRuptureModel extends TraverserModel {
 	}
 	
 	resolveAction(event = {}) {
-		if (event.type === 'spatial:blocked') {
+		if (event.type === 'traversal:idle') {
 			if (typeof event.reason === 'string' && event.reason.startsWith('blocked-by:')) {
 				this.reverseCourse();
 			}
