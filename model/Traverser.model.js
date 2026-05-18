@@ -1,4 +1,4 @@
-import { SpatialModel } from './Spatial.model.js';
+import { SpatialModel, DefaultSpatialProperties } from './Spatial.model.js';
 import { getTraversal } from './graph.model.js';
 import { DefaultModelOptions } from './Model.js';
 import { Point } from '../core/spatial/Point.js';
@@ -11,14 +11,18 @@ import {
   TraversalStop,
 } from '../core/actions/traversal.actions.js';
 
-const DefaultTraverserOptions = {
-  point: { x: 0, y: 0 },
-  isMoving: false,
+export const DefaultTraverserProperties = {
+  direction: null,
   isTraversing: false,
   teleporting: false,
   idleReason: null,
   goalPoint: null,
-  ...DefaultModelOptions,
+  prevPoint: null,
+};
+
+const DefaultTraverserOptions = {
+  traversal: { ...DefaultTraverserProperties },
+  // ...DefaultSpatialProperties,
 };
 
 let createTraversal;
@@ -33,7 +37,17 @@ export class TraverserModel extends SpatialModel {
   #stepIntervalModifier = 0;
   #stepIntervalModifierSourceId = null;
   #isStepping = false;
-  // #step = null;
+  #traversal = { ...DefaultTraverserProperties }
+  // #step
+  // #handleTraversalGoal
+  // #handleTraversalIdle
+  // #handleTraversalMove
+  // #handleTraversalError
+  // #stopTraversal
+  // #resetTraversal
+  // #destroyTraversal
+  // #createContext
+  // #emitTraversalAction
   
   constructor(options = DefaultTraverserOptions) {
     super(options);
@@ -43,6 +57,9 @@ export class TraverserModel extends SpatialModel {
     this.step = this.#step.bind(this);
     this.stop = this.#stopTraversal.bind(this);
     this.resetTraversal = this.#resetTraversal.bind(this);
+    
+    this.update = this.update.bind(this);
+    // this.#stopTraversal = this.#stopTraversal.bind(this);
   }
   
   get stepInterval() {
@@ -52,18 +69,18 @@ export class TraverserModel extends SpatialModel {
   set stepInterval(value) {
     this.#stepInterval = value;
   }
-
+  
   get stepIntervalModifier() {
     return this.#stepIntervalModifier;
   }
-
+  
   get effectiveStepInterval() {
     return Math.max(0.01, this.#stepInterval - this.#stepIntervalModifier);
   }
   
-  get isMoving() {
-    return !!this.properties.isMoving;
-  }
+  // get isMoving() {
+  //   return !!this.properties.isMoving;
+  // }
   
   get isTraversing() {
     return !!this.properties.isTraversing;
@@ -90,6 +107,38 @@ export class TraverserModel extends SpatialModel {
   onTraversalEnd(_context) {}
   onTraversalError(_context) {}
   
+  update({ direction, isTraversing, prevPoint, goalPoint, idleReason, ...rest }) {
+    // update(payload = {}) {
+    
+    let traversal = {}
+    const attributeMap = { direction, isTraversing, prevPoint, goalPoint }
+    
+    traversal = Object.entries(attributeMap).reduce((ptch, [k, v]) => {
+      const modelV = this.#traversal[k];
+      if (v === undefined || modelV === undefined || v === modelV) return ptch;
+      
+      const isValid = !(v === undefined || modelV === undefined);
+      
+      ptch = ptch ?? {};
+      this.#traversal[k] = v;
+      ptch[k] = v;
+      
+      return ptch;
+    }, null);
+    
+    if (!traversal) {
+      return super.update({ ...rest })
+    };
+    
+    return super.update({
+      traversal,
+      ...rest
+    })
+    
+    return this;
+  }
+  
+  
   resolveAction(event = {}) {
     if (event.type === 'spatial:move') {
       this.commitResolvedMove(event);
@@ -100,7 +149,7 @@ export class TraverserModel extends SpatialModel {
       this.handleBlockedMove(event);
       return this;
     }
-
+    
     if (event.type === 'traverser:step-interval-modifier') {
       this.applyStepIntervalModifier(event.modifier, event.sourceId);
       return this;
@@ -108,29 +157,29 @@ export class TraverserModel extends SpatialModel {
     
     return this;
   }
-
+  
   applyStepIntervalModifier(value = 0, sourceId = null) {
     if (!Number.isFinite(value) || value === 0 || this.#stepIntervalModifier !== 0) {
       return false;
     }
-
+    
     this.#stepIntervalModifier = value;
     this.#stepIntervalModifierSourceId = sourceId;
-
+    
     return true;
   }
-
+  
   clearStepIntervalModifier() {
     this.#stepIntervalModifier = 0;
     this.#stepIntervalModifierSourceId = null;
     return this;
   }
   
-  setMoving(value = true) {
-    if (this.isMoving === value) return this;
-    this.update({ isMoving: value });
-    return this;
-  }
+  // setMoving(value = true) {
+  //   if (this.isMoving === value) return this;
+  //   this.update({ isMoving: value });
+  //   return this;
+  // }
   
   setTeleporting(value = true) {
     if (this.properties.teleporting === value) return this;
@@ -316,7 +365,7 @@ export class TraverserModel extends SpatialModel {
       isTraversing: true,
       idleReason: null,
     });
-  
+    
     const context = this.#createContext({
       prevPoint,
       point,
@@ -339,7 +388,7 @@ export class TraverserModel extends SpatialModel {
     this.onGoal(context);
     
     if (!this.goalPoint || toPoint(point).equals(this.goalPoint)) {
-      this.#stopTraversal('goal');
+      this.stop('goal');
     } else {
       this.#traversalGen = createTraversal(this.currentPoint);
     }

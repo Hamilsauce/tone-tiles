@@ -20,73 +20,102 @@ export class Model {
   #id = null;
   #properties;
   #emit;
-
+  
   constructor(options = DefaultModelOptions) {
     const { id, type, properties, emitCallback } = options;
-
+    
     if ([id, type, emitCallback, properties].includes(undefined)) {
       throw new Error(`Model requires id, type, and emitCallback: ${JSON.stringify(options)}`);
     }
-
-    this.#id = id ?? properties?.id ?? null;
-    this.#type = type ?? properties?.type ?? null;
-    this.#properties = { ...properties };
+    
+    this.#id = id;
+    this.#type = type;
+    this.#properties = { ...properties ?? DefaultModelProperties };
     this.#emit = emitCallback;
   }
-
+  
   get id() { return this.#id; }
-
+  
   get type() { return this.#type; }
-
-  get properties() { return this.#properties; }
-
+  
+  get hidden() { return !!this.#properties.hide; }
+  
+  get properties() { return { ...this.#properties }; }
+  
   get emit() { return this.#emit; }
-
-  update(attributeMap = {}) {
-    let patch = { ...this.data(), ...this.data().properties };
-
-    if (attributeMap) {
-      patch = Object.entries(attributeMap).reduce((ptch, [k, v]) => {
-        const modelV = this.#properties[k];
-        const isValid = !(v === undefined || modelV === undefined);
-
-        if (v !== undefined && v !== modelV) {
-          ptch = ptch ?? {};
-          this.#properties[k] = v;
-          ptch[k] = v;
-        } else if (!isValid) {
-          console.error(`[${this.constructor.name} ${this.id}] invalid Model patch: ${k}: ${v}`);
-        }
-
-        return ptch;
-      }, null);
-
-      if (!patch) return;
-    }
-
-    // instantiate event or push raw data to stream?
-    this.#emit?.({
-      type: `${this.#type}:update`,
-      id: this.id,
-      data: patch,
-    });
-
+  
+  get DefaultProperties() { return { properties: { ...DefaultModelProperties } }; }
+  
+  // update(attributeMap = {}) {
+  //   let patch = { ...this.data(), ...this.data().properties };
+  
+  //   if (attributeMap) {
+  //     patch = Object.entries(attributeMap).reduce((ptch, [k, v]) => {
+  //       const modelV = this.#properties[k];
+  //       const isValid = !(v === undefined || modelV === undefined);
+  
+  //       if (v !== undefined && v !== modelV) {
+  //         ptch = ptch ?? {};
+  //         this.#properties[k] = v;
+  //         ptch[k] = v;
+  //       } else if (!isValid) {
+  //         console.error(`[${this.constructor.name} ${this.id}] invalid Model patch: ${k}: ${v}`);
+  //       }
+  
+  //       return ptch;
+  //     }, null);
+  
+  //     if (!patch) return;
+  //   }
+  
+  //   // instantiate event or push raw data to stream?
+  //   this.#emit?.({
+  //     type: `${this.#type}:update`,
+  //     id: this.id,
+  //     data: patch,
+  //   });
+  
+  //   return this;
+  // }
+  update({ spatial, traversal, ...rest }) {
+    let patch = {}
+    const attributeMap = rest
+    
+    // console.warn('{ spatial, traversal, ...rest }', { spatial, traversal, ...rest })
+    
+    patch = Object.entries(attributeMap).reduce((ptch, [k, v]) => {
+      const modelV = this.#properties[k];
+      if (v === undefined || modelV === undefined || v === modelV) return ptch;
+      
+      const isValid = !(v === undefined || modelV === undefined);
+      
+      ptch = ptch ?? {};
+      this.#properties[k] = v;
+      ptch[k] = v;
+      
+      return ptch;
+    }, null);
+    
+    if (!patch) return;
+    
+    this.emit({ properties: patch, traversal, spatial })
+    
     return this;
   }
-
+  
   toJSON() {
     return { properties: { ...this.#properties }, type: this.#type, id: this.#id };
   }
-
+  
   data() {
     const res = this.toJSON();
-
+    
     Object.entries(res).forEach(([k, v]) => {
       if ([undefined].includes(v)) {
         delete res[k];
       }
     });
-
+    
     return res;
   }
 }

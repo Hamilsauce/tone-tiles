@@ -1,5 +1,6 @@
 import { CanvasObject, DefaultCanvasObjectOptions } from './CanvasObject.js';
 import { getDirectionFromPoints } from '../core/spatial/utils.js';
+import { DefaultActorProperties } from '../model/Actor.model.js';
 
 const directionPivot = {
   up: {

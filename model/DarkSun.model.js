@@ -1,4 +1,4 @@
-import { TraverserModel } from './Traverser.model.js';
+import { TraverserModel, DefaultTraverserProperties } from './Traverser.model.js';
 import { Point } from '../core/spatial/Point.js';
 
 const DefaultDarkSunWaypoints = [
@@ -25,7 +25,7 @@ export class DarkSunModel extends TraverserModel {
 	
 	constructor({ waypoints = DefaultDarkSunWaypoints, ...options } = {}) {
 		super({
-			...options,
+			...(options ?? DefaultDarkSunProperties),
 			type: 'dark-sun'
 		});
 		

@@ -7,18 +7,7 @@ const { sleep } = ham;
 
 const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
 
-import {
-  ActorError,
-  ActorGoal,
-  ActorIdle,
-  ActorMapLink,
-  ActorMove,
-  ActorStop,
-  ActorTeleport,
-  ActorTravel,
-} from '../core/actions/actor.actions.js';
-
-const DefaultActorProperties = {
+export const DefaultActorProperties = {
   point: { x: 0, y: 0 },
   moving: false,
   teleporting: false,
