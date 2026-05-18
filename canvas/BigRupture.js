@@ -40,6 +40,7 @@ export class BigRupture extends CanvasObject {
 		
 		super(ctx, 'big-rupture', {
 			...options,
+			effects: ['radial'],
 			model,
 		});
 		
@@ -99,4 +100,4 @@ export class BigRupture extends CanvasObject {
 		
 		this.rotateTo(this.#rotation, 0.1, -0.1);
 	}
-}	
+}

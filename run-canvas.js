@@ -197,8 +197,9 @@ export const runCanvas = async (mapId) => {
   entityCollection.createBigRupture({
     type: 'big-rupture',
     id: 'bigrupture1',
+    effects: ['radial'],
     properties: {
-      moving: false,
+      // moving: false,
       teleporting: false,
       point: { x: 0, y: 21 },
       isTraversing: false,
@@ -270,10 +271,11 @@ export const runCanvas = async (mapId) => {
       }, graphEvents),
       
     )
-    .subscribe()
+    // .subscribe()
   );
   
   // navigator.clipboard.writeText(JSON.stringify(graphEvents, null, 2));
+  
   
   subscriptions.set(
     'mapLoad',

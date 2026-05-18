@@ -76,6 +76,7 @@ const TEMPLATE_CONFIG = {
 	
 	'big-rupture': {
 		withHarness: true,
+		effects: ['radial'],
 		transforms: {
 			spatial: ['translate'],
 			visual: ['rotate', 'scale'],
@@ -151,10 +152,10 @@ export class SVGCanvas extends EventTarget {
 		this.toggleScroll = this.#toggleScroll.bind(this);
 		
 		const { eventEmits$, pointerEvents$ } = getUserEvents(this)
-		eventEmits$ .pipe(
+		eventEmits$.pipe(
 			tap(x => console.log('eventEmits$', x)),
 		)
-
+		
 		this.in({ name: 'user-events', source$: eventEmits$ });
 		
 		this.pointerDOMSubscription = pointerEvents$.subscribe();
@@ -205,6 +206,18 @@ export class SVGCanvas extends EventTarget {
 		if (config.withHarness) {
 			const harness = this.harnessTemplate
 			const slot = harness.querySelector('[data-slot="object"]');
+			const effects = options.effects
+			
+			if (effects) {
+				
+				const effectEl = this.useTemplate('use-base');
+				const href = `#fx-area-${effects[0]}`
+				effectEl.setAttribute('href', href);
+				
+				const fxSlot = harness.querySelector('[data-slot="effects"]');
+				fxSlot.append(effectEl)
+			}
+			
 			slot.appendChild(base);
 			
 			template = harness;
@@ -286,7 +299,7 @@ export class SVGCanvas extends EventTarget {
 				model,
 			});
 		}
-
+		
 		if (type === 'big-rupture') {
 			return new BigRupture(this, {
 				...rest,
@@ -347,6 +360,8 @@ export class SVGCanvas extends EventTarget {
 	}
 	
 	querySelector(selector) { return this.#self.querySelector(selector); }
+	
+	createElement(selector) { return document.createElement(selector); }
 	
 	querySelectorAll(selector) { return [...this.#self.querySelectorAll(selector)]; }
 }
