@@ -93,9 +93,13 @@ body {
   filter: saturate(1.3) contrast(1.2);
 }
 
+.effects {
+  pointer-events: none;
+}
+
 #fx-area-radial {
   /* fill: #D30F0F38; */
-  filter: brightness(2) contrast(1) hue-rotate(100deg) blur(0.15px) ;
+  filter: brightness(2) contrast(1) hue-rotate(100deg) blur(0.15px);
   opacity: 0.5;
   /* fill: #2E137499; */
   /* fill: #F7F9FA4A; */
