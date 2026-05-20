@@ -45,19 +45,20 @@ export class BigRupture extends CanvasObject {
 		});
 		
 		this.phase = 0;
-		this.scaleMod = 0.025;
+		this.scaleMod = 0.2;
 		this.scaleValue = 3;
 		this.scaleTo(this.scaleValue);
 		
 		setInterval(() => {
 			if (this.scaleValue >= 3.3) {
-				this.scaleMod = -0.025;
-			} else if (this.scaleValue <= 2.8) {
-				this.scaleMod = 0.025;
+				this.scaleMod = -0.2;
+			} else if (this.scaleValue <= 2.4) {
+				this.scaleMod = 0.2;
 			}
 			
 			this.scaleValue += this.scaleMod;
 			this.scaleTo(this.scaleValue);
+			this.rotateTo(this.transforms.rotation.deg + 4.25)
 		}, 40);
 	}
 	
@@ -88,7 +89,7 @@ export class BigRupture extends CanvasObject {
 		}
 		
 		super.update(patch);
-		this.advanceRotation();
+		// this.advanceRotation();
 		
 		return this;
 	}
