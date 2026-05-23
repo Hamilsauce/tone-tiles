@@ -2,6 +2,7 @@
 
 * Selectable/controllable/editable/creatable entities
 * Live switching teleporters
+* Entity Compositional Pipeline
 * Audio Subsystem build out
 * Formalized Voice classes
 * Bring pan zoom in for camera 
