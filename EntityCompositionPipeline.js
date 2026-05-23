@@ -1,3 +1,5 @@
+const ent1 = {}
+
 const makeTraverser = pipe(
   spatial,
   traversal,
