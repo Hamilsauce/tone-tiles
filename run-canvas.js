@@ -262,8 +262,13 @@ export const runCanvas = async (mapId) => {
         state.count += 1;
         
         if (state.events.length > 6000) state.events.shift();
-        
-        state.events.push(event);
+        if (state.events.length > 6000) {
+          state.events.shift()
+        }
+        else {
+          state.events.push(event);
+          
+        }
         state.end = event.time;
         state.duration = event.time - state.start;
         
@@ -293,6 +298,11 @@ export const runCanvas = async (mapId) => {
       svgCanvas.scene.getLayer('tile').loadTileSet({ width, height, nodes, startNode });
       
       const actor1Model = entityCollection.get('actor1');
+      const oldTeles = entityCollection.getAll({ asValues: true, filter: (t) => t.type === 'teleporter' })
+      
+      oldTeles.forEach((t) => {
+        entityCollection.remove(t.id);
+      });
       
       actor1Model.resetTraversal(startNode?.point);
       actor1Model.update({
@@ -349,6 +359,25 @@ export const runCanvas = async (mapId) => {
         objectLayer.remove(e.id);
       })).subscribe()
   );
+  
+  // subscriptions.set(
+  //   'waveGravity',
+  //   runtime.out({ type: 'wave:gravity' }).pipe(
+  //     tap((e) => {
+  //       const t = tileLayer
+  //         .get(`${e.point.x}_${e.point.y}`)
+  
+  //       t.wobble()
+  //       // t.toggle({ waveInfluence: true }, { time: 250 });
+  //       setTimeout(() => {
+  //         console.log(' ', );
+  //         t.wobble(true)
+  
+  //       }, 100)
+  //       // console.warn('e.point.x % 3', e.point.x % 3)  
+  
+  //     })).subscribe()
+  // );
   
   subscriptions.set(
     'actorRender',
@@ -577,7 +606,9 @@ export const runCanvas = async (mapId) => {
       
       dso.toggle({ point, recoiling: true }, { time: 150 });
       
-      node.toggle({ recoiling: true }, { time: 500 });
+      const actor1 = objectLayer.get('actor1');
+      
+      actor1.toggle({ recoiling: true }, { time: 500 });
       
       actors.forEach(async (id, i) => {
         const a = objectLayer.get(id);

@@ -72,7 +72,17 @@ export class Collection {
     return this.#models.has(id);
   }
   
-  getAll() {
+  getAll({ filter, map, asValues } = {}) {
+    
+    if (asValues === true) {
+      const out1 = [...this.#models.values()];
+      
+      if (!filter && !map) return out1;
+      
+      const out2 = filter ? out1.filter(filter) : out1
+      return map ? out2.map(map) : out2
+    }
+    
     return this.#models;
   }
   

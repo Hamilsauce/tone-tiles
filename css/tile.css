@@ -35,7 +35,7 @@
   stroke: #5F5F5F;
   stroke-width: 0.025px;
   
-  /* filter: invert(0); */
+  filter: opacity(1);
   /* transition: 0.25s !important; */
   
 }
@@ -133,7 +133,7 @@
 
 .tile[data-tile-type=teleport]>* {
   fill: #FFFFFF;
-  filter: contrast(2) opacity(0.5) ;
+  filter: contrast(2) opacity(0.5);
   /* filter: saturate(1.3) brightness(2); */
   /* mix-blend-mode: multiply; */
 }
@@ -231,6 +231,34 @@
   40% {}
 }
 
+@keyframes waveInfluence {
+  0% {
+    filter: hue-rotate(0deg) invert(0);
+    
+  }
+  
+  8% {
+    /* fill: #46C2F4BF; */
+    filter: hue-rotate(100deg) invert(1);
+  }
+  
+  50% {
+    /* fill: #46C2F43D; */
+    
+    /* filter: hue-rotate(0deg); */
+    filter: hue-rotate(-240deg) invert(0);
+  }
+  
+  75% {
+    filter: hue-rotate(180deg) invert(1);
+  }
+  
+  100% {
+    filter: hue-rotate(0) invert(0);
+    
+  }
+}
+
 .tile[data-hide=true] {
   /* display: none; */
   opacity: 0;
@@ -239,4 +267,14 @@
 
 .rect-animate {
   animation: yellowToOriginal 1.5s forwards;
+}
+
+.tile[data-wave-influence=true],
+.tile[data-wave-influence=true] * {
+  /* animation: waveInfluence 1.5s alternate; */
+  /* filter: opacity(0) saturate(0) !important; */
+  fill: #A2272E !important;
+ stroke: #11DB60
+
+  
 }

@@ -7,25 +7,14 @@ export class TileObject extends CanvasObject {
     options.id = node.id ?? node.address;
     
     super(ctx, 'tile', options);
+    
     if (node.point.x % 2 || node.point.y % 2) {
-  // rotate = baseRotation + sin(time + phase) * 0.15   
-      // this.rotateTo(Math.sin(1 + 1) * 1.75)
       this.rotateTo(1.6)
     } else {
-      // this.rotateTo(-Math.sin(1 + -1) * 1.5)
       this.rotateTo(-1.5)
-
+      
     }
-    // if (node.point.x % 2 || node.point.y % 2) {
-    //   console.warn('[[[[node]]]]', node.point)
-    // this.rotateTo(16)
     
-    // }
-    
-    // if (this.id?.includes('3')) {
-    //   this.rotateTo(16)
-    
-    // }
     
     // setInterval(() => {
     //   this.rotateTo(this.transforms.rotation.deg + 1, 0.5, 0.5)
@@ -35,5 +24,50 @@ export class TileObject extends CanvasObject {
     
   };
   
+  // wobble(done) {
+  //   this.rotateTo(50, 0.5, 0.5)
+    
+  //   setTimeout(() => {
+  //     this.rotateTo(-50, 0.5, 0.5)
+      
+  //     setTimeout(() => {
+  //       this.rotateTo(0, 0.5, 0.5)
+        
+  //     }, 150)
+      
+  //   }, 150)
+    
+  // }
   
+  wobble2(done) {
+    
+    if (done === true) {
+      clearInterval(this.intId)
+      
+      this.rotateTo(0, 0.5, 0.5)
+      return
+    }
+    
+    let dir = 0.1
+    
+    this.intId = setInterval(() => {
+      
+      if (done === true) {
+        clearInterval(intId)
+        
+        this.rotateTo(0, 0.5, 0.5)
+        return
+      }
+      
+      this.rotateTo(this.transforms.rotation.deg + (dir), 0.5, 0.5)
+      if (this.transforms.rotation.deg > 20) {
+        dir = -0.1
+      }
+      else if (this.transforms.rotation.deg < 20) {
+        dir = 0.1
+      }
+    }, 40)
+    
+    
+  }
 }
