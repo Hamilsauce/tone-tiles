@@ -1,4 +1,4 @@
-const noteDataURL = 'https://raw.githubusercontent.com/Hamilsauce/guitar-tab/refs/heads/main/data/note-data.json'
+// const noteDataURL = 'https://raw.githubusercontent.com/Hamilsauce/guitar-tab/refs/heads/main/data/note-data.json'
 // const noteDataURL = 'https://raw.githubusercontent.com/Hamilsauce/hamilsauce.github.io/refs/heads/master/note-data-with-midi.json';
 import { NoteData } from './audio/note-data-fetch.js';
 // const { notes } = (await (await fetch(noteDataURL)).json());
